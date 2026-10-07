@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#2563eb">
+<meta name="theme-color" content="#0f172a">
 <title>Perto — Compre perto. Venda fácil.</title>
 
 <style>
@@ -15,8 +15,8 @@
 }
 
 body{
-    background:#f5f7fb;
-    color:#172033;
+    background:#0f172a;
+    color:#f8fafc;
     min-height:100vh;
 }
 
@@ -39,19 +39,19 @@ button{
     font-size:30px;
     font-weight:900;
     letter-spacing:-2px;
-    color:#2563eb;
+    color:#f59e0b;
 }
 
 .logo span{
-    color:#172033;
+    color:#fff;
 }
 
 /* =========================
-   WELCOME
+   WELCOME (SLIDES)
 ========================= */
 #welcomePage{
     min-height:100vh;
-    background:#fff;
+    background:#0f172a;
     display:flex;
     flex-direction:column;
 }
@@ -62,7 +62,6 @@ button{
     align-items:center;
     justify-content:center;
     padding:0 20px;
-    background:#fff;
     position:relative;
     z-index:5;
 }
@@ -71,7 +70,7 @@ button{
     flex:1;
     position:relative;
     overflow:hidden;
-    min-height:500px;
+    min-height:420px;
 }
 
 .slide{
@@ -94,10 +93,9 @@ button{
 .slide-bg{
     position:absolute;
     inset:0;
-    background:linear-gradient(180deg, rgba(37,99,235,.08), rgba(23,32,51,.88));
+    background:radial-gradient(circle at 70% 30%, rgba(245,158,11,.15) 0%, transparent 40%),
+                radial-gradient(circle at 20% 70%, rgba(37,99,235,.15) 0%, transparent 50%);
 }
-
-.slide:nth-child(1) .slide-bg{ background:radial-gradient(circle at 20% 20%,#dbeafe 0 20%,transparent 21%), linear-gradient(135deg,#eff6ff,#bfdbfe); }
 
 .slide-content{
     position:relative;
@@ -105,141 +103,146 @@ button{
     width:100%;
     max-width:600px;
     color:#fff;
-    background:linear-gradient(180deg, rgba(23,32,51,0), rgba(23,32,51,.92));
-    padding:110px 10px 25px;
+    padding:20px 10px;
 }
 
 .slide-icon{
     width:70px;
     height:70px;
     border-radius:22px;
-    background:#fff;
-    color:#2563eb;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(10px);
+    color:#f59e0b;
     display:flex;
     align-items:center;
     justify-content:center;
     font-size:34px;
     margin-bottom:18px;
-    box-shadow:0 10px 30px rgba(0,0,0,.18);
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
 }
 
 .slide h1{ font-size:34px; line-height:1.05; margin-bottom:12px; }
-.slide p{ font-size:17px; line-height:1.55; opacity:.95; }
-.slide-tag{ display:inline-block; margin-top:15px; padding:8px 12px; border-radius:30px; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.25); font-size:12px; font-weight:bold; }
+.slide p{ font-size:16px; line-height:1.55; color:#94a3b8; }
+.slide-tag{ display:inline-block; margin-top:15px; padding:8px 14px; border-radius:30px; background:rgba(245,158,11,.15); border:1px solid rgba(245,158,11,.3); font-size:12px; font-weight:bold; color:#f59e0b; }
 
-.welcome-bottom{ background:#fff; padding:16px 18px 22px; }
-.welcome-actions{ display:grid; grid-template-columns:1fr; gap:10px; }
+.welcome-bottom{ background:#0f172a; padding:16px 20px 28px; }
+.dots{ display:flex; justify-content:center; gap:7px; margin-bottom:20px; }
+.dot{ width:8px; height:8px; border-radius:50%; background:#334155; border:0; padding:0; transition:all .3s; }
+.dot.active{ width:24px; border-radius:10px; background:#f59e0b; }
 
-.btn-primary, .btn-secondary, .skip-slide{
+.welcome-actions{ display:grid; grid-template-columns:90px 1fr 90px; gap:10px; align-items:center; }
+
+.btn-primary, .btn-secondary{
     border:0;
     border-radius:14px;
     min-height:50px;
     font-weight:800;
 }
-.btn-primary{ background:#2563eb; color:#fff; box-shadow:0 7px 18px rgba(37,99,235,.25); }
-.btn-secondary{ background:#eef2f7; color:#172033; font-size:16px; }
+.btn-primary{ background:#f59e0b; color:#0f172a; box-shadow:0 7px 18px rgba(245,158,11,.25); }
+.btn-secondary{ background:rgba(255,255,255,.07); color:#fff; border:1px solid rgba(255,255,255,.1); font-size:18px; }
 
 /* =========================
    AUTH
 ========================= */
-#authPage{ min-height:100vh; padding:25px 18px; background:#f5f7fb; }
+#authPage{ min-height:100vh; padding:25px 18px; background:#0f172a; }
 .auth-container{ max-width:460px; margin:0 auto; }
 .auth-top{ text-align:center; margin:20px 0 25px; }
-.auth-top p{ margin-top:7px; color:#64748b; font-size:14px; }
-.auth-card{ background:#fff; border-radius:22px; padding:22px; box-shadow:0 10px 35px rgba(15,23,42,.08); }
-.auth-tabs{ display:grid; grid-template-columns:1fr 1fr; gap:5px; background:#f1f5f9; padding:5px; border-radius:13px; margin-bottom:20px; }
-.auth-tab{ border:0; background:transparent; border-radius:9px; padding:12px; font-weight:700; color:#64748b; }
-.auth-tab.active{ background:#fff; color:#2563eb; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+.auth-top p{ margin-top:7px; color:#94a3b8; font-size:14px; }
+.auth-card{ background:#1e293b; border-radius:22px; padding:22px; border:1px solid rgba(255,255,255,.08); box-shadow:0 10px 35px rgba(0,0,0,.3); }
+.auth-tabs{ display:grid; grid-template-columns:1fr 1fr; gap:5px; background:#0f172a; padding:5px; border-radius:13px; margin-bottom:20px; }
+.auth-tab{ border:0; background:transparent; border-radius:9px; padding:12px; font-weight:700; color:#94a3b8; }
+.auth-tab.active{ background:#1e293b; color:#f59e0b; box-shadow:0 2px 8px rgba(0,0,0,.2); }
 
 .form-group{ margin-bottom:14px; }
-.form-group label{ display:block; font-size:13px; font-weight:700; margin-bottom:7px; }
+.form-group label{ display:block; font-size:13px; font-weight:700; margin-bottom:7px; color:#cbd5e1; }
 .form-group input, .form-group select, .form-group textarea{
-    width:100%; border:1px solid #dbe2ea; border-radius:12px; padding:13px; outline:none; background:#fff;
+    width:100%; border:1px solid #334155; border-radius:12px; padding:13px; outline:none; background:#0f172a; color:#fff;
 }
 .auth-submit{ width:100%; margin-top:8px; }
-.auth-back{ display:block; width:100%; border:0; background:none; color:#64748b; margin-top:14px; padding:10px; }
+.auth-back{ display:block; width:100%; border:0; background:none; color:#94a3b8; margin-top:14px; padding:10px; }
 
 /* =========================
    APP
 ========================= */
-#appPage{ min-height:100vh; padding-bottom:82px; }
-.app-header{ position:sticky; top:0; z-index:20; background:#fff; padding:12px 15px; border-bottom:1px solid #edf0f4; }
+#appPage{ min-height:100vh; padding-bottom:82px; background:#0f172a; color:#f8fafc; }
+.app-header{ position:sticky; top:0; z-index:20; background:#1e293b; padding:12px 15px; border-bottom:1px solid #334155; }
 .header-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .header-search{ margin-top:10px; position:relative; }
-.header-search input{ width:100%; border:0; background:#f1f5f9; padding:13px 15px 13px 42px; border-radius:14px; outline:none; }
+.header-search input{ width:100%; border:0; background:#0f172a; color:#fff; padding:13px 15px 13px 42px; border-radius:14px; outline:none; border:1px solid #334155; }
 .search-symbol{ position:absolute; left:15px; top:11px; font-size:18px; }
 
 .page{ padding:18px 15px; max-width:900px; margin:auto; }
-.hero{ background:linear-gradient(135deg,#2563eb,#1d4ed8); color:#fff; border-radius:22px; padding:22px; margin-bottom:20px; }
+.hero{ background:linear-gradient(135deg,#f59e0b,#d97706); color:#0f172a; border-radius:22px; padding:22px; margin-bottom:20px; font-weight:bold; }
 .hero h1{ font-size:26px; margin-bottom:7px; }
-.hero p{ line-height:1.5; opacity:.94; }
+.hero p{ line-height:1.5; opacity:.9; font-weight:normal; }
 
 .section-title{ display:flex; justify-content:space-between; align-items:center; margin:20px 0 12px; }
 .section-title h2{ font-size:19px; }
 
 .product-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
 .product-card{
-    background:#fff; border-radius:17px; overflow:hidden; box-shadow:0 5px 20px rgba(15,23,42,.06);
-    border:1px solid #eef1f5; position:relative; display:flex; flex-direction:column; justify-content:space-between;
+    background:#1e293b; border-radius:17px; overflow:hidden; box-shadow:0 5px 20px rgba(0,0,0,.2);
+    border:1px solid #334155; position:relative; display:flex; flex-direction:column; justify-content:space-between;
 }
-.product-card.boosted{ border:2px solid #f59e0b; background:linear-gradient(180deg, #fffbeb 0%, #fff 30%); }
+.product-card.boosted{ border:2px solid #f59e0b; background:linear-gradient(180deg, #332712 0%, #1e293b 40%); }
 
 .fav-btn{
-    position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.85); border:0; border-radius:50%;
-    width:32px; height:32px; font-size:16px; display:flex; align-items:center; justify-content:center; z-index:2; box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    position:absolute; top:10px; right:10px; background:rgba(15,23,42,0.8); border:0; border-radius:50%;
+    width:32px; height:32px; font-size:16px; display:flex; align-items:center; justify-content:center; z-index:2;
 }
 .boost-badge{
-    position:absolute; top:10px; left:10px; background:#f59e0b; color:#fff; font-size:10px; font-weight:bold;
+    position:absolute; top:10px; left:10px; background:#f59e0b; color:#0f172a; font-size:10px; font-weight:bold;
     padding:3px 8px; border-radius:6px; z-index:2;
 }
 
-.product-image{ height:140px; background:#e8eef8; display:flex; align-items:center; justify-content:center; font-size:48px; }
+.product-image{ height:140px; background:#0f172a; display:flex; align-items:center; justify-content:center; font-size:48px; }
 .product-info{ padding:12px; flex:1; }
-.product-info h3{ font-size:15px; margin-bottom:5px; }
-.price{ font-size:18px; font-weight:900; color:#2563eb; }
-.meta{ color:#64748b; font-size:12px; margin-top:5px; }
+.product-info h3{ font-size:15px; margin-bottom:5px; color:#fff; }
+.price{ font-size:18px; font-weight:900; color:#f59e0b; }
+.meta{ color:#94a3b8; font-size:12px; margin-top:5px; }
 
 .card-actions{ display:flex; gap:5px; padding:0 12px 12px 12px; }
 .card-actions button{ flex:1; padding:7px; font-size:11px; border-radius:8px; border:0; font-weight:bold; }
-.btn-chat{ background:#eff6ff; color:#2563eb; }
-.btn-boost-action{ background:#fef3c7; color:#d97706; }
+.btn-chat{ background:rgba(245,158,11,.15); color:#f59e0b; }
+.btn-boost-action{ background:rgba(245,158,11,.3); color:#f59e0b; }
 
-.empty{ background:#fff; border-radius:18px; padding:35px 20px; text-align:center; color:#64748b; }
+.empty{ background:#1e293b; border-radius:18px; padding:35px 20px; text-align:center; color:#94a3b8; border:1px solid #334155; }
 
 /* =========================
    CHAT UI
 ========================= */
-.chat-container{ background:#fff; border-radius:18px; overflow:hidden; border:1px solid #edf0f4; display:flex; flex-direction:column; height:450px; }
-.chat-messages{ flex:1; padding:15px; overflow-y:auto; background:#f8fafc; display:flex; flex-direction:column; gap:10px; }
+.chat-container{ background:#1e293b; border-radius:18px; overflow:hidden; border:1px solid #334155; display:flex; flex-direction:column; height:450px; }
+.chat-messages{ flex:1; padding:15px; overflow-y:auto; background:#0f172a; display:flex; flex-direction:column; gap:10px; }
 .message{ max-width:80%; padding:10px 14px; border-radius:14px; font-size:14px; line-height:1.4; }
-.message.incoming{ background:#fff; color:#172033; align-self:flex-start; border:1px solid #e2e8f0; }
-.message.outgoing{ background:#2563eb; color:#fff; align-self:flex-end; }
-.chat-input-area{ display:flex; padding:10px; background:#fff; border-top:1px solid #edf0f4; gap:8px; }
-.chat-input-area input{ flex:1; border:1px solid #dbe2ea; border-radius:10px; padding:10px; outline:none; }
+.message.incoming{ background:#1e293b; color:#fff; align-self:flex-start; border:1px solid #334155; }
+.message.outgoing{ background:#f59e0b; color:#0f172a; align-self:flex-end; font-weight:bold; }
+.chat-input-area{ display:flex; padding:10px; background:#1e293b; border-top:1px solid #334155; gap:8px; }
+.chat-input-area input{ flex:1; border:1px solid #334155; border-radius:10px; padding:10px; outline:none; background:#0f172a; color:#fff; }
 
 /* =========================
    PROFILE
 ========================= */
-.profile-card{ background:#fff; border-radius:20px; padding:20px; }
-.profile-avatar{ width:65px; height:65px; border-radius:50%; background:#dbeafe; color:#2563eb; display:flex; align-items:center; justify-content:center; font-size:25px; font-weight:900; margin-bottom:12px; }
-.profile-item{ padding:14px 0; border-bottom:1px solid #eef1f5; }
+.profile-card{ background:#1e293b; border-radius:20px; padding:20px; border:1px solid #334155; }
+.profile-avatar{ width:65px; height:65px; border-radius:50%; background:rgba(245,158,11,.2); color:#f59e0b; display:flex; align-items:center; justify-content:center; font-size:25px; font-weight:900; margin-bottom:12px; }
+.profile-item{ padding:14px 0; border-bottom:1px solid #334155; }
 
 /* =========================
    BOTTOM NAV
 ========================= */
-.bottom-nav{ position:fixed; left:0; right:0; bottom:0; height:70px; background:#fff; border-top:1px solid #e8ebef; display:grid; grid-template-columns:repeat(5,1fr); z-index:50; }
-.nav-btn{ border:0; background:none; color:#64748b; font-size:10px; font-weight:700; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; }
+.bottom-nav{ position:fixed; left:0; right:0; bottom:0; height:70px; background:#1e293b; border-top:1px solid #334155; display:grid; grid-template-columns:repeat(5,1fr); z-index:50; }
+.nav-btn{ border:0; background:none; color:#94a3b8; font-size:10px; font-weight:700; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; }
 .nav-btn span:first-child{ font-size:20px; }
-.nav-btn.active{ color:#2563eb; }
-.sell-circle{ width:47px; height:47px; border-radius:50%; background:#2563eb; color:#fff; display:flex; align-items:center; justify-content:center; font-size:26px; margin-top:-22px; box-shadow:0 7px 18px rgba(37,99,235,.3); }
+.nav-btn.active{ color:#f59e0b; }
+.sell-circle{ width:47px; height:47px; border-radius:50%; background:#f59e0b; color:#0f172a; display:flex; align-items:center; justify-content:center; font-size:26px; margin-top:-22px; box-shadow:0 7px 18px rgba(245,158,11,.4); font-weight:bold; }
 
 /* =========================
    MODALS
 ========================= */
-.modal{ position:fixed; inset:0; background:rgba(15,23,42,.58); z-index:100; display:flex; align-items:flex-end; justify-content:center; }
-.modal-box{ width:100%; max-width:650px; max-height:92vh; overflow:auto; background:#fff; border-radius:25px 25px 0 0; padding:22px; }
+.modal{ position:fixed; inset:0; background:rgba(15,23,42,.8); z-index:100; display:flex; align-items:flex-end; justify-content:center; }
+.modal-box{ width:100%; max-width:650px; max-height:92vh; overflow:auto; background:#1e293b; border-radius:25px 25px 0 0; padding:22px; border:1px solid #334155; color:#fff; }
 .modal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
-.close{ border:0; background:#f1f5f9; width:38px; height:38px; border-radius:50%; font-size:20px; }
+.close{ border:0; background:#0f172a; color:#fff; width:38px; height:38px; border-radius:50%; font-size:20px; }
 
 @media(min-width:700px){
     .product-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
@@ -252,14 +255,182 @@ button{
 <!-- ================= welcome ================= -->
 <section id="welcomePage">
     <header class="welcome-header"><div class="logo">perto<span>.</span></div></header>
-    <div class="slides">
+    <div class="slides" id="slidesContainer">
         <div class="slide active">
             <div class="slide-bg"></div>
             <div class="slide-content">
                 <div class="slide-icon">🛍️</div>
-                <h1>COMPRE PERTO</h1>
-                <p>Encontre produtos e negocie diretamente com pessoas da sua região.</p>
+                <h1>Compre perto.</h1>
+                <p>Encontre produtos anunciados por pessoas da sua região. Mais proximidade, praticidade e oportunidades locais.</p>
                 <span class="slide-tag">COMÉRCIO LOCAL</span>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="slide-bg"></div>
+            <div class="slide-content">
+                <div class="slide-icon">💬</div>
+                <h1>Chat Direto.</h1>
+                <p>Negocie valores e tire dúvidas instantaneamente com os vendedores através do chat integrado.</p>
+                <span class="slide-tag">NEGOCIAÇÃO FÁCIL</span>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="slide-bg"></div>
+            <div class="slide-content">
+                <div class="slide-icon">⚡</div>
+                <h1>Turbine Vendas.</h1>
+                <p>Destaque seus produtos no topo das buscas e alcance muito mais compradores todos os dias.</p>
+                <span class="slide-tag">MAIS VISIBILIDADE</span>
+            </div>
+        </div>
+    </div>
+    <div class="welcome-bottom">
+        <div class="dots" id="slideDots">
+            <button class="dot active" onclick="currentSlide(0)"></button>
+            <button class="dot" onclick="currentSlide(1)"></button>
+            <button class="dot" onclick="currentSlide(2)"></button>
+        </div>
+        <div class="welcome-actions">
+            <button id="prevSlideBtn" class="btn-secondary" type="button">‹</button>
+            <button id="signupWelcomeBtn" class="btn-primary" type="button">Criar conta</button>
+            <button id="nextSlideBtn" class="btn-secondary" type="button">›</button>
+        </div>
+        <div style="text-align: center; margin-top: 15px;">
+            <button id="loginWelcomeBtn" style="background:none; border:0; color:#94a3b8; font-weight:bold; font-size:14px;" type="button">Entrar</button>
+        </div>
+    </div>
+</section>
+
+<!-- ================= auth ================= -->
+<section id="authPage" class="hidden">
+    <div class="auth-container">
+        <div class="auth-top"><div class="logo">perto<span>.</span></div><p>Compre perto. Venda fácil.</p></div>
+        <div class="auth-card">
+            <div class="auth-tabs">
+                <button id="loginTabBtn" class="auth-tab active" type="button">Entrar</button>
+                <button id="signupTabBtn" class="auth-tab" type="button">Criar conta</button>
+            </div>
+            <form id="loginForm">
+                <div class="form-group"><label>E-mail</label><input id="loginEmail" type="email" required></div>
+                <div class="form-group"><label>Senha</label><input id="loginPassword" type="password" required></div>
+                <button class="btn-primary auth-submit" type="submit">ENTRAR</button>
+            </form>
+            <form id="signupForm" class="hidden">
+                <div class="form-group"><label>Nome</label><input id="signupName" type="text" required></div>
+                <div class="form-group"><label>Telefone</label><input id="signupPhone" type="tel" required></div>
+                <div class="form-group"><label>E-mail</label><input id="signupEmail" type="email" required></div>
+                <div class="form-group"><label>Senha</label><input id="signupPassword" type="password" minlength="6" required></div>
+                <div class="form-group"><label>Cidade</label><input id="signupCity" type="text" value="Cerquilho, SP" required></div>
+                <button class="btn-primary auth-submit" type="submit">FINALIZAR CADASTRO</button>
+            </form>
+        </div>
+        <button id="authBackBtn" class="auth-back" type="button">← Voltar</button>
+    </div>
+</section>
+
+<!-- ================= app ================= -->
+<section id="appPage" class="hidden">
+    <header class="app-header">
+        <div class="header-row">
+            <div class="logo">perto<span>.</span></div>
+            <div style="font-size: 13px; font-weight: bold; color: #94a3b8;" id="userLocationDisplay">📍 Cerquilho, SP</div>
+        </div>
+        <div class="header-search">
+            <span class="search-symbol">🔍</span>
+            <input id="mainSearchInput" type="text" placeholder="Buscar produtos, serviços...">
+        </div>
+    </header>
+
+    <div id="pagesContainer">
+        <!-- 1. HOME -->
+        <div id="homePageContent" class="page">
+            <div class="hero">
+                <h1>Compre perto de você</h1>
+                <p>Negocie com vizinhos e fortaleça o comércio regional.</p>
+            </div>
+            <div class="section-title"><h2>Destaques na região</h2></div>
+            <div id="homeProductsGrid" class="product-grid"></div>
+        </div>
+
+        <!-- 2. EXPLORE -->
+        <div id="explorePageContent" class="page hidden">
+            <div class="section-title"><h2>Explorar Categorias</h2></div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px;">
+                <button class="btn-secondary" style="font-size: 14px; text-align: left; padding: 15px;" onclick="filterCategory('todos')">🌐 Todos</button>
+                <button class="btn-secondary" style="font-size: 14px; text-align: left; padding: 15px;" onclick="filterCategory('eletronicos')">📱 Eletrônicos</button>
+                <button class="btn-secondary" style="font-size: 14px; text-align: left; padding: 15px;" onclick="filterCategory('casa')">🏠 Casa</button>
+            </div>
+            <div class="section-title"><h2>Resultados</h2></div>
+            <div id="exploreProductsGrid" class="product-grid"></div>
+        </div>
+
+        <!-- 3. CHAT -->
+        <div id="chatPageContent" class="page hidden">
+            <div class="section-title"><h2>Conversas & Negociações 💬</h2></div>
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-input-area">
+                    <input id="chatInputMsg" type="text" placeholder="Escreva sua mensagem...">
+                    <button class="btn-primary" style="padding: 0 16px; min-height: 40px;" onclick="sendChatMessage()">Enviar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. FAVORITOS -->
+        <div id="favoritesPageContent" class="page hidden">
+            <div class="section-title"><h2>Meus Favoritos ❤️</h2></div>
+            <div id="favProductsGrid" class="product-grid"></div>
+        </div>
+
+        <!-- 5. PROFILE -->
+        <div id="profilePageContent" class="page hidden">
+            <div class="profile-card">
+                <div class="profile-avatar" id="profileInitials">US</div>
+                <h2 id="profileNameDisplay" style="margin-bottom: 4px;">Nome</h2>
+                <p id="profileEmailDisplay" style="color: #94a3b8; font-size: 13px; margin-bottom: 15px;"></p>
+                <div class="profile-item"><strong style="font-size: 13px; color: #94a3b8; display: block;">Telefone</strong><span id="profilePhoneDisplay"></span></div>
+                <div class="profile-item"><strong style="font-size: 13px; color: #94a3b8; display: block;">Cidade</strong><span id="profileCityDisplay"></span></div>
+                <button class="btn-secondary" style="width: 100%; margin-top: 20px; color: #ef4444; border-color: rgba(239,68,68,0.3);" onclick="logoutApp()">Sair da Conta</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+        <button class="nav-btn active" data-target="homePageContent"><span>🏠</span><span>Início</span></button>
+        <button class="nav-btn" data-target="explorePageContent"><span>🔍</span><span>Explorar</span></button>
+        <button class="nav-btn sell-nav" id="openSellModalBtn"><div class="sell-circle">+</div><span>Vender</span></button>
+        <button class="nav-btn" data-target="chatPageContent"><span>💬</span><span>Chat</span></button>
+        <button class="nav-btn" data-target="profilePageContent"><span>👤</span><span>Perfil</span></button>
+    </nav>
+</section>
+
+<!-- ================= sell modal ================= -->
+<div id="sellModal" class="modal hidden">
+    <div class="modal-box">
+        <div class="modal-head"><h2>Anunciar Produto</h2><button class="close" id="closeSellModalBtn">×</button></div>
+        <form id="sellForm">
+            <div class="form-group"><label>Título do Produto</label><input id="productTitle" type="text" required></div>
+            <div class="form-group"><label>Preço (R$)</label><input id="productPrice" type="text" required></div>
+            <div class="form-group">
+                <label>Categoria</label>
+                <select id="productCategory">
+                    <option value="eletronicos">Eletrônicos</option>
+                    <option value="casa">Casa & Jardim</option>
+                    <option value="moda">Moda & Vestuário</option>
+                    <option value="outros">Outros</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Emoji Representativo</label><input id="productEmoji" type="text" value="📦" required></div>
+            <button class="btn-primary" type="submit" style="width: 100%;">PUBLICAR</button>
+        </form>
+    </div>
+</div>
+
+<!-- ================= boost modal ================= -->
+<div id="boostModal" class="modal hidden">
+    <div class="modal-box">
+        <div class="modal-head"><h2>⚡ Turbinar /span>
             </div>
         </div>
     </div>
