@@ -353,6 +353,388 @@ button{ cursor:pointer; font:inherit; }
         const price = document.getElementById('inputPrice').value;
         const isBoosted = document.getElementById('checkBoost').checked;
 
+                 <div class="form-group"><label>Senha</label><input type="password" id="loginPassInput" required></div>
+                <button class="btn-primary auth-submit" type="submit">ENTRAR NO APP</button>
+            </form>
+
+            <form id="signupForm" class="hidden">
+                <div class="form-group"><label>Seu Nome</label><input type="text" id="signupNameInput" required></div>
+                <div class="form-group"><label>E-mail</label><input type="email" id="signupEmailInput" required></div>
+                <div class="form-group"><label>Senha (mín. 6 dígitos)</label><input type="password" id="signupPassInput" minlength="6" required></div>
+                <button class="btn-primary auth-submit" type="submit">CADASTRAR E ENTRAR</button>
+            </form>
+        </div>
+        <button id="authBackBtn" class="auth-back" type="button">← Voltar para apresentação</button>
+    </div>
+</section>
+
+<!-- 3. APLICATIVO PRINCIPAL (V1 Enxuto: Início, Vender, Chat) -->
+<section id="appPage" class="hidden">
+    <header class="app-header">
+        <div class="header-row">
+            <div class="logo">perto<span>.</span></div>
+            <div style="font-size: 12px; font-weight: bold; color: #f59e0b;">📍 Cerquilho, SP</div>
+        </div>
+    </header>
+
+    <div id="appContainerPages">
+        <!-- INÍCIO (FEED DE PRODUTOS + BANNER DE FUTURAS VERSÕES) -->
+        <div id="tabHome" class="page">
+            <div class="hero">
+                <h1>Compre e Venda Perto</h1>
+                <p>Encontre ótimos negócios na sua região ou anuncie o que você não usa mais.</p>
+            </div>
+
+            <!-- Banner Informativo das Próximas Versões -->
+            <div style="background: rgba(37,99,235,0.15); border: 1px solid rgba(37,99,235,0.3); padding: 12px 15px; border-radius: 14px; margin-bottom: 18px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <div style="font-size: 12px; font-weight: bold; color: #60a5fa;">🚀 O que vem por aí (V2 / V3)</div>
+                    <div style="font-size: 11px; color: #cbd5e1; margin-top: 2px;">Serviços de mão de obra e entregas integradas em breve!</div>
+                </div>
+            </div>
+
+            <div class="section-title">
+                <h2>Anúncios na Região</h2>
+                <span style="font-size: 11px; color: #f59e0b; cursor: pointer;" onclick="alert('Anúncios turbinados aparecem no topo com destaque dourado e geram até 5x mais vendas!')">⚡ Saiba sobre turbinar</span>
+            </div>
+            <div class="grid-cards" id="homeFeedGrid">
+                <!-- Injetado via JS -->
+            </div>
+        </div>
+
+        <!-- CHAT -->
+        <div id="tabChat" class="page hidden">
+            <div class="section-title"><h2>Mensagens & Negociações</h2></div>
+            <p style="font-size: 13px; color: #94a3b8; margin-bottom: 12px;">Converse diretamente com compradores e vendedores:</p>
+            <div class="chat-box" id="chatListContainer">
+                <div class="chat-item" onclick="alertabrchat('Bicicleta Aro 26')">
+                    <div>
+                        <h4 style="font-size: 14px; color: #fff;">Bicicleta Aro 26 Revisada</h4>
+                        <p style="font-size: 12px; color: #94a3b8;">Comprador interessado: "Ainda está disponível?"</p>
+                    </div>
+                    <span style="font-size: 11px; color: #f59e0b; font-weight: bold;">Ver Chat</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAV V1 -->
+    <nav class="bottom-nav">
+        <button class="nav-btn active" onclick="switchTab('tabHome', this)"><span>🏠</span><span>Início</span></button>
+        <button class="nav-btn" onclick="openSellModal()"><div class="sell-circle">+</div><span>Vender</span></button>
+        <button class="nav-btn" onclick="switchTab('tabChat', this)"><span>💬</span><span>Chat</span></button>
+    </nav>
+</section>
+
+<!-- MODAL DE CRIAR ANÚNCIO (Com opção de Turbinar) -->
+<div id="sellModal" class="modal hidden">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h2>Criar Anúncio</h2>
+            <button class="close-modal" onclick="closeSellModal()">×</button>
+        </div>
+        <form id="sellForm" onsubmit="handlePublish(event)">
+            <div class="form-group"><label>O que você está vendendo?</label><input type="text" id="inputTitle" placeholder="Ex: Geladeira, Celular, Sofá..." required></div>
+            <div class="form-group"><label>Preço (R$)</label><input type="text" id="inputPrice" placeholder="Ex: 300,00" required></div>
+            <div class="form-group" style="margin-top: 15px;">
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                    <input type="checkbox" id="checkBoost" style="width: 18px; height: 18px; accent-color: #f59e0b;"> 
+                    <span style="color:#f59e0b; font-weight:bold;">⚡ Turbinar este anúncio (Maior destaque e visibilidade)</span>
+                </label>
+            </div>
+            <button class="btn-primary" type="submit" style="width: 100%; margin-top: 15px;">PUBLICAR ANÚNCIO</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // --- CARROSSEL DE APRESENTAÇÃO ---
+    let currentSlideIdx = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+
+    function showSlide(index) {
+        slides.forEach((s, i) => s.classList.toggle('active', i === index));
+        dots.forEach((d, i) => d.classList.toggle('active', i === index));
+        currentSlideIdx = index;
+    }
+    function currentSlide(index) { showSlide(index); }
+
+    document.getElementById('nextSlideBtn').addEventListener('click', () => showSlide((currentSlideIdx + 1) % slides.length));
+    document.getElementById('prevSlideBtn').addEventListener('click', () => showSlide((currentSlideIdx - 1 + slides.length) % slides.length));
+
+    // --- TELAS E AUTH ---
+    const welcomePage = document.getElementById('welcomePage');
+    const authPage = document.getElementById('authPage');
+    const appPage = document.getElementById('appPage');
+
+    document.getElementById('signupWelcomeBtn').addEventListener('click', () => {
+        welcomePage.classList.add('hidden');
+        authPage.classList.remove('hidden');
+        document.getElementById('signupTabBtn').click();
+    });
+
+    document.getElementById('loginWelcomeBtn').addEventListener('click', () => {
+        welcomePage.classList.add('hidden');
+        authPage.classList.remove('hidden');
+        document.getElementById('loginTabBtn').click();
+    });
+
+    document.getElementById('authBackBtn').addEventListener('click', () => {
+        authPage.classList.add('hidden');
+        welcomePage.classList.remove('hidden');
+    });
+
+    document.getElementById('loginTabBtn').addEventListener('click', () => {
+        document.getElementById('loginTabBtn').classList.add('active');
+        document.getElementById('signupTabBtn').classList.remove('active');
+        document.getElementById('loginForm').classList.remove('hidden');
+        document.getElementById('signupForm').classList.add('hidden');
+    });
+
+    document.getElementById('signupTabBtn').addEventListener('click', () => {
+        document.getElementById('signupTabBtn').classList.add('active');
+        document.getElementById('loginTabBtn').classList.remove('active');
+        document.getElementById('signupForm').classList.remove('hidden');
+        document.getElementById('loginForm').classList.add('hidden');
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', (e) => { e.preventDefault(); enterApp(); });
+    document.getElementById('signupForm').addEventListener('submit', (e) => { e.preventDefault(); enterApp(); });
+
+    function enterApp() {
+        authPage.classList.add('hidden');
+        appPage.classList.remove('hidden');
+        renderFeed();
+    }
+
+    function switchTab(tabId, btnElement) {
+        document.querySelectorAll('#appContainerPages > div').forEach(div => div.classList.add('hidden'));
+        document.getElementById(tabId).classList.remove('hidden');
+        document.querySelectorAll('.bottom-nav .nav-btn').forEach(btn => btn.classList.remove('active'));
+        if(btnElement) btnElement.classList.add('active');
+    }
+
+    // --- FEED DE ANÚNCIOS V1 ---
+    let feedItems = [
+        { id: 1, title: 'Bicicleta Aro 26 Revisada', price: 'R$ 320,00', meta: 'Cerquilho • Usado em bom estado', boosted: true },
+        { id: 2, title: 'Micro-ondas Electrolux 30L', price: 'R$ 280,00', meta: 'Cerquilho • Seminovo', boosted: false }
+    ];
+
+    function renderFeed() {
+        const grid = document.getElementById('homeFeedGrid');
+        grid.innerHTML = feedItems.map(item => `
+            <div class="card-item ${item.boosted ? 'boosted' : ''}">
+                ${item.boosted ? '<span style="background:#f59e0b; color:#0f172a; font-size:9px; font-weight:bold; padding:2px 6px; border-radius:4px; width:fit-content; margin-bottom:6px;">⚡ TURBINADO</span>' : ''}
+                <h3>${item.title}</h3>
+                <div class="price">${item.price}</div>
+                <div class="meta">${item.meta}</div>
+                <button class="btn-primary" style="margin-top: 10px; font-size: 11px; min-height: 34px;" onclick="switchTab('tabChat', document.querySelectorAll('.bottom-nav .nav-btn')[2])">💬 Negociar no Chat</button>
+            </div>
+        `).join('');
+    }
+
+    // --- MODAL DE VENDER ---
+    function openSellModal() { document.getElementById('sellModal').classList.remove('hidden'); }
+    function closeSellModal() { document.getElementById('sellModal').classList.add('hidden'); }
+
+    function handlePublish(e) {
+        e.preventDefault();
+        const title = document.getElementById('inputTitle').value;
+        const price = document.getElementById('inputPrice').value;
+        const isBoosted = document.getElementById('checkBoost').checked;
+
+                 <div class="form-group"><label>Senha</label><input type="password" id="loginPassInput" required></div>
+                <button class="btn-primary auth-submit" type="submit">ENTRAR NO APP</button>
+            </form>
+
+            <form id="signupForm" class="hidden">
+                <div class="form-group"><label>Seu Nome</label><input type="text" id="signupNameInput" required></div>
+                <div class="form-group"><label>E-mail</label><input type="email" id="signupEmailInput" required></div>
+                <div class="form-group"><label>Senha (mín. 6 dígitos)</label><input type="password" id="signupPassInput" minlength="6" required></div>
+                <button class="btn-primary auth-submit" type="submit">CADASTRAR E ENTRAR</button>
+            </form>
+        </div>
+        <button id="authBackBtn" class="auth-back" type="button">← Voltar para apresentação</button>
+    </div>
+</section>
+
+<!-- 3. APLICATIVO PRINCIPAL (V1 Enxuto: Início, Vender, Chat) -->
+<section id="appPage" class="hidden">
+    <header class="app-header">
+        <div class="header-row">
+            <div class="logo">perto<span>.</span></div>
+            <div style="font-size: 12px; font-weight: bold; color: #f59e0b;">📍 Cerquilho, SP</div>
+        </div>
+    </header>
+
+    <div id="appContainerPages">
+        <!-- INÍCIO (FEED DE PRODUTOS + BANNER DE FUTURAS VERSÕES) -->
+        <div id="tabHome" class="page">
+            <div class="hero">
+                <h1>Compre e Venda Perto</h1>
+                <p>Encontre ótimos negócios na sua região ou anuncie o que você não usa mais.</p>
+            </div>
+
+            <!-- Banner Informativo das Próximas Versões -->
+            <div style="background: rgba(37,99,235,0.15); border: 1px solid rgba(37,99,235,0.3); padding: 12px 15px; border-radius: 14px; margin-bottom: 18px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <div style="font-size: 12px; font-weight: bold; color: #60a5fa;">🚀 O que vem por aí (V2 / V3)</div>
+                    <div style="font-size: 11px; color: #cbd5e1; margin-top: 2px;">Serviços de mão de obra e entregas integradas em breve!</div>
+                </div>
+            </div>
+
+            <div class="section-title">
+                <h2>Anúncios na Região</h2>
+                <span style="font-size: 11px; color: #f59e0b; cursor: pointer;" onclick="alert('Anúncios turbinados aparecem no topo com destaque dourado e geram até 5x mais vendas!')">⚡ Saiba sobre turbinar</span>
+            </div>
+            <div class="grid-cards" id="homeFeedGrid">
+                <!-- Injetado via JS -->
+            </div>
+        </div>
+
+        <!-- CHAT -->
+        <div id="tabChat" class="page hidden">
+            <div class="section-title"><h2>Mensagens & Negociações</h2></div>
+            <p style="font-size: 13px; color: #94a3b8; margin-bottom: 12px;">Converse diretamente com compradores e vendedores:</p>
+            <div class="chat-box" id="chatListContainer">
+                <div class="chat-item" onclick="alertabrchat('Bicicleta Aro 26')">
+                    <div>
+                        <h4 style="font-size: 14px; color: #fff;">Bicicleta Aro 26 Revisada</h4>
+                        <p style="font-size: 12px; color: #94a3b8;">Comprador interessado: "Ainda está disponível?"</p>
+                    </div>
+                    <span style="font-size: 11px; color: #f59e0b; font-weight: bold;">Ver Chat</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAV V1 -->
+    <nav class="bottom-nav">
+        <button class="nav-btn active" onclick="switchTab('tabHome', this)"><span>🏠</span><span>Início</span></button>
+        <button class="nav-btn" onclick="openSellModal()"><div class="sell-circle">+</div><span>Vender</span></button>
+        <button class="nav-btn" onclick="switchTab('tabChat', this)"><span>💬</span><span>Chat</span></button>
+    </nav>
+</section>
+
+<!-- MODAL DE CRIAR ANÚNCIO (Com opção de Turbinar) -->
+<div id="sellModal" class="modal hidden">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h2>Criar Anúncio</h2>
+            <button class="close-modal" onclick="closeSellModal()">×</button>
+        </div>
+        <form id="sellForm" onsubmit="handlePublish(event)">
+            <div class="form-group"><label>O que você está vendendo?</label><input type="text" id="inputTitle" placeholder="Ex: Geladeira, Celular, Sofá..." required></div>
+            <div class="form-group"><label>Preço (R$)</label><input type="text" id="inputPrice" placeholder="Ex: 300,00" required></div>
+            <div class="form-group" style="margin-top: 15px;">
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                    <input type="checkbox" id="checkBoost" style="width: 18px; height: 18px; accent-color: #f59e0b;"> 
+                    <span style="color:#f59e0b; font-weight:bold;">⚡ Turbinar este anúncio (Maior destaque e visibilidade)</span>
+                </label>
+            </div>
+            <button class="btn-primary" type="submit" style="width: 100%; margin-top: 15px;">PUBLICAR ANÚNCIO</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // --- CARROSSEL DE APRESENTAÇÃO ---
+    let currentSlideIdx = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+
+    function showSlide(index) {
+        slides.forEach((s, i) => s.classList.toggle('active', i === index));
+        dots.forEach((d, i) => d.classList.toggle('active', i === index));
+        currentSlideIdx = index;
+    }
+    function currentSlide(index) { showSlide(index); }
+
+    document.getElementById('nextSlideBtn').addEventListener('click', () => showSlide((currentSlideIdx + 1) % slides.length));
+    document.getElementById('prevSlideBtn').addEventListener('click', () => showSlide((currentSlideIdx - 1 + slides.length) % slides.length));
+
+    // --- TELAS E AUTH ---
+    const welcomePage = document.getElementById('welcomePage');
+    const authPage = document.getElementById('authPage');
+    const appPage = document.getElementById('appPage');
+
+    document.getElementById('signupWelcomeBtn').addEventListener('click', () => {
+        welcomePage.classList.add('hidden');
+        authPage.classList.remove('hidden');
+        document.getElementById('signupTabBtn').click();
+    });
+
+    document.getElementById('loginWelcomeBtn').addEventListener('click', () => {
+        welcomePage.classList.add('hidden');
+        authPage.classList.remove('hidden');
+        document.getElementById('loginTabBtn').click();
+    });
+
+    document.getElementById('authBackBtn').addEventListener('click', () => {
+        authPage.classList.add('hidden');
+        welcomePage.classList.remove('hidden');
+    });
+
+    document.getElementById('loginTabBtn').addEventListener('click', () => {
+        document.getElementById('loginTabBtn').classList.add('active');
+        document.getElementById('signupTabBtn').classList.remove('active');
+        document.getElementById('loginForm').classList.remove('hidden');
+        document.getElementById('signupForm').classList.add('hidden');
+    });
+
+    document.getElementById('signupTabBtn').addEventListener('click', () => {
+        document.getElementById('signupTabBtn').classList.add('active');
+        document.getElementById('loginTabBtn').classList.remove('active');
+        document.getElementById('signupForm').classList.remove('hidden');
+        document.getElementById('loginForm').classList.add('hidden');
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', (e) => { e.preventDefault(); enterApp(); });
+    document.getElementById('signupForm').addEventListener('submit', (e) => { e.preventDefault(); enterApp(); });
+
+    function enterApp() {
+        authPage.classList.add('hidden');
+        appPage.classList.remove('hidden');
+        renderFeed();
+    }
+
+    function switchTab(tabId, btnElement) {
+        document.querySelectorAll('#appContainerPages > div').forEach(div => div.classList.add('hidden'));
+        document.getElementById(tabId).classList.remove('hidden');
+        document.querySelectorAll('.bottom-nav .nav-btn').forEach(btn => btn.classList.remove('active'));
+        if(btnElement) btnElement.classList.add('active');
+    }
+
+    // --- FEED DE ANÚNCIOS V1 ---
+    let feedItems = [
+        { id: 1, title: 'Bicicleta Aro 26 Revisada', price: 'R$ 320,00', meta: 'Cerquilho • Usado em bom estado', boosted: true },
+        { id: 2, title: 'Micro-ondas Electrolux 30L', price: 'R$ 280,00', meta: 'Cerquilho • Seminovo', boosted: false }
+    ];
+
+    function renderFeed() {
+        const grid = document.getElementById('homeFeedGrid');
+        grid.innerHTML = feedItems.map(item => `
+            <div class="card-item ${item.boosted ? 'boosted' : ''}">
+                ${item.boosted ? '<span style="background:#f59e0b; color:#0f172a; font-size:9px; font-weight:bold; padding:2px 6px; border-radius:4px; width:fit-content; margin-bottom:6px;">⚡ TURBINADO</span>' : ''}
+                <h3>${item.title}</h3>
+                <div class="price">${item.price}</div>
+                <div class="meta">${item.meta}</div>
+                <button class="btn-primary" style="margin-top: 10px; font-size: 11px; min-height: 34px;" onclick="switchTab('tabChat', document.querySelectorAll('.bottom-nav .nav-btn')[2])">💬 Negociar no Chat</button>
+            </div>
+        `).join('');
+    }
+
+    // --- MODAL DE VENDER ---
+    function openSellModal() { document.getElementById('sellModal').classList.remove('hidden'); }
+    function closeSellModal() { document.getElementById('sellModal').classList.add('hidden'); }
+
+    function handlePublish(e) {
+        e.preventDefault();
+        const title = document.getElementById('inputTitle').value;
+        const price = document.getElementById('inputPrice').value;
+        const isBoosted = document.getElementById('checkBoost').checked;
+
   tton class="nav-btn"><span>👤</span><span>Perfil</span></button>
     </nav>
 </section>
