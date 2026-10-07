@@ -7,121 +7,24 @@
 <title>Perto — Compre perto. Venda fácil.</title>
 
 <style>
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-    font-family:Arial,Helvetica,sans-serif;
-}
+*{ box-sizing:border-box; margin:0; padding:0; font-family:Arial,Helvetica,sans-serif; }
+body{ background:#0f172a; color:#f8fafc; min-height:100vh; }
+button{ cursor:pointer; font:inherit; }
+.hidden{ display:none !important; }
 
-body{
-    background:#0f172a;
-    color:#f8fafc;
-    min-height:100vh;
-}
+/* LOGO */
+.logo{ font-size:30px; font-weight:900; letter-spacing:-2px; color:#f59e0b; }
+.logo span{ color:#fff; }
 
-button, input, select, textarea{
-    font:inherit;
-}
-
-button{
-    cursor:pointer;
-}
-
-.hidden{
-    display:none !important;
-}
-
-/* =========================
-   LOGO
-========================= */
-.logo{
-    font-size:30px;
-    font-weight:900;
-    letter-spacing:-2px;
-    color:#f59e0b;
-}
-
-.logo span{
-    color:#fff;
-}
-
-/* =========================
-   WELCOME (SLIDES)
-========================= */
-#welcomePage{
-    min-height:100vh;
-    background:#0f172a;
-    display:flex;
-    flex-direction:column;
-}
-
-.welcome-header{
-    height:72px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:0 20px;
-    position:relative;
-    z-index:5;
-}
-
-.slides{
-    flex:1;
-    position:relative;
-    overflow:hidden;
-    min-height:420px;
-}
-
-.slide{
-    position:absolute;
-    inset:0;
-    opacity:0;
-    pointer-events:none;
-    transition:opacity .45s ease;
-    display:flex;
-    align-items:flex-end;
-    justify-content:center;
-    padding:25px;
-}
-
-.slide.active{
-    opacity:1;
-    pointer-events:auto;
-}
-
-.slide-bg{
-    position:absolute;
-    inset:0;
-    background:radial-gradient(circle at 70% 30%, rgba(245,158,11,.15) 0%, transparent 40%),
-                radial-gradient(circle at 20% 70%, rgba(37,99,235,.15) 0%, transparent 50%);
-}
-
-.slide-content{
-    position:relative;
-    z-index:2;
-    width:100%;
-    max-width:600px;
-    color:#fff;
-    padding:20px 10px;
-}
-
-.slide-icon{
-    width:70px;
-    height:70px;
-    border-radius:22px;
-    background:rgba(255,255,255,.07);
-    border:1px solid rgba(255,255,255,.12);
-    backdrop-filter:blur(10px);
-    color:#f59e0b;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:34px;
-    margin-bottom:18px;
-    box-shadow:0 10px 30px rgba(0,0,0,.3);
-}
-
+/* WELCOME SCREEN */
+#welcomePage{ min-height:100vh; background:#0f172a; display:flex; flex-direction:column; }
+.welcome-header{ height:72px; display:flex; align-items:center; justify-content:center; padding:0 20px; }
+.slides{ flex:1; position:relative; overflow:hidden; min-height:400px; }
+.slide{ position:absolute; inset:0; opacity:0; pointer-events:none; transition:opacity .4s ease; display:flex; align-items:flex-end; padding:25px; }
+.slide.active{ opacity:1; pointer-events:auto; }
+.slide-bg{ position:absolute; inset:0; background:radial-gradient(circle at 70% 30%, rgba(245,158,11,.15) 0%, transparent 40%), radial-gradient(circle at 20% 70%, rgba(37,99,235,.15) 0%, transparent 50%); }
+.slide-content{ position:relative; z-index:2; width:100%; color:#fff; padding:20px 10px; }
+.slide-icon{ width:70px; height:70px; border-radius:22px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12); backdrop-filter:blur(10px); color:#f59e0b; display:flex; align-items:center; justify-content:center; font-size:34px; margin-bottom:18px; box-shadow:0 10px 30px rgba(0,0,0,.3); }
 .slide h1{ font-size:34px; line-height:1.05; margin-bottom:12px; }
 .slide p{ font-size:16px; line-height:1.55; color:#94a3b8; }
 .slide-tag{ display:inline-block; margin-top:15px; padding:8px 14px; border-radius:30px; background:rgba(245,158,11,.15); border:1px solid rgba(245,158,11,.3); font-size:12px; font-weight:bold; color:#f59e0b; }
@@ -130,21 +33,13 @@ button{
 .dots{ display:flex; justify-content:center; gap:7px; margin-bottom:20px; }
 .dot{ width:8px; height:8px; border-radius:50%; background:#334155; border:0; padding:0; transition:all .3s; }
 .dot.active{ width:24px; border-radius:10px; background:#f59e0b; }
-
 .welcome-actions{ display:grid; grid-template-columns:90px 1fr 90px; gap:10px; align-items:center; }
 
-.btn-primary, .btn-secondary{
-    border:0;
-    border-radius:14px;
-    min-height:50px;
-    font-weight:800;
-}
+.btn-primary, .btn-secondary{ border:0; border-radius:14px; min-height:50px; font-weight:800; }
 .btn-primary{ background:#f59e0b; color:#0f172a; box-shadow:0 7px 18px rgba(245,158,11,.25); }
 .btn-secondary{ background:rgba(255,255,255,.07); color:#fff; border:1px solid rgba(255,255,255,.1); font-size:18px; }
 
-/* =========================
-   AUTH
-========================= */
+/* AUTH SCREEN */
 #authPage{ min-height:100vh; padding:25px 18px; background:#0f172a; }
 .auth-container{ max-width:460px; margin:0 auto; }
 .auth-top{ text-align:center; margin:20px 0 25px; }
@@ -153,96 +48,223 @@ button{
 .auth-tabs{ display:grid; grid-template-columns:1fr 1fr; gap:5px; background:#0f172a; padding:5px; border-radius:13px; margin-bottom:20px; }
 .auth-tab{ border:0; background:transparent; border-radius:9px; padding:12px; font-weight:700; color:#94a3b8; }
 .auth-tab.active{ background:#1e293b; color:#f59e0b; box-shadow:0 2px 8px rgba(0,0,0,.2); }
-
 .form-group{ margin-bottom:14px; }
 .form-group label{ display:block; font-size:13px; font-weight:700; margin-bottom:7px; color:#cbd5e1; }
-.form-group input, .form-group select, .form-group textarea{
-    width:100%; border:1px solid #334155; border-radius:12px; padding:13px; outline:none; background:#0f172a; color:#fff;
-}
+.form-group input{ width:100%; border:1px solid #334155; border-radius:12px; padding:13px; outline:none; background:#0f172a; color:#fff; }
 .auth-submit{ width:100%; margin-top:8px; }
 .auth-back{ display:block; width:100%; border:0; background:none; color:#94a3b8; margin-top:14px; padding:10px; }
 
-/* =========================
-   APP
-========================= */
-#appPage{ min-height:100vh; padding-bottom:82px; background:#0f172a; color:#f8fafc; }
+/* APP SCREEN */
+#appPage{ min-height:100vh; padding-bottom:82px; background:#0f172a; }
 .app-header{ position:sticky; top:0; z-index:20; background:#1e293b; padding:12px 15px; border-bottom:1px solid #334155; }
-.header-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
-.header-search{ margin-top:10px; position:relative; }
-.header-search input{ width:100%; border:0; background:#0f172a; color:#fff; padding:13px 15px 13px 42px; border-radius:14px; outline:none; border:1px solid #334155; }
-.search-symbol{ position:absolute; left:15px; top:11px; font-size:18px; }
-
+.header-row{ display:flex; align-items:center; justify-content:space-between; }
 .page{ padding:18px 15px; max-width:900px; margin:auto; }
 .hero{ background:linear-gradient(135deg,#f59e0b,#d97706); color:#0f172a; border-radius:22px; padding:22px; margin-bottom:20px; font-weight:bold; }
-.hero h1{ font-size:26px; margin-bottom:7px; }
-.hero p{ line-height:1.5; opacity:.9; font-weight:normal; }
-
-.section-title{ display:flex; justify-content:space-between; align-items:center; margin:20px 0 12px; }
-.section-title h2{ font-size:19px; }
-
-.product-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
-.product-card{
-    background:#1e293b; border-radius:17px; overflow:hidden; box-shadow:0 5px 20px rgba(0,0,0,.2);
-    border:1px solid #334155; position:relative; display:flex; flex-direction:column; justify-content:space-between;
-}
-.product-card.boosted{ border:2px solid #f59e0b; background:linear-gradient(180deg, #332712 0%, #1e293b 40%); }
-
-.fav-btn{
-    position:absolute; top:10px; right:10px; background:rgba(15,23,42,0.8); border:0; border-radius:50%;
-    width:32px; height:32px; font-size:16px; display:flex; align-items:center; justify-content:center; z-index:2;
-}
-.boost-badge{
-    position:absolute; top:10px; left:10px; background:#f59e0b; color:#0f172a; font-size:10px; font-weight:bold;
-    padding:3px 8px; border-radius:6px; z-index:2;
-}
-
-.product-image{ height:140px; background:#0f172a; display:flex; align-items:center; justify-content:center; font-size:48px; }
-.product-info{ padding:12px; flex:1; }
-.product-info h3{ font-size:15px; margin-bottom:5px; color:#fff; }
-.price{ font-size:18px; font-weight:900; color:#f59e0b; }
-.meta{ color:#94a3b8; font-size:12px; margin-top:5px; }
-
-.card-actions{ display:flex; gap:5px; padding:0 12px 12px 12px; }
-.card-actions button{ flex:1; padding:7px; font-size:11px; border-radius:8px; border:0; font-weight:bold; }
-.btn-chat{ background:rgba(245,158,11,.15); color:#f59e0b; }
-.btn-boost-action{ background:rgba(245,158,11,.3); color:#f59e0b; }
-
-.empty{ background:#1e293b; border-radius:18px; padding:35px 20px; text-align:center; color:#94a3b8; border:1px solid #334155; }
-
-/* =========================
-   CHAT UI
-========================= */
-.chat-container{ background:#1e293b; border-radius:18px; overflow:hidden; border:1px solid #334155; display:flex; flex-direction:column; height:450px; }
-.chat-messages{ flex:1; padding:15px; overflow-y:auto; background:#0f172a; display:flex; flex-direction:column; gap:10px; }
-.message{ max-width:80%; padding:10px 14px; border-radius:14px; font-size:14px; line-height:1.4; }
-.message.incoming{ background:#1e293b; color:#fff; align-self:flex-start; border:1px solid #334155; }
-.message.outgoing{ background:#f59e0b; color:#0f172a; align-self:flex-end; font-weight:bold; }
-.chat-input-area{ display:flex; padding:10px; background:#1e293b; border-top:1px solid #334155; gap:8px; }
-.chat-input-area input{ flex:1; border:1px solid #334155; border-radius:10px; padding:10px; outline:none; background:#0f172a; color:#fff; }
-
-/* =========================
-   PROFILE
-========================= */
-.profile-card{ background:#1e293b; border-radius:20px; padding:20px; border:1px solid #334155; }
-.profile-avatar{ width:65px; height:65px; border-radius:50%; background:rgba(245,158,11,.2); color:#f59e0b; display:flex; align-items:center; justify-content:center; font-size:25px; font-weight:900; margin-bottom:12px; }
-.profile-item{ padding:14px 0; border-bottom:1px solid #334155; }
-
-/* =========================
-   BOTTOM NAV
-========================= */
 .bottom-nav{ position:fixed; left:0; right:0; bottom:0; height:70px; background:#1e293b; border-top:1px solid #334155; display:grid; grid-template-columns:repeat(5,1fr); z-index:50; }
 .nav-btn{ border:0; background:none; color:#94a3b8; font-size:10px; font-weight:700; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; }
 .nav-btn span:first-child{ font-size:20px; }
 .nav-btn.active{ color:#f59e0b; }
-.sell-circle{ width:47px; height:47px; border-radius:50%; background:#f59e0b; color:#0f172a; display:flex; align-items:center; justify-content:center; font-size:26px; margin-top:-22px; box-shadow:0 7px 18px rgba(245,158,11,.4); font-weight:bold; }
+.sell-circle{ width:47px; height:47px; border-radius:50%; background:#f59e0b; color:#0f172a; display:flex; align-items:center; justify-content:center; font-size:26px; margin-top:-22px; font-weight:bold; }
+</style>
+</head>
 
-/* =========================
-   MODALS
-========================= */
-.modal{ position:fixed; inset:0; background:rgba(15,23,42,.8); z-index:100; display:flex; align-items:flex-end; justify-content:center; }
-.modal-box{ width:100%; max-width:650px; max-height:92vh; overflow:auto; background:#1e293b; border-radius:25px 25px 0 0; padding:22px; border:1px solid #334155; color:#fff; }
-.modal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
-.close{ border:0; background:#0f172a; color:#fff; width:38px; height:38px; border-radius:50%; font-size:20px; }
+<body>
+
+<!-- TELA DE BOAS-VINDAS / CARROSSEL -->
+<section id="welcomePage">
+    <header class="welcome-header">
+        <div class="logo">perto<span>.</span></div>
+    </header>
+    <div class="slides" id="slidesContainer">
+        <div class="slide active">
+            <div class="slide-bg"></div>
+            <div class="slide-content">
+                <div class="slide-icon">🛍️</div>
+                <h1>Compre perto.</h1>
+                <p>Encontre produtos anunciados por pessoas da sua região. Mais proximidade, praticidade e oportunidades locais.</p>
+                <span class="slide-tag">COMÉRCIO LOCAL</span>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="slide-bg"></div>
+            <div class="slide-content">
+                <div class="slide-icon">💬</div>
+                <h1>Chat Direto.</h1>
+                <p>Negocie valores e tire dúvidas instantaneamente com os vendedores através do chat integrado.</p>
+                <span class="slide-tag">NEGOCIAÇÃO FÁCIL</span>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="slide-bg"></div>
+            <div class="slide-content">
+                <div class="slide-icon">⚡</div>
+                <h1>Turbine Vendas.</h1>
+                <p>Destaque seus produtos no topo das buscas e alcance muito mais compradores todos os dias.</p>
+                <span class="slide-tag">MAIS VISIBILIDADE</span>
+            </div>
+        </div>
+    </div>
+    <div class="welcome-bottom">
+        <div class="dots" id="slideDots">
+            <button class="dot active" onclick="currentSlide(0)" type="button"></button>
+            <button class="dot" onclick="currentSlide(1)" type="button"></button>
+            <button class="dot" onclick="currentSlide(2)" type="button"></button>
+        </div>
+        <div class="welcome-actions">
+            <button id="prevSlideBtn" class="btn-secondary" type="button">‹</button>
+            <button id="signupWelcomeBtn" class="btn-primary" type="button">Criar conta</button>
+            <button id="nextSlideBtn" class="btn-secondary" type="button">›</button>
+        </div>
+        <div style="text-align: center; margin-top: 15px;">
+            <button id="loginWelcomeBtn" style="background:none; border:0; color:#94a3b8; font-weight:bold; font-size:14px;" type="button">Entrar</button>
+        </div>
+    </div>
+</section>
+
+<!-- TELA DE AUTENTICAÇÃO (LOGIN / CADASTRO) -->
+<section id="authPage" class="hidden">
+    <div class="auth-container">
+        <div class="auth-top">
+            <div class="logo">perto<span>.</span></div>
+            <p>Compre perto. Venda fácil.</p>
+        </div>
+        <div class="auth-card">
+            <div class="auth-tabs">
+                <button id="loginTabBtn" class="auth-tab active" type="button">Entrar</button>
+                <button id="signupTabBtn" class="auth-tab" type="button">Criar conta</button>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group"><label>E-mail</label><input type="email" required></div>
+                <div class="form-group"><label>Senha</label><input type="password" required></div>
+                <button class="btn-primary auth-submit" type="submit">ENTRAR</button>
+            </form>
+
+            <form id="signupForm" class="hidden">
+                <div class="form-group"><label>Nome</label><input type="text" required></div>
+                <div class="form-group"><label>E-mail</label><input type="email" required></div>
+                <div class="form-group"><label>Senha</label><input type="password" minlength="6" required></div>
+                <button class="btn-primary auth-submit" type="submit">FINALIZAR CADASTRO</button>
+            </form>
+        </div>
+        <button id="authBackBtn" class="auth-back" type="button">← Voltar</button>
+    </div>
+</section>
+
+<!-- APLICATIVO PRINCIPAL -->
+<section id="appPage" class="hidden">
+    <header class="app-header">
+        <div class="header-row">
+            <div class="logo">perto<span>.</span></div>
+            <div style="font-size: 13px; font-weight: bold; color: #94a3b8;">📍 Cerquilho, SP</div>
+        </div>
+    </header>
+    <div class="page">
+        <div class="hero">
+            <h1>Bem-vindo ao Perto!</h1>
+            <p>Você entrou com sucesso no aplicativo.</p>
+        </div>
+        <button class="btn-secondary" style="width:100%; color:#ef4444;" onclick="logoutApp()">Sair da Conta</button>
+    </div>
+    <nav class="bottom-nav">
+        <button class="nav-btn active"><span>🏠</span><span>Início</span></button>
+        <button class="nav-btn"><span>🔍</span><span>Explorar</span></button>
+        <button class="nav-btn"><div class="sell-circle">+</div><span>Vender</span></button>
+        <button class="nav-btn"><span>💬</span><span>Chat</span></button>
+        <button class="nav-btn"><span>👤</span><span>Perfil</span></button>
+    </nav>
+</section>
+
+<script>
+    // --- CARROSSEL ---
+    let currentSlideIdx = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+
+    function showSlide(index) {
+        slides.forEach((s, i) => s.classList.toggle('active', i === index));
+        dots.forEach((d, i) => d.classList.toggle('active', i === index));
+        currentSlideIdx = index;
+    }
+
+    function currentSlide(index) {
+        showSlide(index);
+    }
+
+    document.getElementById('nextSlideBtn').addEventListener('click', () => {
+        let next = (currentSlideIdx + 1) % slides.length;
+        showSlide(next);
+    });
+
+    document.getElementById('prevSlideBtn').addEventListener('click', () => {
+        let prev = (currentSlideIdx - 1 + slides.length) % slides.length;
+        showSlide(prev);
+    });
+
+    // --- NAVEGAÇÃO DE TELAS (WELCOME / AUTH / APP) ---
+    const welcomePage = document.getElementById('welcomePage');
+    const authPage = document.getElementById('authPage');
+    const appPage = document.getElementById('appPage');
+
+    document.getElementById('signupWelcomeBtn').addEventListener('click', () => {
+        welcomePage.classList.add('hidden');
+        authPage.classList.remove('hidden');
+        document.getElementById('signupTabBtn').click();
+    });
+
+    document.getElementById('loginWelcomeBtn').addEventListener('click', () => {
+        welcomePage.classList.add('hidden');
+        authPage.classList.remove('hidden');
+        document.getElementById('loginTabBtn').click();
+    });
+
+    document.getElementById('authBackBtn').addEventListener('click', () => {
+        authPage.classList.add('hidden');
+        welcomePage.classList.remove('hidden');
+    });
+
+    // --- ABAS DE LOGIN / CADASTRO DENTRO DA AUTH ---
+    const loginTabBtn = document.getElementById('loginTabBtn');
+    const signupTabBtn = document.getElementById('signupTabBtn');
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+
+    loginTabBtn.addEventListener('click', () => {
+        loginTabBtn.classList.add('active');
+        signupTabBtn.classList.remove('active');
+        loginForm.classList.remove('hidden');
+        signupForm.classList.add('hidden');
+    });
+
+    signupTabBtn.addEventListener('click', () => {
+        signupTabBtn.classList.add('active');
+        loginTabBtn.classList.remove('active');
+        signupForm.classList.remove('hidden');
+        loginForm.classList.add('hidden');
+    });
+
+    // --- SIMULAÇÃO DE LOGIN / CADASTRO ---
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        authPage.classList.add('hidden');
+        appPage.classList.remove('hidden');
+    });
+
+    signupForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        authPage.classList.add('hidden');
+        appPage.classList.remove('hidden');
+    });
+
+    function logoutApp() {
+        appPage.classList.add('hidden');
+        welcomePage.classList.remove('hidden');
+    }
+</script>
+
+</body>
+</html>
+%; font-size:20px; }
 
 @media(min-width:700px){
     .product-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
