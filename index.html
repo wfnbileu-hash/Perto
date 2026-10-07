@@ -3,166 +3,1204 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0f172a">
+<meta name="theme-color" content="#111827">
+<meta name="description" content="Perto — Compre perto. Venda fácil.">
 <title>Perto — Compre perto. Venda fácil.</title>
 
 <style>
-*{ box-sizing:border-box; margin:0; padding:0; font-family:Arial,Helvetica,sans-serif; }
-body{ background:#0f172a; color:#f8fafc; min-height:100vh; padding-bottom:80px; }
-button{ cursor:pointer; font:inherit; }
-.hidden{ display:none !important; }
+:root{
+  --primary:#111827;
+  --primary2:#1f2937;
+  --accent:#f59e0b;
+  --accent2:#fbbf24;
+  --green:#16a34a;
+  --red:#dc2626;
+  --blue:#2563eb;
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --text:#111827;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+  --radius:18px;
+  --shadow:0 10px 30px rgba(0,0,0,.08);
+}
 
-/* LOGO */
-.logo{ font-size:30px; font-weight:900; letter-spacing:-2px; color:#f59e0b; }
-.logo span{ color:#fff; }
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
 
-/* WELCOME SCREEN */
-#welcomePage{ min-height:100vh; background:#0f172a; display:flex; flex-direction:column; }
-.welcome-header{ height:72px; display:flex; align-items:center; justify-content:center; padding:0 20px; }
-.slides{ flex:1; position:relative; overflow:hidden; min-height:380px; }
-.slide{ position:absolute; inset:0; opacity:0; pointer-events:none; transition:opacity .4s ease; display:flex; align-items:flex-end; padding:25px; }
-.slide.active{ opacity:1; pointer-events:auto; }
-.slide-bg{ position:absolute; inset:0; background:radial-gradient(circle at 70% 30%, rgba(245,158,11,.15) 0%, transparent 40%), radial-gradient(circle at 20% 70%, rgba(37,99,235,.15) 0%, transparent 50%); }
-.slide-content{ position:relative; z-index:2; width:100%; color:#fff; padding:20px 10px; }
-.slide-icon{ width:70px; height:70px; border-radius:22px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12); backdrop-filter:blur(10px); color:#f59e0b; display:flex; align-items:center; justify-content:center; font-size:34px; margin-bottom:18px; box-shadow:0 10px 30px rgba(0,0,0,.3); }
-.slide h1{ font-size:32px; line-height:1.1; margin-bottom:10px; }
-.slide p{ font-size:15px; line-height:1.5; color:#94a3b8; }
-.slide-tag{ display:inline-block; margin-top:12px; padding:6px 12px; border-radius:30px; background:rgba(245,158,11,.15); border:1px solid rgba(245,158,11,.3); font-size:11px; font-weight:bold; color:#f59e0b; }
+html,body{
+  width:100%;
+  min-height:100%;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
 
-.welcome-bottom{ background:#0f172a; padding:16px 20px 28px; }
-.dots{ display:flex; justify-content:center; gap:7px; margin-bottom:20px; }
-.dot{ width:8px; height:8px; border-radius:50%; background:#334155; border:0; padding:0; transition:all .3s; }
-.dot.active{ width:24px; border-radius:10px; background:#f59e0b; }
-.welcome-actions{ display:grid; grid-template-columns:80px 1fr 80px; gap:10px; align-items:center; }
+button,
+input,
+textarea,
+select{
+  font:inherit;
+}
 
-.btn-primary, .btn-secondary{ border:0; border-radius:14px; min-height:48px; font-weight:800; }
-.btn-primary{ background:#f59e0b; color:#0f172a; box-shadow:0 7px 18px rgba(245,158,11,.25); }
-.btn-secondary{ background:rgba(255,255,255,.07); color:#fff; border:1px solid rgba(255,255,255,.1); font-size:18px; }
+button{
+  cursor:pointer;
+  border:0;
+}
 
-/* AUTH SCREEN */
-#authPage{ min-height:100vh; padding:25px 18px; background:#0f172a; }
-.auth-container{ max-width:440px; margin:0 auto; }
-.auth-top{ text-align:center; margin:20px 0 20px; }
-.auth-top p{ margin-top:5px; color:#94a3b8; font-size:14px; }
-.auth-card{ background:#1e293b; border-radius:22px; padding:20px; border:1px solid rgba(255,255,255,.08); box-shadow:0 10px 35px rgba(0,0,0,.3); }
-.auth-tabs{ display:grid; grid-template-columns:1fr 1fr; gap:5px; background:#0f172a; padding:5px; border-radius:13px; margin-bottom:18px; }
-.auth-tab{ border:0; background:transparent; border-radius:9px; padding:10px; font-weight:700; color:#94a3b8; }
-.auth-tab.active{ background:#1e293b; color:#f59e0b; box-shadow:0 2px 8px rgba(0,0,0,.2); }
-.form-group{ margin-bottom:12px; }
-.form-group label{ display:block; font-size:12px; font-weight:700; margin-bottom:5px; color:#cbd5e1; }
-.form-group input{ width:100%; border:1px solid #334155; border-radius:10px; padding:11px; outline:none; background:#0f172a; color:#fff; }
-.auth-submit{ width:100%; margin-top:6px; }
-.auth-back{ display:block; width:100%; border:0; background:none; color:#94a3b8; margin-top:12px; padding:8px; }
+.hidden{
+  display:none!important;
+}
 
-/* APP SCREEN */
-#appPage{ min-height:100vh; background:#0f172a; }
-.app-header{ position:sticky; top:0; z-index:20; background:#1e293b; padding:12px 15px; border-bottom:1px solid #334155; }
-.header-row{ display:flex; align-items:center; justify-content:space-between; }
-.page{ padding:16px; max-width:900px; margin:auto; }
+/* =========================
+   LOADING
+========================= */
 
-.hero{ background:linear-gradient(135deg,#f59e0b,#d97706); color:#0f172a; border-radius:20px; padding:20px; margin-bottom:18px; font-weight:bold; }
-.hero h1{ font-size:24px; margin-bottom:6px; }
-.hero p{ font-size:14px; line-height:1.4; opacity:.9; font-weight:normal; }
+#loadingScreen{
+  position:fixed;
+  inset:0;
+  background:#111827;
+  color:white;
+  z-index:99999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:18px;
+}
 
-.section-title{ display:flex; justify-content:space-between; align-items:center; margin:18px 0 10px; }
-.section-title h2{ font-size:18px; color:#fff; }
+.loadingLogo{
+  font-size:42px;
+  font-weight:900;
+  letter-spacing:-3px;
+}
 
-.grid-cards{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
-@media(min-width:700px){ .grid-cards{ grid-template-columns:repeat(3,1fr); } }
-.card-item{ background:#1e293b; border-radius:16px; padding:15px; border:1px solid #334155; position:relative; display:flex; flex-direction:column; justify-content:space-between; }
-.card-item.boosted{ border:2px solid #f59e0b; }
-.card-item h3{ font-size:14px; margin-bottom:5px; color:#fff; }
-.price{ font-size:16px; font-weight:900; color:#f59e0b; margin-bottom:5px; }
-.meta{ font-size:11px; color:#94a3b8; }
+.loadingDot{
+  width:12px;
+  height:12px;
+  background:#f59e0b;
+  border-radius:50%;
+  animation:pulse 1s infinite;
+}
 
-/* BOTTOM NAV V1 */
-.bottom-nav{ position:fixed; left:0; right:0; bottom:0; height:68px; background:#1e293b; border-top:1px solid #334155; display:grid; grid-template-columns:repeat(3,1fr); z-index:50; }
-.nav-btn{ border:0; background:none; color:#94a3b8; font-size:11px; font-weight:700; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; }
-.nav-btn span:first-child{ font-size:18px; }
-.nav-btn.active{ color:#f59e0b; }
-.sell-circle{ width:44px; height:44px; border-radius:50%; background:#f59e0b; color:#0f172a; display:flex; align-items:center; justify-content:center; font-size:24px; margin-top:-20px; font-weight:bold; box-shadow:0 4px 12px rgba(245,158,11,0.4); }
+@keyframes pulse{
+  0%,100%{transform:scale(.7);opacity:.5}
+  50%{transform:scale(1.2);opacity:1}
+}
 
-/* MODALS */
-.modal{ position:fixed; inset:0; background:rgba(15,23,42,.85); z-index:100; display:flex; align-items:flex-end; justify-content:center; }
-.modal-box{ width:100%; max-width:600px; max-height:90vh; overflow:auto; background:#1e293b; border-radius:24px 24px 0 0; padding:20px; border:1px solid #334155; color:#fff; }
-.modal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:15px; }
-.close-modal{ border:0; background:#0f172a; color:#fff; width:34px; height:34px; border-radius:50%; font-size:18px; }
+/* =========================
+   WELCOME
+========================= */
 
-/* CHAT BOX CONTAINER */
-.chat-box { background:#1e293b; border-radius:16px; border:1px solid #334155; padding:15px; margin-top:10px; }
-.chat-item { display:flex; align-items:center; justify-content:space-between; padding:10px; border-bottom:1px solid #334155; cursor:pointer; }
-.chat-item:last-child { border-bottom:0; }
+#welcomePage{
+  min-height:100vh;
+  background:#111827;
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+}
+
+.welcomeSlides{
+  position:relative;
+  min-height:100vh;
+}
+
+.slide{
+  position:absolute;
+  inset:0;
+  min-height:100vh;
+  display:none;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:30px 22px 120px;
+  overflow:hidden;
+}
+
+.slide.active{
+  display:flex;
+  animation:slideIn .35s ease;
+}
+
+@keyframes slideIn{
+  from{opacity:0;transform:translateX(15px)}
+  to{opacity:1;transform:translateX(0)}
+}
+
+/* fundos visuais próprios, sem marcas de terceiros */
+
+.slideVisual{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+}
+
+.slideVisual::before{
+  content:"";
+  position:absolute;
+  width:360px;
+  height:360px;
+  border-radius:50%;
+  background:rgba(245,158,11,.20);
+  top:8%;
+  right:-130px;
+}
+
+.slideVisual::after{
+  content:"";
+  position:absolute;
+  width:280px;
+  height:280px;
+  border-radius:50%;
+  background:rgba(37,99,235,.16);
+  bottom:15%;
+  left:-120px;
+}
+
+.visualIcon{
+  position:absolute;
+  top:18%;
+  left:50%;
+  transform:translateX(-50%);
+  width:190px;
+  height:190px;
+  border-radius:45px;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.14);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:92px;
+  backdrop-filter:blur(8px);
+  box-shadow:0 25px 70px rgba(0,0,0,.25);
+}
+
+.visualMini{
+  position:absolute;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(5px);
+  border-radius:18px;
+  padding:15px;
+  font-size:34px;
+}
+
+.mini1{
+  top:35%;
+  left:12%;
+}
+
+.mini2{
+  top:43%;
+  right:10%;
+}
+
+.mini3{
+  top:55%;
+  left:28%;
+}
+
+.slideContent{
+  position:relative;
+  z-index:2;
+  max-width:620px;
+  margin:auto auto 0;
+  width:100%;
+}
+
+.slideEyebrow{
+  color:var(--accent2);
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:1.5px;
+  margin-bottom:12px;
+}
+
+.slide h1{
+  font-size:42px;
+  line-height:1;
+  letter-spacing:-2px;
+  margin-bottom:15px;
+}
+
+.slide p{
+  color:#d1d5db;
+  font-size:17px;
+  line-height:1.5;
+  max-width:500px;
+}
+
+.slideNumber{
+  position:absolute;
+  top:30px;
+  left:22px;
+  z-index:5;
+  font-size:13px;
+  color:#9ca3af;
+}
+
+.slideControls{
+  position:absolute;
+  bottom:28px;
+  left:22px;
+  right:22px;
+  z-index:10;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+}
+
+.slideDots{
+  display:flex;
+  gap:7px;
+}
+
+.slideDot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#6b7280;
+  transition:.2s;
+}
+
+.slideDot.active{
+  width:24px;
+  border-radius:20px;
+  background:var(--accent);
+}
+
+.slideArrow{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  background:rgba(255,255,255,.10);
+  color:white;
+  border:1px solid rgba(255,255,255,.12);
+  font-size:20px;
+}
+
+.welcomeActions{
+  position:absolute;
+  z-index:20;
+  bottom:75px;
+  left:22px;
+  right:22px;
+  display:flex;
+  gap:10px;
+}
+
+.btn{
+  min-height:50px;
+  padding:0 20px;
+  border-radius:14px;
+  font-weight:800;
+  transition:.2s;
+}
+
+.btn:active{
+  transform:scale(.97);
+}
+
+.btnPrimary{
+  background:var(--accent);
+  color:#111827;
+  flex:1;
+}
+
+.btnSecondary{
+  background:rgba(255,255,255,.10);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.15);
+}
+
+/* =========================
+   AUTH
+========================= */
+
+#authPage{
+  min-height:100vh;
+  background:#f4f6f8;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.authCard{
+  width:100%;
+  max-width:460px;
+  background:#fff;
+  border-radius:26px;
+  padding:26px;
+  box-shadow:var(--shadow);
+}
+
+.authLogo{
+  text-align:center;
+  font-size:42px;
+  font-weight:900;
+  letter-spacing:-3px;
+  margin-bottom:5px;
+}
+
+.authSubtitle{
+  text-align:center;
+  color:var(--muted);
+  margin-bottom:25px;
+}
+
+.authTabs{
+  display:flex;
+  background:#f3f4f6;
+  padding:4px;
+  border-radius:12px;
+  margin-bottom:20px;
+}
+
+.authTab{
+  flex:1;
+  height:43px;
+  border-radius:9px;
+  background:transparent;
+  font-weight:700;
+  color:#6b7280;
+}
+
+.authTab.active{
+  background:#fff;
+  color:#111827;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+
+.formGroup{
+  margin-bottom:14px;
+}
+
+.formGroup label{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:6px;
+}
+
+.formGroup input,
+.formGroup textarea,
+.formGroup select{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:13px 14px;
+  outline:none;
+  background:#fff;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus,
+.formGroup select:focus{
+  border-color:var(--accent);
+}
+
+.formGroup textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+.checkboxLine{
+  display:flex;
+  align-items:flex-start;
+  gap:9px;
+  font-size:13px;
+  color:#4b5563;
+  margin:12px 0;
+}
+
+.checkboxLine input{
+  margin-top:3px;
+}
+
+.authMessage{
+  display:none;
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:14px;
+  font-size:13px;
+  line-height:1.4;
+}
+
+.authMessage.error{
+  display:block;
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.authMessage.success{
+  display:block;
+  background:#dcfce7;
+  color:#166534;
+}
+
+.authBack{
+  text-align:center;
+  margin-top:18px;
+}
+
+.authBack button{
+  background:none;
+  color:#6b7280;
+}
+
+/* =========================
+   APP
+========================= */
+
+#appPage{
+  min-height:100vh;
+  padding-bottom:78px;
+}
+
+.appHeader{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+
+.headerTop{
+  height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+}
+
+.appLogo{
+  font-size:30px;
+  font-weight:900;
+  letter-spacing:-2px;
+}
+
+.headerUser{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:#111827;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+}
+
+.searchBox{
+  padding:0 16px 12px;
+}
+
+.searchBox input{
+  width:100%;
+  height:45px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:#f3f4f6;
+  padding:0 15px;
+  outline:none;
+}
+
+.page{
+  display:none;
+  padding:18px 16px 20px;
+}
+
+.page.active{
+  display:block;
+}
+
+.sectionTitle{
+  font-size:24px;
+  font-weight:900;
+  letter-spacing:-1px;
+  margin-bottom:5px;
+}
+
+.sectionSubtitle{
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:18px;
+}
+
+/* =========================
+   HOME
+========================= */
+
+.heroCard{
+  background:#111827;
+  color:#fff;
+  border-radius:24px;
+  padding:24px;
+  margin-bottom:22px;
+  position:relative;
+  overflow:hidden;
+}
+
+.heroCard::after{
+  content:"";
+  position:absolute;
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  background:rgba(245,158,11,.18);
+  right:-70px;
+  top:-70px;
+}
+
+.heroCard h1{
+  font-size:31px;
+  letter-spacing:-1.5px;
+  margin-bottom:9px;
+  position:relative;
+  z-index:2;
+}
+
+.heroCard p{
+  color:#d1d5db;
+  line-height:1.5;
+  position:relative;
+  z-index:2;
+}
+
+.categoryGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-bottom:25px;
+}
+
+.categoryCard{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px;
+  min-height:120px;
+  box-shadow:0 3px 12px rgba(0,0,0,.04);
+}
+
+.categoryIcon{
+  font-size:31px;
+  margin-bottom:10px;
+}
+
+.categoryCard strong{
+  display:block;
+  margin-bottom:5px;
+}
+
+.categoryCard span{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.3;
+}
+
+/* =========================
+   PRODUCTS
+========================= */
+
+.productGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+.productCard{
+  background:#fff;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid var(--border);
+  box-shadow:0 3px 12px rgba(0,0,0,.04);
+}
+
+.productVisual{
+  height:145px;
+  background:#eef2f7;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:65px;
+  position:relative;
+}
+
+.favoriteBtn{
+  position:absolute;
+  right:8px;
+  top:8px;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:rgba(255,255,255,.92);
+  font-size:18px;
+}
+
+.productInfo{
+  padding:12px;
+}
+
+.productTitle{
+  font-weight:800;
+  font-size:15px;
+  margin-bottom:6px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.productPrice{
+  font-size:19px;
+  font-weight:900;
+  margin-bottom:5px;
+}
+
+.productLocation{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.tradeBadge{
+  display:inline-block;
+  margin-top:7px;
+  padding:4px 7px;
+  border-radius:7px;
+  background:#dcfce7;
+  color:#166534;
+  font-size:10px;
+  font-weight:800;
+}
+
+.emptyState{
+  text-align:center;
+  padding:45px 20px;
+  color:var(--muted);
+}
+
+.emptyIcon{
+  font-size:45px;
+  margin-bottom:10px;
+}
+
+/* =========================
+   SERVICES
+========================= */
+
+.serviceCard{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:12px;
+}
+
+.serviceIcon{
+  font-size:40px;
+  margin-bottom:12px;
+}
+
+.serviceCard h3{
+  margin-bottom:7px;
+}
+
+.serviceCard p{
+  color:var(--muted);
+  line-height:1.4;
+  font-size:14px;
+}
+
+.serviceComing{
+  display:inline-block;
+  margin-top:12px;
+  padding:6px 9px;
+  background:#fef3c7;
+  color:#92400e;
+  border-radius:8px;
+  font-size:11px;
+  font-weight:800;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profileCard{
+  background:#fff;
+  border-radius:20px;
+  border:1px solid var(--border);
+  padding:20px;
+  margin-bottom:14px;
+}
+
+.profileAvatar{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  background:#111827;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
+  font-weight:900;
+  margin-bottom:14px;
+}
+
+.profileName{
+  font-size:23px;
+  font-weight:900;
+}
+
+.profileEmail{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:3px;
+}
+
+.profileActions{
+  display:grid;
+  gap:10px;
+  margin-top:18px;
+}
+
+.profileAction{
+  background:#f3f4f6;
+  padding:15px;
+  border-radius:12px;
+  text-align:left;
+  font-weight:700;
+}
+
+.btnDanger{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+/* =========================
+   BOTTOM NAV
+========================= */
+
+.bottomNav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:70px;
+  background:rgba(255,255,255,.97);
+  backdrop-filter:blur(15px);
+  border-top:1px solid var(--border);
+  z-index:100;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+}
+
+.navBtn{
+  background:none;
+  color:#6b7280;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:3px;
+  font-size:10px;
+  font-weight:700;
+}
+
+.navIcon{
+  font-size:21px;
+}
+
+.navBtn.active{
+  color:#111827;
+}
+
+.navSell{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  background:var(--accent);
+  color:#111827;
+  font-size:27px;
+  margin-top:-20px;
+  box-shadow:0 7px 20px rgba(245,158,11,.35);
+}
+
+/* =========================
+   MODALS
+========================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.58);
+  z-index:500;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+}
+
+.modal.open{
+  display:flex;
+}
+
+.modalContent{
+  width:100%;
+  max-width:620px;
+  max-height:92vh;
+  overflow-y:auto;
+  background:#fff;
+  border-radius:25px 25px 0 0;
+  padding:22px;
+  animation:modalUp .25s ease;
+}
+
+@keyframes modalUp{
+  from{transform:translateY(100%)}
+  to{transform:translateY(0)}
+}
+
+.modalHeader{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+
+.modalHeader h2{
+  font-size:22px;
+}
+
+.closeModal{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:#f3f4f6;
+  font-size:20px;
+}
+
+.modalActions{
+  display:flex;
+  gap:10px;
+  margin-top:20px;
+}
+
+.modalActions .btn{
+  flex:1;
+}
+
+.detailVisual{
+  height:230px;
+  background:#eef2f7;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:100px;
+  margin-bottom:18px;
+}
+
+.detailPrice{
+  font-size:29px;
+  font-weight:900;
+  margin:8px 0;
+}
+
+.detailMeta{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+  margin-bottom:15px;
+}
+
+.detailDescription{
+  line-height:1.55;
+  color:#374151;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+#toast{
+  position:fixed;
+  left:18px;
+  right:18px;
+  bottom:88px;
+  z-index:1000;
+  background:#111827;
+  color:white;
+  padding:14px 16px;
+  border-radius:13px;
+  box-shadow:var(--shadow);
+  transform:translateY(30px);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  font-size:14px;
+}
+
+#toast.show{
+  transform:translateY(0);
+  opacity:1;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(min-width:700px){
+  .productGrid{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .categoryGrid{
+    grid-template-columns:repeat(4,1fr);
+  }
+
+  .page{
+    max-width:1100px;
+    margin:auto;
+  }
+
+  .bottomNav{
+    max-width:700px;
+    left:50%;
+    transform:translateX(-50%);
+    border-radius:20px 20px 0 0;
+  }
+
+  .welcomeActions{
+    max-width:600px;
+    margin:auto;
+  }
+}
 </style>
 </head>
 
 <body>
 
-<!-- 1. TELA DE BOAS-VINDAS / APRESENTAÇÃO DO ECOSSISTEMA (V1 + Futuros) -->
-<section id="welcomePage">
-    <header class="welcome-header">
-        <div class="logo">perto<span>.</span></div>
-    </header>
-    <div class="slides" id="slidesContainer">
-        <div class="slide active">
-            <div class="slide-bg"></div>
-            <div class="slide-content">
-                <div class="slide-icon">🛍️</div>
-                <h1>Compre e Venda Perto (V1).</h1>
-                <p>Encontre produtos novos e usados na sua região de forma simples, rápida e direta pelo chat.</p>
-                <span class="slide-tag">LANÇAMENTO ATUAL</span>
-            </div>
-        </div>
-        <div class="slide">
-            <div class="slide-bg"></div>
-            <div class="slide-content">
-                <div class="slide-icon">⚡</div>
-                <h1>Turbine seus Anúncios.</h1>
-                <p>Destaque seus produtos no topo das buscas e alcance muito mais compradores locais instantaneamente.</p>
-                <span class="slide-tag">MAIS VISIBILIDADE</span>
-            </div>
-        </div>
-        <div class="slide">
-            <div class="slide-bg"></div>
-            <div class="slide-content">
-                <div class="slide-icon">🚀</div>
-                <h1>O Futuro do Ecossistema.</h1>
-                <p>Em breve nas próximas versões: Mão de obra qualificada (V2) e entregas integradas (V3)!</p>
-                <span class="slide-tag">EM BREVE</span>
-            </div>
-        </div>
+<!-- =========================
+     LOADING
+========================= -->
+
+<div id="loadingScreen">
+  <div class="loadingLogo">perto.</div>
+  <div class="loadingDot"></div>
+  <div style="font-size:13px;color:#9ca3af;">Carregando...</div>
+</div>
+
+<!-- =========================
+     WELCOME
+========================= -->
+
+<section id="welcomePage" class="hidden">
+
+  <div class="welcomeSlides">
+
+    <div class="slide active">
+      <div class="slideVisual">
+        <div class="visualIcon">🛍️</div>
+        <div class="visualMini mini1">📍</div>
+        <div class="visualMini mini2">💰</div>
+        <div class="visualMini mini3">🤝</div>
+      </div>
+
+      <div class="slideNumber">01 / 06</div>
+
+      <div class="slideContent">
+        <div class="slideEyebrow">O QUE VOCÊ PRECISA ESTÁ MAIS PERTO</div>
+        <h1>Compre perto.</h1>
+        <p>
+          Encontre produtos anunciados por pessoas da sua região.
+          Mais proximidade, praticidade e oportunidades locais.
+        </p>
+      </div>
     </div>
-    <div class="welcome-bottom">
-        <div class="dots" id="slideDots">
-            <button class="dot active" onclick="currentSlide(0)" type="button"></button>
-            <button class="dot" onclick="currentSlide(1)" type="button"></button>
-            <button class="dot" onclick="currentSlide(2)" type="button"></button>
-        </div>
-        <div class="welcome-actions">
-            <button id="prevSlideBtn" class="btn-secondary" type="button">‹</button>
-            <button id="signupWelcomeBtn" class="btn-primary" type="button">Criar conta</button>
-            <button id="nextSlideBtn" class="btn-secondary" type="button">›</button>
-        </div>
-        <div style="text-align: center; margin-top: 14px;">
-            <button id="loginWelcomeBtn" style="background:none; border:0; color:#94a3b8; font-weight:bold; font-size:14px;" type="button">Já tenho conta / Entrar</button>
-        </div>
+
+
+    <div class="slide">
+      <div class="slideVisual">
+        <div class="visualIcon">💰</div>
+        <div class="visualMini mini1">📦</div>
+        <div class="visualMini mini2">🏠</div>
+        <div class="visualMini mini3">📱</div>
+      </div>
+
+      <div class="slideNumber">02 / 06</div>
+
+      <div class="slideContent">
+        <div class="slideEyebrow">TRANSFORME O QUE VOCÊ TEM EM OPORTUNIDADE</div>
+        <h1>Venda fácil.</h1>
+        <p>
+          Anuncie seus produtos, defina o valor e encontre compradores
+          próximos de você.
+        </p>
+      </div>
     </div>
+
+
+    <div class="slide">
+      <div class="slideVisual">
+        <div class="visualIcon">🛠️</div>
+        <div class="visualMini mini1">🔧</div>
+        <div class="visualMini mini2">💻</div>
+        <div class="visualMini mini3">✂️</div>
+      </div>
+
+      <div class="slideNumber">03 / 06</div>
+
+      <div class="slideContent">
+        <div class="slideEyebrow">EM BREVE</div>
+        <h1>Serviços.</h1>
+        <p>
+          Profissionais poderão oferecer seus serviços e pessoas poderão
+          encontrar quem precisa de trabalho na própria região.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="slide">
+      <div class="slideVisual">
+        <div class="visualIcon">🚚</div>
+        <div class="visualMini mini1">📦</div>
+        <div class="visualMini mini2">📍</div>
+        <div class="visualMini mini3">🛣️</div>
+      </div>
+
+      <div class="slideNumber">04 / 06</div>
+
+      <div class="slideContent">
+        <div class="slideEyebrow">EM DESENVOLVIMENTO · FRETEGO</div>
+        <h1>Entregas.</h1>
+        <p>
+          O ecossistema poderá conectar compras locais a soluções de
+          entrega, aproximando clientes, vendedores e entregadores.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="slide">
+      <div class="slideVisual">
+        <div class="visualIcon">💼</div>
+        <div class="visualMini mini1">🚗</div>
+        <div class="visualMini mini2">💵</div>
+        <div class="visualMini mini3">📦</div>
+      </div>
+
+      <div class="slideNumber">05 / 06</div>
+
+      <div class="slideContent">
+        <div class="slideEyebrow">PRÓXIMO PASSO</div>
+        <h1>Renda extra.</h1>
+        <p>
+          Novas oportunidades para quem quer trabalhar, entregar,
+          prestar serviços ou transformar seus deslocamentos em renda.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="slide">
+      <div class="slideVisual">
+        <div class="visualIcon">🛣️</div>
+        <div class="visualMini mini1">📍</div>
+        <div class="visualMini mini2">🤝</div>
+        <div class="visualMini mini3">🚗</div>
+      </div>
+
+      <div class="slideNumber">06 / 06</div>
+
+      <div class="slideContent">
+        <div class="slideEyebrow">FUTURO DO ECOSSISTEMA</div>
+        <h1>Já vou para lá.</h1>
+        <p>
+          Pessoas que já estão indo para determinado lugar poderão
+          encontrar oportunidades no caminho.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="slideControls">
+    <div class="slideDots" id="slideDots"></div>
+
+    <div style="display:flex;gap:8px;">
+      <button class="slideArrow" id="prevSlide">‹</button>
+      <button class="slideArrow" id="nextSlide">›</button>
+    </div>
+  </div>
+
+  <div class="welcomeActions">
+    <button class="btn btnSecondary" id="btnLoginWelcome">
+      Entrar
+    </button>
+
+    <button class="btn btnPrimary" id="btnSignupWelcome">
+      Criar conta
+    </button>
+  </div>
+
 </section>
 
-<!-- 2. TELA DE AUTENTICAÇÃO -->
+
+<!-- =========================
+     AUTH
+========================= -->
+
 <section id="authPage" class="hidden">
-    <div class="auth-container">
-        <div class="auth-top">
-            <div class="logo">perto<span>.</span></div>
-            <p>Sua plataforma local de comércio</p>
-        </div>
-        <div class="auth-card">
-            <div class="auth-tabs">
-                <button id="loginTabBtn" class="auth-tab active" type="button">Entrar</button>
-                <button id="signupTabBtn" class="auth-tab" type="button">Criar conta</button>
-            </div>
-            
-            <form id="loginForm">
-                <div class="form-group"><label>E-mail</label><input type="email" id="loginEmailInput" required></div>
+
+  <div class="authCard">
+
+    <div class="authLogo">perto.</div>
+
+    <div class="authSubtitle">
+      Compre perto. Venda fácil.
+    </div>
+
+    <div class="authTabs">
+      <button class="authTab active" id="tabLogin">
+        Entrar
+      </button>
+
+      <button class="authTab" id="tabSignup">
+        Criar conta
+      </button>
+    </div>
+
+    <div id="authMessage" class="authMessage"></div>
+
+
+    <!-- LOGIN -->
+
+    <form id="loginForm">
+
+      <div class="formGroup">
+        <label>E-mail</label>
+        <input
+          type="email"
+          id="loginEmail"
+          placeholder="seu@email.com"
+          autocomplete="email"
+          required
+        >
+      </div>
+
+      <div class="formGroup">
+        <label>Senha</label>
+        <input
+          type="password"
+          imail</label><input type="email" id="loginEmailInput" required></div>
                 <div class="form-group"><label>Senha</label><input type="password" id="loginPassInput" required></div>
                 <button class="btn-primary auth-submit" type="submit">ENTRAR NO APP</button>
             </form>
