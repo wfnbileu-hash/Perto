@@ -1,0 +1,3822 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#111827">
+<meta name="description" content="Perto — Compre perto. Venda fácil.">
+<title>Perto — Compre perto. Venda fácil.</title>
+
+<style>
+:root{
+  --primary:#111827;
+  --primary2:#1f2937;
+  --accent:#f59e0b;
+  --accent2:#fbbf24;
+  --green:#16a34a;
+  --red:#dc2626;
+  --blue:#2563eb;
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --text:#111827;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+  --radius:18px;
+  --shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  width:100%;
+  min-height:100%;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+button,
+input,
+textarea,
+select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+  border:0;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* =========================
+   LOADING
+========================= */
+
+#loadingScreen{
+  position:fixed;
+  inset:0;
+  background:#111827;
+  color:white;
+  z-index:99999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:18px;
+}
+
+.loadingLogo{
+  font-size:42px;
+  font-weight:900;
+  letter-spacing:-3px;
+}
+
+.loadingDot{
+  width:12px;
+  height:12px;
+  background:#f59e0b;
+  border-radius:50%;
+  animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+  0%,100%{transform:scale(.7);opacity:.5}
+  50%{transform:scale(1.2);opacity:1}
+}
+
+/* =========================
+   WELCOME
+========================= */
+
+#welcomePage{
+  min-height:100vh;
+  background:#111827;
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+}
+
+.welcomeSlides{
+  position:relative;
+  min-height:100vh;
+}
+
+.slide{
+  position:absolute;
+  inset:0;
+  min-height:100vh;
+  display:none;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:30px 22px 120px;
+  overflow:hidden;
+}
+
+.slide.active{
+  display:flex;
+  animation:slideIn .35s ease;
+}
+
+@keyframes slideIn{
+  from{opacity:0;transform:translateX(15px)}
+  to{opacity:1;transform:translateX(0)}
+}
+
+/* fundos visuais próprios, sem marcas de terceiros */
+
+.slideVisual{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+}
+
+.slideVisual::before{
+  content:"";
+  position:absolute;
+  width:360px;
+  height:360px;
+  border-radius:50%;
+  background:rgba(245,158,11,.20);
+  top:8%;
+  right:-130px;
+}
+
+.slideVisual::after{
+  content:"";
+  position:absolute;
+  width:280px;
+  height:280px;
+  border-radius:50%;
+  background:rgba(37,99,235,.16);
+  bottom:15%;
+  left:-120px;
+}
+
+.visualIcon{
+  position:absolute;
+  top:18%;
+  left:50%;
+  transform:translateX(-50%);
+  width:190px;
+  height:190px;
+  border-radius:45px;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.14);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:92px;
+  backdrop-filter:blur(8px);
+  box-shadow:0 25px 70px rgba(0,0,0,.25);
+}
+
+.visualMini{
+  position:absolute;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(5px);
+  border-radius:18px;
+  padding:15px;
+  font-size:34px;
+}
+
+.mini1{
+  top:35%;
+  left:12%;
+}
+
+.mini2{
+  top:43%;
+  right:10%;
+}
+
+.mini3{
+  top:55%;
+  left:28%;
+}
+
+.slideContent{
+  position:relative;
+  z-index:2;
+  max-width:620px;
+  margin:auto auto 0;
+  width:100%;
+}
+
+.slideEyebrow{
+  color:var(--accent2);
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:1.5px;
+  margin-bottom:12px;
+}
+
+.slide h1{
+  font-size:42px;
+  line-height:1;
+  letter-spacing:-2px;
+  margin-bottom:15px;
+}
+
+.slide p{
+  color:#d1d5db;
+  font-size:17px;
+  line-height:1.5;
+  max-width:500px;
+}
+
+.slideNumber{
+  position:absolute;
+  top:30px;
+  left:22px;
+  z-index:5;
+  font-size:13px;
+  color:#9ca3af;
+}
+
+.slideControls{
+  position:absolute;
+  bottom:28px;
+  left:22px;
+  right:22px;
+  z-index:10;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+}
+
+.slideDots{
+  display:flex;
+  gap:7px;
+}
+
+.slideDot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#6b7280;
+  transition:.2s;
+}
+
+.slideDot.active{
+  width:24px;
+  border-radius:20px;
+  background:var(--accent);
+}
+
+.slideArrow{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  background:rgba(255,255,255,.10);
+  color:white;
+  border:1px solid rgba(255,255,255,.12);
+  font-size:20px;
+}
+
+.welcomeActions{
+  position:absolute;
+  z-index:20;
+  bottom:75px;
+  left:22px;
+  right:22px;
+  display:flex;
+  gap:10px;
+}
+
+.btn{
+  min-height:50px;
+  padding:0 20px;
+  border-radius:14px;
+  font-weight:800;
+  transition:.2s;
+}
+
+.btn:active{
+  transform:scale(.97);
+}
+
+.btnPrimary{
+  background:var(--accent);
+  color:#111827;
+  flex:1;
+}
+
+.btnSecondary{
+  background:rgba(255,255,255,.10);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.15);
+}
+
+/* =========================
+   AUTH
+========================= */
+
+#authPage{
+  min-height:100vh;
+  background:#f4f6f8;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.authCard{
+  width:100%;
+  max-width:460px;
+  background:#fff;
+  border-radius:26px;
+  padding:26px;
+  box-shadow:var(--shadow);
+}
+
+.authLogo{
+  text-align:center;
+  font-size:42px;
+  font-weight:900;
+  letter-spacing:-3px;
+  margin-bottom:5px;
+}
+
+.authSubtitle{
+  text-align:center;
+  color:var(--muted);
+  margin-bottom:25px;
+}
+
+.authTabs{
+  display:flex;
+  background:#f3f4f6;
+  padding:4px;
+  border-radius:12px;
+  margin-bottom:20px;
+}
+
+.authTab{
+  flex:1;
+  height:43px;
+  border-radius:9px;
+  background:transparent;
+  font-weight:700;
+  color:#6b7280;
+}
+
+.authTab.active{
+  background:#fff;
+  color:#111827;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+
+.formGroup{
+  margin-bottom:14px;
+}
+
+.formGroup label{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:6px;
+}
+
+.formGroup input,
+.formGroup textarea,
+.formGroup select{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:13px 14px;
+  outline:none;
+  background:#fff;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus,
+.formGroup select:focus{
+  border-color:var(--accent);
+}
+
+.formGroup textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+.checkboxLine{
+  display:flex;
+  align-items:flex-start;
+  gap:9px;
+  font-size:13px;
+  color:#4b5563;
+  margin:12px 0;
+}
+
+.checkboxLine input{
+  margin-top:3px;
+}
+
+.authMessage{
+  display:none;
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:14px;
+  font-size:13px;
+  line-height:1.4;
+}
+
+.authMessage.error{
+  display:block;
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.authMessage.success{
+  display:block;
+  background:#dcfce7;
+  color:#166534;
+}
+
+.authBack{
+  text-align:center;
+  margin-top:18px;
+}
+
+.authBack button{
+  background:none;
+  color:#6b7280;
+}
+
+/* =========================
+   APP
+========================= */
+
+#appPage{
+  min-height:100vh;
+  padding-bottom:78px;
+}
+
+.appHeader{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+
+.headerTop{
+  height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+}
+
+.appLogo{
+  font-size:30px;
+  font-weight:900;
+  letter-spacing:-2px;
+}
+
+.headerUser{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:#111827;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+}
+
+.searchBox{
+  padding:0 16px 12px;
+}
+
+.searchBox input{
+  width:100%;
+  height:45px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:#f3f4f6;
+  padding:0 15px;
+  outline:none;
+}
+
+.page{
+  display:none;
+  padding:18px 16px 20px;
+}
+
+.page.active{
+  display:block;
+}
+
+.sectionTitle{
+  font-size:24px;
+  font-weight:900;
+  letter-spacing:-1px;
+  margin-bottom:5px;
+}
+
+.sectionSubtitle{
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:18px;
+}
+
+/* =========================
+   HOME
+========================= */
+
+.heroCard{
+  background:#111827;
+  color:#fff;
+  border-radius:24px;
+  padding:24px;
+  margin-bottom:22px;
+  position:relative;
+  overflow:hidden;
+}
+
+.heroCard::after{
+  content:"";
+  position:absolute;
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  background:rgba(245,158,11,.18);
+  right:-70px;
+  top:-70px;
+}
+
+.heroCard h1{
+  font-size:31px;
+  letter-spacing:-1.5px;
+  margin-bottom:9px;
+  position:relative;
+  z-index:2;
+}
+
+.heroCard p{
+  color:#d1d5db;
+  line-height:1.5;
+  position:relative;
+  z-index:2;
+}
+
+.categoryGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-bottom:25px;
+}
+
+.categoryCard{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px;
+  min-height:120px;
+  box-shadow:0 3px 12px rgba(0,0,0,.04);
+}
+
+.categoryIcon{
+  font-size:31px;
+  margin-bottom:10px;
+}
+
+.categoryCard strong{
+  display:block;
+  margin-bottom:5px;
+}
+
+.categoryCard span{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.3;
+}
+
+/* =========================
+   PRODUCTS
+========================= */
+
+.productGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+.productCard{
+  background:#fff;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid var(--border);
+  box-shadow:0 3px 12px rgba(0,0,0,.04);
+}
+
+.productVisual{
+  height:145px;
+  background:#eef2f7;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:65px;
+  position:relative;
+}
+
+.favoriteBtn{
+  position:absolute;
+  right:8px;
+  top:8px;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:rgba(255,255,255,.92);
+  font-size:18px;
+}
+
+.productInfo{
+  padding:12px;
+}
+
+.productTitle{
+  font-weight:800;
+  font-size:15px;
+  margin-bottom:6px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.productPrice{
+  font-size:19px;
+  font-weight:900;
+  margin-bottom:5px;
+}
+
+.productLocation{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.tradeBadge{
+  display:inline-block;
+  margin-top:7px;
+  padding:4px 7px;
+  border-radius:7px;
+  background:#dcfce7;
+  color:#166534;
+  font-size:10px;
+  font-weight:800;
+}
+
+.emptyState{
+  text-align:center;
+  padding:45px 20px;
+  color:var(--muted);
+}
+
+.emptyIcon{
+  font-size:45px;
+  margin-bottom:10px;
+}
+
+/* =========================
+   SERVICES
+========================= */
+
+.serviceCard{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:12px;
+}
+
+.serviceIcon{
+  font-size:40px;
+  margin-bottom:12px;
+}
+
+.serviceCard h3{
+  margin-bottom:7px;
+}
+
+.serviceCard p{
+  color:var(--muted);
+  line-height:1.4;
+  font-size:14px;
+}
+
+.serviceComing{
+  display:inline-block;
+  margin-top:12px;
+  padding:6px 9px;
+  background:#fef3c7;
+  color:#92400e;
+  border-radius:8px;
+  font-size:11px;
+  font-weight:800;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profileCard{
+  background:#fff;
+  border-radius:20px;
+  border:1px solid var(--border);
+  padding:20px;
+  margin-bottom:14px;
+}
+
+.profileAvatar{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  background:#111827;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
+  font-weight:900;
+  margin-bottom:14px;
+}
+
+.profileName{
+  font-size:23px;
+  font-weight:900;
+}
+
+.profileEmail{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:3px;
+}
+
+.profileActions{
+  display:grid;
+  gap:10px;
+  margin-top:18px;
+}
+
+.profileAction{
+  background:#f3f4f6;
+  padding:15px;
+  border-radius:12px;
+  text-align:left;
+  font-weight:700;
+}
+
+.btnDanger{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+/* =========================
+   BOTTOM NAV
+========================= */
+
+.bottomNav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:70px;
+  background:rgba(255,255,255,.97);
+  backdrop-filter:blur(15px);
+  border-top:1px solid var(--border);
+  z-index:100;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+}
+
+.navBtn{
+  background:none;
+  color:#6b7280;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:3px;
+  font-size:10px;
+  font-weight:700;
+}
+
+.navIcon{
+  font-size:21px;
+}
+
+.navBtn.active{
+  color:#111827;
+}
+
+.navSell{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  background:var(--accent);
+  color:#111827;
+  font-size:27px;
+  margin-top:-20px;
+  box-shadow:0 7px 20px rgba(245,158,11,.35);
+}
+
+/* =========================
+   MODALS
+========================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.58);
+  z-index:500;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+}
+
+.modal.open{
+  display:flex;
+}
+
+.modalContent{
+  width:100%;
+  max-width:620px;
+  max-height:92vh;
+  overflow-y:auto;
+  background:#fff;
+  border-radius:25px 25px 0 0;
+  padding:22px;
+  animation:modalUp .25s ease;
+}
+
+@keyframes modalUp{
+  from{transform:translateY(100%)}
+  to{transform:translateY(0)}
+}
+
+.modalHeader{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+
+.modalHeader h2{
+  font-size:22px;
+}
+
+.closeModal{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:#f3f4f6;
+  font-size:20px;
+}
+
+.modalActions{
+  display:flex;
+  gap:10px;
+  margin-top:20px;
+}
+
+.modalActions .btn{
+  flex:1;
+}
+
+.detailVisual{
+  height:230px;
+  background:#eef2f7;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:100px;
+  margin-bottom:18px;
+}
+
+.detailPrice{
+  font-size:29px;
+  font-weight:900;
+  margin:8px 0;
+}
+
+.detailMeta{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+  margin-bottom:15px;
+}
+
+.detailDescription{
+  line-height:1.55;
+  color:#374151;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+#toast{
+  position:fixed;
+  left:18px;
+  right:18px;
+  bottom:88px;
+  z-index:1000;
+  background:#111827;
+  color:white;
+  padding:14px 16px;
+  border-radius:13px;
+  box-shadow:var(--shadow);
+  transform:translateY(30px);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  font-size:14px;
+}
+
+#toast.show{
+  transform:translateY(0);
+  opacity:1;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(min-width:700px){
+  .productGrid{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .categoryGrid{
+    grid-template-columns:repeat(4,1fr);
+  }
+
+  .page{
+    max-width:1100px;
+    margin:auto;
+  }
+
+  .bottomNav{
+    max-width:700px;
+    left:50%;
+    transform:translateX(-50%);
+    border-radius:20px 20px 0 0;
+  }
+
+  .welcomeActions{
+    max-width:600px;
+    margin:auto;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     LOADING
+========================= -->
+
+<div id="loadingScreen">
+  <div class="loadingLogo">perto.</div>
+  <div class="loadingDot"></div>
+  <div style="font-size:13px;color:#9ca3af;">Carregando...</div>
+</div>
+
+<!-- =========================
+     WELCOME
+========================= -->
+
+
+<body>
+<section id="welcomePage" class="hidden">
+
+  <div class="welcomeSlides">
+
+    <div class="slide active">
+      <div class="slideVisual">
+        <div class="visualIcon">🛍️</div>
+        <div class="visualMini mini1">📍</div>
+        <div class="visualMini mini2">💰</div>
+        <div class="visualMini mini3">🤝</div>
+      </div>
+
+      <div class="slideNumber">01 / 06</div>
+
+      <div class="slideContent">
+        <div class="slideEyebrow">O QUE VOCÊ PRECISA ESTÁ MAIS PERTO</div>
+        <h1>Compre perto.</h1>
+        <p>
+          Encontre produtos anunciados por pessoas da sua região.
+          Mais proximidade, praticidade e oportunidades locais.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="slide">
+      <div class="slideVisual">
+        <div class="visualIcon">💰</div>
+        <div class="visualMini mini1">📦</div>
+        <div class="visualMini mini2">🏠</div>
+        <div class="visualMini mini3">📱</div>
+      </div>
+
+      <div class="slideNumber">02 / 06</div>
+
+      <div class="slideContent">
+        <div class="slideEyebrow">TRANSFORME O QUE VOCÊ TEM EM OPORTUNIDADE</div>
+        <h1>Venda fácil.</h1>
+        <p>
+          Anuncie seus produtos, defina o valor e encontre compradores
+          próximos de você.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="slide">
+      <div class="slideVisual">
+        <div class="visualIcon">🛠️</div>
+        <div class="visualMini mini1">🔧</div>
+        <div class="visualMini mini2">💻</div>
+        <div class="visualMini mini3">✂️</div>
+      </div>
+
+      <div class="slideNumber">03 / 06</div>
+
+      <div class="slideContent">
+        <div class="slideEyebrow">EM BREVE</div>
+        <h1>Serviços.</h1>
+        <p>
+          Profissionais poderão oferecer seus serviços e pessoas poderão
+          encontrar quem precisa de trabalho na própria região.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="slide">
+      <div class="slideVisual">
+        <div class="visualIcon">🚚</div>
+        <div class="visualMini mini1">📦</div>
+        <div class="visualMini mini2">📍</div>
+        <div class="visualMini mini3">🛣️</div>
+      </div>
+
+      <div class="slideNumber">04 / 06</div>
+
+      <div class="slideContent">
+        <div class="slideEyebrow">EM DESENVOLVIMENTO · FRETEGO</div>
+        <h1>Entregas.</h1>
+        <p>
+          O ecossistema poderá conectar compras locais a soluções de
+          entrega, aproximando clientes, vendedores e entregadores.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="slide">
+      <div class="slideVisual">
+        <div class="visualIcon">💼</div>
+        <div class="visualMini mini1">🚗</div>
+        <div class="visualMini mini2">💵</div>
+        <div class="visualMini mini3">📦</div>
+      </div>
+
+      <div class="slideNumber">05 / 06</div>
+
+      <div class="slideContent">
+        <div class="slideEyebrow">PRÓXIMO PASSO</div>
+        <h1>Renda extra.</h1>
+        <p>
+          Novas oportunidades para quem quer trabalhar, entregar,
+          prestar serviços ou transformar seus deslocamentos em renda.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="slide">
+      <div class="slideVisual">
+        <div class="visualIcon">🛣️</div>
+        <div class="visualMini mini1">📍</div>
+        <div class="visualMini mini2">🤝</div>
+        <div class="visualMini mini3">🚗</div>
+      </div>
+
+      <div class="slideNumber">06 / 06</div>
+
+      <div class="slideContent">
+        <div class="slideEyebrow">FUTURO DO ECOSSISTEMA</div>
+        <h1>Já vou para lá.</h1>
+        <p>
+          Pessoas que já estão indo para determinado lugar poderão
+          encontrar oportunidades no caminho.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="slideControls">
+    <div class="slideDots" id="slideDots"></div>
+
+    <div style="display:flex;gap:8px;">
+      <button class="slideArrow" id="prevSlide">‹</button>
+      <button class="slideArrow" id="nextSlide">›</button>
+    </div>
+  </div>
+
+  <div class="welcomeActions">
+    <button class="btn btnSecondary" id="btnLoginWelcome">
+      Entrar
+    </button>
+
+    <button class="btn btnPrimary" id="btnSignupWelcome">
+      Criar conta
+    </button>
+  </div>
+
+</section>
+
+
+<!-- =========================
+     AUTH
+========================= -->
+
+<section id="authPage" class="hidden">
+
+  <div class="authCard">
+
+    <div class="authLogo">perto.</div>
+
+    <div class="authSubtitle">
+      Compre perto. Venda fácil.
+    </div>
+
+    <div class="authTabs">
+      <button class="authTab active" id="tabLogin">
+        Entrar
+      </button>
+
+      <button class="authTab" id="tabSignup">
+        Criar conta
+      </button>
+    </div>
+
+    <div id="authMessage" class="authMessage"></div>
+
+
+    <!-- LOGIN -->
+
+    <form id="loginForm">
+
+      <div class="formGroup">
+        <label>E-mail</label>
+        <input
+          type="email"
+          id="loginEmail"
+          placeholder="seu@email.com"
+          autocomplete="email"
+          required
+        >
+      </div>
+
+      <div class="formGroup">
+        <label>Senha</label>
+        <input
+          type="password"
+          id="loginPassword"
+          placeholder="Sua senha"
+          autocomplete="current-password"
+          required
+        >
+      </div>
+
+      <button class="btn btnPrimary" style="width:100%;" type="submit">
+        Entrar no Perto
+      </button>
+
+    </form>
+
+
+    <!-- CADASTRO -->
+
+    <form id="signupForm" class="hidden">
+
+      <div class="formGroup">
+        <label>Nome</label>
+        <input
+          type="text"
+          id="signupName"
+          placeholder="Seu nome"
+          autocomplete="name"
+          required
+        >
+      </div>
+
+      <div class="formGroup">
+        <label>Telefone</label>
+        <input
+          type="tel"
+          id="signupPhone"
+          placeholder="(00) 00000-0000"
+          autocomplete="tel"
+        >
+      </div>
+
+      <div class="formGroup">
+        <label>Cidade</label>
+        <input
+          type="text"
+          id="signupCity"
+          placeholder="Sua cidade"
+          required
+        >
+      </div>
+
+      <div class="formGroup">
+        <label>E-mail</label>
+        <input
+          type="email"
+          id="signupEmail"
+          placeholder="seu@email.com"
+          autocomplete="email"
+          required
+        >
+      </div>
+
+      <div class="formGroup">
+        <label>Senha</label>
+        <input
+          type="password"
+          id="signupPassword"
+          placeholder="Mínimo de 6 caracteres"
+          autocomplete="new-password"
+          minlength="6"
+          required
+        >
+      </div>
+
+      <div class="checkboxLine">
+        <input type="checkbox" id="termsCheck" required>
+        <label for="termsCheck">
+          Concordo com os termos de uso e responsabilidade do Perto.
+        </label>
+      </div>
+
+      <button class="btn btnPrimary" style="width:100%;" type="submit">
+        Criar minha conta
+      </button>
+
+    </form>
+
+
+    <div class="authBack">
+      <button id="backToWelcome">
+        ← Voltar para apresentação
+      </button>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     APP
+========================= -->
+
+<section id="appPage" class="hidden">
+
+  <header class="appHeader">
+
+    <div class="headerTop">
+      <div class="appLogo">perto.</div>
+
+      <button class="headerUser" id="headerUser">
+        ?
+      </button>
+    </div>
+
+    <div class="searchBox">
+      <input
+        type="search"
+        id="globalSearch"
+        placeholder="O que você procura?"
+      >
+    </div>
+
+  </header>
+
+
+  <!-- HOME -->
+
+  <main id="homePage" class="page active">
+
+    <div class="heroCard">
+
+      <h1>O que você procura está perto.</h1>
+
+      <p>
+        Encontre produtos, oportunidades e, em breve,
+        serviços e soluções para o seu dia a dia.
+      </p>
+
+    </div>
+
+
+    <div class="sectionTitle">
+      Explore
+    </div>
+
+    <div class="sectionSubtitle">
+      Tudo começa perto de você.
+    </div>
+
+
+    <div class="categoryGrid">
+
+      <button class="categoryCard" data-category="Todos">
+        <div class="categoryIcon">🛍️</div>
+        <strong>Produtos</strong>
+        <span>Compre de pessoas da sua região.</span>
+      </button>
+
+      <button class="categoryCard" id="homeServices">
+        <div class="categoryIcon">🛠️</div>
+        <strong>Serviços</strong>
+        <span>Encontre profissionais perto.</span>
+      </button>
+
+      <button class="categoryCard" id="homeDelivery">
+        <div class="categoryIcon">🚚</div>
+        <strong>Entregas</strong>
+        <span>Integração futura com o FreteGo.</span>
+      </button>
+
+      <button class="categoryCard" id="homeIncome">
+        <div class="categoryIcon">💼</div>
+        <strong>Renda extra</strong>
+        <span>Novas oportunidades em breve.</span>
+      </button>
+
+    </div>
+
+
+    <div class="sectionTitle">
+      Produtos perto de você
+    </div>
+
+    <div class="sectionSubtitle">
+      Veja algumas oportunidades.
+    </div>
+
+    <div id="homeProducts" class="productGrid"></div>
+
+  </main>
+
+
+  <!-- BUSCAR -->
+
+  <main id="searchPage" class="page">
+
+    <div class="sectionTitle">
+      Buscar
+    </div>
+
+    <div class="sectionSubtitle">
+      Encontre produtos anunciados no Perto.
+    </div>
+
+    <div id="searchProducts" class="productGrid"></div>
+
+  </main>
+
+
+  <!-- FAVORITOS -->
+
+  <main id="favoritesPage" class="page">
+
+    <div class="sectionTitle">
+      Favoritos
+    </div>
+
+    <div class="sectionSubtitle">
+      Produtos que você guardou.
+    </div>
+
+    <div id="favoriteProducts" class="productGrid"></div>
+
+  </main>
+
+
+  <!-- SERVIÇOS -->
+
+  <main id="servicesPage" class="page">
+
+    <div class="sectionTitle">
+      Serviços
+    </div>
+
+    <div class="sectionSubtitle">
+      Uma nova forma de encontrar e oferecer serviços perto.
+    </div>
+
+
+    <div class="serviceCard">
+      <div class="serviceIcon">🔧</div>
+      <h3>Profissionais locais</h3>
+      <p>
+        Eletricistas, encanadores, montadores, técnicos,
+        manutenção e muitos outros serviços.
+      </p>
+      <span class="serviceComing">EM BREVE</span>
+    </div>
+
+
+    <div class="serviceCard">
+      <div class="serviceIcon">💻</div>
+      <h3>Serviços digitais</h3>
+      <p>
+        Pessoas poderão oferecer seus conhecimentos,
+        trabalhos digitais e serviços especializados.
+      </p>
+      <span class="serviceComing">EM BREVE</span>
+    </div>
+
+
+    <div class="serviceCard">
+      <div class="serviceIcon">🚗</div>
+      <h3>Serviços com veículo</h3>
+      <p>
+        Pequenos transportes, entregas e outras oportunidades
+        relacionadas à mobilidade.
+      </p>
+      <span class="serviceComing">EM BREVE</span>
+    </div>
+
+
+    <button
+      class="btn btnPrimary"
+      id="serviceInterestBtn"
+      style="width:100%;margin-top:8px;"
+    >
+      Quero ser avisado
+    </button>
+
+  </main>
+
+
+  <!-- PERFIL -->
+
+  <main id="profilePage" class="page">
+
+    <div class="profileCard">
+
+      <div class="profileAvatar" id="profileAvatar">
+        ?
+      </div>
+
+      <div class="profileName" id="profileName">
+        Usuário
+      </div>
+
+      <div class="profileEmail" id="profileEmail">
+        -
+      </div>
+
+      <div class="profileEmail" id="profileCity">
+        -
+      </div>
+
+      <div class="profileActions">
+
+        <button class="profileAction" id="myAdsBtn">
+          📦 Meus anúncios
+        </button>
+
+        <button class="profileAction" id="profileFavoritesBtn">
+          ❤️ Meus favoritos
+        </button>
+
+        <button class="profileAction" id="logoutBtn">
+          🚪 Sair da conta
+        </button>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- BOTTOM NAV -->
+
+  <nav class="bottomNav">
+
+    <button class="navBtn active" data-page="homePage">
+      <span class="navIcon">⌂</span>
+      Início
+    </button>
+
+    <button class="navBtn" data-page="searchPage">
+      <span class="navIcon">⌕</span>
+      Buscar
+    </button>
+
+    <button class="navBtn" id="sellNavBtn">
+      <span class="navSell">+</span>
+      Vender
+    </button>
+
+    <button class="navBtn" data-page="servicesPage">
+      <span class="navIcon">🛠</span>
+      Serviços
+    </button>
+
+    <button class="navBtn" data-page="profilePage">
+      <span class="navIcon">●</span>
+      Perfil
+    </button>
+
+  </nav>
+
+</section>
+
+
+<!-- =========================
+     SELL MODAL
+========================= -->
+
+<div class="modal" id="sellModal">
+
+  <div class="modalContent">
+
+    <div class="modalHeader">
+      <h2>Vender no Perto</h2>
+
+      <button class="closeModal" data-close="sellModal">
+        ×
+      </button>
+    </div>
+
+    <form id="sellForm">
+
+      <div class="formGroup">
+        <label>O que você está vendendo?</label>
+        <input
+          type="text"
+          id="productName"
+          placeholder="Ex.: Bicicleta aro 29"
+          required
+        >
+      </div>
+
+      <div class="formGroup">
+        <label>Valor</label>
+        <input
+          type="number"
+          id="productPrice"
+          placeholder="Ex.: 850"
+          min="1"
+          step="0.01"
+          required
+        >
+      </div>
+
+      <div class="formGroup">
+        <label>Categoria</label>
+
+        <select id="productCategory" required>
+          <option value="">Selecione</option>
+          <option>Eletrônicos</option>
+          <option>Casa</option>
+          <option>Ferramentas</option>
+          <option>Veículos</option>
+          <option>Bicicletas</option>
+          <option>Roupas</option>
+          <option>Móveis</option>
+          <option>Esportes</option>
+          <option>Outros</option>
+        </select>
+
+      </div>
+
+      <div class="formGroup">
+        <label>Cidade / região</label>
+
+        <input
+          type="text"
+          id="productLocation"
+          placeholder="Ex.: Cerquilho - SP"
+          required
+        >
+      </div>
+
+      <div class="formGroup">
+        <label>Descrição</label>
+
+        <textarea
+          id="productDescription"
+          placeholder="Conte um pouco sobre o produto..."
+          required
+        ></textarea>
+      </div>
+
+      <div class="formGroup">
+        <label>Imagem</label>
+
+        <input
+          type="url"
+          id="productImage"
+          placeholder="Opcional: URL da imagem"
+        >
+
+        <small style="color:#6b7280;">
+          Nesta V1 a imagem pode ser adicionada por URL.
+        </small>
+      </div>
+
+      <div class="checkboxLine">
+
+        <input
+          type="checkbox"
+          id="acceptsTrade"
+        >
+
+        <label for="acceptsTrade">
+          Aceito trocas
+        </label>
+
+      </div>
+
+      <div class="modalActions">
+
+        <button
+          type="button"
+          class="btn btnSecondary"
+          data-close="sellModal"
+          style="background:#f3f4f6;color:#111827;"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          class="btn btnPrimary"
+        >
+          Publicar anúncio
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     PRODUCT MODAL
+========================= -->
+
+<div class="modal" id="productModal">
+
+  <div class="modalContent">
+
+    <div class="modalHeader">
+
+      <h2>Produto</h2>
+
+      <button class="closeModal" data-close="productModal">
+        ×
+      </button>
+
+    </div>
+
+    <div id="productDetails"></div>
+
+  </div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div id="toast"></div>
+
+
+<!-- =====================================================
+     FIREBASE + APLICAÇÃO
+===================================================== -->
+
+<script type="module">
+
+/* =====================================================
+   FIREBASE
+===================================================== */
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  addDoc,
+  collection,
+  query,
+  orderBy,
+  getDocs,
+  where,
+  serverTimestamp,
+  deleteDoc
+}
+from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+
+/* =====================================================
+   CONFIGURAÇÃO DO SEU FIREBASE
+===================================================== */
+
+const firebaseConfig = {
+
+  apiKey:
+    "AIzaSyCchIeHvUILX9fiv99C6q_OQ2AiMIzVkwI",
+
+  authDomain:
+    "perto-65099.firebaseapp.com",
+
+  projectId:
+    "perto-65099",
+
+  storageBucket:
+    "perto-65099.firebasestorage.app",
+
+  messagingSenderId:
+    "659764302578",
+
+  appId:
+    "1:659764302578:web:3ea6f8fd718bf1842bf66b"
+
+};
+
+
+/* =====================================================
+   INICIALIZAÇÃO
+===================================================== */
+
+let firebaseApp;
+let auth;
+let db;
+
+try{
+
+  firebaseApp = initializeApp(firebaseConfig);
+
+  auth = getAuth(firebaseApp);
+
+  db = getFirestore(firebaseApp);
+
+}catch(error){
+
+  console.error("Erro ao iniciar Firebase:",error);
+
+}
+
+
+/* =====================================================
+   ESTADO
+===================================================== */
+
+let currentUser = null;
+
+let currentUserData = null;
+
+let allProducts = [];
+
+let favorites = new Set();
+
+let currentSlide = 0;
+
+let slideTimer;
+
+
+/* =====================================================
+   ELEMENTOS
+===================================================== */
+
+const loadingScreen =
+  document.getElementById("loadingScreen");
+
+const welcomePage =
+  document.getElementById("welcomePage");
+
+const authPage =
+  document.getElementById("authPage");
+
+const appPage =
+  document.getElementById("appPage");
+
+
+/* =====================================================
+   UTILITÁRIOS
+===================================================== */
+
+function showToast(message){
+
+  const toast =
+    document.getElementById("toast");
+
+  toast.textContent = message;
+
+  toast.classList.add("show");
+
+  setTimeout(()=>{
+    toast.classList.remove("show");
+  },3000);
+
+}
+
+
+function showPage(element){
+
+  welcomePage.classList.add("hidden");
+
+  authPage.classList.add("hidden");
+
+  appPage.classList.add("hidden");
+
+  element.classList.remove("hidden");
+
+}
+
+
+function escapeHTML(value){
+
+  if(value === undefined || value === null)
+    return "";
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+
+function formatMoney(value){
+
+  return Number(value || 0)
+    .toLocaleString("pt-BR",{
+      style:"currency",
+      currency:"BRL"
+    });
+
+}
+
+
+function getInitials(name){
+
+  if(!name)
+    return "?";
+
+  const parts =
+    name.trim().split(/\s+/);
+
+  return (
+    (parts[0]?.[0] || "") +
+    (parts.length > 1 ? parts[parts.length-1][0] : "")
+  ).toUpperCase();
+
+}
+
+
+/* =====================================================
+   AUTENTICAÇÃO
+===================================================== */
+
+function showAuth(mode="login"){
+
+  showPage(authPage);
+
+  setAuthMode(mode);
+
+}
+
+
+function setAuthMode(mode){
+
+  const loginForm =
+    document.getElementById("loginForm");
+
+  const signupForm =
+    document.getElementById("signupForm");
+
+  const tabLogin =
+    document.getElementById("tabLogin");
+
+  const tabSignup =
+    document.getElementById("tabSignup");
+
+  clearAuthMessage();
+
+  if(mode === "signup"){
+
+    loginForm.classList.add("hidden");
+
+    signupForm.classList.remove("hidden");
+
+    tabLogin.classList.remove("active");
+
+    tabSignup.classList.add("active");
+
+  }else{
+
+    signupForm.classList.add("hidden");
+
+    loginForm.classList.remove("hidden");
+
+    tabSignup.classList.remove("active");
+
+    tabLogin.classList.add("active");
+
+  }
+
+}
+
+
+function showAuthMessage(message,type="error"){
+
+  const box =
+    document.getElementById("authMessage");
+
+  box.textContent = message;
+
+  box.className =
+    "authMessage " + type;
+
+}
+
+
+function clearAuthMessage(){
+
+  const box =
+    document.getElementById("authMessage");
+
+  box.textContent = "";
+
+  box.className = "authMessage";
+
+}
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+async function loginUser(event){
+
+  event.preventDefault();
+
+  clearAuthMessage();
+
+  const email =
+    document.getElementById("loginEmail").value.trim();
+
+  const password =
+    document.getElementById("loginPassword").value;
+
+  if(!email || !password){
+
+    showAuthMessage(
+      "Preencha e-mail e senha."
+    );
+
+    return;
+  }
+
+  try{
+
+    await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    showToast("Login realizado!");
+
+  }catch(error){
+
+    console.error(error);
+
+    let message =
+      "Não foi possível entrar.";
+
+    if(error.code === "auth/invalid-credential"){
+
+      message =
+        "E-mail ou senha incorretos.";
+
+    }
+
+    if(error.code === "auth/user-not-found"){
+
+      message =
+        "Não encontramos uma conta com esse e-mail.";
+
+    }
+
+    if(error.code === "auth/wrong-password"){
+
+      message =
+        "Senha incorreta.";
+
+    }
+
+    if(error.code === "auth/too-many-requests"){
+
+      message =
+        "Muitas tentativas. Aguarde um pouco.";
+
+    }
+
+    showAuthMessage(message);
+
+  }
+
+}
+
+
+/* =====================================================
+   CADASTRO
+===================================================== */
+
+async function signupUser(event){
+
+  event.preventDefault();
+
+  clearAuthMessage();
+
+  const name =
+    document.getElementById("signupName").value.trim();
+
+  const phone =
+    document.getElementById("signupPhone").value.trim();
+
+  const city =
+    document.getElementById("signupCity").value.trim();
+
+  const email =
+    document.getElementById("signupEmail").value.trim();
+
+  const password =
+    document.getElementById("signupPassword").value;
+
+  const terms =
+    document.getElementById("termsCheck").checked;
+
+
+  if(!name || !city || !email || !password){
+
+    showAuthMessage(
+      "Preencha todos os campos obrigatórios."
+    );
+
+    return;
+  }
+
+
+  if(password.length < 6){
+
+    showAuthMessage(
+      "A senha precisa ter pelo menos 6 caracteres."
+    );
+
+    return;
+  }
+
+
+  if(!terms){
+
+    showAuthMessage(
+      "Você precisa aceitar os termos para continuar."
+    );
+
+    return;
+  }
+
+
+  try{
+
+    const credential =
+      await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+    const uid =
+      credential.user.uid;
+
+
+    await setDoc(
+      doc(db,"usuarios",uid),
+      {
+        uid,
+        nome:name,
+        telefone:phone,
+        cidade:city,
+        email,
+        criadoEm:serverTimestamp(),
+        atualizadoEm:serverTimestamp()
+      }
+    );
+
+
+    showToast("Conta criada com sucesso!");
+
+  }catch(error){
+
+    console.error(error);
+
+    let message =
+      "Não foi possível criar sua conta.";
+
+    if(error.code === "auth/email-already-in-use"){
+
+      message =
+        "Esse e-mail já possui uma conta.";
+
+    }
+
+    if(error.code === "auth/invalid-email"){
+
+      message =
+        "Digite um e-mail válido.";
+
+    }
+
+    if(error.code === "auth/weak-password"){
+
+      message =
+        "A senha escolhida é muito fraca.";
+
+    }
+
+    showAuthMessage(message);
+
+  }
+
+}
+
+
+/* =====================================================
+   USUÁRIO
+===================================================== */
+
+async function loadUserData(user){
+
+  if(!user)
+    return null;
+
+  try{
+
+    const userRef =
+      doc(db,"usuarios",user.uid);
+
+    const snapshot =
+      await getDoc(userRef);
+
+    if(snapshot.exists()){
+
+      return snapshot.data();
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "Erro carregando usuário:",
+      error
+    );
+
+  }
+
+  return {
+
+    uid:user.uid,
+
+    nome:user.displayName || "Usuário",
+
+    email:user.email || "",
+
+    cidade:""
+
+  };
+
+}
+
+
+/* =====================================================
+   ENTRAR NO APP
+===================================================== */
+
+async function enterApp(user){
+
+  currentUser = user;
+
+  currentUserData =
+    await loadUserData(user);
+
+
+  updateProfile();
+
+
+  showPage(appPage);
+
+
+  await loadFavorites();
+
+  await loadProducts();
+
+  showInternalPage("homePage");
+
+}
+
+
+/* =====================================================
+   SAIR
+===================================================== */
+
+async function logoutUser(){
+
+  try{
+
+    await signOut(auth);
+
+    currentUser = null;
+
+    currentUserData = null;
+
+    allProducts = [];
+
+    favorites.clear();
+
+    showPage(welcomePage);
+
+    showToast("Você saiu da conta.");
+
+  }catch(error){
+
+    console.error(error);
+
+    showToast(
+      "Não foi possível sair."
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   FIREBASE OBSERVER
+===================================================== */
+
+if(auth){
+
+  onAuthStateChanged(
+    auth,
+    async user => {
+
+      try{
+
+        if(user){
+
+          await enterApp(user);
+
+        }else{
+
+          showPage(welcomePage);
+
+        }
+
+      }catch(error){
+
+        console.error(
+          "Erro ao restaurar sessão:",
+          error
+        );
+
+        showPage(welcomePage);
+
+      }finally{
+
+        loadingScreen.classList.add("hidden");
+
+      }
+
+    }
+  );
+
+}else{
+
+  loadingScreen.classList.add("hidden");
+
+  showPage(welcomePage);
+
+  showToast(
+    "Erro ao conectar ao Firebase."
+  );
+
+}
+
+
+/* =====================================================
+   SLIDES
+===================================================== */
+
+const slides =
+  document.querySelectorAll(".slide");
+
+const slideDots =
+  document.getElementById("slideDots");
+
+
+slides.forEach((_,index)=>{
+
+  const dot =
+    document.createElement("div");
+
+  dot.className =
+    "slideDot" +
+    (index === 0 ? " active" : "");
+
+  dot.addEventListener(
+    "click",
+    ()=>{
+      currentSlide = index;
+      renderSlide();
+      restartSlideTimer();
+    }
+  );
+
+  slideDots.appendChild(dot);
+
+});
+
+
+function renderSlide(){
+
+  slides.forEach((slide,index)=>{
+
+    slide.classList.toggle(
+      "active",
+      index === currentSlide
+    );
+
+  });
+
+
+  document
+    .querySelectorAll(".slideDot")
+    .forEach((dot,index)=>{
+
+      dot.classList.toggle(
+        "active",
+        index === currentSlide
+      );
+
+    });
+
+}
+
+
+function nextSlide(){
+
+  currentSlide =
+    (currentSlide + 1) % slides.length;
+
+  renderSlide();
+
+}
+
+
+function previousSlide(){
+
+  currentSlide =
+    (currentSlide - 1 + slides.length)
+    % slides.length;
+
+  renderSlide();
+
+}
+
+
+function restartSlideTimer(){
+
+  clearInterval(slideTimer);
+
+  slideTimer =
+    setInterval(nextSlide,7000);
+
+}
+
+
+document
+  .getElementById("nextSlide")
+  .addEventListener(
+    "click",
+    ()=>{
+      nextSlide();
+      restartSlideTimer();
+    }
+  );
+
+
+document
+  .getElementById("prevSlide")
+  .addEventListener(
+    "click",
+    ()=>{
+      previousSlide();
+      restartSlideTimer();
+    }
+  );
+
+
+restartSlideTimer();
+
+
+/* =====================================================
+   AUTH BUTTONS
+===================================================== */
+
+document
+  .getElementById("btnLoginWelcome")
+  .addEventListener(
+    "click",
+    ()=>{
+      showAuth("login");
+    }
+  );
+
+
+document
+  .getElementById("btnSignupWelcome")
+  .addEventListener(
+    "click",
+    ()=>{
+      showAuth("signup");
+    }
+  );
+
+
+document
+  .getElementById("tabLogin")
+  .addEventListener(
+    "click",
+    ()=>{
+      setAuthMode("login");
+    }
+  );
+
+
+document
+  .getElementById("tabSignup")
+  .addEventListener(
+    "click",
+    ()=>{
+      setAuthMode("signup");
+    }
+  );
+
+
+document
+  .getElementById("backToWelcome")
+  .addEventListener(
+    "click",
+    ()=>{
+      showPage(welcomePage);
+    }
+  );
+
+
+document
+  .getElementById("loginForm")
+  .addEventListener(
+    "submit",
+    loginUser
+  );
+
+
+document
+  .getElementById("signupForm")
+  .addEventListener(
+    "submit",
+    signupUser
+  );
+
+
+/* =====================================================
+   NAVEGAÇÃO INTERNA
+===================================================== */
+
+function showInternalPage(pageId){
+
+  document
+    .querySelectorAll(".page")
+    .forEach(page=>{
+
+      page.classList.remove("active");
+
+    });
+
+
+  const target =
+    document.getElementById(pageId);
+
+  if(target)
+    target.classList.add("active");
+
+
+  document
+    .querySelectorAll(".navBtn[data-page]")
+    .forEach(btn=>{
+
+      btn.classList.toggle(
+        "active",
+        btn.dataset.page === pageId
+      );
+
+    });
+
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+document
+  .querySelectorAll(".navBtn[data-page]")
+  .forEach(button=>{
+
+    button.addEventListener(
+      "click",
+      ()=>{
+
+        showInternalPage(
+          button.dataset.page
+        );
+
+      }
+    );
+
+  });
+
+
+/* =====================================================
+   CARREGAR PRODUTOS
+===================================================== */
+
+async function loadProducts(){
+
+  if(!db)
+    return;
+
+  try{
+
+    const productsRef =
+      collection(db,"produtos");
+
+    const productsQuery =
+      query(
+        productsRef,
+        orderBy("criadoEm","desc")
+      );
+
+    const snapshot =
+      await getDocs(productsQuery);
+
+    allProducts = [];
+
+    snapshot.forEach(item=>{
+
+      allProducts.push({
+
+        id:item.id,
+
+        ...item.data()
+
+      });
+
+    });
+
+  }catch(error){
+
+    console.error(
+      "Erro carregando produtos:",
+      error
+    );
+
+    /*
+      Se a coleção estiver vazia ou as regras ainda
+      não estiverem configuradas, o app continua vivo.
+    */
+
+    allProducts = [];
+
+  }
+
+
+  renderHomeProducts();
+
+  renderSearchProducts();
+
+}
+
+
+/* =====================================================
+   ÍCONE DO PRODUTO
+===================================================== */
+
+function productEmoji(category){
+
+  const map = {
+
+    "Eletrônicos":"📱",
+
+    "Casa":"🏠",
+
+    "Ferramentas":"🔧",
+
+    "Veículos":"🚗",
+
+    "Bicicletas":"🚲",
+
+    "Roupas":"👕",
+
+    "Móveis":"🪑",
+
+    "Esportes":"⚽",
+
+    "Outros":"📦"
+
+  };
+
+  return map[category] || "📦";
+
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
+function createProductCard(product){
+
+  const isFavorite =
+    favorites.has(product.id);
+
+
+  const visual =
+    product.imagem
+      ? `<img src="${escapeHTML(product.imagem)}"
+              alt=""
+              style="width:100%;height:100%;object-fit:cover;"
+              onerror="this.style.display='none';this.parentElement.innerHTML='📦';">`
+      : productEmoji(product.categoria);
+
+
+  const card =
+    document.createElement("div");
+
+  card.className =
+    "productCard";
+
+
+  card.innerHTML = `
+
+    <div class="productVisual">
+
+      ${visual}
+
+      <button
+        class="favoriteBtn"
+        data-favorite="${product.id}"
+      >
+        ${isFavorite ? "❤️" : "♡"}
+      </button>
+
+    </div>
+
+    <div class="productInfo">
+
+      <div class="productTitle">
+        ${escapeHTML(product.nome)}
+      </div>
+
+      <div class="productPrice">
+        ${formatMoney(product.preco)}
+      </div>
+
+      <div class="productLocation">
+        📍 ${escapeHTML(product.localizacao || "Região não informada")}
+      </div>
+
+      ${
+        product.aceitaTroca
+        ?
+        `<span class="tradeBadge">
+          ACEITA TROCA
+        </span>`
+        :
+        ""
+      }
+
+    </div>
+
+  `;
+
+
+  card.addEventListener(
+    "click",
+    event=>{
+
+      if(
+        event.target.closest(
+          ".favoriteBtn"
+        )
+      )
+        return;
+
+      openProduct(product);
+
+    }
+  );
+
+
+  const favoriteButton =
+    card.querySelector(
+      ".favoriteBtn"
+    );
+
+
+  favoriteButton.addEventListener(
+    "click",
+    event=>{
+
+      event.stopPropagation();
+
+      toggleFavorite(product.id);
+
+    }
+  );
+
+
+  return card;
+
+}
+
+
+/* =====================================================
+   RENDER HOME
+===================================================== */
+
+function renderHomeProducts(){
+
+  const container =
+    document.getElementById("homeProducts");
+
+  container.innerHTML = "";
+
+
+  if(!allProducts.length){
+
+    container.innerHTML = `
+
+      <div class="emptyState"
+           style="grid-column:1/-1;">
+
+        <div class="emptyIcon">📦</div>
+
+        <strong>Ainda não há anúncios.</strong>
+
+        <div style="margin-top:5px;">
+          Seja o primeiro a vender no Perto.
+        </div>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  allProducts
+    .slice(0,10)
+    .forEach(product=>{
+
+      container.appendChild(
+        createProductCard(product)
+      );
+
+    });
+
+}
+
+
+/* =====================================================
+   RENDER BUSCA
+===================================================== */
+
+function renderSearchProducts(term=""){
+
+  const container =
+    document.getElementById(
+      "searchProducts"
+    );
+
+  container.innerHTML = "";
+
+
+  const normalized =
+    term
+      .trim()
+      .toLowerCase();
+
+
+  const filtered =
+    allProducts.filter(product=>{
+
+      if(!normalized)
+        return true;
+
+      const text = (
+
+        (product.nome || "") +
+        " " +
+        (product.categoria || "") +
+        " " +
+        (product.localizacao || "") +
+        " " +
+        (product.descricao || "")
+
+      ).toLowerCase();
+
+
+      return text.includes(normalized);
+
+    });
+
+
+  if(!filtered.length){
+
+    container.innerHTML = `
+
+      <div class="emptyState"
+           style="grid-column:1/-1;">
+
+        <div class="emptyIcon">🔎</div>
+
+        <strong>Nenhum produto encontrado.</strong>
+
+        <div style="margin-top:5px;">
+          Tente buscar outro termo.
+        </div>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  filtered.forEach(product=>{
+
+    container.appendChild(
+      createProductCard(product)
+    );
+
+  });
+
+}
+
+
+/* =====================================================
+   BUSCA GLOBAL
+===================================================== */
+
+document
+  .getElementById("globalSearch")
+  .addEventListener(
+    "input",
+    event=>{
+
+      const term =
+        event.target.value;
+
+      showInternalPage("searchPage");
+
+      renderSearchProducts(term);
+
+    }
+  );
+
+
+/* =====================================================
+   FAVORITOS
+===================================================== */
+
+async function loadFavorites(){
+
+  favorites.clear();
+
+  if(!currentUser)
+    return;
+
+
+  try{
+
+    const favoritesRef =
+      collection(
+        db,
+        "favoritos"
+      );
+
+
+    const q =
+      query(
+        favoritesRef,
+        where(
+          "usuarioId",
+          "==",
+          currentUser.uid
+        )
+      );
+
+
+    const snapshot =
+      await getDocs(q);
+
+
+    snapshot.forEach(item=>{
+
+      const data =
+        item.data();
+
+      if(data.produtoId)
+        favorites.add(
+          data.produtoId
+        );
+
+    });
+
+  }catch(error){
+
+    console.error(
+      "Erro carregando favoritos:",
+      error
+    );
+
+  }
+
+}
+
+
+async function toggleFavorite(productId){
+
+  if(!currentUser){
+
+    showAuth("login");
+
+    return;
+
+  }
+
+
+  try{
+
+    const favoriteId =
+      currentUser.uid +
+      "_" +
+      productId;
+
+
+    const ref =
+      doc(
+        db,
+        "favoritos",
+        favoriteId
+      );
+
+
+    if(favorites.has(productId)){
+
+      await deleteDoc(ref);
+
+      favorites.delete(productId);
+
+      showToast(
+        "Removido dos favoritos."
+      );
+
+    }else{
+
+      await setDoc(
+        ref,
+        {
+          usuarioId:currentUser.uid,
+          produtoId:productId,
+          criadoEm:serverTimestamp()
+        }
+      );
+
+      favorites.add(productId);
+
+      showToast(
+        "Adicionado aos favoritos."
+      );
+
+    }
+
+
+    renderHomeProducts();
+
+    renderSearchProducts(
+      document
+        .getElementById("globalSearch")
+        .value
+    );
+
+    renderFavorites();
+
+  }catch(error){
+
+    console.error(error);
+
+    showToast(
+      "Não foi possível atualizar o favorito."
+    );
+
+  }
+
+}
+
+
+function renderFavorites(){
+
+  const container =
+    document.getElementById(
+      "favoriteProducts"
+    );
+
+  container.innerHTML = "";
+
+
+  const products =
+    allProducts.filter(
+      product =>
+        favorites.has(product.id)
+    );
+
+
+  if(!products.length){
+
+    container.innerHTML = `
+
+      <div class="emptyState"
+           style="grid-column:1/-1;">
+
+        <div class="emptyIcon">❤️</div>
+
+        <strong>Você ainda não favoritou nada.</strong>
+
+        <div style="margin-top:5px;">
+          Toque no coração dos produtos que gostar.
+        </div>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  products.forEach(product=>{
+
+    container.appendChild(
+      createProductCard(product)
+    );
+
+  });
+
+}
+
+
+/* =====================================================
+   ABRIR PRODUTO
+===================================================== */
+
+function openProduct(product){
+
+  const modal =
+    document.getElementById(
+      "productModal"
+    );
+
+  const details =
+    document.getElementById(
+      "productDetails"
+    );
+
+
+  const visual =
+    product.imagem
+      ?
+      `<img src="${escapeHTML(product.imagem)}"
+            style="width:100%;height:100%;object-fit:cover;border-radius:18px;"
+            onerror="this.style.display='none';">`
+      :
+      productEmoji(product.categoria);
+
+
+  details.innerHTML = `
+
+    <div class="detailVisual">
+      ${visual}
+    </div>
+
+    <h2>
+      ${escapeHTML(product.nome)}
+    </h2>
+
+    <div class="detailPrice">
+      ${formatMoney(product.preco)}
+    </div>
+
+    <div class="detailMeta">
+
+      📍 ${escapeHTML(product.localizacao || "")}
+
+      <br>
+
+      Categoria:
+      ${escapeHTML(product.categoria || "Outros")}
+
+      ${
+        product.aceitaTroca
+        ?
+        "<br>🔄 Aceita trocas"
+        :
+        ""
+      }
+
+    </div>
+
+    <div class="detailDescription">
+
+      ${escapeHTML(product.descricao || "")}
+
+    </div>
+
+    <div class="modalActions">
+
+      <button
+        class="btn btnPrimary"
+        id="contactSellerBtn"
+      >
+        Tenho interesse
+      </button>
+
+    </div>
+
+  `;
+
+
+  modal.classList.add("open");
+
+
+  document
+    .getElementById(
+      "contactSellerBtn"
+    )
+    ?.addEventListener(
+      "click",
+      ()=>{
+
+        showToast(
+          "O contato direto será liberado na próxima etapa."
+        );
+
+      }
+    );
+
+}
+
+
+/* =====================================================
+   PUBLICAR PRODUTO
+===================================================== */
+
+function validatePrice(
+  price,
+  category
+){
+
+  if(price <= 0)
+    return false;
+
+
+  const limits = {
+
+    "Eletrônicos":[20,15000],
+
+    "Casa":[10,20000],
+
+    "Ferramentas":[10,10000],
+
+    "Veículos":[500,200000],
+
+    "Bicicletas":[50,20000],
+
+    "Roupas":[5,5000],
+
+    "Móveis":[20,15000],
+
+    "Esportes":[10,10000],
+
+    "Outros":[1,100000]
+
+  };
+
+
+  const range =
+    limits[category] ||
+    limits["Outros"];
+
+
+  return (
+    price >= range[0] &&
+    price <= range[1]
+  );
+
+}
+
+
+async function publishProduct(event){
+
+  event.preventDefault();
+
+  const form = document.getElementById("sellForm");
+  const submitButton = form?.querySelector('button[type="submit"]');
+  const originalText = submitButton?.textContent || "Publicar anúncio";
+
+  if(!currentUser){
+    showToast("Faça login para anunciar.");
+    return;
+  }
+
+  if(!db){
+    showToast("Banco de dados não conectado. Recarregue a página.");
+    console.error("Firestore (db) não foi inicializado.");
+    return;
+  }
+
+  const name = document.getElementById("productName").value.trim();
+  const price = Number(document.getElementById("productPrice").value);
+  const category = document.getElementById("productCategory").value;
+  const location = document.getElementById("productLocation").value.trim();
+  const description = document.getElementById("productDescription").value.trim();
+  const image = document.getElementById("productImage").value.trim();
+  const acceptsTrade = document.getElementById("acceptsTrade").checked;
+
+  if(!name || !price || !category || !location || !description){
+    showToast("Preencha todos os campos obrigatórios.");
+    return;
+  }
+
+  if(!validatePrice(price,category)){
+    const confirmed = confirm(
+      "O valor informado parece fora da faixa comum para essa categoria. Deseja publicar mesmo assim?"
+    );
+    if(!confirmed) return;
+  }
+
+  try{
+    if(submitButton){
+      submitButton.disabled = true;
+      submitButton.textContent = "Publicando...";
+      submitButton.style.opacity = ".7";
+    }
+
+    const productData = {
+      nome:name,
+      preco:price,
+      categoria:category,
+      localizacao:location,
+      descricao:description,
+      imagem:image || "",
+      aceitaTroca:acceptsTrade,
+      vendedorId:currentUser.uid,
+      vendedorNome:currentUserData?.nome || currentUser.email || "Usuário",
+      criadoEm:serverTimestamp(),
+      ativo:true
+    };
+
+    // Evita ficar preso indefinidamente caso a rede/regras do Firestore não respondam.
+    const writePromise = addDoc(collection(db,"produtos"), productData);
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("TIMEOUT_FIRESTORE")), 15000)
+    );
+
+    await Promise.race([writePromise, timeoutPromise]);
+
+    form.reset();
+    closeModal("sellModal");
+    showToast("Anúncio publicado com sucesso!");
+
+    await loadProducts();
+    showInternalPage("homePage");
+
+  }catch(error){
+    console.error("Erro publicando produto:", error);
+
+    let message = "Não foi possível publicar o anúncio.";
+
+    if(error?.message === "TIMEOUT_FIRESTORE"){
+      message = "O Firebase demorou para responder. Verifique a internet e as regras do Firestore.";
+    }else if(error?.code === "permission-denied"){
+      message = "O Firebase recusou a publicação. Verifique as regras do Firestore para a coleção produtos.";
+    }else if(error?.code === "unavailable"){
+      message = "Firebase indisponível no momento. Tente novamente.";
+    }
+
+    showToast(message);
+
+  }finally{
+    if(submitButton){
+      submitButton.disabled = false;
+      submitButton.textContent = originalText;
+      submitButton.style.opacity = "1";
+    }
+  }
+}
+
+
+/* =====================================================
+   MEUS ANÚNCIOS
+===================================================== */
+
+async function showMyAds(){
+
+  if(!currentUser)
+    return;
+
+
+  try{
+
+    const q =
+      query(
+        collection(db,"produtos"),
+        where(
+          "vendedorId",
+          "==",
+          currentUser.uid
+        )
+      );
+
+
+    const snapshot =
+      await getDocs(q);
+
+
+    const myProducts = [];
+
+
+    snapshot.forEach(item=>{
+
+      myProducts.push({
+
+        id:item.id,
+        ...item.data()
+
+      });
+
+    });
+
+
+    const container =
+      document.getElementById(
+        "homeProducts"
+      );
+
+
+    container.innerHTML = "";
+
+
+    if(!myProducts.length){
+
+      container.innerHTML = `
+
+        <div class="emptyState"
+             style="grid-column:1/-1;">
+
+          <div class="emptyIcon">📦</div>
+
+          <strong>Você ainda não possui anúncios.</strong>
+
+          <div style="margin-top:10px;">
+            Publique seu primeiro produto.
+          </div>
+
+        </div>
+
+      `;
+
+    }else{
+
+      myProducts.forEach(product=>{
+
+        container.appendChild(
+          createProductCard(product)
+        );
+
+      });
+
+    }
+
+
+    showInternalPage("homePage");
+
+
+  }catch(error){
+
+    console.error(error);
+
+    showToast(
+      "Não foi possível carregar seus anúncios."
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   PERFIL
+===================================================== */
+
+function updateProfile(){
+
+  if(!currentUser)
+    return;
+
+
+  const name =
+    currentUserData?.nome ||
+    currentUser.email ||
+    "Usuário";
+
+
+  document
+    .getElementById("profileName")
+    .textContent = name;
+
+
+  document
+    .getElementById("profileEmail")
+    .textContent =
+      currentUser.email || "";
+
+
+  document
+    .getElementById("profileCity")
+    .textContent =
+      currentUserData?.cidade
+        ? "📍 " + currentUserData.cidade
+        : "";
+
+
+  document
+    .getElementById("profileAvatar")
+    .textContent =
+      getInitials(name);
+
+
+  document
+    .getElementById("headerUser")
+    .textContent =
+      getInitials(name);
+
+}
+
+
+/* =====================================================
+   SERVIÇOS
+===================================================== */
+
+async function registerServiceInterest(){
+
+  if(!currentUser){
+
+    showAuth("login");
+
+    return;
+
+  }
+
+
+  try{
+
+    await setDoc(
+      doc(
+        db,
+        "servicos",
+        currentUser.uid
+      ),
+      {
+
+        usuarioId:currentUser.uid,
+
+        nome:
+          currentUserData?.nome ||
+          currentUser.email,
+
+        email:
+          currentUser.email,
+
+        cidade:
+          currentUserData?.cidade || "",
+
+        interesse:true,
+
+        atualizadoEm:
+          serverTimestamp()
+
+      },
+      {
+        merge:true
+      }
+    );
+
+
+    showToast(
+      "Pronto! Avisaremos quando os serviços forem liberados."
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    showToast(
+      "Não foi possível registrar seu interesse."
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   MODAIS
+===================================================== */
+
+function openModal(id){
+
+  document
+    .getElementById(id)
+    .classList.add("open");
+
+}
+
+
+function closeModal(id){
+
+  document
+    .getElementById(id)
+    .classList.remove("open");
+
+}
+
+
+document
+  .querySelectorAll("[data-close]")
+  .forEach(button=>{
+
+    button.addEventListener(
+      "click",
+      ()=>{
+
+        closeModal(
+          button.dataset.close
+        );
+
+      }
+    );
+
+  });
+
+
+document
+  .querySelectorAll(".modal")
+  .forEach(modal=>{
+
+    modal.addEventListener(
+      "click",
+      event=>{
+
+        if(event.target === modal){
+
+          modal.classList.remove("open");
+
+        }
+
+      }
+    );
+
+  });
+
+
+/* =====================================================
+   VENDER
+===================================================== */
+
+document
+  .getElementById("sellNavBtn")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      if(!currentUser){
+
+        showAuth("login");
+
+        return;
+
+      }
+
+      openModal("sellModal");
+
+    }
+  );
+
+
+document
+  .getElementById("sellForm")
+  .addEventListener(
+    "submit",
+    publishProduct
+  );
+
+
+/* =====================================================
+   HOME BUTTONS
+===================================================== */
+
+document
+  .getElementById("homeServices")
+  .addEventListener(
+    "click",
+    ()=>{
+      showInternalPage("servicesPage");
+    }
+  );
+
+
+document
+  .getElementById("homeDelivery")
+  .addEventListener(
+    "click",
+    ()=>{
+      showToast(
+        "Entregas serão integradas ao FreteGo."
+      );
+    }
+  );
+
+
+document
+  .getElementById("homeIncome")
+  .addEventListener(
+    "click",
+    ()=>{
+      showToast(
+        "O módulo de renda extra está no roadmap."
+      );
+    }
+  );
+
+
+/* =====================================================
+   PERFIL
+===================================================== */
+
+document
+  .getElementById("headerUser")
+  .addEventListener(
+    "click",
+    ()=>{
+      showInternalPage("profilePage");
+    }
+  );
+
+
+document
+  .getElementById("logoutBtn")
+  .addEventListener(
+    "click",
+    logoutUser
+  );
+
+
+document
+  .getElementById("myAdsBtn")
+  .addEventListener(
+    "click",
+    showMyAds
+  );
+
+
+document
+  .getElementById("profileFavoritesBtn")
+  .addEventListener(
+    "click",
+    ()=>{
+      renderFavorites();
+      showInternalPage("favoritesPage");
+    }
+  );
+
+
+/* =====================================================
+   SERVIÇOS
+===================================================== */
+
+document
+  .getElementById("serviceInterestBtn")
+  .addEventListener(
+    "click",
+    registerServiceInterest
+  );
+
+
+/* =====================================================
+   INICIALIZAÇÃO DE FAVORITOS
+===================================================== */
+
+renderFavorites();
+
+
+/* =====================================================
+   FINAL
+===================================================== */
+
+console.log(
+  "Perto inicializado — Firebase conectado."
+);
+
+</script>
+
+</body>
+</html>
