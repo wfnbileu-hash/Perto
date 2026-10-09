@@ -130,8 +130,6 @@ button{
   to{opacity:1;transform:translateX(0)}
 }
 
-/* fundos visuais próprios, sem marcas de terceiros */
-
 .slideVisual{
   position:absolute;
   inset:0;
@@ -671,6 +669,351 @@ button{
 .tradeBadge{
   display:inline-block;
   margin-top:7px;
+  padding:4px 7px;
+  border-radius:7px;
+  background:#dcfce7;
+  color:#166534;
+  font-size:10px;
+  font-weight:800;
+}
+
+.emptyState{
+  text-align:center;
+  padding:45px 20px;
+  color:var(--muted);
+}
+
+.emptyIcon{
+  font-size:45px;
+  margin-bottom:10px;
+}
+
+/* =========================
+   SERVICES
+========================= */
+
+.serviceCard{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:12px;
+}
+
+.serviceIcon{
+  font-size:40px;
+  margin-bottom:12px;
+}
+
+.serviceCard h3{
+  margin-bottom:7px;
+}
+
+.serviceCard p{
+  color:var(--muted);
+  line-height:1.4;
+  font-size:14px;
+}
+
+.serviceComing{
+  display:inline-block;
+  margin-top:12px;
+  padding:6px 9px;
+  background:#fef3c7;
+  color:#92400e;
+  border-radius:8px;
+  font-size:11px;
+  font-weight:800;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profileCard{
+  background:#fff;
+  border-radius:20px;
+  border:1px solid var(--border);
+  padding:20px;
+  margin-bottom:14px;
+}
+
+.profileAvatar{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  background:#111827;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
+  font-weight:900;
+  margin-bottom:14px;
+}
+
+.profileName{
+  font-size:23px;
+  font-weight:900;
+}
+
+.profileEmail{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:3px;
+}
+
+.profileActions{
+  display:grid;
+  gap:10px;
+  margin-top:18px;
+}
+
+.profileAction{
+  background:#f3f4f6;
+  padding:15px;
+  border-radius:12px;
+  text-align:left;
+  font-weight:700;
+}
+
+.btnDanger{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+/* =========================
+   BOTTOM NAV
+========================= */
+
+.bottomNav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:70px;
+  background:rgba(255,255,255,.97);
+  backdrop-filter:blur(15px);
+  border-top:1px solid var(--border);
+  z-index:100;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+}
+
+.navBtn{
+  background:none;
+  color:#6b7280;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:3px;
+  font-size:10px;
+  font-weight:700;
+}
+
+.navIcon{
+  font-size:21px;
+}
+
+.navBtn.active{
+  color:#111827;
+}
+
+.navSell{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  background:var(--accent);
+  color:#111827;
+  font-size:27px;
+  margin-top:-20px;
+  box-shadow:0 7px 20px rgba(245,158,11,.35);
+}
+
+/* =========================
+   MODALS
+========================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.58);
+  z-index:500;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+}
+
+.modal.open{
+  display:flex;
+}
+
+.modalContent{
+  width:100%;
+  max-width:620px;
+  max-height:92vh;
+  overflow-y:auto;
+  background:#fff;
+  border-radius:25px 25px 0 0;
+  padding:22px;
+  animation:modalUp .25s ease;
+}
+
+@keyframes modalUp{
+  from{transform:translateY(100%)}
+  to{transform:translateY(0)}
+}
+
+.modalHeader{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+
+.modalHeader h2{
+  font-size:22px;
+}
+
+.closeModal{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:#f3f4f6;
+  font-size:20px;
+}
+
+.modalActions{
+  display:flex;
+  gap:10px;
+  margin-top:20px;
+}
+
+.modalActions .btn{
+  flex:1;
+}
+
+.detailVisual{
+  height:230px;
+  background:#eef2f7;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:100px;
+  margin-bottom:18px;
+}
+
+.detailPrice{
+  font-size:29px;
+  font-weight:900;
+  margin:8px 0;
+}
+
+.detailMeta{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+  margin-bottom:15px;
+}
+
+.detailDescription{
+  line-height:1.55;
+  color:#374151;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+#toast{
+  position:fixed;
+  left:18px;
+  right:18px;
+  bottom:88px;
+  z-index:1000;
+  background:#111827;
+  color:white;
+  padding:14px 16px;
+  border-radius:13px;
+  box-shadow:var(--shadow);
+  transform:translateY(30px);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  font-size:14px;
+}
+
+#toast.show{
+  transform:translateY(0);
+  opacity:1;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(min-width:700px){
+  .productGrid{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .categoryGrid{
+    grid-template-columns:repeat(4,1fr);
+  }
+
+  .page{
+    max-width:1100px;
+    margin:auto;
+  }
+
+  .bottomNav{
+    max-width:700px;
+    left:50%;
+    transform:translateX(-50%);
+    border-radius:20px 20px 0 0;
+  }
+
+  .welcomeActions{
+    max-width:600px;
+    margin:auto;
+  }
+}
+
+</style>
+</head>
+<body>
+<div id="loadingScreen"><div class="loadingLogo">perto.</div><div class="loadingDot"></div><div style="font-size:13px;color:#9ca3af;">Carregando...</div></div>
+
+<section id="welcomePage">
+  <div class="welcomeSlides">
+    <div class="slide active"><div class="slideVisual"><div class="visualIcon">🛍️</div><div class="visualMini mini1">📦</div><div class="visualMini mini2">💰</div><div class="visualMini mini3">📍</div></div><div class="slideNumber">01</div><div class="slideContent"><div class="slideEyebrow">COMPRE PERTO</div><h1>O que você procura pode estar perto de você.</h1><p>Encontre produtos e oportunidades na sua região, sem complicação.</p></div></div>
+    <div class="slide"><div class="slideVisual"><div class="visualIcon">🚀</div><div class="visualMini mini1">📸</div><div class="visualMini mini2">⚡</div><div class="visualMini mini3">💬</div></div><div class="slideNumber">02</div><div class="slideContent"><div class="slideEyebrow">VENDA FÁCIL</div><h1>Publique, converse e negocie.</h1><p>Coloque seus produtos à venda com fotos da sua galeria e fale diretamente com interessados.</p></div></div>
+    <div class="slide"><div class="slideVisual"><div class="visualIcon">🤝</div><div class="visualMini mini1">🏷️</div><div class="visualMini mini2">❤️</div><div class="visualMini mini3">📲</div></div><div class="slideNumber">03</div><div class="slideContent"><div class="slideEyebrow">FEITO PARA PERTO</div><h1>Negócios locais, de um jeito simples.</h1><p>Crie sua conta gratuitamente e comece a comprar ou vender.</p></div></div>
+  </div>
+  <div id="slideDots" class="slideDots" style="position:absolute;left:22px;bottom:35px;z-index:12;"></div>
+  <div class="slideControls"><div></div><div style="display:flex;gap:8px"><button class="slideArrow" id="prevSlide">‹</button><button class="slideArrow" id="nextSlide">›</button></div></div>
+  <div class="welcomeActions"><button class="btn btnSecondary" id="btnLoginWelcome">Entrar</button><button class="btn btnPrimary" id="btnSignupWelcome">Criar conta</button></div>
+</section>
+
+<section id="authPage" class="hidden">
+  <div class="authCard">
+    <div class="authLogo">perto.</div><div class="authSubtitle">Compre perto. Venda fácil.</div>
+    <div class="authTabs"><button class="authTab active" id="tabLogin">Entrar</button><button class="authTab" id="tabSignup">Criar conta</button></div>
+    <div id="authMessage" class="authMessage"></div>
+    <form id="loginForm"><div class="formGroup"><label for="loginEmail">E-mail</label><input id="loginEmail" type="email" autocomplete="email" required></div><div class="formGroup"><label for="loginPassword">Senha</label><input id="loginPassword" type="password" autocomplete="current-password" required></div><button class="btn btnPrimary" style="width:100%" type="submit">Entrar</button></form>
+    <form id="signupForm" class="hidden"><div class="formGroup"><label for="signupName">Nome *</label><input id="signupName" required></div><div class="formGroup"><label for="signupPhone">Telefone</label><input id="signupPhone" type="tel"></div><div class="formGroup"><label for="signupCity">Cidade *</label><input id="signupCity" required></div><div class="formGroup"><label for="signupEmail">E-mail *</label><input id="signupEmail" type="email" required></div><div class="formGroup"><label for="signupPassword">Senha *</label><input id="signupPassword" type="password" minlength="6" required></div><label class="checkboxLine"><input id="termsCheck" type="checkbox"><span>Li e aceito os termos de uso e as regras do Perto.</span></label><button class="btn btnPrimary" style="width:100%" type="submit">Criar minha conta</button></form>
+    <div class="authBack"><button id="backToWelcome">← Voltar</button></div>
+  </div>
+</section>
+
+<section id="appPage" class="hidden">
+  <header class="appHeader"><div class="headerTop"><div class="appLogo">perto.</div><button id="headerUser" class="headerUser">?</button></div><div class="searchBox"><input id="globalSearch" placeholder="🔎 O que você está procurando?"></div></header>
+  <main>
+    <section id="homePage" class="page active"><div class="heroCard"><h1>Compre perto.<br>Venda fácil.</h1><p>Produtos, oportunidades e negócios na sua região.</p></div><div class="categoryGrid"><button class="categoryCard" id="homeServices"><div class="categoryIcon">🛠️</div><strong>Serviços</strong><span>Encontre profissionais perto de você.</span></button><button class="categoryCard" id="homeDelivery"><div class="categoryIcon">🚚</div><strong>Entregas</strong><span>Conecte produtos a entregas locais.</span></button><button class="categoryCard" id="homeIncome"><div class="categoryIcon">💰</div><strong>Renda extra</strong><span>Novas oportunidades na sua região.</span></button><button class="categoryCard" id="homeMyAds"><div class="categoryIcon">📦</div><strong>Meus anúncios</strong><span>Gerencie o que você publicou.</span></button></div><div class="sectionTitle">Anúncios perto de você</div><div class="sectionSubtitle">Destaques aparecem primeiro.</div><div id="homeProducts" class="productGrid"></div></section>
+    <section id="searchPage" class="page"><div class="sectionTitle">Resultados</div><div class="sectionSubtitle">Produtos encontrados no Perto.</div><div id="searchProducts" class="productGrid"></div></section>
+    <section id="favoritesPage" class="page"><div class="sectionTitle">Favoritos</div><div class="sectionSubtitle">Seus anúncios salvos.</div><div id="favoriteProducts" class="productGrid"></div></sect
   padding:4px 7px;
   border-radius:7px;
   background:#dcfce7;
