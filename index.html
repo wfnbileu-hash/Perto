@@ -1145,7 +1145,6 @@ async function publishProduct(e){e.preventDefault();if(!currentUser)return showA
   if(editingProductId&&selectedImages.length===0)urls=editingProductImages;
   let data={nome:name,preco:price,categoria:cat,localizacao:loc,descricao:desc,imagens:urls,imagem:urls[0]||"",aceitaTroca:trade,vendedorId:currentUser.uid,vendedorNome:currentUserData?.nome||currentUser.email||"Usuário",atualizadoEm:serverTimestamp(),ativo:oldProduct?oldProduct.ativo!==false:true,status:oldProduct?.status||"ativo",turbinado:oldProduct?.turbinado||false};
   if(!editingProductId)data.criadoEm=serverTimestamp();
-  if(boost&&!editingProductId){let until=new Date(Date.now()+24*60*60*1000);data.turbinado=true;data.planoTurbo="basico_teste";data.turbinadoAte=until;data.turbinadoEm=serverTimestamp();data.prioridade=1}
   await setDoc(productRef,data,{merge:!!editingProductId});let wasEditing=!!editingProductId;editingProductId=null;editingProductImages=[];$('sellModal').querySelector('.modalHeader h2').textContent="Vender no Perto";$('sellForm').reset();$('sellForm').querySelector('button[type="submit"]').textContent="Publicar anúncio";selectedImages=[];renderImagePreviews();closeModal("sellModal");toast(wasEditing?"Anúncio atualizado!":(boost?"Anúncio publicado e destacado por 24h!":"Anúncio publicado!"));await loadProducts();if(wasEditing)await showMyAds();else showInternalPage("homePage")
 }catch(err){
   console.error("ERRO AO PUBLICAR ANÚNCIO:",err);
@@ -1169,7 +1168,51 @@ async function deleteProduct(p){if(p.vendedorId!==currentUser?.uid)return toast(
 async function registerServiceInterest(){if(!currentUser)return showAuth("login");try{await setDoc(doc(db,"servicos",currentUser.uid),{usuarioId:currentUser.uid,nome:currentUserData?.nome||currentUser.email,email:currentUser.email,cidade:currentUserData?.cidade||"",interesse:true,atualizadoEm:serverTimestamp()},{merge:true});toast("Pronto! Avisaremos quando os serviços forem liberados.")}catch(e){toast("Não foi possível registrar seu interesse.")}}
 
 async function openBoost(p){if(p.vendedorId!==currentUser?.uid)return toast("Apenas o vendedor pode turbinar este anúncio.");currentOfferProduct=p;$("boostProductName").textContent=p.nome;$("boostModal").classList.add("open")}
-document.querySelectorAll("#boostOptions [data-plan]").forEach(b=>b.onclick=async()=>{let plan=b.dataset.plan,p=currentOfferProduct;if(!p)return;let days=plan==="basico"?1:plan==="destaque"?3:7;try{await updateDoc(doc(db,"produtos",p.id),{turbinado:true,planoTurbo:plan,turbinadoAte:new Date(Date.now()+days*86400000),turbinadoEm:serverTimestamp(),prioridade:1});closeModal("boostModal");toast(`Anúncio turbinado por ${days} dia(s). Pagamento ainda não é cobrado.`);await loadProducts()}catch(e){toast("Não foi possível turbinar o anúncio.")}});
+
+document.querySelectorAll("#boostOptions [data-plan]").forEach(b => {
+  b.onclick = async () => {
+    const plano = b.dataset.plan;
+    const produto = currentOfferProduct;
+
+    if (!produto || !currentUser) {
+      toast("Entre na sua conta para turbinar o anúncio.");
+      return;
+    }
+
+    b.disabled = true;
+
+    try {
+      const idToken = await currentUser.getIdToken();
+
+      const resposta = await fetch("/api/criar-pagamento", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + idToken
+        },
+        body: JSON.stringify({
+          produtoId: produto.id,
+          plano: plano
+        })
+      });
+
+      const resultado = await resposta.json();
+
+      if (!resposta.ok || !resultado.checkout_url) {
+        throw new Error(
+          resultado.erro || "Não foi possível iniciar o pagamento."
+        );
+      }
+
+      window.location.href = resultado.checkout_url;
+    } catch (erro) {
+      console.error("Erro ao iniciar pagamento:", erro);
+      toast(erro.message || "Erro ao iniciar o pagamento.");
+      b.disabled = false;
+    }
+  };
+});
+  
 
 function openModal(id){$(id).classList.add("open")}function closeModal(id){$(id).classList.remove("open")}document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>closeModal(b.dataset.close));document.querySelectorAll(".modal").forEach(m=>m.onclick=e=>{if(e.target===m)closeModal(m.id)});
 $("sellNavBtn").onclick=()=>{if(!currentUser)return showAuth("login");editingProductId=null;editingProductImages=[];$('sellModal').querySelector('.modalHeader h2').textContent="Vender no Perto";$('sellForm').reset();$('sellForm').querySelector('button[type="submit"]').textContent="Publicar anúncio";selectedImages=[];renderImagePreviews();openModal("sellModal")};$("headerUser").onclick=()=>showInternalPage("profilePage");$("logoutBtn").onclick=logout;$("myAdsBtn").onclick=showMyAds;$("homeMyAds").onclick=showMyAds;$("profileFavoritesBtn").onclick=()=>{renderFavorites();showInternalPage("favoritesPage")};$("homeServices").onclick=()=>showInternalPage("servicesPage");$("homeDelivery").onclick=()=>toast("Entregas serão integradas ao FreteGo.");$("homeIncome").onclick=()=>toast("O módulo de renda extra está no roadmap.");$("serviceInterestBtn").onclick=registerServiceInterest;
