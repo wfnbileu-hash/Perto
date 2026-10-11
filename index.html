@@ -1787,6 +1787,141 @@ await loadProducts();
 await showMyAds()}catch(e){console.error(e);
 toast("Não foi possível excluir. Confira as regras do Firestore.")}}
 
+// ==================================================
+// SERVIÇOS: BUSCAR PROFISSIONAIS
+// ==================================================
+
+async function searchProfessionals() {
+  const categoria = $("searchProfessionalCategory").value;
+  const cidade = normalizeText($("searchProfessionalCity").value);
+  const resultados = $("professionalSearchResults");
+  const botao = $("searchProfessionalBtn");
+
+  resultados.replaceChildren();
+
+  const mensagem = document.createElement("p");
+  mensagem.style.cssText = "font-size:13px;color:#64748b;padding:10px 0;";
+  mensagem.textContent = "Buscando profissionais...";
+  resultados.appendChild(mensagem);
+
+  botao.disabled = true;
+
+  try {
+    const consulta = query(
+      collection(db, "profissionais"),
+      where("ativo", "==", true)
+    );
+
+    const snapshot = await getDocs(consulta);
+
+    const profissionais = snapshot.docs
+      .map(documento => ({
+        id: documento.id,
+        ...documento.data()
+      }))
+      .filter(profissional => {
+        const categoriaOK =
+          !categoria || profissional.categoria === categoria;
+
+        const cidadeOK =
+          !cidade ||
+          normalizeText(profissional.cidade).includes(cidade);
+
+        return categoriaOK && cidadeOK;
+      });
+
+    resultados.replaceChildren();
+
+    if (!profissionais.length) {
+      const vazio = document.createElement("p");
+      vazio.style.cssText =
+        "padding:16px 0;color:#64748b;font-size:14px;";
+      vazio.textContent =
+        "Nenhum profissional encontrado. Tente outra categoria ou cidade.";
+
+      resultados.appendChild(vazio);
+      return;
+    }
+
+    profissionais.forEach(profissional => {
+      const card = document.createElement("div");
+
+      card.style.cssText =
+        "background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:14px;margin-bottom:12px;";
+
+      const nome = document.createElement("h4");
+      nome.textContent = profissional.nome || "Profissional";
+      nome.style.cssText = "font-size:16px;margin-bottom:6px;";
+
+      const categoriaTexto = document.createElement("p");
+      categoriaTexto.textContent =
+        profissional.categoria || "Serviço";
+      categoriaTexto.style.cssText =
+        "font-size:13px;font-weight:700;color:#2563eb;margin-bottom:7px;";
+
+      const descricao = document.createElement("p");
+      descricao.textContent =
+        profissional.descricao || "Descrição não informada.";
+      descricao.style.cssText =
+        "font-size:14px;line-height:1.5;margin-bottom:8px;";
+
+      const local = document.createElement("p");
+      local.textContent =
+        "📍 " + (profissional.cidade || "Cidade não informada") +
+        " · " + (profissional.areaAtendimento || "Região não informada");
+      local.style.cssText =
+        "font-size:12px;color:#64748b;margin-bottom:12px;";
+
+      const contato = document.createElement("button");
+      contato.type = "button";
+      contato.className = "btn btnPrimary";
+      contato.style.width = "100%";
+      contato.textContent = "Conversar pelo Perto";
+
+      contato.onclick = async () => {
+        if (!currentUser) {
+          showAuth("login");
+          return;
+        }
+
+        if (profissional.usuarioId === currentUser.uid) {
+          toast("Este é o seu próprio cadastro profissional.");
+          return;
+        }
+
+        await startChat({
+          id: "profissional_" + profissional.usuarioId,
+          nome: "Serviço: " + profissional.nome,
+          preco: 0,
+          vendedorId: profissional.usuarioId
+        });
+
+        $("chatProductInfo").textContent =
+          "Contato profissional pelo chat do Perto";
+      };
+
+      card.append(nome, categoriaTexto, descricao, local, contato);
+      resultados.appendChild(card);
+    });
+
+  } catch (erro) {
+    console.error("Erro ao buscar profissionais:", erro);
+
+    resultados.replaceChildren();
+
+    const falha = document.createElement("p");
+    falha.style.cssText = "color:#dc2626;font-size:14px;";
+    falha.textContent =
+      "Não foi possível carregar os profissionais. Verifique as regras do Firestore e tente novamente.";
+
+    resultados.appendChild(falha);
+
+  } finally {
+    botao.disabled = false;
+  }
+}
+
+$("searchProfessionalBtn").onclick = searchProfessionals;
 
 // ==================================================
 // SERVIÇOS: REGISTRO DE INTERESSE
