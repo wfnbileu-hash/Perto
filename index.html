@@ -2443,12 +2443,15 @@ $("closeProfessionalModal").onclick=fecharCadastroProfissional;
 $("cancelProfessionalModal").onclick=fecharCadastroProfissional;
 $("professionalForm").onsubmit=saveProfessional;
 
-  $("serviceRequestBtn").onclick = () => {
+  
+$("serviceRequestBtn").onclick = () => {
   $("professionalSearchPanel").style.display = "block";
   $("professionalSearchResults").replaceChildren();
   $("searchProfessionalCity").focus();
+};
 
 renderFavorites();
+
 </script>
 </body>
 </html>
