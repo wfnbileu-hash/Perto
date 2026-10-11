@@ -2102,7 +2102,11 @@ $("closeProfessionalModal").onclick=()=>{
   $("professionalModal").style.display="none";
 };
   $("professionalForm").onsubmit=saveProfessional;
-  $("serviceRequestBtn").onclick=()=>registerServiceInterest("cliente");
+  $("serviceRequestBtn").onclick = () => {
+  $("professionalSearchPanel").style.display = "block";
+  $("professionalSearchResults").replaceChildren();
+  $("searchProfessionalCity").focus();
+};
 renderFavorites();
 </script>
 </body>
