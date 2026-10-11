@@ -2228,7 +2228,8 @@ $("serviceProfessionalBtn").onclick=async()=>{
 
   titulo.textContent="Cadastro profissional";
   botao.textContent="Cadastrar profissional";
-
+  currentProfessionalActive=true;
+$("toggleProfessionalBtn").style.display="none";
   try{
     const cadastro=await getDoc(
       doc(db,"profissionais",currentUser.uid)
