@@ -1036,22 +1036,86 @@ button{
     <!-- SERVIÇOS -->
 <section id="servicesPage" class="page">
   <div class="sectionTitle">Serviços</div>
-  <div class="sectionSubtitle">Ofereça seu trabalho ou encontre alguém para ajudar você.</div>
+  <div class="sectionSubtitle">
+    Encontre profissionais da sua região ou ofereça seu trabalho.
+  </div>
 
   <div class="serviceCard">
     <div class="serviceIcon">🧰</div>
     <h3>Sou profissional</h3>
-    <p>Cadastre sua profissão e sua região de atendimento para receber pedidos de clientes próximos.</p>
-    <button id="serviceProfessionalBtn" class="btn btnPrimary" style="width:100%;margin-top:15px">Quero oferecer serviços</button>
+    <p>
+      Cadastre sua profissão e sua região de atendimento
+      para divulgar seu trabalho no Perto.
+    </p>
+    <button id="serviceProfessionalBtn"
+      class="btn btnPrimary"
+      style="width:100%;margin-top:15px">
+      Quero oferecer serviços
+    </button>
   </div>
 
   <div class="serviceCard">
     <div class="serviceIcon">🔎</div>
     <h3>Preciso de um serviço</h3>
-    <p>Conte qual serviço você precisa para encontrar profissionais da categoria e cidade escolhidas.</p>
-    <button id="serviceRequestBtn" class="btn btnPrimary" style="width:100%;margin-top:15px">Encontrar um profissional</button>
+    <p>
+      Pesquise profissionais por categoria e cidade.
+    </p>
+    <button id="serviceRequestBtn"
+      class="btn btnPrimary"
+      style="width:100%;margin-top:15px">
+      Encontrar um profissional
+    </button>
   </div>
-    </section>
+
+  <div id="professionalSearchPanel"
+    class="serviceCard"
+    style="display:none;margin-top:16px">
+
+    <h3>Buscar profissionais</h3>
+    <p>Escolha a categoria e informe a cidade.</p>
+
+    <label for="searchProfessionalCategory"
+      style="display:block;font-weight:600;margin:12px 0 6px">
+      Categoria
+    </label>
+
+    <select id="searchProfessionalCategory"
+      style="width:100%;padding:12px;border:1px solid #dbe2ea;border-radius:12px;background:#fff">
+      <option value="">Todas as categorias</option>
+      <option value="Reparos">Reparos e manutenção</option>
+      <option value="Eletricista">Eletricista</option>
+      <option value="Encanador">Encanador</option>
+      <option value="Pintura">Pintura</option>
+      <option value="Limpeza">Limpeza</option>
+      <option value="Jardinagem">Jardinagem</option>
+      <option value="Construção">Construção</option>
+      <option value="Beleza">Beleza e estética</option>
+      <option value="Tecnologia">Tecnologia e informática</option>
+      <option value="Aulas">Aulas particulares</option>
+      <option value="Outros">Outros serviços</option>
+    </select>
+
+    <label for="searchProfessionalCity"
+      style="display:block;font-weight:600;margin:12px 0 6px">
+      Cidade
+    </label>
+
+    <input id="searchProfessionalCity"
+      type="text"
+      placeholder="Ex.: Tatuí"
+      style="width:100%;padding:12px;border:1px solid #dbe2ea;border-radius:12px">
+
+    <button id="searchProfessionalBtn"
+      class="btn btnPrimary"
+      style="width:100%;margin-top:12px">
+      Buscar
+    </button>
+
+    <div id="professionalSearchResults"
+      style="margin-top:16px"></div>
+  </div>
+</section>
+<!-- FIM DOS SERVIÇOS -->
     
 <!-- CADASTRO DO PROFISSIONAL -->
 <div id="professionalModal" class="modal" style="display:none;">
