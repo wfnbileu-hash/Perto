@@ -2211,15 +2211,51 @@ $("homeServices").onclick=()=>showInternalPage("servicesPage");
 $("homeDelivery").onclick=()=>toast("Entregas serão integradas ao FreteGo.");
 $("homeIncome").onclick=()=>toast("O módulo de renda extra está no roadmap.");
 
-$("serviceProfessionalBtn").onclick=()=>{
+
+$("serviceProfessionalBtn").onclick=async()=>{
   if(!currentUser)return showAuth("login");
 
   selectedProfessionalPhoto=null;
+  $("professionalForm").reset();
   $("professionalPhoto").value="";
   $("professionalPhotoPreview").style.display="none";
   $("professionalPhotoPreviewImage").removeAttribute("src");
 
-  $("professionalModal").style.display="flex";
+  const titulo=$("professionalModal").querySelector("h2");
+  const botao=$("professionalForm").querySelector('button[type="submit"]');
+
+  titulo.textContent="Cadastro profissional";
+  botao.textContent="Cadastrar profissional";
+
+  try{
+    const cadastro=await getDoc(
+      doc(db,"profissionais",currentUser.uid)
+    );
+
+    if(cadastro.exists()){
+      const dados=cadastro.data();
+
+      $("professionalName").value=dados.nome||"";
+      $("professionalCategory").value=dados.categoria||"";
+      $("professionalDescription").value=dados.descricao||"";
+      $("professionalCity").value=dados.cidade||"";
+      $("professionalArea").value=dados.areaAtendimento||"";
+
+      if(dados.fotoURL){
+        $("professionalPhotoPreviewImage").src=dados.fotoURL;
+        $("professionalPhotoPreview").style.display="flex";
+      }
+
+      titulo.textContent="Editar perfil profissional";
+      botao.textContent="Salvar alterações";
+    }
+
+    $("professionalModal").style.display="flex";
+
+  }catch(error){
+    console.error("Erro ao carregar perfil profissional:",error);
+    toast("Não foi possível carregar seu perfil. Tente novamente.");
+  }
 };
 
 const fecharCadastroProfissional=()=>{
