@@ -1733,8 +1733,53 @@ async function registerServiceInterest(tipo="geral"){
   }
 }
 
+// ==================================================
+// SERVIÇOS: SALVAR CADASTRO PROFISSIONAL
+// ==================================================
+async function saveProfessional(e){
+  e.preventDefault();
 
+  if(!currentUser){
+    showAuth("login");
+    return;
+  }
 
+  const nome=$("professionalName").value.trim();
+  const categoria=$("professionalCategory").value;
+  const descricao=$("professionalDescription").value.trim();
+  const cidade=$("professionalCity").value.trim();
+  const areaAtendimento=$("professionalArea").value.trim();
+
+  if(!nome||!categoria||!descricao||!cidade||!areaAtendimento){
+    toast("Preencha todos os campos.");
+    return;
+  }
+
+  try{
+    await setDoc(doc(db,"profissionais",currentUser.uid),{
+      usuarioId:currentUser.uid,
+      nome:nome,
+      categoria:categoria,
+      descricao:descricao,
+      cidade:cidade,
+      areaAtendimento:areaAtendimento,
+      email:currentUser.email||"",
+      precoTipo:"negociavel",
+      contatoTipo:"chat_perto",
+      ativo:true,
+      atualizadoEm:serverTimestamp()
+    },{merge:true});
+
+    $("professionalModal").style.display="none";
+    $("professionalForm").reset();
+
+    toast("Cadastro profissional salvo com sucesso!");
+  }catch(error){
+    console.error("Erro ao salvar profissional:",error);
+    toast("Não foi possível salvar. Confira as regras do Firestore.");
+  }
+  }
+  
 // ==================================================
 // PAGAMENTOS: TURBINAR ANÚNCIO
 // ==================================================
