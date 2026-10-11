@@ -1017,7 +1017,24 @@ button{
     <section id="searchPage" class="page"><div class="sectionTitle">Resultados</div><div class="sectionSubtitle">Pesquise produtos e filtre pela cidade.</div><div style="margin:12px 0 16px"><label for="cityFilter" style="display:block;font-size:13px;font-weight:700;margin-bottom:6px">📍 Filtrar por cidade</label><select id="cityFilter" style="width:100%;padding:13px;border:1px solid #dbe1ea;border-radius:12px;background:#fff;color:#111827"><option value="">Todas as cidades</option><option>Piracicaba</option><option>Cerquilho</option><option>Tietê</option><option>Tatuí</option><option>Boituva</option><option>Iperó</option><option>Porto Feliz</option></select><div style="font-size:11px;color:#6b7280;margin-top:6px">O filtro compara com a cidade informada pelo vendedor no anúncio.</div></div><div id="searchProducts" class="productGrid"></div></section>
     <section id="myAdsPage" class="page"><div class="sectionTitle">Meus anúncios</div><div class="sectionSubtitle">Edite, pause ou marque como vendido.</div><div id="myAdsProducts" class="productGrid"></div></section>
     <section id="favoritesPage" class="page"><div class="sectionTitle">Favoritos</div><div class="sectionSubtitle">Seus anúncios salvos.</div><div id="favoriteProducts" class="productGrid"></div></section>
-    <section id="servicesPage" class="page"><div class="sectionTitle">Serviços</div><div class="sectionSubtitle">O Perto também vai conectar você a profissionais locais.</div><div class="serviceCard"><div class="serviceIcon">🛠️</div><h3>Serviços perto de você</h3><p>Estamos preparando essa área para profissionais anunciarem seus serviços e clientes encontrarem quem está por perto.</p><span class="serviceComing">EM BREVE</span><button id="serviceInterestBtn" class="btn btnPrimary" style="width:100%;margin-top:15px">Quero ser avisado</button></div></section>
+    <section id="servicesPage" class="page">
+  <div class="sectionTitle">Serviços</div>
+  <div class="sectionSubtitle">Ofereça seu trabalho ou encontre alguém para ajudar você.</div>
+
+  <div class="serviceCard">
+    <div class="serviceIcon">🧰</div>
+    <h3>Sou profissional</h3>
+    <p>Cadastre sua profissão e sua região de atendimento para receber pedidos de clientes próximos.</p>
+    <button id="serviceProfessionalBtn" class="btn btnPrimary" style="width:100%;margin-top:15px">Quero oferecer serviços</button>
+  </div>
+
+  <div class="serviceCard">
+    <div class="serviceIcon">🔎</div>
+    <h3>Preciso de um serviço</h3>
+    <p>Conte qual serviço você precisa para encontrar profissionais da categoria e cidade escolhidas.</p>
+    <button id="serviceRequestBtn" class="btn btnPrimary" style="width:100%;margin-top:15px">Encontrar um profissional</button>
+  </div>
+    </section>
     <section id="chatPage" class="page"><div class="sectionTitle">Conversas</div><div class="sectionSubtitle">Negocie diretamente com compradores e vendedores.</div><div id="chatList"></div></section>
     <section id="profilePage" class="page"><div class="sectionTitle">Meu perfil</div><div class="profileCard"><div id="profileAvatar" class="profileAvatar">?</div><div id="profileName" class="profileName">Usuário</div><div id="profileEmail" class="profileEmail"></div><div id="profileCity" class="profileEmail"></div>
 <div class="profileActions"><button class="profileAction" id="editProfileBtn">⚙️ Configurar meus dados</button><button class="profileAction" id="myAdsBtn">📦 Meus anúncios</button>
