@@ -2210,18 +2210,30 @@ $("homeServices").onclick=()=>showInternalPage("servicesPage");
 // ==================================================
 $("homeDelivery").onclick=()=>toast("Entregas serão integradas ao FreteGo.");
 $("homeIncome").onclick=()=>toast("O módulo de renda extra está no roadmap.");
+
 $("serviceProfessionalBtn").onclick=()=>{
   if(!currentUser)return showAuth("login");
+
+  selectedProfessionalPhoto=null;
+  $("professionalPhoto").value="";
+  $("professionalPhotoPreview").style.display="none";
+  $("professionalPhotoPreviewImage").removeAttribute("src");
+
   $("professionalModal").style.display="flex";
 };
 
-$("closeProfessionalModal").onclick=()=>{
+const fecharCadastroProfissional=()=>{
   $("professionalModal").style.display="none";
+  selectedProfessionalPhoto=null;
+  $("professionalPhoto").value="";
+  $("professionalPhotoPreview").style.display="none";
+  $("professionalPhotoPreviewImage").removeAttribute("src");
 };
-  $("cancelProfessionalModal").onclick=()=>{
-  $("professionalModal").style.display="none";
-};
-  $("professionalForm").onsubmit=saveProfessional;
+
+$("closeProfessionalModal").onclick=fecharCadastroProfissional;
+$("cancelProfessionalModal").onclick=fecharCadastroProfissional;
+$("professionalForm").onsubmit=saveProfessional;
+
   $("serviceRequestBtn").onclick = () => {
   $("professionalSearchPanel").style.display = "block";
   $("professionalSearchResults").replaceChildren();
