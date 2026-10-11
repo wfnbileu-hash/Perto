@@ -2231,9 +2231,42 @@ async function searchOpenServiceRequests() {
         "📍 " + (pedido.cidade || "Cidade não informada") +
         (pedido.bairro ? " · " + pedido.bairro : "");
       local.style.cssText =
-        "font-size:12px;color:#64748b;margin:0;";
+        "font-size:12px;color:#64748b;margin:0 0 12px;";
 
-      card.append(titulo, categoriaTexto, descricao, local);
+      const interesse = document.createElement("button");
+      interesse.type = "button";
+      interesse.className = "btn btnPrimary";
+      interesse.style.cssText = "width:100%;margin-top:4px;";
+      interesse.textContent = "💬 Tenho interesse";
+
+      interesse.onclick = async () => {
+        if (!currentUser) {
+          showAuth("login");
+          return;
+        }
+
+        if (pedido.clienteId === currentUser.uid) {
+          toast("Este é o seu próprio pedido.");
+          return;
+        }
+
+        interesse.disabled = true;
+        interesse.textContent = "Abrindo conversa...";
+
+        try {
+          await startChat({
+            id: "pedidoServico_" + pedido.id,
+            nome: "Pedido: " + (pedido.titulo || "Serviço"),
+            preco: 0,
+            vendedorId: pedido.clienteId
+          });
+        } finally {
+          interesse.disabled = false;
+          interesse.textContent = "💬 Tenho interesse";
+        }
+      };
+
+      card.append(titulo, categoriaTexto, descricao, local, interesse);
       resultados.appendChild(card);
     });
 
