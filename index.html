@@ -2237,7 +2237,8 @@ $("toggleProfessionalBtn").style.display="none";
 
     if(cadastro.exists()){
       const dados=cadastro.data();
-
+     
+      $("professionalName").value=dados.nome||"";
       $("professionalName").value=dados.nome||"";
       $("professionalCategory").value=dados.categoria||"";
       $("professionalDescription").value=dados.descricao||"";
