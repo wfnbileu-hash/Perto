@@ -1164,8 +1164,20 @@ $("cityFilter")?.addEventListener("change",()=>renderSearchProducts($("globalSea
 async function loadFavorites(){favorites.clear();if(!currentUser)return;try{let s=await getDocs(query(collection(db,"favoritos"),where("usuarioId","==",currentUser.uid)));s.forEach(d=>{if(d.data().produtoId)favorites.add(d.data().produtoId)})}catch(e){console.error(e)}renderHomeProducts();renderSearchProducts($("globalSearch").value);renderFavorites()}
 async function toggleFavorite(id){if(!currentUser)return showAuth("login");try{let fid=currentUser.uid+"_"+id,r=doc(db,"favoritos",fid);if(favorites.has(id)){await deleteDoc(r);favorites.delete(id);toast("Removido dos favoritos.")}else{await setDoc(r,{usuarioId:currentUser.uid,produtoId:id,criadoEm:serverTimestamp()});favorites.add(id);toast("Adicionado aos favoritos.")}renderHomeProducts();renderSearchProducts($("globalSearch").value);renderFavorites()}catch(e){toast("Não foi possível atualizar o favorito.")}}
 function renderFavorites(){let c=$("favoriteProducts");c.innerHTML="";let list=allProducts.filter(p=>isPublicProduct(p)&&favorites.has(p.id));if(!list.length){c.innerHTML='<div class="emptyState" style="grid-column:1/-1"><div class="emptyIcon">❤️</div><strong>Você ainda não favoritou nada.</strong></div>';return}list.forEach(p=>c.appendChild(createProductCard(p)))}
-function galleryHTML(p){let imgs=p.imagens?.length?p.imagens:(p.imagem?[p.imagem]:[]);if(!imgs.length)return "<div class="detailVisual">${productEmoji(p.categoria)}</div>";
-return "<div class="detailVisual" style="height:270px;overflow-x:auto;display:flex;gap:8px;justify-content:flex-start;padding:0;background:#eef2f7"><img src="${esc(imgs[0])}" style="min-width:100%;height:100%;object-fit:contain;border-radius:18px">${imgs.slice(1).map(x=>"<img src="${esc(x)}" style="min-width:100%;height:100%;object-fit:contain;border-radius:18px">").join("")}</div>";}
+
+function galleryHTML(p){
+  let imgs = p.imagens?.length ? p.imagens : (p.imagem ? [p.imagem] : []);
+
+  if(!imgs.length){
+    return `<div class="detailVisual">${productEmoji(p.categoria)}</div>`;
+  }
+
+  return `<div class="detailVisual" style="height:270px;overflow-x:auto;display:flex;gap:8px;justify-content:flex-start;padding:0;background:#eef2f7">
+    <img src="${esc(imgs[0])}" style="min-width:100%;height:100%;object-fit:contain;border-radius:18px">
+    ${imgs.slice(1).map(x => `<img src="${esc(x)}" style="min-width:100%;height:100%;object-fit:contain;border-radius:18px">`).join("")}
+  </div>`;
+}
+
 function openProduct(p){currentChatProduct=p;let seller=p.vendedorId===currentUser?.uid;$("productDetails").innerHTML=`${galleryHTML(p)}<h2>${esc(p.nome)}</h2><div class="detailPrice">${money(p.preco)}</div><div class="detailMeta">📍 ${esc(p.localizacao||"")}<br>Categoria: ${esc(p.categoria||"Outros")}${p.aceitaTroca?"<br>🔄 Aceita trocas":""}${isBoosted(p)?"<br>⚡ Anúncio turbinado":""}<br>Vendedor: ${esc(p.vendedorNome||"Usuário")}</div><div class="detailDescription">${esc(p.descricao||"")}</div><div class="modalActions">${seller?'<button class="btn" style="background:#fff7ed;color:#92400e" id="boostFromDetail">🚀 Turbinar</button>':'<button class="btn btnPrimary" id="contactSellerBtn">💬 Conversar com vendedor</button><button class="btn" style="background:#fff7ed;color:#92400e" id="offerFromDetail">💰 Fazer oferta</button>'}</div>`;$("productModal").classList.add("open");$("contactSellerBtn")?.addEventListener("click",()=>startChat(p));$("offerFromDetail")?.addEventListener("click",()=>startChat(p,true));$("boostFromDetail")?.addEventListener("click",()=>openBoost(p))}
 
 async function startChat(p,offer=false){if(!currentUser)return showAuth("login");if(p.vendedorId===currentUser.uid)return toast("Você não pode conversar com você mesmo.");currentChatProduct=p;currentConversationId=`${p.id}_${currentUser.uid}_${p.vendedorId}`;let ref=doc(db,"conversas",currentConversationId);try{let snap=await getDoc(ref);if(!snap.exists())await setDoc(ref,{produtoId:p.id,produtoNome:p.nome,produtoPreco:Number(p.preco||0),vendedorId:p.vendedorId,compradorId:currentUser.uid,participantes:[currentUser.uid,p.vendedorId],ultimaMensagem:"",atualizadoEm:serverTimestamp()});closeModal("productModal");openChatModal();if(offer)openOffer(p)}catch(e){console.error("Erro ao abrir conversa:",e);toast("Não foi possível abrir a conversa. Confira as regras do Firestore.")}}
