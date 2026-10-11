@@ -1736,6 +1736,38 @@ c.height=Math.round(img.height*scale);
 c.getContext("2d").drawImage(img,0,0,c.width,c.height);
 return await new Promise(r=>c.toBlob(r,"image/jpeg",.82))}
 $("productImages").onchange=e=>{selectedImages=[...e.target.files].slice(0,5);
+                                
+$("professionalPhoto").onchange=e=>{
+  selectedProfessionalPhoto=e.target.files?.[0]||null;
+
+  const preview=$("professionalPhotoPreview");
+  const img=$("professionalPhotoPreviewImage");
+
+  if(selectedProfessionalPhoto){
+    if(!selectedProfessionalPhoto.type.startsWith("image/")){
+      selectedProfessionalPhoto=null;
+      e.target.value="";
+      preview.style.display="none";
+      toast("Escolha um arquivo de imagem.");
+      return;
+    }
+
+    if(selectedProfessionalPhoto.size>8*1024*1024){
+      selectedProfessionalPhoto=null;
+      e.target.value="";
+      preview.style.display="none";
+      toast("A foto deve ter no máximo 8MB.");
+      return;
+    }
+
+    img.src=URL.createObjectURL(selectedProfessionalPhoto);
+    preview.style.display="flex";
+  }else{
+    img.removeAttribute("src");
+    preview.style.display="none";
+  }
+};
+                                
 if(e.target.files.length>5)toast("Selecionamos apenas as 5 primeiras fotos.");
 renderImagePreviews()};
 function renderImagePreviews(){let c=$("imagePreviewGrid");
