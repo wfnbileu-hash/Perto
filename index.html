@@ -1114,9 +1114,98 @@ button{
     <div id="professionalSearchResults"
       style="margin-top:16px"></div>
   </div>
+  
+    <div id="professionalSearchResults"
+      style="margin-top:16px"></div>
+  </div>
+
+  <!-- PUBLICAR PEDIDO DE SERVIÇO -->
+  <div class="serviceCard" style="margin-top:16px">
+    <div class="serviceIcon">📝</div>
+    <h3>Publicar pedido de serviço</h3>
+    <p>
+      Descreva o que você precisa e permita que profissionais
+      da sua região encontrem seu pedido.
+    </p>
+
+    <form id="serviceRequestForm"
+      style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+
+      <label for="serviceRequestTitle"
+        style="font-weight:600;font-size:14px">
+        O que você precisa? *
+      </label>
+      <input id="serviceRequestTitle"
+        type="text"
+        maxlength="100"
+        placeholder="Ex.: Consertar um vazamento"
+        required
+        style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px">
+
+      <label for="serviceRequestDescription"
+        style="font-weight:600;font-size:14px">
+        Descreva o serviço *
+      </label>
+      <textarea id="serviceRequestDescription"
+        maxlength="1500"
+        rows="4"
+        placeholder="Explique o que precisa ser feito..."
+        required
+        style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px;resize:vertical"></textarea>
+
+      <label for="serviceRequestCategory"
+        style="font-weight:600;font-size:14px">
+        Categoria *
+      </label>
+      <select id="serviceRequestCategory"
+        required
+        style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px;background:#fff">
+        <option value="">Selecione uma categoria</option>
+        <option value="Reparos">Reparos e manutenção</option>
+        <option value="Eletricista">Eletricista</option>
+        <option value="Encanador">Encanador</option>
+        <option value="Pintura">Pintura</option>
+        <option value="Limpeza">Limpeza</option>
+        <option value="Jardinagem">Jardinagem</option>
+        <option value="Construção">Construção</option>
+        <option value="Beleza">Beleza e estética</option>
+        <option value="Tecnologia">Tecnologia e informática</option>
+        <option value="Aulas">Aulas particulares</option>
+        <option value="Outros">Outros serviços</option>
+      </select>
+
+      <label for="serviceRequestCity"
+        style="font-weight:600;font-size:14px">
+        Cidade *
+      </label>
+      <input id="serviceRequestCity"
+        type="text"
+        maxlength="80"
+        placeholder="Ex.: Tatuí"
+        required
+        style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px">
+
+      <label for="serviceRequestNeighborhood"
+        style="font-weight:600;font-size:14px">
+        Bairro (opcional)
+      </label>
+      <input id="serviceRequestNeighborhood"
+        type="text"
+        maxlength="80"
+        placeholder="Informe o bairro"
+        style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px">
+
+      <button id="publishServiceRequestBtn"
+        type="submit"
+        class="btn btnPrimary"
+        style="width:100%;margin-top:8px">
+        Publicar pedido
+      </button>
+    </form>
+  </div>
 </section>
 <!-- FIM DOS SERVIÇOS -->
-    
+
 <!-- CADASTRO DO PROFISSIONAL -->
 <div id="professionalModal" class="modal" style="display:none;">
   <div class="modalContent" style="max-width:480px;width:calc(100% - 28px);max-height:90vh;overflow-y:auto;padding:20px;border-radius:20px;">
