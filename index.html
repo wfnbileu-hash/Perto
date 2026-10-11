@@ -1068,6 +1068,53 @@ $("loginForm").onsubmit=loginUser;$("signupForm").onsubmit=signupUser;
 
 async function loadUserData(u){try{let s=await getDoc(doc(db,"usuarios",u.uid));if(s.exists())return s.data()}catch(e){console.error(e)}return{uid:u.uid,nome:u.displayName||"Usuário",email:u.email||"",cidade:""}}
 function updateProfile(){let name=currentUserData?.nome||currentUser?.email||"Usuário";$("profileName").textContent=name;$("profileEmail").textContent=currentUser?.email||"";$("profileCity").textContent=currentUserData?.cidade?"📍 "+currentUserData.cidade:"";$("profileAvatar").textContent=initials(name);$("headerUser").textContent=initials(name)}
+  function openProfileEditor(){
+if(!currentUser)return showAuth("login");
+$("editProfileName").value=currentUserData?.nome||"";
+$("editProfilePhone").value=currentUserData?.telefone||"";
+$("editProfileCity").value=currentUserData?.cidade||"";
+$("editProfileEmail").value=currentUser.email||"";
+openModal("profileEditModal");
+}
+
+$("profileEditForm").onsubmit=async e=>{
+e.preventDefault();
+if(!currentUser)return showAuth("login");
+
+let nome=$("editProfileName").value.trim();
+let telefone=$("editProfilePhone").value.trim();
+let cidade=$("editProfileCity").value.trim();
+let btn=$("saveProfileBtn");
+
+if(!nome||!cidade)return toast("Preencha nome e cidade.");
+
+btn.disabled=true;
+btn.textContent="Salvando...";
+
+try{
+let dados={
+uid:currentUser.uid,
+nome,
+telefone,
+cidade,
+email:currentUser.email||"",
+atualizadoEm:serverTimestamp()
+};
+
+await setDoc(doc(db,"usuarios",currentUser.uid),dados,{merge:true});
+currentUserData={...(currentUserData||{}),...dados};
+updateProfile();
+closeModal("profileEditModal");
+toast("Seus dados foram atualizados.");
+
+}catch(err){
+console.error("Erro ao salvar perfil:",err);
+toast("Não foi possível salvar. Confira as regras do Firestore.");
+}finally{
+btn.disabled=false;
+btn.textContent="Salvar dados";
+}
+};
 async function enterApp(u){
   if(!u)return;
   currentUser=u;
