@@ -2071,7 +2071,7 @@ async function saveProfessional(e){
       email:currentUser.email||"",
       precoTipo:"negociavel",
       contatoTipo:"chat_perto",
-      ativo:true,
+      ativo:currentProfessionalActive,
       atualizadoEm:serverTimestamp()
     };
 
