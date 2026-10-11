@@ -1828,7 +1828,18 @@ $("homeServices").onclick=()=>showInternalPage("servicesPage");
 // ==================================================
 $("homeDelivery").onclick=()=>toast("Entregas serão integradas ao FreteGo.");
 $("homeIncome").onclick=()=>toast("O módulo de renda extra está no roadmap.");
-$("serviceProfessionalBtn").onclick=()=>registerServiceInterest("profissional");
+$("serviceProfessionalBtn").onclick=()=>{
+  if(!currentUser)return showAuth("login");
+  $("professionalModal").style.display="flex";
+};
+
+$("closeProfessionalModal").onclick=()=>{
+  $("professionalModal").style.display="none";
+};
+
+$("professionalForm").onsubmit=(e)=>{
+  e.preventDefault();
+};
 $("serviceRequestBtn").onclick=()=>registerServiceInterest("cliente");
 renderFavorites();
 </script>
