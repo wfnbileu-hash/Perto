@@ -1849,16 +1849,55 @@ async function searchProfessionals() {
       card.style.cssText =
         "background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:14px;margin-bottom:12px;";
 
-      const nome = document.createElement("h4");
-      nome.textContent = profissional.nome || "Profissional";
-      nome.style.cssText = "font-size:16px;margin-bottom:6px;";
+      const cabecalho = document.createElement("div");
+  cabecalho.style.cssText =
+    "display:flex;align-items:center;gap:12px;margin-bottom:10px;";
 
-      const categoriaTexto = document.createElement("p");
-      categoriaTexto.textContent =
-        profissional.categoria || "Serviço";
-      categoriaTexto.style.cssText =
-        "font-size:13px;font-weight:700;color:#2563eb;margin-bottom:7px;";
+  const avatar = document.createElement("div");
+  avatar.style.cssText =
+    "width:64px;height:64px;min-width:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#e2e8f0;color:#334155;font-size:20px;font-weight:700;";
 
+  const iniciais = (profissional.nome || "P")
+    .trim()
+    .split(/\s+/)
+    .map(p => p[0] || "")
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+  avatar.textContent = iniciais;
+
+  if (profissional.fotoURL) {
+    const foto = document.createElement("img");
+    foto.src = profissional.fotoURL;
+    foto.alt = "Foto de " + (profissional.nome || "profissional");
+    foto.loading = "lazy";
+    foto.style.cssText =
+      "width:100%;height:100%;object-fit:cover;";
+
+    foto.onerror = () => {
+      foto.remove();
+      avatar.textContent = iniciais;
+    };
+
+    avatar.appendChild(foto);
+  }
+
+  const infoCabecalho = document.createElement("div");
+  infoCabecalho.style.cssText = "min-width:0;flex:1;";
+
+  const nome = document.createElement("h4");
+  nome.textContent = profissional.nome || "Profissional";
+  nome.style.cssText = "font-size:16px;margin:0 0 6px;";
+
+  const categoriaTexto = document.createElement("p");
+  categoriaTexto.textContent =
+    profissional.categoria || "Serviço";
+  categoriaTexto.style.cssText =
+    "font-size:13px;font-weight:700;color:#2563eb;margin:0;";
+
+  infoCabecalho.append(nome, categoriaTexto);
+  cabecalho.append(avatar, infoCabecalho);
       const descricao = document.createElement("p");
       descricao.textContent =
         profissional.descricao || "Descrição não informada.";
@@ -1900,7 +1939,7 @@ async function searchProfessionals() {
           "Contato profissional pelo chat do Perto";
       };
 
-      card.append(nome, categoriaTexto, descricao, local, contato);
+      card.append(cabecalho, descricao, local, contato);
       resultados.appendChild(card);
     });
 
