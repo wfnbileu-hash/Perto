@@ -1882,7 +1882,7 @@ $("closeProfessionalModal").onclick=()=>{
   $("professionalModal").style.display="none";
 };
 
-$("professionalForm").onsubmit=(e)=>{
+$("professionalForm").onsubmit=saveProfessional;
   e.preventDefault();
 };
 $("serviceRequestBtn").onclick=()=>registerServiceInterest("cliente");
