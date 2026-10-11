@@ -1136,6 +1136,15 @@ button{
       <input id="professionalName" type="text" placeholder="Seu nome" required
         style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px;margin-bottom:9px;">
 
+      <label for="professionalPhoto" style="font-weight:600;font-size:14px;">Foto profissional (opcional)</label>
+      <input id="professionalPhoto" type="file" accept="image/*"
+        style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #dbe2ea;border-radius:12px;margin-bottom:4px;background:#fff;">
+
+      <div id="professionalPhotoPreview" style="display:none;align-items:center;gap:10px;margin:0 0 12px;">
+        <img id="professionalPhotoPreviewImage" alt="Prévia da foto profissional" style="width:76px;height:76px;object-fit:cover;border-radius:50%;border:2px solid #e2e8f0;">
+        <span style="font-size:12px;color:#64748b;">Prévia da foto selecionada</span>
+      </div>
+      
       <label for="professionalCategory" style="font-weight:600;font-size:14px;">Categoria do serviço</label>
       <select id="professionalCategory" required
         style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px;background:#fff;margin-bottom:9px;">
