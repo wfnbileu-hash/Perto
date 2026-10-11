@@ -2447,6 +2447,42 @@ $("professionalForm").onsubmit=saveProfessional;
   $("professionalSearchPanel").style.display = "block";
   $("professionalSearchResults").replaceChildren();
   $("searchProfessionalCity").focus();
+  $("serviceRequestForm").onsubmit = async (e) => {
+  e.preventDefault();
+
+  if (!currentUser) {
+    showAuth("login");
+    toast("Entre na sua conta para publicar um pedido.");
+    return;
+  }
+
+  const botao = $("publishServiceRequestBtn");
+  botao.disabled = true;
+  botao.textContent = "Publicando...";
+
+  try {
+    await addDoc(collection(db, "solicitacoesServicos"), {
+      clienteId: currentUser.uid,
+      titulo: $("serviceRequestTitle").value.trim(),
+      descricao: $("serviceRequestDescription").value.trim(),
+      categoria: $("serviceRequestCategory").value,
+      cidade: $("serviceRequestCity").value.trim(),
+      bairro: $("serviceRequestNeighborhood").value.trim(),
+      status: "aberta",
+      criadoEm: serverTimestamp(),
+      atualizadoEm: serverTimestamp()
+    });
+
+    $("serviceRequestForm").reset();
+    toast("Pedido de serviço publicado com sucesso!");
+
+  } catch (error) {
+    console.error("Erro ao publicar pedido:", error);
+    toast("Não foi possível publicar. Confira sua conexão e as regras do Firebase.");
+  } finally {
+    botao.disabled = false;
+    botao.textContent = "Publicar pedido";
+  }
 };
 renderFavorites();
 </script>
