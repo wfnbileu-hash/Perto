@@ -1953,6 +1953,7 @@ async function registerServiceInterest(tipo="geral"){
 // ==================================================
 // SERVIÇOS: SALVAR CADASTRO PROFISSIONAL
 // ==================================================
+
 async function saveProfessional(e){
   e.preventDefault();
 
@@ -1972,8 +1973,13 @@ async function saveProfessional(e){
     return;
   }
 
+  const btn=$("professionalForm").querySelector('button[type="submit"]');
+  const textoOriginal=btn.textContent;
+  btn.disabled=true;
+  btn.textContent="Salvando cadastro...";
+
   try{
-    await setDoc(doc(db,"profissionais",currentUser.uid),{
+    const dados={
       usuarioId:currentUser.uid,
       nome:nome,
       categoria:categoria,
@@ -1985,17 +1991,51 @@ async function saveProfessional(e){
       contatoTipo:"chat_perto",
       ativo:true,
       atualizadoEm:serverTimestamp()
-    },{merge:true});
+    };
+
+    if(selectedProfessionalPhoto){
+      if(!storage){
+        const mod=await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js");
+        storage=mod.getStorage(app);
+        storageRef=mod.ref;
+        uploadBytes=mod.uploadBytes;
+        getDownloadURL=mod.getDownloadURL;
+      }
+
+      const blob=await compressImage(selectedProfessionalPhoto);
+      if(!blob)throw new Error("Não foi possível preparar a foto. Escolha outra imagem.");
+
+      const fotoRef=storageRef(
+        storage,
+        `profissionais/${currentUser.uid}/${crypto.randomUUID()}.jpg`
+      );
+
+      await uploadBytes(fotoRef,blob,{contentType:"image/jpeg"});
+      dados.fotoURL=await getDownloadURL(fotoRef);
+    }
+
+    await setDoc(
+      doc(db,"profissionais",currentUser.uid),
+      dados,
+      {merge:true}
+    );
 
     $("professionalModal").style.display="none";
     $("professionalForm").reset();
+    selectedProfessionalPhoto=null;
+    $("professionalPhotoPreview").style.display="none";
+    $("professionalPhotoPreviewImage").removeAttribute("src");
 
     toast("Cadastro profissional salvo com sucesso!");
   }catch(error){
     console.error("Erro ao salvar profissional:",error);
-    toast("Não foi possível salvar. Confira as regras do Firestore.");
+    toast(error.message||"Não foi possível salvar. Confira as regras do Firebase.");
+  }finally{
+    btn.disabled=false;
+    btn.textContent=textoOriginal;
   }
-  }
+}
+
   
 // ==================================================
 // PAGAMENTOS: TURBINAR ANÚNCIO
