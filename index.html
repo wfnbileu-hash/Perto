@@ -1052,6 +1052,68 @@ button{
     <button id="serviceRequestBtn" class="btn btnPrimary" style="width:100%;margin-top:15px">Encontrar um profissional</button>
   </div>
     </section>
+    <!-- CADASTRO DO PROFISSIONAL -->
+<div id="professionalModal" class="modal" style="display:none;">
+  <div class="modalContent">
+    <h2>Cadastro profissional</h2>
+    <p>Informe seus dados para oferecer serviços pelo Perto.</p>
+
+    <form id="professionalForm">
+      <label for="professionalName">Nome profissional</label>
+      <input id="professionalName" type="text"
+        placeholder="Seu nome" required>
+
+      <label for="professionalCategory">Categoria do serviço</label>
+      <select id="professionalCategory" required>
+        <option value="">Selecione uma categoria</option>
+        <option value="Reparos">Reparos e manutenção</option>
+        <option value="Eletricista">Eletricista</option>
+        <option value="Encanador">Encanador</option>
+        <option value="Pintura">Pintura</option>
+        <option value="Limpeza">Limpeza</option>
+        <option value="Jardinagem">Jardinagem</option>
+        <option value="Construção">Construção</option>
+        <option value="Beleza">Beleza e estética</option>
+        <option value="Tecnologia">Tecnologia e informática</option>
+        <option value="Aulas">Aulas particulares</option>
+        <option value="Outros">Outros serviços</option>
+      </select>
+
+      <label for="professionalDescription">Descrição do serviço</label>
+      <textarea id="professionalDescription"
+        placeholder="Descreva seu trabalho"
+        required></textarea>
+
+      <label for="professionalCity">Cidade</label>
+      <input id="professionalCity" type="text"
+        placeholder="Ex.: Tatuí" required>
+
+      <label for="professionalArea">Região de atendimento</label>
+      <input id="professionalArea" type="text"
+        placeholder="Ex.: cidade e bairros atendidos" required>
+
+      <p>
+        <strong>Preço:</strong> combinado diretamente com o cliente
+        pelo chat do Perto.
+      </p>
+
+      <p>
+        <strong>Contato:</strong> exclusivamente pelo chat do Perto.
+      </p>
+
+      <button type="submit" class="btn btnPrimary"
+        style="width:100%;">
+        Cadastrar profissional
+      </button>
+
+      <button type="button" id="closeProfessionalModal"
+        class="btn" style="width:100%;margin-top:10px;">
+        Cancelar
+      </button>
+    </form>
+  </div>
+</div>
+<!-- FIM DO CADASTRO DO PROFISSIONAL -->
     <!-- CHAT / CONVERSAS -->
 <section id="chatPage" class="page"><div class="sectionTitle">Conversas</div><div class="sectionSubtitle">Negocie diretamente com compradores e vendedores.</div><div id="chatList"></div></section>
     <!-- PERFIL DO USUÁRIO -->
