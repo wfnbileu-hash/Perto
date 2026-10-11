@@ -2277,6 +2277,42 @@ const fecharCadastroProfissional=()=>{
   $("professionalPhotoPreview").style.display="none";
   $("professionalPhotoPreviewImage").removeAttribute("src");
 };
+  
+$("toggleProfessionalBtn").onclick=async()=>{
+  if(!currentUser)return showAuth("login");
+
+  const pausando=currentProfessionalActive;
+
+  if(!confirm(pausando
+    ?"Deseja pausar seu perfil profissional? Ele deixará de aparecer nas buscas."
+    :"Deseja reativar seu perfil profissional?"))return;
+
+  const botaoStatus=$("toggleProfessionalBtn");
+  botaoStatus.disabled=true;
+
+  try{
+    await updateDoc(doc(db,"profissionais",currentUser.uid),{
+      ativo:!pausando,
+      atualizadoEm:serverTimestamp()
+    });
+
+    currentProfessionalActive=!pausando;
+
+    botaoStatus.textContent=currentProfessionalActive
+      ?"⏸️ Pausar perfil profissional"
+      :"▶️ Reativar perfil profissional";
+
+    toast(currentProfessionalActive
+      ?"Perfil profissional reativado!"
+      :"Perfil profissional pausado!");
+
+  }catch(error){
+    console.error("Erro ao alterar status profissional:",error);
+    toast("Não foi possível alterar o perfil. Confira as regras do Firestore.");
+  }finally{
+    botaoStatus.disabled=false;
+  }
+}; 
 
 $("closeProfessionalModal").onclick=fecharCadastroProfissional;
 $("cancelProfessionalModal").onclick=fecharCadastroProfissional;
