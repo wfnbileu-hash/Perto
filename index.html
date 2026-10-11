@@ -1052,19 +1052,29 @@ button{
     <button id="serviceRequestBtn" class="btn btnPrimary" style="width:100%;margin-top:15px">Encontrar um profissional</button>
   </div>
     </section>
-    <!-- CADASTRO DO PROFISSIONAL -->
+    
+<!-- CADASTRO DO PROFISSIONAL -->
 <div id="professionalModal" class="modal" style="display:none;">
-  <div class="modalContent">
-    <h2>Cadastro profissional</h2>
-    <p>Informe seus dados para oferecer serviços pelo Perto.</p>
+  <div class="modalContent" style="max-width:480px;width:calc(100% - 28px);max-height:90vh;overflow-y:auto;padding:20px;border-radius:20px;">
 
-    <form id="professionalForm">
-      <label for="professionalName">Nome profissional</label>
-      <input id="professionalName" type="text"
-        placeholder="Seu nome" required>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;">
+      <h2 style="margin:0;font-size:22px;">Cadastro profissional</h2>
+      <button type="button" id="closeProfessionalModal" aria-label="Fechar cadastro" style="border:0;background:#f1f5f9;border-radius:50%;width:36px;height:36px;font-size:22px;flex-shrink:0;">×</button>
+    </div>
 
-      <label for="professionalCategory">Categoria do serviço</label>
-      <select id="professionalCategory" required>
+    <p style="margin:0 0 20px;color:#64748b;font-size:14px;line-height:1.5;">
+      Informe seus dados para oferecer serviços pelo Perto.
+    </p>
+
+    <form id="professionalForm" style="display:flex;flex-direction:column;gap:7px;">
+
+      <label for="professionalName" style="font-weight:600;font-size:14px;">Nome profissional</label>
+      <input id="professionalName" type="text" placeholder="Seu nome" required
+        style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px;margin-bottom:9px;">
+
+      <label for="professionalCategory" style="font-weight:600;font-size:14px;">Categoria do serviço</label>
+      <select id="professionalCategory" required
+        style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px;background:#fff;margin-bottom:9px;">
         <option value="">Selecione uma categoria</option>
         <option value="Reparos">Reparos e manutenção</option>
         <option value="Eletricista">Eletricista</option>
@@ -1079,41 +1089,49 @@ button{
         <option value="Outros">Outros serviços</option>
       </select>
 
-      <label for="professionalDescription">Descrição do serviço</label>
-      <textarea id="professionalDescription"
-        placeholder="Descreva seu trabalho"
-        required></textarea>
+      <label for="professionalDescription" style="font-weight:600;font-size:14px;">Descrição do serviço</label>
+      <textarea id="professionalDescription" placeholder="Descreva seu trabalho e os serviços que oferece" required
+        style="width:100%;box-sizing:border-box;min-height:100px;padding:13px;border:1px solid #dbe2ea;border-radius:12px;resize:vertical;margin-bottom:9px;"></textarea>
 
-      <label for="professionalCity">Cidade</label>
-      <input id="professionalCity" type="text"
-        placeholder="Ex.: Tatuí" required>
+      <label for="professionalCity" style="font-weight:600;font-size:14px;">Cidade</label>
+      <input id="professionalCity" type="text" placeholder="Ex.: Tatuí" required
+        style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px;margin-bottom:9px;">
 
-      <label for="professionalArea">Região de atendimento</label>
-      <input id="professionalArea" type="text"
-        placeholder="Ex.: cidade e bairros atendidos" required>
+      <label for="professionalArea" style="font-weight:600;font-size:14px;">Região de atendimento</label>
+      <input id="professionalArea" type="text" placeholder="Ex.: cidade e bairros atendidos" required
+        style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px;margin-bottom:9px;">
 
-      <p>
-        <strong>Preço:</strong> combinado diretamente com o cliente
-        pelo chat do Perto.
-      </p>
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:14px;margin:7px 0 10px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;">
+          <span style="font-size:20px;">💰</span>
+          <div>
+            <strong style="display:block;font-size:14px;margin-bottom:4px;">Preço combinado pelo chat</strong>
+            <p style="margin:0;color:#64748b;font-size:13px;line-height:1.5;">O preço será negociado diretamente com o cliente pelo chat do Perto.</p>
+          </div>
+        </div>
+        <div style="height:1px;background:#e2e8f0;margin-bottom:12px;"></div>
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <span style="font-size:20px;">💬</span>
+          <div>
+            <strong style="display:block;font-size:14px;margin-bottom:4px;">Contato pelo Perto</strong>
+            <p style="margin:0;color:#64748b;font-size:13px;line-height:1.5;">Toda a comunicação com o cliente acontece exclusivamente pelo chat do Perto.</p>
+          </div>
+        </div>
+      </div>
 
-      <p>
-        <strong>Contato:</strong> exclusivamente pelo chat do Perto.
-      </p>
-
-      <button type="submit" class="btn btnPrimary"
-        style="width:100%;">
+      <button type="submit" class="btn btnPrimary" style="width:100%;padding:14px;border-radius:12px;">
         Cadastrar profissional
       </button>
 
-      <button type="button" id="closeProfessionalModal"
-        class="btn" style="width:100%;margin-top:10px;">
+      <button type="button" id="cancelProfessionalModal" class="btn" style="width:100%;padding:13px;border-radius:12px;margin-top:2px;background:#f1f5f9;color:#334155;">
         Cancelar
       </button>
+
     </form>
   </div>
 </div>
 <!-- FIM DO CADASTRO DO PROFISSIONAL -->
+
     <!-- CHAT / CONVERSAS -->
 <section id="chatPage" class="page"><div class="sectionTitle">Conversas</div><div class="sectionSubtitle">Negocie diretamente com compradores e vendedores.</div><div id="chatList"></div></section>
     <!-- PERFIL DO USUÁRIO -->
@@ -1881,9 +1899,11 @@ $("serviceProfessionalBtn").onclick=()=>{
 $("closeProfessionalModal").onclick=()=>{
   $("professionalModal").style.display="none";
 };
-
-$("professionalForm").onsubmit=saveProfessional;
-$("serviceRequestBtn").onclick=()=>registerServiceInterest("cliente");
+  $("cancelProfessionalModal").onclick=()=>{
+  $("professionalModal").style.display="none";
+};
+  $("professionalForm").onsubmit=saveProfessional;
+  $("serviceRequestBtn").onclick=()=>registerServiceInterest("cliente");
 renderFavorites();
 </script>
 </body>
