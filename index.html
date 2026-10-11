@@ -1736,7 +1736,11 @@ c.height=Math.round(img.height*scale);
 c.getContext("2d").drawImage(img,0,0,c.width,c.height);
 return await new Promise(r=>c.toBlob(r,"image/jpeg",.82))}
 $("productImages").onchange=e=>{selectedImages=[...e.target.files].slice(0,5);
-                                
+
+$("productImages").onchange=e=>{selectedImages=[...e.target.files].slice(0,5);
+if(e.target.files.length>5)toast("Selecionamos apenas as 5 primeiras fotos.");
+renderImagePreviews()};
+
 $("professionalPhoto").onchange=e=>{
   selectedProfessionalPhoto=e.target.files?.[0]||null;
 
@@ -1767,14 +1771,11 @@ $("professionalPhoto").onchange=e=>{
     preview.style.display="none";
   }
 };
-                                
-if(e.target.files.length>5)toast("Selecionamos apenas as 5 primeiras fotos.");
-renderImagePreviews()};
+
 function renderImagePreviews(){let c=$("imagePreviewGrid");
 c.innerHTML="";
 selectedImages.forEach((f,i)=>{let d=document.createElement("div");d.style.cssText="height:62px;position:relative;border-radius:9px;overflow:hidden;background:#eee";let u=URL.createObjectURL(f);d.innerHTML=`<img src="${u}" style="width:100%;height:100%;object-fit:cover"><button type="button" style="position:absolute;right:2px;top:2px;width:20px;height:20px;border-radius:50%;background:#111827;color:#fff;font-size:13px">×</button>`;d.querySelector("button").onclick=()=>{selectedImages.splice(i,1);renderImagePreviews()};c.appendChild(d)})}
 $("sellForm").onsubmit=publishProduct;
-
 
 
 // ==================================================
