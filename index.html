@@ -1251,7 +1251,29 @@ function editProduct(p){if(p.vendedorId!==currentUser?.uid)return toast("Você s
 async function toggleProductActive(p){if(p.vendedorId!==currentUser?.uid)return toast("Ação não permitida.");if(p.status==="vendido")return toast("Um anúncio vendido não pode ser reativado. Edite e publique outro anúncio se necessário.");try{let reactivating=p.ativo===false;await updateDoc(doc(db,"produtos",p.id),{ativo:reactivating,status:reactivating?"ativo":(p.status||"ativo"),atualizadoEm:serverTimestamp()});toast(reactivating?"Anúncio reativado.":"Anúncio pausado.");await loadProducts();await showMyAds()}catch(e){console.error(e);toast("Não foi possível alterar o anúncio.")}}
 async function markProductSold(p){if(p.vendedorId!==currentUser?.uid)return toast("Ação não permitida.");if(!confirm(`Marcar “${p.nome}” como vendido?`))return;try{await updateDoc(doc(db,"produtos",p.id),{status:"vendido",ativo:false,vendidoEm:serverTimestamp(),atualizadoEm:serverTimestamp()});toast("Anúncio marcado como vendido.");await loadProducts();await showMyAds()}catch(e){console.error(e);toast("Não foi possível atualizar o anúncio.")}}
 async function deleteProduct(p){if(p.vendedorId!==currentUser?.uid)return toast("Ação não permitida.");if(!confirm(`Excluir definitivamente o anúncio “${p.nome}”?`))return;try{await deleteDoc(doc(db,"produtos",p.id));toast("Anúncio excluído.");await loadProducts();await showMyAds()}catch(e){console.error(e);toast("Não foi possível excluir. Confira as regras do Firestore.")}}
-async function registerServiceInterest(){if(!currentUser)return showAuth("login");try{await setDoc(doc(db,"servicos",currentUser.uid),{usuarioId:currentUser.uid,nome:currentUserData?.nome||currentUser.email,email:currentUser.email,cidade:currentUserData?.cidade||"",interesse:true,atualizadoEm:serverTimestamp()},{merge:true});toast("Pronto! Avisaremos quando os serviços forem liberados.")}catch(e){toast("Não foi possível registrar seu interesse.")}}
+async function registerServiceInterest(tipo="geral"){
+  if(!currentUser)return showAuth("login");
+  try{
+    await setDoc(doc(db,"servicos",currentUser.uid),{
+      usuarioId:currentUser.uid,
+      nome:currentUserData?.nome||currentUser.email,
+      email:currentUser.email,
+      cidade:currentUserData?.cidade||"",
+      interesse:true,
+      tipoInteresse:tipo,
+      atualizadoEm:serverTimestamp()
+    },{merge:true});
+
+    toast(tipo==="profissional"
+      ?"Interesse em oferecer serviços registrado. O cadastro profissional será ativado na próxima etapa."
+      :tipo==="cliente"
+      ?"Interesse em contratar serviços registrado. A publicação de pedidos será ativada na próxima etapa."
+      :"Interesse registrado.");
+  }catch(e){
+    console.error(e);
+    toast("Não foi possível registrar seu interesse. Confira as regras do Firestore.");
+  }
+}
 
 async function openBoost(p){if(p.vendedorId!==currentUser?.uid)return toast("Apenas o vendedor pode turbinar este anúncio.");currentOfferProduct=p;$("boostProductName").textContent=p.nome;$("boostModal").classList.add("open")}
 
