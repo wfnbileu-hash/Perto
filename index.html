@@ -2238,7 +2238,15 @@ $("toggleProfessionalBtn").style.display="none";
     if(cadastro.exists()){
       const dados=cadastro.data();
      
-      $("professionalName").value=dados.nome||"";
+      
+currentProfessionalActive=dados.ativo!==false;
+
+const botaoStatus=$("toggleProfessionalBtn");
+botaoStatus.style.display="block";
+botaoStatus.textContent=currentProfessionalActive
+  ?"⏸️ Pausar perfil profissional"
+  :"▶️ Reativar perfil profissional";
+      
       $("professionalName").value=dados.nome||"";
       $("professionalCategory").value=dados.categoria||"";
       $("professionalDescription").value=dados.descricao||"";
