@@ -2144,6 +2144,116 @@ async function searchProfessionals() {
 
 $("searchProfessionalBtn").onclick = searchProfessionals;
 
+  // ==================================================
+// SERVIÇOS: BUSCAR PEDIDOS ABERTOS
+// ==================================================
+async function searchOpenServiceRequests() {
+  const categoria = $("openRequestsCategory").value;
+  const cidade = normalizeText($("openRequestsCity").value);
+  const resultados = $("openServiceRequestsResults");
+  const botao = $("searchOpenRequestsBtn");
+
+  resultados.replaceChildren();
+
+  const carregando = document.createElement("p");
+  carregando.textContent = "Buscando pedidos...";
+  carregando.style.cssText = "font-size:14px;color:#64748b;";
+  resultados.appendChild(carregando);
+
+  botao.disabled = true;
+
+  try {
+    const consulta = query(
+      collection(db, "solicitacoesServicos"),
+      where("status", "==", "aberta")
+    );
+
+    const snapshot = await getDocs(consulta);
+
+    const pedidos = snapshot.docs
+      .map(documento => ({
+        id: documento.id,
+        ...documento.data()
+      }))
+      .filter(pedido => {
+        const categoriaOK =
+          !categoria || pedido.categoria === categoria;
+
+        const cidadeOK =
+          !cidade ||
+          normalizeText(pedido.cidade).includes(cidade);
+
+        return categoriaOK && cidadeOK;
+      });
+
+    resultados.replaceChildren();
+
+    if (!pedidos.length) {
+      const vazio = document.createElement("p");
+      vazio.textContent =
+        "Nenhum pedido aberto encontrado com esses filtros.";
+      vazio.style.cssText =
+        "padding:14px 0;color:#64748b;font-size:14px;";
+      resultados.appendChild(vazio);
+      return;
+    }
+
+    pedidos.sort((a, b) => {
+      const dataA = a.criadoEm?.toMillis?.() || 0;
+      const dataB = b.criadoEm?.toMillis?.() || 0;
+      return dataB - dataA;
+    });
+
+    pedidos.forEach(pedido => {
+      const card = document.createElement("div");
+      card.style.cssText =
+        "background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:14px;margin-bottom:12px;";
+
+      const titulo = document.createElement("h4");
+      titulo.textContent = pedido.titulo || "Pedido de serviço";
+      titulo.style.cssText =
+        "font-size:16px;margin:0 0 8px;color:#0f172a;";
+
+      const categoriaTexto = document.createElement("p");
+      categoriaTexto.textContent =
+        pedido.categoria || "Outros serviços";
+      categoriaTexto.style.cssText =
+        "font-size:13px;font-weight:700;color:#2563eb;margin:0 0 8px;";
+
+      const descricao = document.createElement("p");
+      descricao.textContent =
+        pedido.descricao || "Sem descrição.";
+      descricao.style.cssText =
+        "font-size:14px;line-height:1.5;margin:0 0 10px;white-space:pre-wrap;";
+
+      const local = document.createElement("p");
+      local.textContent =
+        "📍 " + (pedido.cidade || "Cidade não informada") +
+        (pedido.bairro ? " · " + pedido.bairro : "");
+      local.style.cssText =
+        "font-size:12px;color:#64748b;margin:0;";
+
+      card.append(titulo, categoriaTexto, descricao, local);
+      resultados.appendChild(card);
+    });
+
+  } catch (erro) {
+    console.error("Erro ao buscar pedidos de serviço:", erro);
+    resultados.replaceChildren();
+
+    const falha = document.createElement("p");
+    falha.textContent =
+      "Não foi possível carregar os pedidos. Confira as regras do Firebase.";
+    falha.style.cssText = "color:#dc2626;font-size:14px;";
+    resultados.appendChild(falha);
+
+  } finally {
+    botao.disabled = false;
+  }
+}
+
+$("searchOpenRequestsBtn").onclick = searchOpenServiceRequests;
+  
 // ==================================================
 // SERVIÇOS: REGISTRO DE INTERESSE
 // ==================================================
