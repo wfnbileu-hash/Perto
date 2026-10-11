@@ -2320,6 +2320,40 @@ $("toggleProfessionalBtn").onclick=async()=>{
   }
 }; 
 
+$("deleteProfessionalBtn").onclick=async()=>{
+  if(!currentUser)return showAuth("login");
+
+  const confirmou=confirm(
+    "Tem certeza que deseja excluir seu perfil profissional? Essa ação removerá seu cadastro de serviços do Perto."
+  );
+
+  if(!confirmou)return;
+
+  const botaoExcluir=$("deleteProfessionalBtn");
+  botaoExcluir.disabled=true;
+
+  try{
+    await deleteDoc(doc(db,"profissionais",currentUser.uid));
+
+    currentProfessionalActive=true;
+    $("professionalModal").style.display="none";
+    $("professionalForm").reset();
+    $("toggleProfessionalBtn").style.display="none";
+    $("deleteProfessionalBtn").style.display="none";
+    selectedProfessionalPhoto=null;
+    $("professionalPhotoPreview").style.display="none";
+    $("professionalPhotoPreviewImage").removeAttribute("src");
+
+    toast("Perfil profissional excluído com sucesso!");
+
+  }catch(error){
+    console.error("Erro ao excluir perfil profissional:",error);
+    toast("Não foi possível excluir o perfil. Confira as regras do Firestore.");
+  }finally{
+    botaoExcluir.disabled=false;
+  }
+};
+  
 $("closeProfessionalModal").onclick=fecharCadastroProfissional;
 $("cancelProfessionalModal").onclick=fecharCadastroProfissional;
 $("professionalForm").onsubmit=saveProfessional;
