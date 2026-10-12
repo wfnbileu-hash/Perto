@@ -2056,7 +2056,8 @@ restartSlides();
 function showInternalPage(id,scroll=true){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
 $(id)?.classList.add("active");
 document.querySelectorAll(".navBtn[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
-if(id==="chatPage")loadConversations();
+if(id==="chatPage")loadConversations(); 
+if(id==="storesPage")carregarVitrineLojas();
 if(scroll)window.scrollTo({top:0,behavior:"smooth"})}
 document.querySelectorAll(".navBtn[data-page]").forEach(b=>b.onclick=()=>{if(b.dataset.page==="favoritesPage")renderFavorites();showInternalPage(b.dataset.page)});
 
@@ -2997,12 +2998,15 @@ $("storeForm").addEventListener("submit", async (event) => {
 
     currentUser = usuario;
 
-    closeModal("storeRegisterModal");
-    $("storeForm").reset();
+    
+closeModal("storeRegisterModal");
+$("storeForm").reset();
 
-    toast("Loja cadastrada com sucesso!");
+toast("Loja cadastrada com sucesso!");
 
-  } catch (erro) {
+await carregarVitrineLojas();
+
+   } catch (erro) {
     console.error("Erro ao cadastrar loja:", erro);
 
     toast(
