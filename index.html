@@ -1146,6 +1146,56 @@ button{
 <section id="myAdsPage" class="page"><div class="sectionTitle">Meus anúncios</div><div class="sectionSubtitle">Edite, pause ou marque como vendido.</div><div id="myAdsProducts" class="productGrid"></div></section>
     <!-- FAVORITOS -->
 <section id="favoritesPage" class="page"><div class="sectionTitle">Favoritos</div><div class="sectionSubtitle">Seus anúncios salvos.</div><div id="favoriteProducts" class="productGrid"></div></section>
+    <!-- VITRINE DE LOJAS -->
+    <section id="storesPage" class="page">
+      <div class="storesHero">
+        <div style="font-size:13px;font-weight:800;color:#fbbf24;margin-bottom:10px">
+          🛍️ COMPRE DE QUEM ESTÁ PERTO
+        </div>
+        <h1>Descubra lojas e novidades da sua região.</h1>
+        <p>Explore o comércio local, conheça novos negócios e encontre produtos em lojas próximas.</p>
+      </div>
+
+      <input
+        id="storeSearch"
+        class="storesSearch"
+        type="search"
+        placeholder="🔎 Buscar loja ou produto..."
+        aria-label="Buscar loja ou produto"
+      >
+
+      <label for="storeCity" style="display:block;font-weight:700;font-size:13px;margin-bottom:6px">
+        📍 Escolha a cidade
+      </label>
+      <input
+        id="storeCity"
+        class="storesSearch"
+        type="text"
+        placeholder="Ex.: Tatuí, Cerquilho ou Tietê"
+        aria-label="Filtrar lojas por cidade"
+      >
+
+      <div class="storeCategories" id="storeCategories">
+        <button type="button" class="storeCategory active" data-category="">✨ Todas</button>
+        <button type="button" class="storeCategory" data-category="Alimentação">🍔 Alimentação</button>
+        <button type="button" class="storeCategory" data-category="Moda">👕 Moda</button>
+        <button type="button" class="storeCategory" data-category="Casa">🏠 Casa</button>
+        <button type="button" class="storeCategory" data-category="Beleza">💄 Beleza</button>
+        <button type="button" class="storeCategory" data-category="Outros">🛍️ Outros</button>
+      </div>
+
+      <div class="sectionTitle">Lojas para descobrir</div>
+      <div class="sectionSubtitle">Conheça os negócios e explore suas vitrines.</div>
+
+      <div id="storesResults">
+        <div class="storeEmpty">
+          <div style="font-size:38px;margin-bottom:10px">🏪</div>
+          <strong>Estamos preparando as vitrines!</strong>
+          <div>As lojas cadastradas aparecerão aqui com fotos, produtos e informações.</div>
+        </div>
+      </div>
+    </section>
+    <!-- FIM DA VITRINE DE LOJAS -->
     <!-- SERVIÇOS -->
 <section id="servicesPage" class="page">
   <div class="sectionTitle">Serviços</div>
