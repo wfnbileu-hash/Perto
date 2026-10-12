@@ -3533,9 +3533,10 @@ function renderizarVitrineLojas() {
       );
 
 
+ 
  // ==================================================
-// VITRINE DE LOJAS E FILTROS
-// ==================================================
+ // VITRINE DE LOJAS E FILTROS
+ // ==================================================
 
 let lojasVitrine = [];
 let categoriaLojaSelecionada = "";
@@ -3544,320 +3545,135 @@ async function carregarVitrineLojas() {
   const resultados = $("storesResults");
   if (!resultados) return;
 
-  resultados.innerHTML =
-    '<div class="storeEmpty">Carregando lojas...</div>';
-
   try {
-    const consulta = await getDocs(
-      query(
-        collection(db, "lojas"),
-        where("ativo", "==", true)
-      )
-    );
+    const snapshot = await db.collection("lojas").get();
 
-    lojasVitrine = consulta.docs.map(item => ({
-      id: item.id,
-      ...item.data()
+    lojasVitrine = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
     }));
 
-    // Permite que o proprietário veja a própria loja
-    // mesmo enquanto aguarda ativação.
-    const usuario = auth.currentUser || currentUser;
-
-    if (usuario) {
-      const minhaLoja = await getDoc(
-        doc(db, "lojas", usuario.uid)
-      );
-
-      if (
-        minhaLoja.exists() &&
-        !lojasVitrine.some(loja => loja.id === minhaLoja.id)
-      ) {
-        lojasVitrine.push({
-          id: minhaLoja.id,
-          ...minhaLoja.data(),
-          aguardandoAtivacao:
-            minhaLoja.data().ativo !== true
-        });
-      }
-    }
-
     renderizarVitrineLojas();
-
   } catch (erro) {
-    console.error("Erro ao carregar vitrine:", erro);
-
+    console.error("Erro ao carregar vitrines de lojas:", erro);
     resultados.innerHTML =
-      '<div class="storeEmpty">Não foi possível carregar as lojas. Tente novamente.</div>';
+      "<p>Não foi possível carregar as lojas.</p>";
   }
 }
 
 async function atualizarPainelMinhaLoja() {
-  const painel = $("myStoreManager");
-  const cadastro = $("storeRegistrationCard");
+  if (!usuarioAtual) return;
 
-  if (!painel || !cadastro) return;
-
-  const usuario = auth.currentUser || currentUser;
-
-  if (!usuario) {
-    painel.style.display = "none";
-    cadastro.style.display = "";
-    return;
-  }
+  const painel = $("myStorePanel");
+  if (!painel) return;
 
   try {
-    const resultado = await getDoc(
-      doc(db, "lojas", usuario.uid)
-    );
+    const snapshot = await db.collection("lojas")
+      .where("usuarioId", "==", usuarioAtual.uid)
+      .get();
 
-    if (!resultado.exists()) {
-      painel.style.display = "none";
-      cadastro.style.display = "";
+    if (snapshot.empty) {
+      painel.innerHTML = "<p>Você ainda não possui uma loja cadastrada.</p>";
       return;
     }
 
-    const loja = resultado.data();
+    const doc = snapshot.docs[0];
+    const loja = doc.data();
 
-    painel.style.display = "block";
-    cadastro.style.display = "none";
-
-    $("myStoreManagerTitle").textContent =
-      "Gerenciar " + (loja.nome || "minha loja");
-
-    let status =
-      "⏳ Aguardando aprovação do administrador.";
-
-    if (loja.statusAdmin === "suspensa") {
-      status =
-        "⚠️ Sua loja está suspensa. Entre em contato com o suporte.";
-    } else if (loja.ativo === true) {
-      status = "✅ Sua loja está ativa no Perto.";
-    }
-
-    $("myStoreManagerStatus").textContent = status;
-
+    painel.innerHTML = `
+      <h3>${esc(loja.nome || "Minha loja")}</h3>
+      <p>${esc(loja.categoria || "Outros")}</p>
+      <p>${esc(loja.cidade || "")}</p>
+      <p>${esc(loja.descricao || "")}</p>
+    `;
   } catch (erro) {
-    console.error("Erro ao consultar minha loja:", erro);
-    toast("Não foi possível consultar os dados da sua loja.");
+    console.error("Erro ao atualizar painel da loja:", erro);
   }
 }
 
 async function carregarProdutosMinhaLoja() {
-  const lista = $("myStoreProductsList");
+  if (!usuarioAtual) return;
+
+  const lista = $("myStoreProducts");
   if (!lista) return;
 
-  const usuario = auth.currentUser || currentUser;
-
-  if (!usuario) {
-    lista.innerHTML =
-      "<p>Entre na sua conta para ver seus produtos.</p>";
-    return;
-  }
-
-  lista.innerHTML = "<p>Carregando produtos...</p>";
-
   try {
-    const resultado = await getDocs(
-      query(
-        collection(db, "produtos"),
-        where("vendedorId", "==", usuario.uid)
-      )
-    );
+    const snapshot = await db.collection("produtos")
+      .where("vendedorId", "==", usuarioAtual.uid)
+      .get();
 
-    const produtos = resultado.docs
-      .map(item => ({
-        id: item.id,
-        ...item.data()
-      }))
-      .sort(sortProducts);
-
-    lista.replaceChildren();
-
-    if (!produtos.length) {
-      lista.innerHTML =
-        "<p>Você ainda não publicou produtos nesta loja.</p>";
+    if (snapshot.empty) {
+      lista.innerHTML = "<p>Nenhum produto cadastrado.</p>";
       return;
     }
 
-    produtos.forEach(produto => {
-      const item = document.createElement("div");
-      item.style.cssText =
-        "padding:12px 0;border-bottom:1px solid #e5e7eb";
+    lista.innerHTML = snapshot.docs.map(doc => {
+      const produto = doc.data();
 
-      const nome = document.createElement("strong");
-      nome.textContent =
-        produto.nome || "Produto sem nome";
+      const item = `
+        <div class="myStoreProduct">
+          <strong>${esc(produto.nome || produto.titulo || "Produto")}</strong>
+          <p>${esc(produto.descricao || "")}</p>
+          <p>R$ ${esc(String(produto.preco ?? produto.valor ?? ""))}</p>
+        </div>
+      `;
 
-      const preco = document.createElement("p");
-      preco.style.margin = "6px 0";
-      preco.textContent = money(produto.preco);
-
-      const status = document.createElement("p");
-      status.style.cssText =
-        "font-size:12px;color:#64748b;margin:4px 0 10px";
-
-      status.textContent =
-        produto.status === "vendido" ? "Vendido" :
-        produto.ativo === false ? "Pausado" : "Ativo";
-
-      const botoes = document.createElement("div");
-      botoes.style.cssText =
-        "display:flex;gap:8px;flex-wrap:wrap";
-
-      const editar = document.createElement("button");
-      editar.type = "button";
-      editar.className = "profileAction";
-      editar.textContent = "✏️ Editar";
-      editar.onclick = () => editProduct(produto);
-
-      const excluir = document.createElement("button");
-      excluir.type = "button";
-      excluir.className = "profileAction btnDanger";
-      excluir.textContent = "🗑️ Excluir";
-      excluir.onclick = () => deleteProduct(produto);
-
-      botoes.append(editar, excluir);
-      item.append(nome, preco, status, botoes);
-      lista.appendChild(item);
-    });
-
+      return item;
+    }).join("");
   } catch (erro) {
-    console.error(
-      "Erro ao carregar produtos da loja:",
-      erro
-    );
-
-    lista.innerHTML =
-      "<p>Não foi possível carregar os produtos. Confira as regras do Firebase.</p>";
+    console.error("Erro ao carregar produtos da loja:", erro);
+    lista.innerHTML = "<p>Não foi possível carregar os produtos.</p>";
   }
 }
 
 function renderizarVitrineLojas() {
-  const campoBusca = $("storeSearch");
-  const campoCidade = $("storeCity");
   const resultados = $("storesResults");
+  if (!resultados) return;
 
-  if (!campoBusca || !campoCidade || !resultados) return;
+  const busca = ($("storeSearch")?.value || "")
+    .trim()
+    .toLowerCase();
 
-  const busca = campoBusca.value.trim().toLowerCase();
-  const cidade = campoCidade.value.trim().toLowerCase();
+  const cidade = ($("storeCity")?.value || "")
+    .trim()
+    .toLowerCase();
 
-  const filtradas = lojasVitrine.filter(loja => {
-    const categoriaOK =
+  const lojasFiltradas = lojasVitrine.filter(loja => {
+    const nome = (loja.nome || "").toLowerCase();
+    const categoria = (loja.categoria || "Outros").toLowerCase();
+    const descricao = (loja.descricao || "").toLowerCase();
+    const cidadeLoja = (loja.cidade || "").toLowerCase();
+
+    const correspondeBusca =
+      !busca ||
+      nome.includes(busca) ||
+      categoria.includes(busca) ||
+      descricao.includes(busca);
+
+    const correspondeCidade =
+      !cidade || cidadeLoja.includes(cidade);
+
+    const correspondeCategoria =
       !categoriaLojaSelecionada ||
-      loja.categoria === categoriaLojaSelecionada ||
-      (
-        categoriaLojaSelecionada === "Outros" &&
-        ![
-          "Alimentação",
-          "Moda",
-          "Casa",
-          "Beleza",
-          "Mercado",
-          "Eletrônicos"
-        ].includes(loja.categoria)
-      );
+      categoria === categoriaLojaSelecionada.toLowerCase();
 
-    const texto = [
-      loja.nome,
-      loja.categoria,
-      loja.descricao,
-      loja.cidade
-    ].join(" ").toLowerCase();
-
-    const buscaOK =
-      !busca || texto.includes(busca);
-
-    const cidadeOK =
-      !cidade ||
-      String(loja.cidade || "")
-        .toLowerCase()
-        .includes(cidade);
-
-    const publica = loja.ativo === true;
-    const propria =
-      (auth.currentUser || currentUser)?.uid ===
-      (loja.usuarioId || loja.id);
-
-    return categoriaOK &&
-      buscaOK &&
-      cidadeOK &&
-      (publica || propria);
+    return correspondeBusca &&
+      correspondeCidade &&
+      correspondeCategoria;
   });
 
-  if (!filtradas.length) {
-    resultados.innerHTML =
-      '<div class="storeEmpty"><div style="font-size:38px;margin-bottom:10px">🏪</div><strong>Nenhuma loja encontrada.</strong><div>Tente outra categoria ou cidade.</div></div>';
+  if (lojasFiltradas.length === 0) {
+    resultados.innerHTML = "<p>Nenhuma loja encontrada.</p>";
     return;
   }
 
-  resultados.innerHTML = filtradas.map(loja => {
-    const aguardando = loja.ativo !== true;
+  resultados.innerHTML = lojasFiltradas.map(loja => {
+    const aguardando =
+      loja.ativa === false ||
+      loja.status === "aguardando";
 
     return `
       <article class="storeCard">
-        <div class="storeCover">🏪</div>
-        <div class="storeInfo">
-          <h3>${esc(loja.nome || "Loja")}</h3>
-          <p>
-            ${esc(loja.categoria || "Outros")}<br>
-            📍 ${esc(loja.cidade || "")}
-          </p>
-          <p>${esc(loja.descricao || "")}</p>
-          ${
-            aguardando
-              ? '<span class="storeStatus" style="background:#fef3c7;color:#92400e">Aguardando ativação</span>'
-              : '<span class="storeStatus">Loja ativa</span>'
-          }
-        </div>
-      </article>
-    `;
-  }).join("");
-}
-        ![
-          "Alimentação",
-          "Moda",
-          "Casa",
-          "Beleza",
-          "Mercado",
-          "Eletrônicos"
-        ].includes(loja.categoria)
-      );
-
-    const texto = [
-      loja.nome,
-      loja.categoria,
-      loja.descricao,
-      loja.cidade
-    ].join(" ").toLowerCase();
-
-    const buscaOK = !busca || texto.includes(busca);
-    const cidadeOK =
-      !cidade ||
-      String(loja.cidade || "").toLowerCase().includes(cidade);
-
-    // Lojas inativas só aparecem para seu proprietário.
-    const publica = loja.ativo === true;
-    const propria =
-      (auth.currentUser || currentUser)?.uid === loja.usuarioId;
-
-    return categoriaOK && buscaOK && cidadeOK &&
-      (publica || propria);
-  });
-
-  if (!filtradas.length) {
-    $("storesResults").innerHTML =
-      '<div class="storeEmpty"><div style="font-size:38px;margin-bottom:10px">🏪</div><strong>Nenhuma loja encontrada.</strong><div>Tente outra categoria ou cidade.</div></div>';
-    return;
-  }
-
-  $("storesResults").innerHTML = filtradas.map(loja => {
-    const aguardando = loja.ativo !== true;
-
-    return `
-      <article class="storeCard">
-        <div class="storeCover">🏪</div>
         <div class="storeInfo">
           <h3>${esc(loja.nome || "Loja")}</h3>
           <p>
@@ -3893,13 +3709,13 @@ document.querySelectorAll(
 });
 
 // Busca por nome, categoria ou descrição.
-$("storeSearch").addEventListener(
+$("storeSearch")?.addEventListener(
   "input",
   renderizarVitrineLojas
 );
 
 // Filtro por cidade.
-$("storeCity").addEventListener(
+$("storeCity")?.addEventListener(
   "input",
   renderizarVitrineLojas
 );
