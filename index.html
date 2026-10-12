@@ -2682,6 +2682,229 @@ $("serviceRequestForm").addEventListener("submit", async (e) => {
 });
 
   
+/* ==================================================
+   SERVIÇOS — MENU ORGANIZADO
+   Mantém os formulários e IDs existentes
+================================================== */
+const servicesPage = $("servicesPage");
+
+if (servicesPage && ! $("servicesMenu")) {
+  const elementos = [...servicesPage.children];
+
+  const cardProfissional = elementos.find(el =>
+    el.querySelector("#serviceProfessionalBtn")
+  );
+
+  const cardBuscarProfissional = elementos.find(el =>
+    el.querySelector("#serviceRequestBtn")
+  );
+
+  const painelProfissionais = $("professionalSearchPanel");
+
+  const cardPedidos = elementos.find(el =>
+    el.querySelector("#searchOpenRequestsBtn")
+  );
+
+  const cardPublicarPedido = elementos.find(el =>
+    el.querySelector("#serviceRequestForm")
+  );
+
+  const menu = document.createElement("div");
+  menu.id = "servicesMenu";
+  menu.style.cssText =
+    "display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px";
+
+  const criarOpcao = (icone, titulo, descricao, acao) => {
+    const botao = document.createElement("button");
+    botao.type = "button";
+    botao.className = "serviceCard";
+    botao.style.cssText =
+      "text-align:left;width:100%;cursor:pointer;border:1px solid #e2e8f0";
+
+    botao.innerHTML = `
+      <div class="serviceIcon">${icone}</div>
+      <h3>${titulo}</h3>
+      <p>${descricao}</p>
+      <span style="display:block;margin-top:12px;font-weight:700">
+        Acessar →
+      </span>
+    `;
+
+    botao.addEventListener("click", acao);
+    return botao;
+  };
+
+  const painelPedidos = document.createElement("div");
+  painelPedidos.id = "serviceOpenRequestsPanel";
+  painelPedidos.style.display = "none";
+
+  const painelMeusPedidos = document.createElement("div");
+  painelMeusPedidos.id = "myServiceRequestsPanel";
+  painelMeusPedidos.style.display = "none";
+
+  const voltar = (painel) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn";
+    btn.textContent = "← Voltar";
+    btn.style.marginBottom = "14px";
+
+    btn.addEventListener("click", () => {
+      painel.style.display = "none";
+      menu.style.display = "grid";
+    });
+
+    painel.prepend(btn);
+  };
+
+  const abrirPainel = (painel) => {
+    menu.style.display = "none";
+    painel.style.display = "block";
+    painel.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  if (cardProfissional && cardBuscarProfissional &&
+      painelProfissionais && cardPedidos && cardPublicarPedido) {
+
+    servicesPage.innerHTML = "";
+
+    const titulo = document.createElement("div");
+    titulo.className = "sectionTitle";
+    titulo.textContent = "Serviços";
+
+    const subtitulo = document.createElement("div");
+    subtitulo.className = "sectionSubtitle";
+    subtitulo.textContent =
+      "Encontre profissionais ou divulgue seu trabalho na sua região.";
+
+    servicesPage.append(titulo, subtitulo, menu);
+
+    menu.append(
+      criarOpcao(
+        "🔎",
+        "Encontrar profissionais",
+        "Busque por categoria e cidade.",
+        () => {
+          abrirPainel(painelProfissionais);
+          $("professionalSearchResults").replaceChildren();
+        }
+      ),
+      criarOpcao(
+        "📋",
+        "Encontrar pedidos",
+        "Veja quem precisa de um serviço.",
+        () => abrirPainel(painelPedidos)
+      ),
+      criarOpcao(
+        "🧰",
+        "Sou profissional",
+        "Cadastre ou gerencie seu perfil.",
+        () => $("serviceProfessionalBtn").click()
+      ),
+      criarOpcao(
+        "📝",
+        "Meus pedidos",
+        "Publique e consulte suas solicitações.",
+        () => {
+          abrirPainel(painelMeusPedidos);
+          carregarMeusPedidos();
+        }
+      )
+    );
+
+    cardProfissional.remove();
+    cardBuscarProfissional.remove();
+
+    painelProfissionais.style.display = "none";
+    painelProfissionais.style.marginTop = "16px";
+
+    painelPedidos.appendChild(cardPedidos);
+    painelPedidos.style.marginTop = "16px";
+
+    painelMeusPedidos.appendChild(cardPublicarPedido);
+    painelMeusPedidos.style.marginTop = "16px";
+
+    voltar(painelProfissionais);
+    voltar(painelPedidos);
+    voltar(painelMeusPedidos);
+
+    servicesPage.append(
+      painelProfissionais,
+      painelPedidos,
+      painelMeusPedidos
+    );
+
+    $("serviceRequestBtn").onclick = () => {
+      abrirPainel(painelProfissionais);
+    };
+
+    $("searchProfessionalBtn").onclick = searchProfessionals;
+    $("searchOpenRequestsBtn").onclick = searchOpenServiceRequests;
+
+    async function carregarMeusPedidos() {
+      const id = "myServiceRequestsResults";
+      let resultados = $(id);
+
+      if (!resultados) {
+        resultados = document.createElement("div");
+        resultados.id = id;
+        resultados.style.marginTop = "16px";
+        painelMeusPedidos.appendChild(resultados);
+      }
+
+      if (!currentUser) {
+        resultados.textContent =
+          "Entre na sua conta para consultar seus pedidos.";
+        return;
+      }
+
+      resultados.textContent = "Carregando seus pedidos...";
+
+      try {
+        const consulta = query(
+          collection(db, "solicitacoesServicos"),
+          where("clienteId", "==", currentUser.uid)
+        );
+
+        const snapshot = await getDocs(consulta);
+        resultados.replaceChildren();
+
+        if (snapshot.empty) {
+          resultados.textContent = "Você ainda não publicou pedidos.";
+          return;
+        }
+
+        snapshot.forEach((docPedido) => {
+          const pedido = docPedido.data();
+          const card = document.createElement("div");
+          card.className = "serviceCard";
+          card.style.marginTop = "10px";
+
+          const tituloPedido = document.createElement("h3");
+          tituloPedido.textContent = pedido.titulo || "Pedido de serviço";
+
+          const descricao = document.createElement("p");
+          descricao.textContent = pedido.descricao || "";
+
+          const local = document.createElement("p");
+          local.textContent =
+            [pedido.bairro, pedido.cidade].filter(Boolean).join(" • ");
+
+          const status = document.createElement("p");
+          status.textContent = "Status: " + (pedido.status || "aberta");
+
+          card.append(tituloPedido, descricao, local, status);
+          resultados.appendChild(card);
+        });
+      } catch (erro) {
+        console.error("Erro ao carregar meus pedidos:", erro);
+        resultados.textContent =
+          "Não foi possível carregar seus pedidos. Tente novamente.";
+      }
+    }
+  }
+  }
+    
 
 renderFavorites();
 
