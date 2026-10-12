@@ -1,0 +1,3805 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#111827">
+<meta name="description" content="Perto — Compre perto. Venda fácil.">
+<title>Perto — Compre perto. Venda fácil.</title>
+<style>
+
+:root{
+  --primary:#111827;
+  --primary2:#1f2937;
+  --accent:#f59e0b;
+  --accent2:#fbbf24;
+  --green:#16a34a;
+  --red:#dc2626;
+  --blue:#2563eb;
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --text:#111827;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+  --radius:18px;
+  --shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  width:100%;
+  min-height:100%;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+button,
+input,
+textarea,
+select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+  border:0;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* =========================
+   LOADING
+========================= */
+
+#loadingScreen{
+  position:fixed;
+  inset:0;
+  background:#111827;
+  color:white;
+  z-index:99999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:18px;
+}
+
+.loadingLogo{
+  font-size:42px;
+  font-weight:900;
+  letter-spacing:-3px;
+}
+
+.loadingDot{
+  width:12px;
+  height:12px;
+  background:#f59e0b;
+  border-radius:50%;
+  animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+  0%,100%{transform:scale(.7);opacity:.5}
+  50%{transform:scale(1.2);opacity:1}
+}
+
+/* =========================
+   WELCOME
+========================= */
+
+#welcomePage{
+  min-height:100vh;
+  background:#111827;
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+}
+
+.welcomeSlides{
+  position:relative;
+  min-height:100vh;
+}
+
+.slide{
+  position:absolute;
+  inset:0;
+  min-height:100vh;
+  display:none;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:30px 22px 120px;
+  overflow:hidden;
+}
+
+.slide.active{
+  display:flex;
+  animation:slideIn .35s ease;
+}
+
+@keyframes slideIn{
+  from{opacity:0;transform:translateX(15px)}
+  to{opacity:1;transform:translateX(0)}
+}
+
+/* fundos visuais próprios, sem marcas de terceiros */
+
+.slideVisual{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+}
+
+.slideVisual::before{
+  content:"";
+  position:absolute;
+  width:360px;
+  height:360px;
+  border-radius:50%;
+  background:rgba(245,158,11,.20);
+  top:8%;
+  right:-130px;
+}
+
+.slideVisual::after{
+  content:"";
+  position:absolute;
+  width:280px;
+  height:280px;
+  border-radius:50%;
+  background:rgba(37,99,235,.16);
+  bottom:15%;
+  left:-120px;
+}
+
+.visualIcon{
+  position:absolute;
+  top:18%;
+  left:50%;
+  transform:translateX(-50%);
+  width:190px;
+  height:190px;
+  border-radius:45px;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.14);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:92px;
+  backdrop-filter:blur(8px);
+  box-shadow:0 25px 70px rgba(0,0,0,.25);
+}
+
+.visualMini{
+  position:absolute;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(5px);
+  border-radius:18px;
+  padding:15px;
+  font-size:34px;
+}
+
+.mini1{
+  top:35%;
+  left:12%;
+}
+
+.mini2{
+  top:43%;
+  right:10%;
+}
+
+.mini3{
+  top:55%;
+  left:28%;
+}
+
+.slideContent{
+  position:relative;
+  z-index:2;
+  max-width:620px;
+  margin:auto auto 0;
+  width:100%;
+}
+
+.slideEyebrow{
+  color:var(--accent2);
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:1.5px;
+  margin-bottom:12px;
+}
+
+.slide h1{
+  font-size:42px;
+  line-height:1;
+  letter-spacing:-2px;
+  margin-bottom:15px;
+}
+
+.slide p{
+  color:#d1d5db;
+  font-size:17px;
+  line-height:1.5;
+  max-width:500px;
+}
+
+.slideNumber{
+  position:absolute;
+  top:30px;
+  left:22px;
+  z-index:5;
+  font-size:13px;
+  color:#9ca3af;
+}
+
+.slideControls{
+  position:absolute;
+  bottom:28px;
+  left:22px;
+  right:22px;
+  z-index:10;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+}
+
+.slideDots{
+  display:flex;
+  gap:7px;
+}
+
+.slideDot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#6b7280;
+  transition:.2s;
+}
+
+.slideDot.active{
+  width:24px;
+  border-radius:20px;
+  background:var(--accent);
+}
+
+.slideArrow{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  background:rgba(255,255,255,.10);
+  color:white;
+  border:1px solid rgba(255,255,255,.12);
+  font-size:20px;
+}
+
+.welcomeActions{
+  position:absolute;
+  z-index:20;
+  bottom:75px;
+  left:22px;
+  right:22px;
+  display:flex;
+  gap:10px;
+}
+
+.btn{
+  min-height:50px;
+  padding:0 20px;
+  border-radius:14px;
+  font-weight:800;
+  transition:.2s;
+}
+
+.btn:active{
+  transform:scale(.97);
+}
+
+.btnPrimary{
+  background:var(--accent);
+  color:#111827;
+  flex:1;
+}
+
+.btnSecondary{
+  background:rgba(255,255,255,.10);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.15);
+}
+
+/* =========================
+   AUTH
+========================= */
+
+#authPage{
+  min-height:100vh;
+  background:#f4f6f8;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.authCard{
+  width:100%;
+  max-width:460px;
+  background:#fff;
+  border-radius:26px;
+  padding:26px;
+  box-shadow:var(--shadow);
+}
+
+.authLogo{
+  text-align:center;
+  font-size:42px;
+  font-weight:900;
+  letter-spacing:-3px;
+  margin-bottom:5px;
+}
+
+.authSubtitle{
+  text-align:center;
+  color:var(--muted);
+  margin-bottom:25px;
+}
+
+.authTabs{
+  display:flex;
+  background:#f3f4f6;
+  padding:4px;
+  border-radius:12px;
+  margin-bottom:20px;
+}
+
+.authTab{
+  flex:1;
+  height:43px;
+  border-radius:9px;
+  background:transparent;
+  font-weight:700;
+  color:#6b7280;
+}
+
+.authTab.active{
+  background:#fff;
+  color:#111827;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+
+.formGroup{
+  margin-bottom:14px;
+}
+
+.formGroup label{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:6px;
+}
+
+.formGroup input,
+.formGroup textarea,
+.formGroup select{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:13px 14px;
+  outline:none;
+  background:#fff;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus,
+.formGroup select:focus{
+  border-color:var(--accent);
+}
+
+.formGroup textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+.checkboxLine{
+  display:flex;
+  align-items:flex-start;
+  gap:9px;
+  font-size:13px;
+  color:#4b5563;
+  margin:12px 0;
+}
+
+.checkboxLine input{
+  margin-top:3px;
+}
+
+.authMessage{
+  display:none;
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:14px;
+  font-size:13px;
+  line-height:1.4;
+}
+
+.authMessage.error{
+  display:block;
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.authMessage.success{
+  display:block;
+  background:#dcfce7;
+  color:#166534;
+}
+
+.authBack{
+  text-align:center;
+  margin-top:18px;
+}
+
+.authBack button{
+  background:none;
+  color:#6b7280;
+}
+
+/* =========================
+   APP
+========================= */
+
+#appPage{
+  min-height:100vh;
+  padding-bottom:78px;
+}
+
+.appHeader{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+
+.headerTop{
+  height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+}
+
+.appLogo{
+  font-size:30px;
+  font-weight:900;
+  letter-spacing:-2px;
+}
+
+.headerUser{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:#111827;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+}
+
+.searchBox{
+  padding:0 16px 12px;
+}
+
+.searchBox input{
+  width:100%;
+  height:45px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:#f3f4f6;
+  padding:0 15px;
+  outline:none;
+}
+
+.page{
+  display:none;
+  padding:18px 16px 20px;
+}
+
+.page.active{
+  display:block;
+}
+
+.sectionTitle{
+  font-size:24px;
+  font-weight:900;
+  letter-spacing:-1px;
+  margin-bottom:5px;
+}
+
+.sectionSubtitle{
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:18px;
+}
+
+/* =========================
+   HOME
+========================= */
+
+.heroCard{
+  background:#111827;
+  color:#fff;
+  border-radius:24px;
+  padding:24px;
+  margin-bottom:22px;
+  position:relative;
+  overflow:hidden;
+}
+
+.heroCard::after{
+  content:"";
+  position:absolute;
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  background:rgba(245,158,11,.18);
+  right:-70px;
+  top:-70px;
+}
+
+.heroCard h1{
+  font-size:31px;
+  letter-spacing:-1.5px;
+  margin-bottom:9px;
+  position:relative;
+  z-index:2;
+}
+
+.heroCard p{
+  color:#d1d5db;
+  line-height:1.5;
+  position:relative;
+  z-index:2;
+}
+
+.categoryGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-bottom:25px;
+}
+
+.categoryCard{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px;
+  min-height:120px;
+  box-shadow:0 3px 12px rgba(0,0,0,.04);
+}
+
+.categoryIcon{
+  font-size:31px;
+  margin-bottom:10px;
+}
+
+.categoryCard strong{
+  display:block;
+  margin-bottom:5px;
+}
+
+.categoryCard span{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.3;
+}
+
+/* =========================
+   PRODUCTS
+========================= */
+
+.productGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+.productCard{
+  background:#fff;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid var(--border);
+  box-shadow:0 3px 12px rgba(0,0,0,.04);
+}
+
+.productVisual{
+  height:145px;
+  background:#eef2f7;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:65px;
+  position:relative;
+}
+
+.favoriteBtn{
+  position:absolute;
+  right:8px;
+  top:8px;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:rgba(255,255,255,.92);
+  font-size:18px;
+}
+
+.productInfo{
+  padding:12px;
+}
+
+.productTitle{
+  font-weight:800;
+  font-size:15px;
+  margin-bottom:6px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.productPrice{
+  font-size:19px;
+  font-weight:900;
+  margin-bottom:5px;
+}
+
+.productLocation{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.tradeBadge{
+  display:inline-block;
+  margin-top:7px;
+  padding:4px 7px;
+  border-radius:7px;
+  background:#dcfce7;
+  color:#166534;
+  font-size:10px;
+  font-weight:800;
+}
+
+.emptyState{
+  text-align:center;
+  padding:45px 20px;
+  color:var(--muted);
+}
+
+.emptyIcon{
+  font-size:45px;
+  margin-bottom:10px;
+}
+  
+/* =========================
+   VITRINE DE LOJAS
+========================= */
+
+.storesHero {
+  background: linear-gradient(135deg, #102a43, #1d4e70);
+  color: #fff;
+  border-radius: 24px;
+  padding: 24px 20px;
+  margin-bottom: 22px;
+  position: relative;
+  overflow: hidden;
+}
+
+.storesHero h1 {
+  font-size: 29px;
+  line-height: 1.15;
+  letter-spacing: -1px;
+  margin-bottom: 10px;
+}
+
+.storesHero p {
+  color: #d9e6f2;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.storesSearch {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #dbe2ea;
+  border-radius: 14px;
+  background: #fff;
+  margin-bottom: 14px;
+}
+
+.storeCategories {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+}
+
+.storeCategory {
+  flex-shrink: 0;
+  padding: 10px 14px;
+  border-radius: 30px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  font-weight: 700;
+  color: #374151;
+}
+
+.storeCategory.active {
+  background: #102a43;
+  color: #fff;
+  border-color: #102a43;
+}
+
+.storeCard {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.storeCover {
+  min-height: 125px;
+  background: linear-gradient(135deg, #dbeafe, #fef3c7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 52px;
+}
+
+.storeInfo {
+  padding: 15px;
+}
+
+.storeInfo h3 {
+  margin-bottom: 6px;
+  font-size: 17px;
+}
+
+.storeInfo p {
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.storeStatus {
+  display: inline-block;
+  padding: 6px 9px;
+  border-radius: 8px;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.storeEmpty {
+  background: #fff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 18px;
+  padding: 28px 18px;
+  text-align: center;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+/* =========================
+   SERVICES
+========================= */
+
+.serviceCard{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:12px;
+}
+
+.serviceIcon{
+  font-size:40px;
+  margin-bottom:12px;
+}
+
+.serviceCard h3{
+  margin-bottom:7px;
+}
+
+.serviceCard p{
+  color:var(--muted);
+  line-height:1.4;
+  font-size:14px;
+}
+
+.serviceComing{
+  display:inline-block;
+  margin-top:12px;
+  padding:6px 9px;
+  background:#fef3c7;
+  color:#92400e;
+  border-radius:8px;
+  font-size:11px;
+  font-weight:800;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profileCard{
+  background:#fff;
+  border-radius:20px;
+  border:1px solid var(--border);
+  padding:20px;
+  margin-bottom:14px;
+}
+
+.profileAvatar{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  background:#111827;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
+  font-weight:900;
+  margin-bottom:14px;
+}
+
+.profileName{
+  font-size:23px;
+  font-weight:900;
+}
+
+.profileEmail{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:3px;
+}
+
+.profileActions{
+  display:grid;
+  gap:10px;
+  margin-top:18px;
+}
+
+.profileAction{
+  background:#f3f4f6;
+  padding:15px;
+  border-radius:12px;
+  text-align:left;
+  font-weight:700;
+}
+
+.btnDanger{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+/* =========================
+   BOTTOM NAV
+========================= */
+
+.bottomNav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:70px;
+  background:rgba(255,255,255,.97);
+  backdrop-filter:blur(15px);
+  border-top:1px solid var(--border);
+  z-index:100;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+}
+
+.navBtn{
+  background:none;
+  color:#6b7280;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:3px;
+  font-size:10px;
+  font-weight:700;
+}
+
+.navIcon{
+  font-size:21px;
+}
+
+.navBtn.active{
+  color:#111827;
+}
+
+.navSell{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  background:var(--accent);
+  color:#111827;
+  font-size:27px;
+  margin-top:-20px;
+  box-shadow:0 7px 20px rgba(245,158,11,.35);
+}
+
+/* =========================
+   MODALS
+========================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.58);
+  z-index:500;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+}
+
+.modal.open{
+  display:flex;
+}
+
+.modalContent{
+  width:100%;
+  max-width:620px;
+  max-height:92vh;
+  overflow-y:auto;
+  background:#fff;
+  border-radius:25px 25px 0 0;
+  padding:22px;
+  animation:modalUp .25s ease;
+}
+
+@keyframes modalUp{
+  from{transform:translateY(100%)}
+  to{transform:translateY(0)}
+}
+
+.modalHeader{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+
+.modalHeader h2{
+  font-size:22px;
+}
+
+.closeModal{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:#f3f4f6;
+  font-size:20px;
+}
+
+.modalActions{
+  display:flex;
+  gap:10px;
+  margin-top:20px;
+}
+
+.modalActions .btn{
+  flex:1;
+}
+
+.detailVisual{
+  height:230px;
+  background:#eef2f7;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:100px;
+  margin-bottom:18px;
+}
+
+.detailPrice{
+  font-size:29px;
+  font-weight:900;
+  margin:8px 0;
+}
+
+.detailMeta{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+  margin-bottom:15px;
+}
+
+.detailDescription{
+  line-height:1.55;
+  color:#374151;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+#toast{
+  position:fixed;
+  left:18px;
+  right:18px;
+  bottom:88px;
+  z-index:1000;
+  background:#111827;
+  color:white;
+  padding:14px 16px;
+  border-radius:13px;
+  box-shadow:var(--shadow);
+  transform:translateY(30px);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  font-size:14px;
+}
+
+#toast.show{
+  transform:translateY(0);
+  opacity:1;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(min-width:700px){
+  .productGrid{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .categoryGrid{
+    grid-template-columns:repeat(4,1fr);
+  }
+
+  .page{
+    max-width:1100px;
+    margin:auto;
+  }
+
+  .bottomNav{
+    max-width:700px;
+    left:50%;
+    transform:translateX(-50%);
+    border-radius:20px 20px 0 0;
+  }
+
+  .welcomeActions{
+    max-width:600px;
+    margin:auto;
+  }
+}
+
+</style>
+</head>
+<body>
+<!-- ==================================================
+     MAPA DE ORGANIZAÇÃO DO ARQUIVO
+     1. Estilos visuais (CSS)
+     2. Carregamento e apresentação inicial
+     3. Cadastro, login e sessão do usuário
+     4. Páginas: início, busca, anúncios, favoritos e lojas
+     5. Serviços, profissionais e pedidos de serviço
+     6. Conversas, perfil e painel administrativo
+     7. Modais: anúncio, loja, perfil, chat e ofertas
+     8. JavaScript: Firebase, dados e eventos
+     9. Pagamentos, FreteGo e atalhos
+     Observação: os comentários organizam o arquivo;
+     não alteram a lógica das funcionalidades existentes.
+================================================== -->
+<!-- ================================================== -->
+<!-- TELA DE CARREGAMENTO -->
+<!-- ================================================== -->
+<div id="loadingScreen"><div class="loadingLogo">perto.</div><div class="loadingDot"></div><div style="font-size:13px;color:#9ca3af;">Carregando...</div></div>
+
+<!-- ================================================== -->
+<!-- BOAS-VINDAS / APRESENTAÇÃO INICIAL -->
+<!-- ================================================== -->
+<section id="welcomePage">
+  <div class="welcomeSlides">
+    <div class="slide active"><div class="slideVisual"><div class="visualIcon">🛍️</div><div class="visualMini mini1">📦</div><div class="visualMini mini2">💰</div><div class="visualMini mini3">📍</div></div><div class="slideNumber">01</div><div class="slideContent"><div class="slideEyebrow">COMPRE PERTO</div><h1>O que você procura pode estar perto de você.</h1><p>Encontre produtos e oportunidades na sua região, sem complicação.</p></div></div>
+    <div class="slide"><div class="slideVisual"><div class="visualIcon">🚀</div><div class="visualMini mini1">📸</div><div class="visualMini mini2">⚡</div><div class="visualMini mini3">💬</div></div><div class="slideNumber">02</div><div class="slideContent"><div class="slideEyebrow">VENDA FÁCIL</div><h1>Publique, converse e negocie.</h1><p>Coloque seus produtos à venda com fotos da sua galeria e fale diretamente com interessados.</p></div></div>
+    <div class="slide"><div class="slideVisual"><div class="visualIcon">🤝</div><div class="visualMini mini1">🏷️</div><div class="visualMini mini2">❤️</div><div class="visualMini mini3">📲</div></div><div class="slideNumber">03</div><div class="slideContent"><div class="slideEyebrow">FEITO PARA PERTO</div><h1>Negócios locais, de um jeito simples.</h1><p>Crie sua conta gratuitamente e comece a comprar ou vender.</p></div></div>
+  </div>
+  <div id="slideDots" class="slideDots" style="position:absolute;left:22px;bottom:35px;z-index:12;"></div>
+  <div class="slideControls"><div></div><div style="display:flex;gap:8px"><button class="slideArrow" id="prevSlide">‹</button><button class="slideArrow" id="nextSlide">›</button></div></div>
+  <div class="welcomeActions"><button class="btn btnSecondary" id="btnLoginWelcome">Entrar</button><button class="btn btnPrimary" id="btnSignupWelcome">Criar conta</button></div>
+</section>
+
+<!-- ================================================== -->
+<!-- CADASTRO E LOGIN -->
+<!-- ================================================== -->
+<section id="authPage" class="hidden">
+  <div class="authCard">
+    <div class="authLogo">perto.</div><div class="authSubtitle">Compre perto. Venda fácil.</div>
+    <div class="authTabs"><button class="authTab active" id="tabLogin">Entrar</button><button class="authTab" id="tabSignup">Criar conta</button></div>
+    <div id="authMessage" class="authMessage"></div>
+    <form id="loginForm"><div class="formGroup"><label for="loginEmail">E-mail</label><input id="loginEmail" type="email" autocomplete="email" required></div><div class="formGroup"><label for="loginPassword">Senha</label><input id="loginPassword" type="password" autocomplete="current-password" required></div><button class="btn btnPrimary" style="width:100%" type="submit">Entrar</button></form>
+    <form id="signupForm" class="hidden"><div class="formGroup"><label for="signupName">Nome *</label><input id="signupName" required></div><div class="formGroup"><label for="signupPhone">Telefone</label><input id="signupPhone" type="tel"></div><div class="formGroup"><label for="signupCity">Cidade *</label><input id="signupCity" required></div><div class="formGroup"><label for="signupEmail">E-mail *</label><input id="signupEmail" type="email" required></div><div class="formGroup"><label for="signupPassword">Senha *</label><input id="signupPassword" type="password" minlength="6" required></div><label class="checkboxLine"><input id="termsCheck" type="checkbox"><span>Li e aceito os termos de uso e as regras do Perto.</span></label><button class="btn btnPrimary" style="width:100%" type="submit">Criar minha conta</button></form>
+    <div class="authBack"><button id="backToWelcome">← Voltar</button></div>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<!-- APLICAÇÃO PRINCIPAL / CABEÇALHO -->
+<!-- ================================================== -->
+<section id="appPage" class="hidden">
+  <header class="appHeader"><div class="headerTop"><div class="appLogo">perto.</div><button id="headerUser" class="headerUser">?</button></div><div class="searchBox"><input id="globalSearch" placeholder="🔎 O que você está procurando?"></div></header>
+  <main>
+    <!-- INÍCIO / PÁGINA PRINCIPAL -->
+<section id="homePage" class="page active"><div class="heroCard"><h1>Compre perto.<br>Venda fácil.</h1><p>Produtos, oportunidades e negócios na sua região.</p></div><div class="categoryGrid"><button class="categoryCard" id="homeServices"><div class="categoryIcon">🛠️</div><strong>Serviços</strong><span>Encontre profissionais perto de você.</span></button><button class="categoryCard" id="homeDelivery"><div class="categoryIcon">🚚</div><strong>Entregas</strong><span>Conecte produtos a entregas locais.</span></button><button class="categoryCard" id="homeIncome"><div class="categoryIcon">💰</div><strong>Renda extra</strong><span>Novas oportunidades na sua região.</span></button><button class="categoryCard" id="homeMyAds"><div class="categoryIcon">📦</div><strong>Meus anúncios</strong><span>Gerencie o que você publicou.</span></button></div><div class="sectionTitle">Anúncios perto de você</div><div class="sectionSubtitle">Destaques aparecem primeiro.</div><div id="homeProducts" class="productGrid"></div></section>
+    <!-- BUSCA E FILTRO POR CIDADE -->
+<section id="searchPage" class="page"><div class="sectionTitle">Resultados</div><div class="sectionSubtitle">Pesquise produtos e filtre pela cidade.</div><div style="margin:12px 0 16px"><label for="cityFilter" style="display:block;font-size:13px;font-weight:700;margin-bottom:6px">📍 Filtrar por cidade</label><select id="cityFilter" style="width:100%;padding:13px;border:1px solid #dbe1ea;border-radius:12px;background:#fff;color:#111827"><option value="">Todas as cidades</option><option>Piracicaba</option><option>Cerquilho</option><option>Tietê</option><option>Tatuí</option><option>Boituva</option><option>Iperó</option><option>Porto Feliz</option></select><div style="font-size:11px;color:#6b7280;margin-top:6px">O filtro compara com a cidade informada pelo vendedor no anúncio.</div></div><div id="searchProducts" class="productGrid"></div></section>
+    <!-- MEUS ANÚNCIOS -->
+<section id="myAdsPage" class="page"><div class="sectionTitle">Meus anúncios</div><div class="sectionSubtitle">Edite, pause ou marque como vendido.</div><div id="myAdsProducts" class="productGrid"></div></section>
+    <!-- FAVORITOS -->
+<section id="favoritesPage" class="page"><div class="sectionTitle">Favoritos</div><div class="sectionSubtitle">Seus anúncios salvos.</div><div id="favoriteProducts" class="productGrid"></div></section>
+    <!-- VITRINE DE LOJAS -->
+    <section id="storesPage" class="page">
+      <div class="storesHero">
+        <div style="font-size:13px;font-weight:800;color:#fbbf24;margin-bottom:10px">
+          🛍️ COMPRE DE QUEM ESTÁ PERTO
+        </div>
+        <h1>Descubra lojas e novidades da sua região.</h1>
+        <p>Explore o comércio local, conheça novos negócios e encontre produtos em lojas próximas.</p>
+      </div>
+
+      <!-- CADASTRO DE LOJA -->
+      <div class="serviceCard" style="margin-bottom:18px">
+        <div class="serviceIcon">🏪</div>
+        <h3>Tenha sua loja no Perto</h3>
+        <p>
+          Divulgue seu negócio, apresente seus produtos
+          e fique mais perto dos clientes da sua cidade.
+        </p>
+        <button
+          type="button"
+          id="registerStoreBtn"
+          class="btn btnPrimary"
+          style="width:100%;margin-top:15px">
+          Cadastrar minha loja
+        </button>
+      </div>
+      <!-- FIM DO CADASTRO DE LOJA -->
+
+      <input
+        id="storeSearch"
+        class="storesSearch"
+        type="search"
+        placeholder="🔎 Buscar loja ou produto..."
+        aria-label="Buscar loja ou produto"
+      >
+
+      <label for="storeCity" style="display:block;font-weight:700;font-size:13px;margin-bottom:6px">
+        📍 Escolha a cidade
+      </label>
+      <input
+        id="storeCity"
+        class="storesSearch"
+        type="text"
+        placeholder="Ex.: Tatuí, Cerquilho ou Tietê"
+        aria-label="Filtrar lojas por cidade"
+      >
+
+      <div class="storeCategories" id="storeCategories">
+        <button type="button" class="storeCategory active" data-category="">✨ Todas</button>
+        <button type="button" class="storeCategory" data-category="Alimentação">🍔 Alimentação</button>
+        <button type="button" class="storeCategory" data-category="Moda">👕 Moda</button>
+        <button type="button" class="storeCategory" data-category="Casa">🏠 Casa</button>
+        <button type="button" class="storeCategory" data-category="Beleza">💄 Beleza</button>
+        <button type="button" class="storeCategory" data-category="Outros">🛍️ Outros</button>
+      </div>
+
+      <div class="sectionTitle">Lojas para descobrir</div>
+      <div class="sectionSubtitle">Conheça os negócios e explore suas vitrines.</div>
+
+      <div id="storesResults">
+        <div class="storeEmpty">
+          <div style="font-size:38px;margin-bottom:10px">🏪</div>
+          <strong>Estamos preparando as vitrines!</strong>
+          <div>As lojas cadastradas aparecerão aqui com fotos, produtos e informações.</div>
+        </div>
+      </div>
+    </section>
+    <!-- FIM DA VITRINE DE LOJAS -->
+    <!-- SERVIÇOS -->
+<section id="servicesPage" class="page">
+  <div class="sectionTitle">Serviços</div>
+  <div class="sectionSubtitle">
+    Encontre profissionais da sua região ou ofereça seu trabalho.
+  </div>
+
+  <div class="serviceCard">
+    <div class="serviceIcon">🧰</div>
+    <h3>Sou profissional</h3>
+    <p>
+      Cadastre sua profissão e sua região de atendimento
+      para divulgar seu trabalho no Perto.
+    </p>
+    <button id="serviceProfessionalBtn"
+      class="btn btnPrimary"
+      style="width:100%;margin-top:15px">
+      Quero oferecer serviços
+    </button>
+  </div>
+
+  <div class="serviceCard">
+    <div class="serviceIcon">🔎</div>
+    <h3>Preciso de um serviço</h3>
+    <p>
+      Pesquise profissionais por categoria e cidade.
+    </p>
+    <button id="serviceRequestBtn"
+      class="btn btnPrimary"
+      style="width:100%;margin-top:15px">
+      Encontrar um profissional
+    </button>
+  </div>
+
+  <div id="professionalSearchPanel"
+    class="serviceCard"
+    style="display:none;margin-top:16px">
+
+    <h3>Buscar profissionais</h3>
+    <p>Escolha a categoria e informe a cidade.</p>
+
+    <label for="searchProfessionalCategory"
+      style="display:block;font-weight:600;margin:12px 0 6px">
+      Categoria
+    </label>
+
+    <select id="searchProfessionalCategory"
+      style="width:100%;padding:12px;border:1px solid #dbe2ea;border-radius:12px;background:#fff">
+      <option value="">Todas as categorias</option>
+      <option value="Reparos">Reparos e manutenção</option>
+      <option value="Eletricista">Eletricista</option>
+      <option value="Encanador">Encanador</option>
+      <option value="Pintura">Pintura</option>
+      <option value="Limpeza">Limpeza</option>
+      <option value="Jardinagem">Jardinagem</option>
+      <option value="Construção">Construção</option>
+      <option value="Beleza">Beleza e estética</option>
+      <option value="Tecnologia">Tecnologia e informática</option>
+      <option value="Aulas">Aulas particulares</option>
+      <option value="Outros">Outros serviços</option>
+    </select>
+
+    <label for="searchProfessionalCity"
+      style="display:block;font-weight:600;margin:12px 0 6px">
+      Cidade
+    </label>
+
+    <input id="searchProfessionalCity"
+      type="text"
+      placeholder="Ex.: Tatuí"
+      style="width:100%;padding:12px;border:1px solid #dbe2ea;border-radius:12px">
+
+    <button id="searchProfessionalBtn"
+      class="btn btnPrimary"
+      style="width:100%;margin-top:12px">
+      Buscar
+    </button>
+
+    <div id="professionalSearchResults"
+      style="margin-top:16px"></div>
+  </div>
+<!-- PEDIDOS DE SERVIÇO DISPONÍVEIS -->
+  <div class="serviceCard" style="margin-top:16px">
+    <div class="serviceIcon">📋</div>
+    <h3>Pedidos de serviços</h3>
+    <p>
+      Encontre pessoas da sua região que precisam
+      de um profissional.
+    </p>
+
+    <label for="openRequestsCategory"
+      style="display:block;font-weight:600;margin:12px 0 6px">
+      Categoria
+    </label>
+
+    <select id="openRequestsCategory"
+      style="width:100%;padding:12px;border:1px solid #dbe2ea;border-radius:12px;background:#fff">
+      <option value="">Todas as categorias</option>
+      <option value="Reparos">Reparos e manutenção</option>
+      <option value="Eletricista">Eletricista</option>
+      <option value="Encanador">Encanador</option>
+      <option value="Pintura">Pintura</option>
+      <option value="Limpeza">Limpeza</option>
+      <option value="Jardinagem">Jardinagem</option>
+      <option value="Construção">Construção</option>
+      <option value="Beleza">Beleza e estética</option>
+      <option value="Tecnologia">Tecnologia e informática</option>
+      <option value="Aulas">Aulas particulares</option>
+      <option value="Outros">Outros serviços</option>
+    </select>
+
+    <label for="openRequestsCity"
+      style="display:block;font-weight:600;margin:12px 0 6px">
+      Cidade
+    </label>
+
+    <input id="openRequestsCity"
+      type="text"
+      placeholder="Ex.: Cerquilho"
+      style="width:100%;box-sizing:border-box;padding:12px;border:1px solid #dbe2ea;border-radius:12px">
+
+    <button id="searchOpenRequestsBtn"
+      type="button"
+      class="btn btnPrimary"
+      style="width:100%;margin-top:12px">
+      Buscar pedidos
+    </button>
+
+    <div id="openServiceRequestsResults"
+      style="margin-top:16px"></div>
+  </div>
+  <!-- FIM DOS PEDIDOS DE SERVIÇO -->
+  <!-- PUBLICAR PEDIDO DE SERVIÇO -->
+  <div class="serviceCard" style="margin-top:16px">
+    <div class="serviceIcon">📝</div>
+    <h3>Publicar pedido de serviço</h3>
+    <p>
+      Descreva o que você precisa e permita que profissionais
+      da sua região encontrem seu pedido.
+    </p>
+
+    <form id="serviceRequestForm"
+      style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+
+      <label for="serviceRequestTitle"
+        style="font-weight:600;font-size:14px">
+        O que você precisa? *
+      </label>
+      <input id="serviceRequestTitle"
+        type="text"
+        maxlength="100"
+        placeholder="Ex.: Consertar um vazamento"
+        required
+        style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px">
+
+      <label for="serviceRequestDescription"
+        style="font-weight:600;font-size:14px">
+        Descreva o serviço *
+      </label>
+      <textarea id="serviceRequestDescription"
+        maxlength="1500"
+        rows="4"
+        placeholder="Explique o que precisa ser feito..."
+        required
+        style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px;resize:vertical"></textarea>
+
+      <label for="serviceRequestCategory"
+        style="font-weight:600;font-size:14px">
+        Categoria *
+      </label>
+      <select id="serviceRequestCategory"
+        required
+        style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px;background:#fff">
+        <option value="">Selecione uma categoria</option>
+        <option value="Reparos">Reparos e manutenção</option>
+        <option value="Eletricista">Eletricista</option>
+        <option value="Encanador">Encanador</option>
+        <option value="Pintura">Pintura</option>
+        <option value="Limpeza">Limpeza</option>
+        <option value="Jardinagem">Jardinagem</option>
+        <option value="Construção">Construção</option>
+        <option value="Beleza">Beleza e estética</option>
+        <option value="Tecnologia">Tecnologia e informática</option>
+        <option value="Aulas">Aulas particulares</option>
+        <option value="Outros">Outros serviços</option>
+      </select>
+
+      <label for="serviceRequestCity"
+        style="font-weight:600;font-size:14px">
+        Cidade *
+      </label>
+      <input id="serviceRequestCity"
+        type="text"
+        maxlength="80"
+        placeholder="Ex.: Tatuí"
+        required
+        style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px">
+
+      <label for="serviceRequestNeighborhood"
+        style="font-weight:600;font-size:14px">
+        Bairro (opcional)
+      </label>
+      <input id="serviceRequestNeighborhood"
+        type="text"
+        maxlength="80"
+        placeholder="Informe o bairro"
+        style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px">
+
+      <button id="publishServiceRequestBtn"
+        type="submit"
+        class="btn btnPrimary"
+        style="width:100%;margin-top:8px">
+        Publicar pedido
+      </button>
+    </form>
+  </div>
+</section>
+<!-- FIM DOS SERVIÇOS -->
+
+<!-- CADASTRO DO PROFISSIONAL -->
+<div id="professionalModal" class="modal" style="display:none;">
+  <div class="modalContent" style="max-width:480px;width:calc(100% - 28px);max-height:90vh;overflow-y:auto;padding:20px;border-radius:20px;">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;">
+      <h2 style="margin:0;font-size:22px;">Cadastro profissional</h2>
+      <button type="button" id="closeProfessionalModal" aria-label="Fechar cadastro" style="border:0;background:#f1f5f9;border-radius:50%;width:36px;height:36px;font-size:22px;flex-shrink:0;">×</button>
+    </div>
+
+    <p style="margin:0 0 20px;color:#64748b;font-size:14px;line-height:1.5;">
+      Informe seus dados para oferecer serviços pelo Perto.
+    </p>
+
+    <form id="professionalForm" style="display:flex;flex-direction:column;gap:7px;">
+
+      <label for="professionalName" style="font-weight:600;font-size:14px;">Nome profissional</label>
+      <input id="professionalName" type="text" placeholder="Seu nome" required
+        style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px;margin-bottom:9px;">
+
+      <label for="professionalPhoto" style="font-weight:600;font-size:14px;">Foto profissional (opcional)</label>
+      <input id="professionalPhoto" type="file" accept="image/*"
+        style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #dbe2ea;border-radius:12px;margin-bottom:4px;background:#fff;">
+
+      <div id="professionalPhotoPreview" style="display:none;align-items:center;gap:10px;margin:0 0 12px;">
+        <img id="professionalPhotoPreviewImage" alt="Prévia da foto profissional" style="width:76px;height:76px;object-fit:cover;border-radius:50%;border:2px solid #e2e8f0;">
+        <span style="font-size:12px;color:#64748b;">Prévia da foto selecionada</span>
+      </div>
+      
+      <label for="professionalCategory" style="font-weight:600;font-size:14px;">Categoria do serviço</label>
+      <select id="professionalCategory" required
+        style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px;background:#fff;margin-bottom:9px;">
+        <option value="">Selecione uma categoria</option>
+        <option value="Reparos">Reparos e manutenção</option>
+        <option value="Eletricista">Eletricista</option>
+        <option value="Encanador">Encanador</option>
+        <option value="Pintura">Pintura</option>
+        <option value="Limpeza">Limpeza</option>
+        <option value="Jardinagem">Jardinagem</option>
+        <option value="Construção">Construção</option>
+        <option value="Beleza">Beleza e estética</option>
+        <option value="Tecnologia">Tecnologia e informática</option>
+        <option value="Aulas">Aulas particulares</option>
+        <option value="Outros">Outros serviços</option>
+      </select>
+
+      <label for="professionalDescription" style="font-weight:600;font-size:14px;">Descrição do serviço</label>
+      <textarea id="professionalDescription" placeholder="Descreva seu trabalho e os serviços que oferece" required
+        style="width:100%;box-sizing:border-box;min-height:100px;padding:13px;border:1px solid #dbe2ea;border-radius:12px;resize:vertical;margin-bottom:9px;"></textarea>
+
+      <label for="professionalCity" style="font-weight:600;font-size:14px;">Cidade</label>
+      <input id="professionalCity" type="text" placeholder="Ex.: Tatuí" required
+        style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px;margin-bottom:9px;">
+
+      <label for="professionalArea" style="font-weight:600;font-size:14px;">Região de atendimento</label>
+      <input id="professionalArea" type="text" placeholder="Ex.: cidade e bairros atendidos" required
+        style="width:100%;box-sizing:border-box;padding:13px;border:1px solid #dbe2ea;border-radius:12px;margin-bottom:9px;">
+
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:14px;margin:7px 0 10px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;">
+          <span style="font-size:20px;">💰</span>
+          <div>
+            <strong style="display:block;font-size:14px;margin-bottom:4px;">Preço combinado pelo chat</strong>
+            <p style="margin:0;color:#64748b;font-size:13px;line-height:1.5;">O preço será negociado diretamente com o cliente pelo chat do Perto.</p>
+          </div>
+        </div>
+        <div style="height:1px;background:#e2e8f0;margin-bottom:12px;"></div>
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <span style="font-size:20px;">💬</span>
+          <div>
+            <strong style="display:block;font-size:14px;margin-bottom:4px;">Contato pelo Perto</strong>
+            <p style="margin:0;color:#64748b;font-size:13px;line-height:1.5;">Toda a comunicação com o cliente acontece exclusivamente pelo chat do Perto.</p>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btnPrimary" style="width:100%;padding:14px;border-radius:12px;">
+        Cadastrar profissional
+      </button>
+      
+      <button type="button" id="toggleProfessionalBtn" class="btn" style="display:none;width:100%;padding:13px;border-radius:12px;margin-top:2px;background:#fef3c7;color:#92400e;">
+          ⏸️ Pausar perfil profissional
+      </button>
+      
+<button type="button" id="deleteProfessionalBtn" class="btn" style="display:none;width:100%;padding:13px;border-radius:12px;margin-top:2px;background:#fee2e2;color:#991b1b;">
+  🗑️ Excluir perfil profissional
+</button>
+      
+      <button type="button" id="cancelProfessionalModal" class="btn" style="width:100%;padding:13px;border-radius:12px;margin-top:2px;background:#f1f5f9;color:#334155;">
+        Cancelar
+      </button>
+
+    </form>
+  </div>
+</div>
+<!-- FIM DO CADASTRO DO PROFISSIONAL -->
+
+    <!-- CHAT / CONVERSAS -->
+<section id="chatPage" class="page"><div class="sectionTitle">Conversas</div><div class="sectionSubtitle">Negocie diretamente com compradores e vendedores.</div><div id="chatList"></div></section>
+    <!-- PERFIL DO USUÁRIO -->
+<section id="profilePage" class="page"><div class="sectionTitle">Meu perfil</div><div class="profileCard"><div id="profileAvatar" class="profileAvatar">?</div><div id="profileName" class="profileName">Usuário</div><div id="profileEmail" class="profileEmail"></div><div id="profileCity" class="profileEmail"></div>
+<div class="profileActions"><button class="profileAction" id="editProfileBtn">⚙️ Configurar meus dados</button><button class="profileAction" id="myAdsBtn">📦 Meus anúncios</button>
+  <button class="profileAction" id="profileFavoritesBtn">❤️ Meus favoritos</button>
+  <!-- PAINEL ADMINISTRATIVO: aparece somente para a conta autorizada -->
+  <button class="profileAction" id="adminPanelBtn" type="button" style="display:none">🛡️ Administrador</button>
+  <button class="profileAction btnDanger" id="logoutBtn">🚪 Sair da conta</button></div></div></section>
+
+    <!-- PAINEL ADMINISTRATIVO: configurações da plataforma -->
+    <section id="adminPage" class="page">
+      <div class="sectionTitle">Painel administrativo</div>
+      <div class="sectionSubtitle">Configurações comerciais do Perto.</div>
+
+      <div class="serviceCard">
+        <div class="serviceIcon">💰</div>
+        <h3>Mensalidade das lojas</h3>
+        <p style="margin-bottom:14px">Defina o valor mensal para utilizar a área de lojas do Perto.</p>
+
+        <label for="adminMonthlyPrice" style="display:block;font-weight:700;margin:12px 0 7px">Valor mensal (R$)</label>
+        <input id="adminMonthlyPrice" type="text" inputmode="decimal" placeholder="49,90" autocomplete="off" style="width:100%;padding:14px;border:1px solid #dbe2ea;border-radius:12px;margin-bottom:12px">
+
+        <button id="saveAdminMonthlyPrice" type="button" class="btn btnPrimary" style="width:100%">Salvar valor</button>
+        <p id="adminPriceMessage" role="status" aria-live="polite" style="margin-top:12px;overflow-wrap:anywhere"></p>
+      </div>
+
+      <div class="serviceCard">
+        <h3>Importante</h3>
+        <p>Esta configuração salva o valor no Firebase. Ela não realiza cobranças automáticas nem ativa pagamentos sozinha.</p>
+      </div>
+
+      <button id="adminBackBtn" type="button" class="btn" style="width:100%;background:#e5e7eb">← Voltar ao perfil</button>
+    </section>
+    <!-- FIM DO PAINEL ADMINISTRATIVO -->
+  </main>
+  <nav class="bottomNav"><button class="navBtn active" data-page="homePage"><span class="navIcon">🏠</span>Início</button><button class="navBtn" data-page="favoritesPage"><span class="navIcon">❤️</span>Favoritos</button><button class="navBtn" id="sellNavBtn"><span class="navSell">＋</span>Vender</button><button class="navBtn" data-page="chatPage"><span class="navIcon">💬</span>Chat</button><button class="navBtn" data-page="profilePage"><span class="navIcon">👤</span>Perfil</button></nav>
+</section>
+
+<!-- ================================================== -->
+<!-- MODAL: PUBLICAR / EDITAR ANÚNCIO -->
+<!-- ================================================== -->
+      
+  <!-- MODAL: CADASTRAR LOJA -->
+<div id="storeRegisterModal" class="modal">
+  <div class="modalContent">
+    <div class="modalHeader">
+      <h2>🏪 Cadastrar minha loja</h2>
+      <button
+        type="button"
+        class="closeModal"
+        data-close="storeRegisterModal">×</button>
+    </div>
+
+    <p style="font-size:13px;color:#64748b;margin-bottom:16px">
+      Apresente seu negócio e comece a preparar sua vitrine no Perto.
+    </p>
+
+    <form id="storeForm">
+
+      <div class="formGroup">
+        <label for="storeName">Nome da loja ou negócio *</label>
+        <input
+          id="storeName"
+          maxlength="100"
+          placeholder="Ex.: Lanches do Bairro"
+          required>
+      </div>
+
+      <div class="formGroup">
+        <label for="storeType">Categoria do negócio *</label>
+        <select id="storeType" required>
+          <option value="">Selecione uma categoria</option>
+          <option value="Alimentação">🍔 Alimentação</option>
+          <option value="Moda">👕 Moda e roupas</option>
+          <option value="Casa">🏠 Casa e decoração</option>
+          <option value="Beleza">💄 Beleza e estética</option>
+          <option value="Mercado">🛒 Mercado e mercearia</option>
+          <option value="Eletrônicos">📱 Eletrônicos</option>
+          <option value="Outros">🛍️ Outros negócios</option>
+        </select>
+      </div>
+
+      <div class="formGroup">
+        <label for="storeRegisterCity">Cidade *</label>
+        <input
+          id="storeRegisterCity"
+          maxlength="100"
+          placeholder="Ex.: Tatuí - SP"
+          required>
+      </div>
+
+      <div class="formGroup">
+        <label for="storePhone">WhatsApp para contato *</label>
+        <input
+          id="storePhone"
+          type="tel"
+          maxlength="25"
+          placeholder="(15) 99999-9999"
+          required>
+      </div>
+
+      <div class="formGroup">
+        <label for="storeDescription">Sobre a loja *</label>
+        <textarea
+          id="storeDescription"
+          maxlength="600"
+          placeholder="Conte o que sua loja oferece..."
+          required></textarea>
+      </div>
+
+      <div class="formGroup">
+        <label for="storeAddress">Endereço ou região de atendimento</label>
+        <input
+          id="storeAddress"
+          maxlength="180"
+          placeholder="Bairro, rua ou região">
+      </div>
+
+      <div class="formGroup">
+        <label for="storeHours">Horário de funcionamento</label>
+        <input
+          id="storeHours"
+          maxlength="100"
+          placeholder="Ex.: Seg. a sáb., das 9h às 18h">
+      </div>
+
+      <label class="checkboxLine">
+        <input id="storeOpen24h" type="checkbox">
+        <span>Minha vitrine funciona 24 horas pela internet.</span>
+      </label>
+
+      <button
+        type="submit"
+        id="saveStoreBtn"
+        class="btn btnPrimary"
+        style="width:100%;margin-top:16px">
+        Cadastrar loja
+      </button>
+
+      <button
+        type="button"
+        class="btn"
+        data-close="storeRegisterModal"
+        style="width:100%;margin-top:8px;background:#f1f5f9;color:#334155">
+        Cancelar
+      </button>
+
+    </form>
+  </div>
+</div>
+<!-- FIM DO MODAL: CADASTRAR LOJA -->
+<!-- ================================================== -->
+<!-- MODAL: PUBLICAR / EDITAR ANÚNCIO DE PRODUTO -->
+<!-- ================================================== -->
+  <div id="sellModal" class="modal"><div class="modalContent"><div class="modalHeader"><h2>Vender no Perto</h2><button class="closeModal" data-close="sellModal">×</button></div><form id="sellForm"><div class="formGroup"><label for="productName">Produto *</label><input id="productName" required></div><div class="formGroup"><label for="productPrice">Preço *</label><input id="productPrice" type="number" min="0" step="0.01" required></div><div class="formGroup"><label for="productCategory">Categoria *</label><select id="productCategory" required><option value="">Selecione</option><option>Eletrônicos</option><option>Casa</option><option>Ferramentas</option><option>Veículos</option><option>Bicicletas</option><option>Roupas</option><option>Móveis</option><option>Esportes</option><option>Outros</option></select></div><div class="formGroup"><label for="productLocation">Localização *</label><input id="productLocation" placeholder="Ex.: Cerquilho - SP" required></div><div class="formGroup"><label for="productDescription">Descrição *</label><textarea id="productDescription" required></textarea></div><div class="formGroup"><label for="productImages">Fotos do produto</label><input id="productImages" type="file" accept="image/*" multiple><div style="font-size:12px;color:#6b7280;margin-top:6px">Até 5 fotos. As imagens são escolhidas diretamente da galeria do seu celular.</div></div><div id="imagePreviewGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:10px 0"></div><label class="checkboxLine"><input id="acceptsTrade" type="checkbox"><span>Aceito propostas de troca.</span></label><div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:14px;padding:13px;margin-top:12px"><strong>🚀 Turbinar anúncio</strong><p style="font-size:12px;color:#92400e;margin-top:5px"> 
+Destaque seu anúncio no topo. Escolha um plano após publicar. A ativação acontece após a confirmação do pagamento.
+</p><label class="checkboxLine" style="margin-bottom:0"><input id="checkBoost" type="checkbox"><span>Quero turbinar este anúncio</span></label></div><button class="btn btnPrimary" style="width:100%;margin-top:16px" type="submit">Publicar anúncio</button></form></div></div>
+
+<!-- ================================================== -->
+<!-- MODAL: DETALHES DO ANÚNCIO -->
+<div id="productModal" class="modal"><div class="modalContent"><div class="modalHeader"><h2>Detalhes</h2><button class="closeModal" data-close="productModal">×</button></div><div id="productDetails"></div></div></div>
+  
+<!-- ================================================== -->
+<!-- MODAL: CONFIGURAÇÃO DO PERFIL -->
+<div id="profileEditModal" class="modal"><div class="modalContent"><div class="modalHeader"><h2>Configurar meus dados</h2><button class="closeModal" data-close="profileEditModal">×</button></div><form id="profileEditForm"><div class="formGroup"><label for="editProfileName">Nome *</label><input id="editProfileName" maxlength="80" required></div><div class="formGroup"><label for="editProfilePhone">Telefone</label><input id="editProfilePhone" type="tel" maxlength="25" placeholder="(DDD) 99999-9999"></div><div class="formGroup"><label for="editProfileCity">Cidade *</label><input id="editProfileCity" maxlength="100" required></div><div class="formGroup"><label for="editProfileEmail">E-mail da conta</label><input id="editProfileEmail" type="email" readonly style="background:#f3f4f6;color:#6b7280"></div><div class="modalActions"><button type="button" class="btn" style="background:#f3f4f6" data-close="profileEditModal">Cancelar</button><button type="submit" class="btn btnPrimary" id="saveProfileBtn">Salvar dados</button></div></form></div></div>
+<!-- ================================================== -->
+<!-- MODAL: CHAT E MENSAGENS -->
+<div id="chatModal" class="modal"><div class="modalContent" style="padding-bottom:14px"><div class="modalHeader"><h2 id="chatTitle">Conversa</h2><button class="closeModal" data-close="chatModal">×</button></div><div id="chatProductInfo" style="font-size:12px;color:#6b7280;margin-bottom:10px"></div><div id="messagesList" style="height:48vh;overflow-y:auto;background:#f3f4f6;border-radius:15px;padding:12px"></div><div style="display:flex;gap:8px;margin-top:10px"><input id="chatMessageInput" style="flex:1;border:1px solid #e5e7eb;border-radius:13px;padding:13px" placeholder="Digite uma mensagem..."><button id="sendMessageBtn" class="btn btnPrimary" style="padding:0 17px">Enviar</button></div><button id="offerBtn" class="btn" style="width:100%;margin-top:9px;background:#fff7ed;color:#92400e">💰 Fazer oferta</button><div id="sellerOfferActions" class="hidden" style="margin-top:9px"></div></div></div>
+<!-- ================================================== -->
+<!-- MODAL: OFERTAS ENTRE COMPRADOR E VENDEDOR -->
+<div id="offerModal" class="modal"><div class="modalContent"><div class="modalHeader"><h2>Fazer oferta</h2><button class="closeModal" data-close="offerModal">×</button></div><div id="offerContext" style="color:#6b7280;font-size:13px;margin-bottom:15px"></div><div class="formGroup"><label for="offerValue">Valor da oferta</label><input id="offerValue" type="number" min="1" step="0.01"></div><button id="submitOfferBtn" class="btn btnPrimary" style="width:100%">Enviar oferta</button></div></div>
+<!-- ================================================== -->
+<!-- MODAL: TURBINAR ANÚNCIO / PLANOS -->
+<div id="boostModal" class="modal"><div class="modalContent"><div class="modalHeader"><h2>🚀 Turbinar anúncio</h2><button class="closeModal" data-close="boostModal">×</button></div><div id="boostProductName" style="font-weight:800;margin-bottom:15px"></div><div id="boostOptions" style="display:grid;gap:10px"><button class="profileAction" data-plan="basico">⚡ Básico — R$ 4,90 / 24h</button><button class="profileAction" data-plan="destaque">🔥 Destaque — R$ 9,90 / 3 dias</button><button class="profileAction" data-plan="turbo">🚀 Turbo — R$ 19,90 / 7 dias</button></div><p style="font-size:12px;color:#6b7280;margin-top:14px"> 
+Você será direcionado ao Mercado Pago para concluir o pagamento. O destaque será ativado após a confirmação do pagamento.
+ </p></div></div>
+<!-- AVISOS TEMPORÁRIOS -->
+<div id="toast"></div>
+
+<!-- ================================================== -->
+<!-- JAVASCRIPT: FUNCIONALIDADES E INTEGRAÇÕES -->
+<!-- ================================================== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, addDoc, collection, query, orderBy, getDocs, where, serverTimestamp, deleteDoc, updateDoc, onSnapshot, limit } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+
+
+// ==================================================
+// CONFIGURAÇÃO DO FIREBASE
+// ==================================================
+const firebaseConfig={apiKey:"AIzaSyCchIeHvUILX9fiv99C6q_OQ2AiMIzVkwI",authDomain:"perto-65099.firebaseapp.com",projectId:"perto-65099",storageBucket:"perto-65099.firebasestorage.app",messagingSenderId:"659764302578",appId:"1:659764302578:web:3ea6f8fd718bf1842bf66b"};
+const app=initializeApp(firebaseConfig);
+ const auth=getAuth(app);
+ const db=getFirestore(app);
+let storage=null,storageRef=null,uploadBytes=null,getDownloadURL=null;
+let currentUser=null,currentUserData=null,allProducts=[],favorites=new Set(),currentSlide=0,slideTimer=null,selectedImages=[],selectedProfessionalPhoto=null,currentConversationId=null,currentChatUnsub=null,currentChatData=null,currentChatProduct=null,currentOfferProduct=null,editingProductId=null,editingProductImages=[],currentProfessionalActive=true;
+// ==================================================
+// UTILITÁRIOS GERAIS E MENSAGENS
+// ==================================================
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+const money=v=>Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const initials=n=>{let p=String(n||"?").trim().split(/\s+/);
+return ((p[0]?.[0]||"")+(p.length>1?p[p.length-1][0]:"")).toUpperCase()||"?"};
+
+
+// ==================================================
+// PAINEL ADMINISTRATIVO — MENSALIDADE DAS LOJAS
+// Acesso visual restrito ao UID configurado abaixo.
+// A proteção real de leitura/escrita também depende
+// das regras de segurança do Firestore.
+// ==================================================
+const ADMIN_UID = "priTvSNohaYXaa0XW0ulUkTtaLI3";
+const ADMIN_CONFIG_DOC = "plataforma";
+const MENSALIDADE_LOJA_PADRAO = 49.90;
+
+function atualizarBotaoAdmin() {
+  const botao = $("adminPanelBtn");
+  if (!botao) return;
+  botao.style.display = currentUser?.uid === ADMIN_UID ? "block" : "none";
+}
+
+async function abrirPainelAdmin() {
+  if (!currentUser || currentUser.uid !== ADMIN_UID) {
+    toast("Acesso restrito ao administrador.");
+    return;
+  }
+
+  showInternalPage("adminPage");
+  const mensagem = $("adminPriceMessage");
+  const campo = $("adminMonthlyPrice");
+  const botao = $("adminPanelBtn");
+  mensagem.textContent = "Carregando configuração...";
+  botao.disabled = true;
+
+  try {
+    const referencia = doc(db, "configuracoes", ADMIN_CONFIG_DOC);
+    const resultado = await getDoc(referencia);
+    const valorSalvo = resultado.exists()
+      ? Number(resultado.data().mensalidadeLoja)
+      : NaN;
+    const temValorSalvo = Number.isFinite(valorSalvo) && valorSalvo >= 0;
+    const valor = temValorSalvo ? valorSalvo : MENSALIDADE_LOJA_PADRAO;
+
+    campo.value = valor.toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    mensagem.textContent = temValorSalvo
+      ? "Valor carregado do Firebase. Nenhuma cobrança é realizada por esta tela."
+      : "Valor inicial sugerido: R$ 49,90. Salve para gravá-lo no Firebase.";
+  } catch (erro) {
+    console.error("Erro ao carregar mensalidade:", erro);
+    mensagem.textContent = erro.code === "permission-denied"
+      ? "O Firebase bloqueou a leitura. Confira as regras da coleção configuracoes."
+      : "Não foi possível carregar o valor. Verifique sua conexão e as regras do Firebase.";
+  } finally {
+    botao.disabled = false;
+  }
+}
+
+async function salvarMensalidadeAdmin() {
+  if (!currentUser || currentUser.uid !== ADMIN_UID) {
+    toast("Você não tem permissão para alterar este valor.");
+    return;
+  }
+
+  const campo = $("adminMonthlyPrice");
+  const mensagem = $("adminPriceMessage");
+  const botao = $("saveAdminMonthlyPrice");
+  const texto = campo.value.trim();
+  const normalizado = texto.includes(",")
+    ? texto.replace(/\./g, "").replace(",", ".")
+    : texto;
+  const valor = Number(normalizado);
+
+  if (!texto || !Number.isFinite(valor) || valor < 0 ||
+      !/^\d+(\.\d{1,2})?$/.test(normalizado)) {
+    mensagem.textContent = "Digite um valor válido, como 49,90.";
+    campo.focus();
+    return;
+  }
+
+  botao.disabled = true;
+  botao.textContent = "Salvando...";
+  mensagem.textContent = "";
+
+  try {
+    await setDoc(
+      doc(db, "configuracoes", ADMIN_CONFIG_DOC),
+      {
+        mensalidadeLoja: valor,
+        atualizadoEm: serverTimestamp(),
+        atualizadoPor: currentUser.uid
+      },
+      { merge: true }
+    );
+
+    campo.value = valor.toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    mensagem.textContent = "Mensalidade salva: " + money(valor) + " por mês.";
+    toast("Mensalidade atualizada!");
+  } catch (erro) {
+    console.error("Erro ao salvar mensalidade:", erro);
+    mensagem.textContent = erro.code === "permission-denied"
+      ? "O Firebase bloqueou a gravação. Confira as regras da coleção configuracoes."
+      : "Não foi possível salvar. Verifique sua conexão e as regras do Firestore.";
+  } finally {
+    botao.disabled = false;
+    botao.textContent = "Salvar valor";
+  }
+}
+
+
+// ==================================================
+// NAVEGAÇÃO ENTRE TELAS DE ACESSO
+// ==================================================
+function toast(m){$("toast").textContent=m;
+$("toast").classList.add("show");
+clearTimeout(window.__toast);
+window.__toast=setTimeout(()=>$("toast").classList.remove("show"),3000)}
+function showPage(el){[ $("welcomePage"),$("authPage"),$("appPage") ].forEach(x=>x.classList.add("hidden"));
+el.classList.remove("hidden")}
+function authMessage(m,t="error"){$("authMessage").textContent=m;
+$('authMessage').className="authMessage "+t}
+function clearAuth(){authMessage("");
+}
+function setAuthMode(mode){$("loginForm").classList.toggle("hidden",mode!=="login");
+$("signupForm").classList.toggle("hidden",mode!=="signup");
+$("tabLogin").classList.toggle("active",mode==="login");
+$("tabSignup").classList.toggle("active",mode==="signup");
+clearAuth()}
+function showAuth(mode="login"){showPage($("authPage"));
+setAuthMode(mode)}
+
+$("btnLoginWelcome").onclick=()=>showAuth("login");
+$("btnSignupWelcome").onclick=()=>showAuth("signup");
+$("tabLogin").onclick=()=>setAuthMode("login");
+$("tabSignup").onclick=()=>setAuthMode("signup");
+$("backToWelcome").onclick=()=>showPage($("welcomePage"));
+
+
+
+// ==================================================
+// CADASTRO E LOGIN DE USUÁRIOS
+// ==================================================
+async function loginUser(e){e.preventDefault();
+clearAuth();
+let email=$("loginEmail").value.trim(),password=$("loginPassword").value;
+if(!email||!password)return authMessage("Preencha e-mail e senha.");
+try{const credential=await signInWithEmailAndPassword(auth,email,password);
+await enterApp(credential.user);
+toast("Login realizado!")}catch(error){console.error(error);
+let m="Não foi possível entrar.";
+if(["auth/invalid-credential","auth/user-not-found","auth/wrong-password"].includes(error.code))m="E-mail ou senha incorretos.";
+if(error.code==="auth/too-many-requests")m="Muitas tentativas. Aguarde um pouco.";
+authMessage(m+" Código: "+(error.code||"desconhecido"))}}
+async function signupUser(e){e.preventDefault();
+clearAuth();
+let name=$("signupName").value.trim(),phone=$("signupPhone").value.trim(),city=$("signupCity").value.trim(),email=$("signupEmail").value.trim(),password=$("signupPassword").value,terms=$("termsCheck").checked;
+if(!name||!city||!email||!password)return authMessage("Preencha todos os campos obrigatórios.");
+if(password.length<6)return authMessage("A senha precisa ter pelo menos 6 caracteres.");
+if(!terms)return authMessage("Você precisa aceitar os termos para continuar.");
+try{const c=await createUserWithEmailAndPassword(auth,email,password);
+await setDoc(doc(db,"usuarios",c.user.uid),{uid:c.user.uid,nome:name,telefone:phone,cidade:city,email,criadoEm:serverTimestamp(),atualizadoEm:serverTimestamp()});
+await enterApp(c.user);
+toast("Conta criada com sucesso!")}catch(error){console.error(error);
+let m="Não foi possível criar sua conta.";
+if(error.code==="auth/email-already-in-use")m="Esse e-mail já possui uma conta.";
+if(error.code==="auth/invalid-email")m="Digite um e-mail válido.";
+if(error.code==="auth/weak-password")m="A senha escolhida é muito fraca.";
+authMessage(m)}}
+$("loginForm").onsubmit=loginUser;
+$("signupForm").onsubmit=signupUser;
+
+
+
+// ==================================================
+// PERFIL E DADOS DO USUÁRIO
+// ==================================================
+async function loadUserData(u){try{let s=await getDoc(doc(db,"usuarios",u.uid));
+if(s.exists())return s.data()}catch(e){console.error(e)}return{uid:u.uid,nome:u.displayName||"Usuário",email:u.email||"",cidade:""}}
+function updateProfile(){let name=currentUserData?.nome||currentUser?.email||"Usuário";
+$("profileName").textContent=name;
+$("profileEmail").textContent=currentUser?.email||"";
+$("profileCity").textContent=currentUserData?.cidade?"📍 "+currentUserData.cidade:"";
+$("profileAvatar").textContent=initials(name);
+$("headerUser").textContent=initials(name)}
+  function openProfileEditor(){
+if(!currentUser)return showAuth("login");
+$("editProfileName").value=currentUserData?.nome||"";
+$("editProfilePhone").value=currentUserData?.telefone||"";
+$("editProfileCity").value=currentUserData?.cidade||"";
+$("editProfileEmail").value=currentUser.email||"";
+openModal("profileEditModal");
+}
+
+
+
+// ==================================================
+// SALVAR ALTERAÇÕES DO PERFIL
+// ==================================================
+$("profileEditForm").onsubmit=async e=>{
+e.preventDefault();
+if(!currentUser)return showAuth("login");
+
+let nome=$("editProfileName").value.trim();
+let telefone=$("editProfilePhone").value.trim();
+let cidade=$("editProfileCity").value.trim();
+let btn=$("saveProfileBtn");
+
+if(!nome||!cidade)return toast("Preencha nome e cidade.");
+
+btn.disabled=true;
+btn.textContent="Salvando...";
+
+try{
+let dados={
+uid:currentUser.uid,
+nome,
+telefone,
+cidade,
+email:currentUser.email||"",
+atualizadoEm:serverTimestamp()
+};
+
+await setDoc(doc(db,"usuarios",currentUser.uid),dados,{merge:true});
+currentUserData={...(currentUserData||{}),...dados};
+updateProfile();
+closeModal("profileEditModal");
+toast("Seus dados foram atualizados.");
+
+}catch(err){
+console.error("Erro ao salvar perfil:",err);
+toast("Não foi possível salvar. Confira as regras do Firestore.");
+}finally{
+btn.disabled=false;
+btn.textContent="Salvar dados";
+}
+};
+
+
+// ==================================================
+// ENTRADA NA APLICAÇÃO E SESSÃO
+// ==================================================
+async function enterApp(u){
+  if(!u)return;
+  currentUser=u;
+  atualizarBotaoAdmin();
+  showPage($("appPage"));
+  showInternalPage("homePage",false);
+  // A interface abre primeiro; os dados chegam em segundo plano.
+  loadUserData(u).then(data=>{
+    if(currentUser?.uid!==u.uid)return;
+    currentUserData=data;
+    updateProfile();
+  });
+  loadFavorites().catch(console.error);
+  loadProducts().catch(console.error);
+}
+async function logout(){try{await signOut(auth);
+if(currentChatUnsub)currentChatUnsub();
+currentUser=null;
+atualizarBotaoAdmin();
+currentUserData=null;
+allProducts=[];
+favorites.clear();
+showPage($("welcomePage"));
+toast("Você saiu da conta.")}catch(e){toast("Não foi possível sair.")}}
+onAuthStateChanged(auth,async u=>{
+  try{
+    if(u){
+      await enterApp(u);
+      // Chat só é consultado quando o usuário abre a aba.
+    }else{
+      showPage($("welcomePage"));
+    }
+  }catch(e){console.error(e);showPage($("welcomePage"));}
+  finally{$("loadingScreen").classList.add("hidden")}
+});
+// Não bloqueia a primeira pintura da interface esperando Firebase.
+requestAnimationFrame(()=>setTimeout(()=>$("loadingScreen")?.classList.add("hidden"),120));
+
+
+
+// ==================================================
+// CARROSSEL DE BOAS-VINDAS
+// ==================================================
+const slides=document.querySelectorAll(".slide");
+slides.forEach((_,i)=>{let d=document.createElement("div");d.className="slideDot"+(i===0?" active":"");d.onclick=()=>{currentSlide=i;renderSlide();restartSlides()};$("slideDots").appendChild(d)});
+function renderSlide(){slides.forEach((s,i)=>s.classList.toggle("active",i===currentSlide));
+document.querySelectorAll(".slideDot").forEach((d,i)=>d.classList.toggle("active",i===currentSlide))}function restartSlides(){clearInterval(slideTimer);
+slideTimer=setInterval(()=>{currentSlide=(currentSlide+1)%slides.length;renderSlide()},7000)}$("nextSlide").onclick=()=>{currentSlide=(currentSlide+1)%slides.length;
+renderSlide();
+restartSlides()};
+$("prevSlide").onclick=()=>{currentSlide=(currentSlide-1+slides.length)%slides.length;
+renderSlide();
+restartSlides()};
+restartSlides();
+
+
+
+// ==================================================
+// NAVEGAÇÃO ENTRE AS PÁGINAS INTERNAS
+// ==================================================
+function showInternalPage(id,scroll=true){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+$(id)?.classList.add("active");
+document.querySelectorAll(".navBtn[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+if(id==="chatPage")loadConversations();
+if(scroll)window.scrollTo({top:0,behavior:"smooth"})}
+document.querySelectorAll(".navBtn[data-page]").forEach(b=>b.onclick=()=>{if(b.dataset.page==="favoritesPage")renderFavorites();showInternalPage(b.dataset.page)});
+
+
+
+// ==================================================
+// ANÚNCIOS: ORDENAÇÃO E EXIBIÇÃO
+// ==================================================
+function isBoosted(p){let t=p.turbinadoAte?.toMillis?.()||new Date(p.turbinadoAte||0).getTime()||0;
+return !!p.turbinado&&t>Date.now()}
+function productEmoji(c){return ({"Eletrônicos":"📱","Casa":"🏠","Ferramentas":"🔧","Veículos":"🚗","Bicicletas":"🚲","Roupas":"👕","Móveis":"🪑","Esportes":"⚽","Outros":"📦"})[c]||"📦"}
+function sortProducts(a,b){let ab=isBoosted(a),bb=isBoosted(b);
+if(ab!==bb)return bb-ab;
+return (b.criadoEm?.toMillis?.()||0)-(a.criadoEm?.toMillis?.()||0)}
+async function loadProducts(){try{let s=await getDocs(query(collection(db,"produtos"),orderBy("criadoEm","desc")));
+allProducts=s.docs.map(d=>({id:d.id,...d.data()})).sort(sortProducts)}catch(e){console.error(e);
+allProducts=[]}renderHomeProducts();
+renderSearchProducts($("globalSearch").value);
+renderFavorites()}
+function createProductCard(p){let card=document.createElement("div");
+card.className="productCard";
+let imgs=p.imagens?.length?p.imagens:(p.imagem?[p.imagem]:[]),src=imgs[0];
+card.innerHTML=`<div class="productVisual">${src?`<img src="${esc(src)}" alt="" style="width:100%;height:100%;object-fit:contain;background:#eef2f7;" onerror="this.style.display='none'">`:productEmoji(p.categoria)}${isBoosted(p)?'<span style="position:absolute;left:8px;top:8px;background:#f59e0b;color:#111827;border-radius:8px;padding:5px 7px;font-size:10px;font-weight:900">⚡ TURBINADO</span>':''}<button class="favoriteBtn" data-favorite="${esc(p.id)}">${favorites.has(p.id)?"❤️":"♡"}</button></div><div class="productInfo"><div class="productTitle">${esc(p.nome)}</div><div class="productPrice">${money(p.preco)}</div><div class="productLocation">📍 ${esc(p.localizacao||"Região não informada")}</div>${p.aceitaTroca?'<span class="tradeBadge">ACEITA TROCA</span>':''}</div>`;
+card.onclick=e=>{if(!e.target.closest(".favoriteBtn"))openProduct(p)};
+card.querySelector(".favoriteBtn").onclick=e=>{e.stopPropagation();
+toggleFavorite(p.id)};
+return card}
+function isPublicProduct(p){return p.ativo!==false && p.status!=="vendido"}
+function renderHomeProducts(){let c=$("homeProducts");
+c.innerHTML="";
+let list=allProducts.filter(isPublicProduct).sort(sortProducts).slice(0,10);
+if(!list.length){c.innerHTML='<div class="emptyState" style="grid-column:1/-1"><div class="emptyIcon">📦</div><strong>Ainda não há anúncios.</strong><div style="margin-top:5px">Seja o primeiro a vender no Perto.</div></div>';
+return}list.forEach(p=>c.appendChild(createProductCard(p)))}
+function normalizeText(v=""){return String(v??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim()}
+function renderSearchProducts(term="") {let c=$("searchProducts");
+if(!c)return;
+c.innerHTML="";
+let n=normalizeText(term),city=normalizeText($("cityFilter")?.value||"");
+let list=allProducts.filter(p=>isPublicProduct(p)&&(!n||normalizeText(`${p.nome||""} ${p.categoria||""} ${p.localizacao||""} ${p.descricao||""}`).includes(n))&&(!city||normalizeText(p.localizacao||"").includes(city))).sort(sortProducts);
+if(!list.length){c.innerHTML='<div class="emptyState" style="grid-column:1/-1"><div class="emptyIcon">🔎</div><strong>Nenhum produto encontrado.</strong><div style="margin-top:5px">Tente outra busca ou escolha outra cidade.</div></div>';
+return}list.forEach(p=>c.appendChild(createProductCard(p)))}
+$("globalSearch").oninput=e=>{showInternalPage("searchPage");
+renderSearchProducts(e.target.value)};
+$("cityFilter")?.addEventListener("change",()=>renderSearchProducts($("globalSearch").value));
+
+
+
+// ==================================================
+// FAVORITOS — SALVAR E EXIBIR
+// ==================================================
+async function loadFavorites(){favorites.clear();
+if(!currentUser)return;
+try{let s=await getDocs(query(collection(db,"favoritos"),where("usuarioId","==",currentUser.uid)));
+s.forEach(d=>{if(d.data().produtoId)favorites.add(d.data().produtoId)})}catch(e){console.error(e)}renderHomeProducts();
+renderSearchProducts($("globalSearch").value);
+renderFavorites()}
+async function toggleFavorite(id){if(!currentUser)return showAuth("login");
+try{let fid=currentUser.uid+"_"+id,r=doc(db,"favoritos",fid);
+if(favorites.has(id)){await deleteDoc(r);
+favorites.delete(id);
+toast("Removido dos favoritos.")}else{await setDoc(r,{usuarioId:currentUser.uid,produtoId:id,criadoEm:serverTimestamp()});
+favorites.add(id);
+toast("Adicionado aos favoritos.")}renderHomeProducts();
+renderSearchProducts($("globalSearch").value);
+renderFavorites()}catch(e){toast("Não foi possível atualizar o favorito.")}}
+function renderFavorites(){let c=$("favoriteProducts");
+c.innerHTML="";
+let list=allProducts.filter(p=>isPublicProduct(p)&&favorites.has(p.id));
+if(!list.length){c.innerHTML='<div class="emptyState" style="grid-column:1/-1"><div class="emptyIcon">❤️</div><strong>Você ainda não favoritou nada.</strong></div>';
+return}list.forEach(p=>c.appendChild(createProductCard(p)))}
+
+
+
+// ==================================================
+// GALERIA E DETALHES DO ANÚNCIO
+// ==================================================
+function galleryHTML(p){
+  let imgs = p.imagens?.length ? p.imagens : (p.imagem ? [p.imagem] : []);
+
+  if(!imgs.length){
+    return `<div class="detailVisual">${productEmoji(p.categoria)}</div>`;
+  }
+
+  return `<div class="detailVisual" style="height:270px;overflow-x:auto;display:flex;gap:8px;justify-content:flex-start;padding:0;background:#eef2f7">
+    <img src="${esc(imgs[0])}" style="min-width:100%;height:100%;object-fit:contain;border-radius:18px">
+    ${imgs.slice(1).map(x => `<img src="${esc(x)}" style="min-width:100%;height:100%;object-fit:contain;border-radius:18px">`).join("")}
+  </div>`;
+}
+
+function openProduct(p){currentChatProduct=p;
+let seller=p.vendedorId===currentUser?.uid;
+$("productDetails").innerHTML=`${galleryHTML(p)}<h2>${esc(p.nome)}</h2><div class="detailPrice">${money(p.preco)}</div><div class="detailMeta">📍 ${esc(p.localizacao||"")}<br>Categoria: ${esc(p.categoria||"Outros")}${p.aceitaTroca?"<br>🔄 Aceita trocas":""}${isBoosted(p)?"<br>⚡ Anúncio turbinado":""}<br>Vendedor: ${esc(p.vendedorNome||"Usuário")}</div><div class="detailDescription">${esc(p.descricao||"")}</div><div class="modalActions">${seller?'<button class="btn" style="background:#fff7ed;color:#92400e" id="boostFromDetail">🚀 Turbinar</button>':'<button class="btn btnPrimary" id="contactSellerBtn">💬 Conversar com vendedor</button><button class="btn" style="background:#fff7ed;color:#92400e" id="offerFromDetail">💰 Fazer oferta</button>'}</div>`;
+$("productModal").classList.add("open");
+$("contactSellerBtn")?.addEventListener("click",()=>startChat(p));
+$("offerFromDetail")?.addEventListener("click",()=>startChat(p,true));
+$("boostFromDetail")?.addEventListener("click",()=>openBoost(p))}
+
+
+
+// ==================================================
+// CHAT, MENSAGENS E CONVERSAS — DADOS E ENVIO
+// ==================================================
+async function startChat(p,offer=false){if(!currentUser)return showAuth("login");
+if(p.vendedorId===currentUser.uid)return toast("Você não pode conversar com você mesmo.");
+currentChatProduct=p;
+currentConversationId=`${p.id}_${currentUser.uid}_${p.vendedorId}`;
+let ref=doc(db,"conversas",currentConversationId);
+try{let snap=await getDoc(ref);
+if(!snap.exists())await setDoc(ref,{produtoId:p.id,produtoNome:p.nome,produtoPreco:Number(p.preco||0),vendedorId:p.vendedorId,compradorId:currentUser.uid,participantes:[currentUser.uid,p.vendedorId],ultimaMensagem:"",atualizadoEm:serverTimestamp()});
+closeModal("productModal");
+openChatModal();
+if(offer)openOffer(p)}catch(e){console.error("Erro ao abrir conversa:",e);
+toast("Não foi possível abrir a conversa. Confira as regras do Firestore.")}}
+function openChatModal(){if(!currentConversationId)return;
+$("chatTitle").textContent=currentChatProduct?.nome||"Conversa";
+$("chatProductInfo").textContent=currentChatProduct?money(currentChatProduct.preco):"";
+$("chatModal").classList.add("open");
+$("offerBtn").style.display=currentChatProduct?.vendedorId===currentUser?.uid?"none":"block";
+listenMessages();
+loadConversationOffers()}
+function listenMessages(){if(currentChatUnsub)currentChatUnsub();
+let q=query(collection(db,"conversas",currentConversationId,"mensagens"),orderBy("criadoEm","asc"));
+currentChatUnsub=onSnapshot(q,s=>{let c=$("messagesList");c.innerHTML="";s.forEach(d=>{let m=d.data(),mine=m.remetenteId===currentUser.uid;let row=document.createElement("div");row.style.cssText=`display:flex;justify-content:${mine?'flex-end':'flex-start'};margin:6px 0`;row.innerHTML=`<div style="max-width:82%;padding:9px 12px;border-radius:14px;background:${mine?'#111827':'#fff'};color:${mine?'#fff':'#111827'};font-size:13px">${esc(m.texto)}</div>`;c.appendChild(row)});c.scrollTop=c.scrollHeight})}
+async function sendMessage(){let input=$("chatMessageInput"),text=input.value.trim();
+if(!text||!currentConversationId)return;
+try{await addDoc(collection(db,"conversas",currentConversationId,"mensagens"),{remetenteId:currentUser.uid,texto:text,criadoEm:serverTimestamp(),lida:false});
+await updateDoc(doc(db,"conversas",currentConversationId),{ultimaMensagem:text,atualizadoEm:serverTimestamp()});
+input.value=""}catch(e){toast("Não foi possível enviar a mensagem.")}}
+$("sendMessageBtn").onclick=sendMessage;
+$("chatMessageInput").onkeydown=e=>{if(e.key==="Enter")sendMessage()};
+
+
+
+// ==================================================
+// LISTA DE CONVERSAS
+// ==================================================
+async function loadConversations(){let c=$("chatList");
+if(!currentUser){c.innerHTML="";
+return}try{let qs=await getDocs(query(collection(db,"conversas"),where("participantes","array-contains",currentUser.uid),orderBy("atualizadoEm","desc"),limit(50)));
+renderConversations(qs.docs.map(d=>({id:d.id,...d.data()})))}catch(e){try{let qs=await getDocs(query(collection(db,"conversas"),where("compradorId","==",currentUser.uid),limit(50)));
+let a=qs.docs.map(d=>({id:d.id,...d.data()}));
+let qs2=await getDocs(query(collection(db,"conversas"),where("vendedorId","==",currentUser.uid),limit(50)));
+let b=qs2.docs.map(d=>({id:d.id,...d.data()}));
+renderConversations([...a,...b])}catch(err){c.innerHTML='<div class="emptyState"><div class="emptyIcon">💬</div><strong>Nenhuma conversa ainda.</strong></div>'}}}
+function renderConversations(list){let c=$("chatList");
+c.innerHTML="";
+let unique=[...new Map(list.map(x=>[x.id,x])).values()].sort((a,b)=>(b.atualizadoEm?.toMillis?.()||0)-(a.atualizadoEm?.toMillis?.()||0));
+if(!unique.length){c.innerHTML='<div class="emptyState"><div class="emptyIcon">💬</div><strong>Nenhuma conversa ainda.</strong><div style="margin-top:5px">Abra um anúncio e fale com o vendedor.</div></div>';
+return}unique.forEach(x=>{let b=document.createElement("button");b.className="profileAction";b.style.cssText="width:100%;margin-bottom:10px;text-align:left";let other=x.compradorId===currentUser.uid?"Vendedor":"Comprador";b.innerHTML=`💬 <strong>${esc(x.produtoNome||"Anúncio")}</strong><br><span style="font-size:12px;color:#6b7280">${other} · ${esc(x.ultimaMensagem||"Nova conversa")}</span>`;b.onclick=async()=>{currentConversationId=x.id;currentChatProduct=allProducts.find(p=>p.id===x.produtoId)||{id:x.produtoId,nome:x.produtoNome,preco:x.produtoPreco,vendedorId:x.vendedorId};openChatModal()};c.appendChild(b)})}
+
+function openOffer(p=currentChatProduct){if(!p)return;
+if(p.vendedorId===currentUser?.uid)return toast("Você é o vendedor deste anúncio.");
+currentOfferProduct=p;
+$("offerContext").textContent=`${p.nome} · preço anunciado ${money(p.preco)}`;
+$("offerValue").value="";
+$("offerValue").max=String(Math.max(1,Number(p.preco||0)*10));
+$("offerModal").classList.add("open")}
+
+
+// ==================================================
+// OFERTAS ENTRE COMPRADOR E VENDEDOR
+// ==================================================
+async function loadConversationOffers(){let c=$("sellerOfferActions");
+if(!c||!currentConversationId||!currentUser)return;
+c.classList.remove("hidden");
+c.innerHTML='<div style="font-size:13px;color:#6b7280">Carregando ofertas...</div>';
+try{let snap=await getDocs(query(collection(db,"conversas",currentConversationId,"ofertas"),orderBy("criadoEm","desc"),limit(20)));
+c.innerHTML="";
+if(snap.empty){c.classList.add("hidden");
+return}let heading=document.createElement("div");
+heading.textContent="Ofertas deste anúncio";
+heading.style.cssText="font-weight:800;font-size:14px;margin:10px 0";
+c.appendChild(heading);
+snap.forEach(ds=>{let o=ds.data(),row=document.createElement("div");row.style.cssText="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:10px;margin:7px 0;font-size:13px";let status=o.status||"pendente",statusText=status==="aceita"?"Aceita":status==="recusada"?"Recusada":"Pendente";row.innerHTML=`<div style="display:flex;justify-content:space-between;gap:8px"><strong>${money(o.valor)}</strong><span style="color:${status==='aceita'?'#15803d':status==='recusada'?'#b91c1c':'#92400e'}">${statusText}</span></div><div style="font-size:11px;color:#6b7280;margin-top:3px">${o.compradorId===currentUser.uid?"Sua oferta":"Oferta do comprador"}</div>`;if(status==="pendente"&&o.vendedorId===currentUser.uid){let actions=document.createElement("div");actions.style.cssText="display:flex;gap:8px;margin-top:9px";let yes=document.createElement("button");yes.className="btn btnPrimary";yes.textContent="Aceitar";yes.style.flex="1";yes.onclick=()=>respondToOffer(ds.id,"aceita",o);let no=document.createElement("button");no.className="btn";no.textContent="Recusar";no.style.cssText="flex:1;background:#f3f4f6;color:#111827";no.onclick=()=>respondToOffer(ds.id,"recusada",o);actions.append(yes,no);row.appendChild(actions)}c.appendChild(row)});
+ }catch(e){console.error("Erro ao carregar ofertas",e);
+c.innerHTML='<div style="font-size:12px;color:#b91c1c">Não foi possível carregar as ofertas. Confira as regras do Firestore.</div>'}}
+async function respondToOffer(offerId,status,o){if(!currentConversationId||o.vendedorId!==currentUser?.uid)return toast("Ação não permitida.");
+try{await updateDoc(doc(db,"conversas",currentConversationId,"ofertas",offerId),{status,respondidaEm:serverTimestamp(),respondidaPor:currentUser.uid});
+let msg=status==="aceita"?`✅ O vendedor aceitou a oferta de ${money(o.valor)}.`:`A oferta de ${money(o.valor)} foi recusada pelo vendedor.`;
+await addDoc(collection(db,"conversas",currentConversationId,"mensagens"),{remetenteId:currentUser.uid,texto:msg,criadoEm:serverTimestamp(),lida:false});
+await updateDoc(doc(db,"conversas",currentConversationId),{ultimaMensagem:msg,atualizadoEm:serverTimestamp()});
+toast(status==="aceita"?"Oferta aceita.":"Oferta recusada.");
+await loadConversationOffers()}catch(e){console.error(e);
+toast("Não foi possível responder à oferta. Confira as regras do Firestore.")}}
+$("offerBtn").onclick=()=>openOffer(currentChatProduct);
+$("submitOfferBtn").onclick=async()=>{let value=Number($("offerValue").value);
+if(!value||value<=0)return toast("Digite um valor válido.");
+if(!currentConversationId||!currentOfferProduct||!currentUser)return toast("Abra uma conversa antes de fazer uma oferta.");
+if(currentOfferProduct.vendedorId===currentUser.uid)return toast("Você não pode fazer oferta no seu próprio anúncio.");
+try{let offerRef=await addDoc(collection(db,"conversas",currentConversationId,"ofertas"),{produtoId:currentOfferProduct.id,compradorId:currentUser.uid,vendedorId:currentOfferProduct.vendedorId,valor:Number(value.toFixed(2)),status:"pendente",criadoEm:serverTimestamp()});
+let msg=`💰 Fiz uma oferta de ${money(value)} pelo anúncio.`;
+await addDoc(collection(db,"conversas",currentConversationId,"mensagens"),{remetenteId:currentUser.uid,texto:msg,criadoEm:serverTimestamp(),lida:false});
+await updateDoc(doc(db,"conversas",currentConversationId),{ultimaMensagem:msg,atualizadoEm:serverTimestamp()});
+closeModal("offerModal");
+toast("Oferta enviada!");
+await loadConversationOffers()}catch(e){console.error(e);
+toast("Não foi possível enviar a oferta. Confira as regras do Firestore.")}};
+
+
+
+// ==================================================
+// PUBLICAR E SALVAR ANÚNCIOS
+// ==================================================
+async function publishProduct(e){e.preventDefault();
+if(!currentUser)return showAuth("login");
+let name=$("productName").value.trim(),price=Number($("productPrice").value),cat=$("productCategory").value,loc=$("productLocation").value.trim(),desc=$("productDescription").value.trim(),trade=$("acceptsTrade").checked,boost=$("checkBoost").checked;
+if(!name||!price||!cat||!loc||!desc)return toast("Preencha todos os campos obrigatórios.");
+if(selectedImages.length>5)return toast("Você pode enviar no máximo 5 fotos.");
+let btn=$("sellForm").querySelector('button[type="submit"]');
+btn.disabled=true;
+btn.textContent="Publicando...";
+try{
+  let productRef=editingProductId?doc(db,"produtos",editingProductId):doc(collection(db,"produtos")),id=productRef.id,urls=[];
+  if(selectedImages.length){
+    if(!storage){const mod=await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js");
+storage=mod.getStorage(app);
+storageRef=mod.ref;
+uploadBytes=mod.uploadBytes;
+getDownloadURL=mod.getDownloadURL}
+    for(let i=0;i<selectedImages.length;i++){
+      let file=selectedImages[i];
+      let blob=await compressImage(file);
+      if(!blob)throw new Error("Não foi possível preparar uma das fotos. Escolha outra imagem.");
+      let r=storageRef(storage,`produtos/${currentUser.uid}/${id}/${crypto.randomUUID()}.jpg`);
+      await uploadBytes(r,blob,{contentType:"image/jpeg"});
+      urls.push(await getDownloadURL(r));
+    }
+  }
+  const oldProduct=editingProductId?allProducts.find(p=>p.id===editingProductId):null;
+  if(editingProductId&&!oldProduct)throw new Error("Não encontramos o anúncio para editar. Atualize a página e tente novamente.");
+  if(editingProductId&&selectedImages.length===0)urls=editingProductImages;
+  let data={nome:name,preco:price,categoria:cat,localizacao:loc,descricao:desc,imagens:urls,imagem:urls[0]||"",aceitaTroca:trade,vendedorId:currentUser.uid,vendedorNome:currentUserData?.nome||currentUser.email||"Usuário",atualizadoEm:serverTimestamp(),ativo:oldProduct?oldProduct.ativo!==false:true,status:oldProduct?.status||"ativo",turbinado:oldProduct?.turbinado||false};
+  if(!editingProductId)data.criadoEm=serverTimestamp();
+  await setDoc(productRef,data,{merge:!!editingProductId});
+let wasEditing=!!editingProductId;
+editingProductId=null;
+editingProductImages=[];
+$('sellModal').querySelector('.modalHeader h2').textContent="Vender no Perto";
+$('sellForm').reset();
+$('sellForm').querySelector('button[type="submit"]').textContent="Publicar anúncio";
+selectedImages=[];
+renderImagePreviews();
+closeModal("sellModal");
+toast(wasEditing?"Anúncio atualizado!":"Anúncio publicado!");
+await loadProducts();
+if(wasEditing){await showMyAds()}else{showInternalPage("homePage");
+if(boost){const produto=allProducts.find(p=>p.id===productRef.id);
+if(produto)openBoost(produto)}}
+  
+}catch(err){
+  console.error("ERRO AO PUBLICAR ANÚNCIO:",err);
+  const code=err?.code||"sem-codigo";
+  const message=err?.message||String(err)||"Erro desconhecido";
+  let tip="";
+  if(code.includes("storage/unauthorized")||code.includes("storage/unauthenticated"))tip=" Confira as regras do Firebase Storage.";
+  else if(code.includes("storage/bucket-not-found")||code.includes("storage/unknown"))tip=" Confira o nome do bucket no Firebase Config.";
+  else if(code.includes("permission-denied"))tip=" Confira as regras do Firestore.";
+  alert("Não foi possível publicar o anúncio.\n\nCódigo: "+code+"\nDetalhe: "+message+tip+"\n\nEnvie esta mensagem para identificarmos a causa.");
+}finally{btn.disabled=false;
+btn.textContent="Publicar anúncio"}}
+
+
+// ==================================================
+// FOTOS: COMPRESSÃO E PRÉ-VISUALIZAÇÃO
+// ==================================================
+async function compressImage(file){if(!file.type.startsWith("image/"))throw new Error("Arquivo não é imagem");
+if(file.size>8*1024*1024)throw new Error("Imagem acima de 8MB");
+let img=await new Promise((res,rej)=>{let i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=URL.createObjectURL(file)});
+let max=1600,scale=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement("canvas");
+c.width=Math.round(img.width*scale);
+c.height=Math.round(img.height*scale);
+c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+return await new Promise(r=>c.toBlob(r,"image/jpeg",.82))}
+
+$("productImages").onchange=e=>{selectedImages=[...e.target.files].slice(0,5);
+if(e.target.files.length>5)toast("Selecionamos apenas as 5 primeiras fotos.");
+renderImagePreviews()};
+
+$("professionalPhoto").onchange=e=>{
+  selectedProfessionalPhoto=e.target.files?.[0]||null;
+
+  const preview=$("professionalPhotoPreview");
+  const img=$("professionalPhotoPreviewImage");
+
+  if(selectedProfessionalPhoto){
+    if(!selectedProfessionalPhoto.type.startsWith("image/")){
+      selectedProfessionalPhoto=null;
+      e.target.value="";
+      preview.style.display="none";
+      toast("Escolha um arquivo de imagem.");
+      return;
+    }
+
+    if(selectedProfessionalPhoto.size>8*1024*1024){
+      selectedProfessionalPhoto=null;
+      e.target.value="";
+      preview.style.display="none";
+      toast("A foto deve ter no máximo 8MB.");
+      return;
+    }
+
+    img.src=URL.createObjectURL(selectedProfessionalPhoto);
+    preview.style.display="flex";
+  }else{
+    img.removeAttribute("src");
+    preview.style.display="none";
+  }
+};
+
+function renderImagePreviews(){let c=$("imagePreviewGrid");
+c.innerHTML="";
+selectedImages.forEach((f,i)=>{let d=document.createElement("div");d.style.cssText="height:62px;position:relative;border-radius:9px;overflow:hidden;background:#eee";let u=URL.createObjectURL(f);d.innerHTML=`<img src="${u}" style="width:100%;height:100%;object-fit:cover"><button type="button" style="position:absolute;right:2px;top:2px;width:20px;height:20px;border-radius:50%;background:#111827;color:#fff;font-size:13px">×</button>`;d.querySelector("button").onclick=()=>{selectedImages.splice(i,1);renderImagePreviews()};c.appendChild(d)})}
+$("sellForm").onsubmit=publishProduct;
+
+
+// ==================================================
+// GERENCIAR MEUS ANÚNCIOS
+// ==================================================
+async function showMyAds(){if(!currentUser)return showAuth("login");
+try{let s=await getDocs(query(collection(db,"produtos"),where("vendedorId","==",currentUser.uid)));
+let c=$("myAdsProducts");
+c.innerHTML="";
+let list=s.docs.map(d=>({id:d.id,...d.data()})).sort(sortProducts);
+if(!list.length)c.innerHTML='<div class="emptyState" style="grid-column:1/-1"><div class="emptyIcon">📦</div><strong>Você ainda não possui anúncios.</strong><div style="margin-top:5px">Toque em Vender para publicar seu primeiro produto.</div></div>';
+else list.forEach(p=>{let wrap=document.createElement("div");let card=createProductCard(p);card.style.marginBottom="8px";wrap.appendChild(card);let status=p.status==="vendido"?"Vendido":p.ativo===false?"Pausado":"Ativo";let actions=document.createElement("div");actions.style.cssText="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-bottom:14px";actions.innerHTML=`<button class="profileAction" data-action="edit">✏️ Editar</button><button class="profileAction" data-action="toggle" ${p.status==="vendido"?"disabled":""}>${p.status==="vendido"?"✔ Vendido":p.ativo===false?"▶️ Reativar":"⏸️ Pausar"}</button><button class="profileAction" data-action="sold" ${p.status==="vendido"?"disabled":""}>✅ Marcar vendido</button><button class="profileAction btnDanger" data-action="delete">🗑️ Excluir</button><div style="grid-column:1/-1;font-size:12px;color:#6b7280">Status: <strong>${status}</strong></div>`;actions.querySelector('[data-action="edit"]').onclick=()=>editProduct(p);if(p.status!=="vendido")actions.querySelector('[data-action="toggle"]').onclick=()=>toggleProductActive(p);if(p.status!=="vendido")actions.querySelector('[data-action="sold"]').onclick=()=>markProductSold(p);actions.querySelector('[data-action="delete"]').onclick=()=>deleteProduct(p);wrap.appendChild(actions);c.appendChild(wrap)});
+showInternalPage("myAdsPage")}catch(e){console.error(e);
+toast("Não foi possível carregar seus anúncios. Confira as regras do Firestore.")}}
+function editProduct(p){if(p.vendedorId!==currentUser?.uid)return toast("Você só pode editar seus próprios anúncios.");
+editingProductId=p.id;
+editingProductImages=[...(p.imagens|| (p.imagem?[p.imagem]:[]))];
+selectedImages=[];
+$('productName').value=p.nome||"";
+$('productPrice').value=p.preco??"";
+$('productCategory').value=p.categoria||"";
+$('productLocation').value=p.localizacao||"";
+$('productDescription').value=p.descricao||"";
+$('acceptsTrade').checked=!!p.aceitaTroca;
+$('checkBoost').checked=false;
+$('productImages').value="";
+$('sellModal').querySelector('.modalHeader h2').textContent="Editar anúncio";
+$('sellForm').querySelector('button[type="submit"]').textContent="Salvar alterações";
+renderImagePreviews();
+openModal("sellModal")}
+async function toggleProductActive(p){if(p.vendedorId!==currentUser?.uid)return toast("Ação não permitida.");
+if(p.status==="vendido")return toast("Um anúncio vendido não pode ser reativado. Edite e publique outro anúncio se necessário.");
+try{let reactivating=p.ativo===false;
+await updateDoc(doc(db,"produtos",p.id),{ativo:reactivating,status:reactivating?"ativo":(p.status||"ativo"),atualizadoEm:serverTimestamp()});
+toast(reactivating?"Anúncio reativado.":"Anúncio pausado.");
+await loadProducts();
+await showMyAds()}catch(e){console.error(e);
+toast("Não foi possível alterar o anúncio.")}}
+async function markProductSold(p){if(p.vendedorId!==currentUser?.uid)return toast("Ação não permitida.");
+if(!confirm(`Marcar “${p.nome}” como vendido?`))return;
+try{await updateDoc(doc(db,"produtos",p.id),{status:"vendido",ativo:false,vendidoEm:serverTimestamp(),atualizadoEm:serverTimestamp()});
+toast("Anúncio marcado como vendido.");
+await loadProducts();
+await showMyAds()}catch(e){console.error(e);
+toast("Não foi possível atualizar o anúncio.")}}
+async function deleteProduct(p){if(p.vendedorId!==currentUser?.uid)return toast("Ação não permitida.");
+if(!confirm(`Excluir definitivamente o anúncio “${p.nome}”?`))return;
+try{await deleteDoc(doc(db,"produtos",p.id));
+toast("Anúncio excluído.");
+await loadProducts();
+await showMyAds()}catch(e){console.error(e);
+toast("Não foi possível excluir. Confira as regras do Firestore.")}}
+
+// ==================================================
+// SERVIÇOS: BUSCAR PROFISSIONAIS
+// ==================================================
+
+async function searchProfessionals() {
+  const categoria = $("searchProfessionalCategory").value;
+  const cidade = normalizeText($("searchProfessionalCity").value);
+  const resultados = $("professionalSearchResults");
+  const botao = $("searchProfessionalBtn");
+
+  resultados.replaceChildren();
+
+  const mensagem = document.createElement("p");
+  mensagem.style.cssText = "font-size:13px;color:#64748b;padding:10px 0;";
+  mensagem.textContent = "Buscando profissionais...";
+  resultados.appendChild(mensagem);
+
+  botao.disabled = true;
+
+  try {
+    const consulta = query(
+      collection(db, "profissionais"),
+      where("ativo", "==", true)
+    );
+
+    const snapshot = await getDocs(consulta);
+
+    const profissionais = snapshot.docs
+      .map(documento => ({
+        id: documento.id,
+        ...documento.data()
+      }))
+      .filter(profissional => {
+        const categoriaOK =
+          !categoria || profissional.categoria === categoria;
+
+        const cidadeOK =
+          !cidade ||
+          normalizeText(profissional.cidade).includes(cidade);
+
+        return categoriaOK && cidadeOK;
+      });
+
+    resultados.replaceChildren();
+
+    if (!profissionais.length) {
+      const vazio = document.createElement("p");
+      vazio.style.cssText =
+        "padding:16px 0;color:#64748b;font-size:14px;";
+      vazio.textContent =
+        "Nenhum profissional encontrado. Tente outra categoria ou cidade.";
+
+      resultados.appendChild(vazio);
+      return;
+    }
+
+    profissionais.forEach(profissional => {
+      const card = document.createElement("div");
+
+      card.style.cssText =
+        "background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:14px;margin-bottom:12px;";
+
+      const cabecalho = document.createElement("div");
+  cabecalho.style.cssText =
+    "display:flex;align-items:center;gap:12px;margin-bottom:10px;";
+
+  const avatar = document.createElement("div");
+  avatar.style.cssText =
+    "width:64px;height:64px;min-width:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#e2e8f0;color:#334155;font-size:20px;font-weight:700;";
+
+  const iniciais = (profissional.nome || "P")
+    .trim()
+    .split(/\s+/)
+    .map(p => p[0] || "")
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+  avatar.textContent = iniciais;
+
+  if (profissional.fotoURL) {
+    const foto = document.createElement("img");
+    foto.src = profissional.fotoURL;
+    foto.alt = "Foto de " + (profissional.nome || "profissional");
+    foto.loading = "lazy";
+    foto.style.cssText =
+      "width:100%;height:100%;object-fit:cover;";
+
+    foto.onerror = () => {
+      foto.remove();
+      avatar.textContent = iniciais;
+    };
+
+    avatar.appendChild(foto);
+  }
+
+  const infoCabecalho = document.createElement("div");
+  infoCabecalho.style.cssText = "min-width:0;flex:1;";
+
+  const nome = document.createElement("h4");
+  nome.textContent = profissional.nome || "Profissional";
+  nome.style.cssText = "font-size:16px;margin:0 0 6px;";
+
+  const categoriaTexto = document.createElement("p");
+  categoriaTexto.textContent =
+    profissional.categoria || "Serviço";
+  categoriaTexto.style.cssText =
+    "font-size:13px;font-weight:700;color:#2563eb;margin:0;";
+
+  infoCabecalho.append(nome, categoriaTexto);
+  cabecalho.append(avatar, infoCabecalho);
+      const descricao = document.createElement("p");
+      descricao.textContent =
+        profissional.descricao || "Descrição não informada.";
+      descricao.style.cssText =
+        "font-size:14px;line-height:1.5;margin-bottom:8px;";
+
+      const local = document.createElement("p");
+      local.textContent =
+        "📍 " + (profissional.cidade || "Cidade não informada") +
+        " · " + (profissional.areaAtendimento || "Região não informada");
+      local.style.cssText =
+        "font-size:12px;color:#64748b;margin-bottom:12px;";
+
+      const contato = document.createElement("button");
+      contato.type = "button";
+      contato.className = "btn btnPrimary";
+      contato.style.width = "100%";
+      contato.textContent = "Conversar pelo Perto";
+
+      contato.onclick = async () => {
+        if (!currentUser) {
+          showAuth("login");
+          return;
+        }
+
+        if (profissional.usuarioId === currentUser.uid) {
+          toast("Este é o seu próprio cadastro profissional.");
+          return;
+        }
+
+        await startChat({
+          id: "profissional_" + profissional.usuarioId,
+          nome: "Serviço: " + profissional.nome,
+          preco: 0,
+          vendedorId: profissional.usuarioId
+        });
+
+        $("chatProductInfo").textContent =
+          "Contato profissional pelo chat do Perto";
+      };
+
+      card.append(cabecalho, descricao, local, contato);
+      resultados.appendChild(card);
+    });
+
+  } catch (erro) {
+    console.error("Erro ao buscar profissionais:", erro);
+
+    resultados.replaceChildren();
+
+    const falha = document.createElement("p");
+    falha.style.cssText = "color:#dc2626;font-size:14px;";
+    falha.textContent =
+      "Não foi possível carregar os profissionais. Verifique as regras do Firestore e tente novamente.";
+
+    resultados.appendChild(falha);
+
+  } finally {
+    botao.disabled = false;
+  }
+}
+
+$("searchProfessionalBtn").onclick = searchProfessionals;
+
+  // ==================================================
+// SERVIÇOS: BUSCAR PEDIDOS ABERTOS
+// ==================================================
+async function searchOpenServiceRequests() {
+  const categoria = $("openRequestsCategory").value;
+  const cidade = normalizeText($("openRequestsCity").value);
+  const resultados = $("openServiceRequestsResults");
+  const botao = $("searchOpenRequestsBtn");
+
+  resultados.replaceChildren();
+
+  const carregando = document.createElement("p");
+  carregando.textContent = "Buscando pedidos...";
+  carregando.style.cssText = "font-size:14px;color:#64748b;";
+  resultados.appendChild(carregando);
+
+  botao.disabled = true;
+
+  try {
+    const consulta = query(
+      collection(db, "solicitacoesServicos"),
+      where("status", "==", "aberta")
+    );
+
+    const snapshot = await getDocs(consulta);
+
+    const pedidos = snapshot.docs
+      .map(documento => ({
+        id: documento.id,
+        ...documento.data()
+      }))
+      .filter(pedido => {
+        const categoriaOK =
+          !categoria || pedido.categoria === categoria;
+
+        const cidadeOK =
+          !cidade ||
+          normalizeText(pedido.cidade).includes(cidade);
+
+        return categoriaOK && cidadeOK;
+      });
+
+    resultados.replaceChildren();
+
+    if (!pedidos.length) {
+      const vazio = document.createElement("p");
+      vazio.textContent =
+        "Nenhum pedido aberto encontrado com esses filtros.";
+      vazio.style.cssText =
+        "padding:14px 0;color:#64748b;font-size:14px;";
+      resultados.appendChild(vazio);
+      return;
+    }
+
+    pedidos.sort((a, b) => {
+      const dataA = a.criadoEm?.toMillis?.() || 0;
+      const dataB = b.criadoEm?.toMillis?.() || 0;
+      return dataB - dataA;
+    });
+
+    pedidos.forEach(pedido => {
+      const card = document.createElement("div");
+      card.style.cssText =
+        "background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:14px;margin-bottom:12px;";
+
+      const titulo = document.createElement("h4");
+      titulo.textContent = pedido.titulo || "Pedido de serviço";
+      titulo.style.cssText =
+        "font-size:16px;margin:0 0 8px;color:#0f172a;";
+
+      const categoriaTexto = document.createElement("p");
+      categoriaTexto.textContent =
+        pedido.categoria || "Outros serviços";
+      categoriaTexto.style.cssText =
+        "font-size:13px;font-weight:700;color:#2563eb;margin:0 0 8px;";
+
+      const descricao = document.createElement("p");
+      descricao.textContent =
+        pedido.descricao || "Sem descrição.";
+      descricao.style.cssText =
+        "font-size:14px;line-height:1.5;margin:0 0 10px;white-space:pre-wrap;";
+
+      const local = document.createElement("p");
+      local.textContent =
+        "📍 " + (pedido.cidade || "Cidade não informada") +
+        (pedido.bairro ? " · " + pedido.bairro : "");
+      local.style.cssText =
+        "font-size:12px;color:#64748b;margin:0 0 12px;";
+
+      const interesse = document.createElement("button");
+      interesse.type = "button";
+      interesse.className = "btn btnPrimary";
+      interesse.style.cssText = "width:100%;margin-top:4px;";
+      interesse.textContent = "💬 Tenho interesse";
+
+      interesse.onclick = async () => {
+        if (!currentUser) {
+          showAuth("login");
+          return;
+        }
+
+        if (pedido.clienteId === currentUser.uid) {
+          toast("Este é o seu próprio pedido.");
+          return;
+        }
+
+        interesse.disabled = true;
+        interesse.textContent = "Abrindo conversa...";
+
+        try {
+          await startChat({
+            id: "pedidoServico_" + pedido.id,
+            nome: "Pedido: " + (pedido.titulo || "Serviço"),
+            preco: 0,
+            vendedorId: pedido.clienteId
+          });
+        } finally {
+          interesse.disabled = false;
+          interesse.textContent = "💬 Tenho interesse";
+        }
+      };
+
+      card.append(titulo, categoriaTexto, descricao, local, interesse);
+      resultados.appendChild(card);
+    });
+
+  } catch (erro) {
+    console.error("Erro ao buscar pedidos de serviço:", erro);
+    resultados.replaceChildren();
+
+    const falha = document.createElement("p");
+    falha.textContent =
+      "Não foi possível carregar os pedidos. Confira as regras do Firebase.";
+    falha.style.cssText = "color:#dc2626;font-size:14px;";
+    resultados.appendChild(falha);
+
+  } finally {
+    botao.disabled = false;
+  }
+}
+
+$("searchOpenRequestsBtn").onclick = searchOpenServiceRequests;
+  
+// ==================================================
+// SERVIÇOS: REGISTRO DE INTERESSE
+// ==================================================
+async function registerServiceInterest(tipo="geral"){
+  if(!currentUser)return showAuth("login");
+  try{
+    await setDoc(doc(db,"servicos",currentUser.uid),{
+      usuarioId:currentUser.uid,
+      nome:currentUserData?.nome||currentUser.email,
+      email:currentUser.email,
+      cidade:currentUserData?.cidade||"",
+      interesse:true,
+      tipoInteresse:tipo,
+      atualizadoEm:serverTimestamp()
+    },{merge:true});
+
+    toast(tipo==="profissional"
+      ?"Interesse em oferecer serviços registrado. O cadastro profissional será ativado na próxima etapa."
+      :tipo==="cliente"
+      ?"Interesse em contratar serviços registrado. A publicação de pedidos será ativada na próxima etapa."
+      :"Interesse registrado.");
+  }catch(e){
+    console.error(e);
+    toast("Não foi possível registrar seu interesse. Confira as regras do Firestore.");
+  }
+}
+
+// ==================================================
+// SERVIÇOS: SALVAR CADASTRO PROFISSIONAL
+// ==================================================
+
+async function saveProfessional(e){
+  e.preventDefault();
+
+  if(!currentUser){
+    showAuth("login");
+    return;
+  }
+
+  const nome=$("professionalName").value.trim();
+  const categoria=$("professionalCategory").value;
+  const descricao=$("professionalDescription").value.trim();
+  const cidade=$("professionalCity").value.trim();
+  const areaAtendimento=$("professionalArea").value.trim();
+
+  if(!nome||!categoria||!descricao||!cidade||!areaAtendimento){
+    toast("Preencha todos os campos.");
+    return;
+  }
+
+  const btn=$("professionalForm").querySelector('button[type="submit"]');
+  const textoOriginal=btn.textContent;
+  btn.disabled=true;
+  btn.textContent="Salvando cadastro...";
+
+  try{
+    const dados={
+      usuarioId:currentUser.uid,
+      nome:nome,
+      categoria:categoria,
+      descricao:descricao,
+      cidade:cidade,
+      areaAtendimento:areaAtendimento,
+      email:currentUser.email||"",
+      precoTipo:"negociavel",
+      contatoTipo:"chat_perto",
+      ativo:currentProfessionalActive,
+      atualizadoEm:serverTimestamp()
+    };
+
+    if(selectedProfessionalPhoto){
+      if(!storage){
+        const mod=await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js");
+        storage=mod.getStorage(app);
+        storageRef=mod.ref;
+        uploadBytes=mod.uploadBytes;
+        getDownloadURL=mod.getDownloadURL;
+      }
+
+      const blob=await compressImage(selectedProfessionalPhoto);
+      if(!blob)throw new Error("Não foi possível preparar a foto. Escolha outra imagem.");
+
+      const fotoRef=storageRef(
+        storage,
+        `profissionais/${currentUser.uid}/${crypto.randomUUID()}.jpg`
+      );
+
+      await uploadBytes(fotoRef,blob,{contentType:"image/jpeg"});
+      dados.fotoURL=await getDownloadURL(fotoRef);
+    }
+
+    await setDoc(
+      doc(db,"profissionais",currentUser.uid),
+      dados,
+      {merge:true}
+    );
+
+    $("professionalModal").style.display="none";
+    $("professionalForm").reset();
+    selectedProfessionalPhoto=null;
+    $("professionalPhotoPreview").style.display="none";
+    $("professionalPhotoPreviewImage").removeAttribute("src");
+
+    toast("Cadastro profissional salvo com sucesso!");
+  }catch(error){
+    console.error("Erro ao salvar profissional:",error);
+    toast(error.message||"Não foi possível salvar. Confira as regras do Firebase.");
+  }finally{
+    btn.disabled=false;
+    btn.textContent=textoOriginal;
+  }
+}
+
+  
+// ==================================================
+// PAGAMENTOS: TURBINAR ANÚNCIO
+// ==================================================
+async function openBoost(p){if(p.vendedorId!==currentUser?.uid)return toast("Apenas o vendedor pode turbinar este anúncio.");
+currentOfferProduct=p;
+$("boostProductName").textContent=p.nome;
+$("boostModal").classList.add("open")}
+
+
+
+// ==================================================
+// INTEGRAÇÃO DE PAGAMENTO / CHECKOUT
+// ==================================================
+document.querySelectorAll("#boostOptions [data-plan]").forEach(b => {
+  b.onclick = async () => {
+    const plano = b.dataset.plan;
+    const produto = currentOfferProduct;
+
+    if (!produto || !currentUser) {
+      toast("Entre na sua conta para turbinar o anúncio.");
+      return;
+    }
+
+    b.disabled = true;
+
+    try {
+      const idToken = await currentUser.getIdToken();
+
+      const resposta = await fetch("/api/criar-pagamento", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + idToken
+        },
+        body: JSON.stringify({
+          produtoId: produto.id,
+          plano: plano
+        })
+      });
+
+      const resultado = await resposta.json();
+
+      if (!resposta.ok || !resultado.checkout_url) {
+        throw new Error(
+          resultado.erro || "Não foi possível iniciar o pagamento."
+        );
+      }
+
+      window.location.href = resultado.checkout_url;
+    } catch (erro) {
+      console.error("Erro ao iniciar pagamento:", erro);
+      toast(erro.message || "Erro ao iniciar o pagamento.");
+      b.disabled = false;
+    }
+  };
+});
+  
+
+
+
+// ==================================================
+// ABERTURA E FECHAMENTO DE MODAIS
+// ==================================================
+function openModal(id){$(id).classList.add("open")}function closeModal(id){$(id).classList.remove("open")}document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>closeModal(b.dataset.close));
+document.querySelectorAll(".modal").forEach(m=>m.onclick=e=>{if(e.target===m)closeModal(m.id)});
+
+
+// ==================================================
+// AÇÕES DOS BOTÕES E ATALHOS
+// ==================================================
+
+$("registerStoreBtn").onclick = (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+
+  const usuario = currentUser || auth.currentUser;
+
+  if (!usuario) {
+    toast("Sua sessão não foi reconhecida. Entre novamente.");
+    return;
+  }
+
+  currentUser = usuario;
+
+  // Garante que a aplicação permaneça visível.
+  showPage($("appPage"));
+
+  toast("Abrindo cadastro da loja...");
+
+  openModal("storeRegisterModal");
+};
+  // ==================================================
+// CADASTRO E SALVAMENTO DA LOJA
+// ==================================================
+$("storeForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+
+  const usuario = auth.currentUser || currentUser;
+
+  if (!usuario) {
+    toast("Sua sessão expirou. Entre novamente.");
+    return;
+  }
+
+  const botao = $("saveStoreBtn");
+  const textoOriginal = botao.textContent;
+
+  botao.disabled = true;
+  botao.textContent = "Salvando...";
+
+  try {
+    const lojaRef = doc(db, "lojas", usuario.uid);
+    const lojaExistente = await getDoc(lojaRef);
+    const dadosExistentes = lojaExistente.exists()
+      ? lojaExistente.data()
+      : null;
+
+    const dadosLoja = {
+      usuarioId: usuario.uid,
+      nome: $("storeName").value.trim(),
+      categoria: $("storeType").value,
+      cidade: $("storeRegisterCity").value.trim(),
+      telefone: $("storePhone").value.trim(),
+      descricao: $("storeDescription").value.trim(),
+      endereco: $("storeAddress").value.trim(),
+      horario: $("storeHours").value.trim(),
+      funciona24h: $("storeOpen24h").checked,
+      ativo: dadosExistentes
+        ? dadosExistentes.ativo
+        : false,
+      atualizadoEm: serverTimestamp()
+    };
+
+    if (!dadosExistentes) {
+      dadosLoja.criadoEm = serverTimestamp();
+    }
+
+    await setDoc(lojaRef, dadosLoja, { merge: true });
+
+    currentUser = usuario;
+
+    closeModal("storeRegisterModal");
+    $("storeForm").reset();
+
+    toast("Loja cadastrada com sucesso!");
+
+  } catch (erro) {
+    console.error("Erro ao cadastrar loja:", erro);
+
+    toast(
+      erro.code === "permission-denied"
+        ? "O Firebase não autorizou salvar a loja."
+        : "Não foi possível salvar. Tente novamente."
+    );
+
+  } finally {
+    botao.disabled = false;
+    botao.textContent = textoOriginal;
+  }
+});
+
+// ==================================================
+// VITRINE DE LOJAS E FILTROS
+// ==================================================
+
+let lojasVitrine = [];
+let categoriaLojaSelecionada = "";
+
+async function carregarVitrineLojas() {
+  const resultados = $("storesResults");
+
+  resultados.innerHTML =
+    '<div class="storeEmpty">Carregando lojas...</div>';
+
+  try {
+    // Consulta somente lojas públicas ativas.
+    const consulta = await getDocs(
+      query(
+        collection(db, "lojas"),
+        where("ativo", "==", true)
+      )
+    );
+
+    lojasVitrine = consulta.docs.map(item => ({
+      id: item.id,
+      ...item.data()
+    }));
+
+    // Permite que a proprietária veja sua loja
+    // mesmo enquanto ela aguarda ativação.
+    const usuario = auth.currentUser || currentUser;
+
+    if (usuario) {
+      const minhaLoja = await getDoc(
+        doc(db, "lojas", usuario.uid)
+      );
+
+      if (
+        minhaLoja.exists() &&
+        !lojasVitrine.some(loja => loja.id === minhaLoja.id)
+      ) {
+        lojasVitrine.push({
+          id: minhaLoja.id,
+          ...minhaLoja.data(),
+          aguardandoAtivacao:
+            minhaLoja.data().ativo !== true
+        });
+      }
+    }
+
+    renderizarVitrineLojas();
+
+  } catch (erro) {
+    console.error("Erro ao carregar vitrine:", erro);
+
+    resultados.innerHTML =
+      '<div class="storeEmpty">Não foi possível carregar as lojas. Tente novamente.</div>';
+  }
+}
+
+function renderizarVitrineLojas() {
+  const busca = $("storeSearch").value.trim().toLowerCase();
+  const cidade = $("storeCity").value.trim().toLowerCase();
+
+  const filtradas = lojasVitrine.filter(loja => {
+    const categoriaOK =
+      !categoriaLojaSelecionada ||
+      loja.categoria === categoriaLojaSelecionada ||
+      (
+        categoriaLojaSelecionada === "Outros" &&
+        ![
+          "Alimentação",
+          "Moda",
+          "Casa",
+          "Beleza",
+          "Mercado",
+          "Eletrônicos"
+        ].includes(loja.categoria)
+      );
+
+    const texto = [
+      loja.nome,
+      loja.categoria,
+      loja.descricao,
+      loja.cidade
+    ].join(" ").toLowerCase();
+
+    const buscaOK = !busca || texto.includes(busca);
+    const cidadeOK =
+      !cidade ||
+      String(loja.cidade || "").toLowerCase().includes(cidade);
+
+    // Lojas inativas só aparecem para seu proprietário.
+    const publica = loja.ativo === true;
+    const propria =
+      (auth.currentUser || currentUser)?.uid === loja.usuarioId;
+
+    return categoriaOK && buscaOK && cidadeOK &&
+      (publica || propria);
+  });
+
+  if (!filtradas.length) {
+    $("storesResults").innerHTML =
+      '<div class="storeEmpty"><div style="font-size:38px;margin-bottom:10px">🏪</div><strong>Nenhuma loja encontrada.</strong><div>Tente outra categoria ou cidade.</div></div>';
+    return;
+  }
+
+  $("storesResults").innerHTML = filtradas.map(loja => {
+    const aguardando = loja.ativo !== true;
+
+    return `
+      <article class="storeCard">
+        <div class="storeCover">🏪</div>
+        <div class="storeInfo">
+          <h3>${esc(loja.nome || "Loja")}</h3>
+          <p>
+            ${esc(loja.categoria || "Outros")}<br>
+            📍 ${esc(loja.cidade || "")}
+          </p>
+          <p>${esc(loja.descricao || "")}</p>
+          ${
+            aguardando
+              ? '<span class="storeStatus" style="background:#fef3c7;color:#92400e">Aguardando ativação</span>'
+              : '<span class="storeStatus">Loja ativa</span>'
+          }
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+// Ativar os filtros de categoria.
+document.querySelectorAll(
+  "#storeCategories .storeCategory"
+).forEach(botao => {
+  botao.addEventListener("click", () => {
+    categoriaLojaSelecionada = botao.dataset.category || "";
+
+    document.querySelectorAll(
+      "#storeCategories .storeCategory"
+    ).forEach(item => item.classList.remove("active"));
+
+    botao.classList.add("active");
+    renderizarVitrineLojas();
+  });
+});
+
+// Busca por nome, categoria ou descrição.
+$("storeSearch").addEventListener(
+  "input",
+  renderizarVitrineLojas
+);
+
+// Filtro por cidade.
+$("storeCity").addEventListener(
+  "input",
+  renderizarVitrineLojas
+);
+  
+$("sellNavBtn").onclick=()=>{
+if(!currentUser)return showAuth("login");
+editingProductId=null;
+editingProductImages=[];
+$('sellModal').querySelector('.modalHeader h2').textContent="Vender no Perto";
+$('sellForm').reset();
+$('sellForm').querySelector('button[type="submit"]').textContent="Publicar anúncio";
+selectedImages=[];
+renderImagePreviews();
+openModal("sellModal")};
+$("headerUser").onclick=()=>showInternalPage("profilePage");
+$("editProfileBtn").onclick=openProfileEditor;
+$("logoutBtn").onclick=logout;
+// ==================================================
+// EVENTOS DO PAINEL ADMINISTRATIVO
+// ==================================================
+$("adminPanelBtn").onclick=abrirPainelAdmin;
+$("saveAdminMonthlyPrice").onclick=salvarMensalidadeAdmin;
+$("adminBackBtn").onclick=()=>showInternalPage("profilePage");
+atualizarBotaoAdmin();
+$("myAdsBtn").onclick=showMyAds;
+$("homeMyAds").onclick=showMyAds;
+$("profileFavoritesBtn").onclick=()=>{renderFavorites();
+showInternalPage("favoritesPage")};
+$("homeServices").onclick=()=>showInternalPage("servicesPage");
+
+// ==================================================
+// FRETEGO / ATALHO DE ENTREGAS
+// ==================================================
+$("homeDelivery").onclick=()=>toast("Entregas serão integradas ao FreteGo.");
+$("homeIncome").onclick=()=>showInternalPage("storesPage");
+
+$("serviceProfessionalBtn").onclick=async()=>{
+  if(!currentUser)return showAuth("login");
+
+  selectedProfessionalPhoto=null;
+  $("professionalForm").reset();
+  $("professionalPhoto").value="";
+  $("professionalPhotoPreview").style.display="none";
+  $("professionalPhotoPreviewImage").removeAttribute("src");
+
+  const titulo=$("professionalModal").querySelector("h2");
+  const botao=$("professionalForm").querySelector('button[type="submit"]');
+
+  titulo.textContent="Cadastro profissional";
+  botao.textContent="Cadastrar profissional";
+  currentProfessionalActive=true;
+$("toggleProfessionalBtn").style.display="none";
+  $("deleteProfessionalBtn").style.display="none";
+  try{
+    const cadastro=await getDoc(
+      doc(db,"profissionais",currentUser.uid)
+    );
+
+    if(cadastro.exists()){
+      const dados=cadastro.data();
+     
+      
+currentProfessionalActive=dados.ativo!==false;
+
+const botaoStatus=$("toggleProfessionalBtn");
+botaoStatus.style.display="block";
+$("deleteProfessionalBtn").style.display="block";     
+botaoStatus.textContent=currentProfessionalActive
+  ?"⏸️ Pausar perfil profissional"
+  :"▶️ Reativar perfil profissional";
+      
+      $("professionalName").value=dados.nome||"";
+      $("professionalCategory").value=dados.categoria||"";
+      $("professionalDescription").value=dados.descricao||"";
+      $("professionalCity").value=dados.cidade||"";
+      $("professionalArea").value=dados.areaAtendimento||"";
+
+      if(dados.fotoURL){
+        $("professionalPhotoPreviewImage").src=dados.fotoURL;
+        $("professionalPhotoPreview").style.display="flex";
+      }
+
+      titulo.textContent="Editar perfil profissional";
+      botao.textContent="Salvar alterações";
+    }
+
+    $("professionalModal").style.display="flex";
+
+  }catch(error){
+    console.error("Erro ao carregar perfil profissional:",error);
+    toast("Não foi possível carregar seu perfil. Tente novamente.");
+  }
+};
+
+const fecharCadastroProfissional=()=>{
+  $("professionalModal").style.display="none";
+  selectedProfessionalPhoto=null;
+  $("professionalPhoto").value="";
+  $("professionalPhotoPreview").style.display="none";
+  $("professionalPhotoPreviewImage").removeAttribute("src");
+};
+  
+$("toggleProfessionalBtn").onclick=async()=>{
+  if(!currentUser)return showAuth("login");
+
+  const pausando=currentProfessionalActive;
+
+  if(!confirm(pausando
+    ?"Deseja pausar seu perfil profissional? Ele deixará de aparecer nas buscas."
+    :"Deseja reativar seu perfil profissional?"))return;
+
+  const botaoStatus=$("toggleProfessionalBtn");
+  botaoStatus.disabled=true;
+
+  try{
+    await updateDoc(doc(db,"profissionais",currentUser.uid),{
+      ativo:!pausando,
+      atualizadoEm:serverTimestamp()
+    });
+
+    currentProfessionalActive=!pausando;
+
+    botaoStatus.textContent=currentProfessionalActive
+      ?"⏸️ Pausar perfil profissional"
+      :"▶️ Reativar perfil profissional";
+
+    toast(currentProfessionalActive
+      ?"Perfil profissional reativado!"
+      :"Perfil profissional pausado!");
+
+  }catch(error){
+    console.error("Erro ao alterar status profissional:",error);
+    toast("Não foi possível alterar o perfil. Confira as regras do Firestore.");
+  }finally{
+    botaoStatus.disabled=false;
+  }
+}; 
+
+$("deleteProfessionalBtn").onclick=async()=>{
+  if(!currentUser)return showAuth("login");
+
+  const confirmou=confirm(
+    "Tem certeza que deseja excluir seu perfil profissional? Essa ação removerá seu cadastro de serviços do Perto."
+  );
+
+  if(!confirmou)return;
+
+  const botaoExcluir=$("deleteProfessionalBtn");
+  botaoExcluir.disabled=true;
+
+  try{
+    await deleteDoc(doc(db,"profissionais",currentUser.uid));
+
+    currentProfessionalActive=true;
+    $("professionalModal").style.display="none";
+    $("professionalForm").reset();
+    $("toggleProfessionalBtn").style.display="none";
+    $("deleteProfessionalBtn").style.display="none";
+    selectedProfessionalPhoto=null;
+    $("professionalPhotoPreview").style.display="none";
+    $("professionalPhotoPreviewImage").removeAttribute("src");
+
+    toast("Perfil profissional excluído com sucesso!");
+
+  }catch(error){
+    console.error("Erro ao excluir perfil profissional:",error);
+    toast("Não foi possível excluir o perfil. Confira as regras do Firestore.");
+  }finally{
+    botaoExcluir.disabled=false;
+  }
+};
+  
+$("closeProfessionalModal").onclick=fecharCadastroProfissional;
+$("cancelProfessionalModal").onclick=fecharCadastroProfissional;
+$("professionalForm").onsubmit=saveProfessional;
+
+  
+$("serviceRequestBtn").onclick = () => {
+  $("professionalSearchPanel").style.display = "block";
+  $("professionalSearchResults").replaceChildren();
+  $("searchProfessionalCity").focus();
+};
+  
+
+$("serviceRequestForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  if (!currentUser) {
+    toast("Sua sessão não foi identificada. Entre novamente.");
+    return;
+  }
+
+  const botao = $("publishServiceRequestBtn");
+  botao.disabled = true;
+  botao.textContent = "Publicando...";
+
+  try {
+    await addDoc(collection(db, "solicitacoesServicos"), {
+      clienteId: currentUser.uid,
+      titulo: $("serviceRequestTitle").value.trim(),
+      descricao: $("serviceRequestDescription").value.trim(),
+      categoria: $("serviceRequestCategory").value,
+      cidade: $("serviceRequestCity").value.trim(),
+      bairro: $("serviceRequestNeighborhood").value.trim(),
+      status: "aberta",
+      criadoEm: serverTimestamp(),
+      atualizadoEm: serverTimestamp()
+    });
+
+    $("serviceRequestForm").reset();
+    toast("Pedido publicado com sucesso!");
+
+  } catch (error) {
+    console.error("Erro ao publicar pedido:", error);
+    toast("Erro ao publicar. Verifique as regras do Firebase.");
+  } finally {
+    botao.disabled = false;
+    botao.textContent = "Publicar pedido";
+  }
+});
+
+  
+/* ==================================================
+   SERVIÇOS — MENU ORGANIZADO
+   Mantém os formulários e IDs existentes
+================================================== */
+const servicesPage = $("servicesPage");
+
+if (servicesPage && ! $("servicesMenu")) {
+  const elementos = [...servicesPage.children];
+
+  const cardProfissional = elementos.find(el =>
+    el.querySelector("#serviceProfessionalBtn")
+  );
+
+  const cardBuscarProfissional = elementos.find(el =>
+    el.querySelector("#serviceRequestBtn")
+  );
+
+  const painelProfissionais = $("professionalSearchPanel");
+
+  const cardPedidos = elementos.find(el =>
+    el.querySelector("#searchOpenRequestsBtn")
+  );
+
+  const cardPublicarPedido = elementos.find(el =>
+    el.querySelector("#serviceRequestForm")
+  );
+
+  const menu = document.createElement("div");
+  menu.id = "servicesMenu";
+  menu.style.cssText =
+    "display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px";
+
+  const criarOpcao = (icone, titulo, descricao, acao) => {
+    const botao = document.createElement("button");
+    botao.type = "button";
+    botao.className = "serviceCard";
+    botao.style.cssText =
+      "text-align:left;width:100%;cursor:pointer;border:1px solid #e2e8f0";
+
+    botao.innerHTML = `
+      <div class="serviceIcon">${icone}</div>
+      <h3>${titulo}</h3>
+      <p>${descricao}</p>
+      <span style="display:block;margin-top:12px;font-weight:700">
+        Acessar →
+      </span>
+    `;
+
+    botao.addEventListener("click", acao);
+    return botao;
+  };
+
+  const painelPedidos = document.createElement("div");
+  painelPedidos.id = "serviceOpenRequestsPanel";
+  painelPedidos.style.display = "none";
+
+  const painelMeusPedidos = document.createElement("div");
+  painelMeusPedidos.id = "myServiceRequestsPanel";
+  painelMeusPedidos.style.display = "none";
+
+  const voltar = (painel) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn";
+    btn.textContent = "← Voltar";
+    btn.style.marginBottom = "14px";
+
+    btn.addEventListener("click", () => {
+      painel.style.display = "none";
+      menu.style.display = "grid";
+    });
+
+    painel.prepend(btn);
+  };
+
+  const abrirPainel = (painel) => {
+    menu.style.display = "none";
+    painel.style.display = "block";
+    painel.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  if (cardProfissional && cardBuscarProfissional &&
+      painelProfissionais && cardPedidos && cardPublicarPedido) {
+
+    servicesPage.innerHTML = "";
+
+    const titulo = document.createElement("div");
+    titulo.className = "sectionTitle";
+    titulo.textContent = "Serviços";
+
+    const subtitulo = document.createElement("div");
+    subtitulo.className = "sectionSubtitle";
+    subtitulo.textContent =
+      "Encontre profissionais ou divulgue seu trabalho na sua região.";
+
+    servicesPage.append(titulo, subtitulo, menu);
+
+    menu.append(
+      criarOpcao(
+        "🔎",
+        "Encontrar profissionais",
+        "Busque por categoria e cidade.",
+        () => {
+          abrirPainel(painelProfissionais);
+          $("professionalSearchResults").replaceChildren();
+        }
+      ),
+      criarOpcao(
+        "📋",
+        "Encontrar pedidos",
+        "Veja quem precisa de um serviço.",
+        () => abrirPainel(painelPedidos)
+      ),
+  criarOpcao(
+  "🧰",
+  "Sou profissional",
+  "Cadastre ou gerencie seu perfil.",
+  () => cardProfissional.querySelector("#serviceProfessionalBtn").click()
+      ),
+      criarOpcao(
+        "📝",
+        "Meus pedidos",
+        "Publique e consulte suas solicitações.",
+        () => {
+          abrirPainel(painelMeusPedidos);
+          carregarMeusPedidos();
+        }
+      )
+    );
+
+    cardProfissional.remove();
+    cardBuscarProfissional.remove();
+
+    painelProfissionais.style.display = "none";
+    painelProfissionais.style.marginTop = "16px";
+
+    painelPedidos.appendChild(cardPedidos);
+    painelPedidos.style.marginTop = "16px";
+
+    painelMeusPedidos.appendChild(cardPublicarPedido);
+    painelMeusPedidos.style.marginTop = "16px";
+
+    voltar(painelProfissionais);
+    voltar(painelPedidos);
+    voltar(painelMeusPedidos);
+
+    servicesPage.append(
+      painelProfissionais,
+      painelPedidos,
+      painelMeusPedidos
+    );
+
+    $("serviceRequestBtn").onclick = () => {
+      abrirPainel(painelProfissionais);
+    };
+
+    $("searchProfessionalBtn").onclick = searchProfessionals;
+    $("searchOpenRequestsBtn").onclick = searchOpenServiceRequests;
+
+    async function carregarMeusPedidos() {
+  const id = "myServiceRequestsResults";
+  let resultados = $(id);
+
+  if (!resultados) {
+    resultados = document.createElement("div");
+    resultados.id = id;
+    resultados.style.marginTop = "16px";
+    painelMeusPedidos.appendChild(resultados);
+  }
+
+  if (!currentUser) {
+    resultados.textContent =
+      "Entre na sua conta para consultar seus pedidos.";
+    return;
+  }
+
+  resultados.textContent = "Carregando seus pedidos...";
+
+  try {
+    const consulta = query(
+      collection(db, "solicitacoesServicos"),
+      where("clienteId", "==", currentUser.uid)
+    );
+
+    const snapshot = await getDocs(consulta);
+    resultados.replaceChildren();
+
+    if (snapshot.empty) {
+      resultados.textContent = "Você ainda não publicou pedidos.";
+      return;
+    }
+
+    snapshot.forEach((docPedido) => {
+      const pedido = docPedido.data();
+
+      const card = document.createElement("div");
+      card.className = "serviceCard";
+      card.style.marginTop = "10px";
+
+      const tituloPedido = document.createElement("h3");
+      tituloPedido.textContent =
+        pedido.titulo || "Pedido de serviço";
+
+      const descricao = document.createElement("p");
+      descricao.textContent = pedido.descricao || "";
+
+      const categoria = document.createElement("p");
+      categoria.textContent =
+        "Categoria: " + (pedido.categoria || "Outros serviços");
+
+      const local = document.createElement("p");
+      local.textContent =
+        [pedido.bairro, pedido.cidade]
+          .filter(Boolean)
+          .join(" • ");
+
+      const status = document.createElement("p");
+      status.textContent =
+        "Status: " + (pedido.status || "aberta");
+
+      const acoes = document.createElement("div");
+      acoes.style.cssText =
+        "display:flex;flex-wrap:wrap;gap:8px;margin-top:12px";
+
+      const criarBotao = (texto, acao) => {
+        const botao = document.createElement("button");
+        botao.type = "button";
+        botao.className = "btn btnPrimary";
+        botao.textContent = texto;
+        botao.style.cssText =
+          "flex:1;min-width:120px;padding:10px";
+
+        botao.onclick = async () => {
+          if (!currentUser ||
+              pedido.clienteId !== currentUser.uid) {
+            toast("Você não pode alterar este pedido.");
+            return;
+          }
+
+          botao.disabled = true;
+
+          try {
+            await acao();
+          } catch (erro) {
+            console.error(
+              "Erro ao gerenciar pedido de serviço:",
+              erro
+            );
+            toast(
+              "Não foi possível realizar a ação. Confira as regras do Firebase."
+            );
+          } finally {
+            botao.disabled = false;
+          }
+        };
+
+        acoes.appendChild(botao);
+      };
+
+      criarBotao("✏️ Editar", async () => {
+        const titulo = prompt(
+          "Título do pedido:",
+          pedido.titulo || ""
+        );
+        if (titulo === null) return;
+
+        const descricaoNova = prompt(
+          "Descrição do pedido:",
+          pedido.descricao || ""
+        );
+        if (descricaoNova === null) return;
+
+        const categoriaNova = prompt(
+          "Categoria do serviço:",
+          pedido.categoria || "Outros serviços"
+        );
+        if (categoriaNova === null) return;
+
+        const cidade = prompt(
+          "Cidade:",
+          pedido.cidade || ""
+        );
+        if (cidade === null) return;
+
+        const bairro = prompt(
+          "Bairro:",
+          pedido.bairro || ""
+        );
+        if (bairro === null) return;
+
+        if (
+          !titulo.trim() ||
+          !descricaoNova.trim() ||
+          !categoriaNova.trim() ||
+          !cidade.trim()
+        ) {
+          toast("Preencha título, descrição, categoria e cidade.");
+          return;
+        }
+
+        await updateDoc(
+          doc(db, "solicitacoesServicos", docPedido.id),
+          {
+            titulo: titulo.trim(),
+            descricao: descricaoNova.trim(),
+            categoria: categoriaNova.trim(),
+            cidade: cidade.trim(),
+            bairro: bairro.trim(),
+            atualizadoEm: serverTimestamp()
+          }
+        );
+
+        toast("Pedido atualizado!");
+        await carregarMeusPedidos();
+      });
+
+      if (pedido.status === "aberta" || !pedido.status) {
+        criarBotao("✅ Concluir", async () => {
+          if (!confirm("Deseja marcar este pedido como concluído?")) {
+            return;
+          }
+
+          await updateDoc(
+            doc(db, "solicitacoesServicos", docPedido.id),
+            {
+              status: "concluida",
+              atualizadoEm: serverTimestamp()
+            }
+          );
+
+          toast("Pedido concluído!");
+          await carregarMeusPedidos();
+        });
+
+        criarBotao("⏸️ Cancelar", async () => {
+          if (!confirm("Deseja cancelar este pedido?")) {
+            return;
+          }
+
+          await updateDoc(
+            doc(db, "solicitacoesServicos", docPedido.id),
+            {
+              status: "cancelada",
+              atualizadoEm: serverTimestamp()
+            }
+          );
+
+          toast("Pedido cancelado.");
+          await carregarMeusPedidos();
+        });
+      } else {
+        criarBotao("🔄 Reabrir", async () => {
+          if (!confirm("Deseja reabrir e divulgar este pedido?")) {
+            return;
+          }
+
+          await updateDoc(
+            doc(db, "solicitacoesServicos", docPedido.id),
+            {
+              status: "aberta",
+              atualizadoEm: serverTimestamp()
+            }
+          );
+
+          toast("Pedido reaberto!");
+          await carregarMeusPedidos();
+        });
+      }
+
+      criarBotao("🗑️ Excluir", async () => {
+        if (!confirm(
+          "Tem certeza que deseja excluir este pedido permanentemente?"
+        )) {
+          return;
+        }
+
+        await deleteDoc(
+          doc(db, "solicitacoesServicos", docPedido.id)
+        );
+
+        toast("Pedido excluído.");
+        await carregarMeusPedidos();
+      });
+
+      card.append(
+        tituloPedido,
+        categoria,
+        descricao,
+        local,
+        status,
+        acoes
+      );
+
+      resultados.appendChild(card);
+    });
+
+        } catch (erro) {
+        console.error("Erro ao carregar meus pedidos:", erro);
+        resultados.textContent =
+          "Não foi possível carregar seus pedidos. Tente novamente.";
+      }
+    }
+  }
+}
+
+renderFavorites();
+    
+</script>
+</body>
+</html>
