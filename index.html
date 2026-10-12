@@ -2057,6 +2057,7 @@ function showInternalPage(id,scroll=true){document.querySelectorAll(".page").for
 $(id)?.classList.add("active");
 document.querySelectorAll(".navBtn[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
 if(id==="chatPage")loadConversations();
+if(id==="storesPage")carregarVitrineLojas();
 if(scroll)window.scrollTo({top:0,behavior:"smooth"})}
 document.querySelectorAll(".navBtn[data-page]").forEach(b=>b.onclick=()=>{if(b.dataset.page==="favoritesPage")renderFavorites();showInternalPage(b.dataset.page)});
 
