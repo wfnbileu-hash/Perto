@@ -3366,10 +3366,6 @@ async function carregarProdutosMinhaLoja() {
         produto.status === "vendido" ? "Vendido" :
         produto.ativo === false ? "Pausado" : "Ativo";
 
-      const botoes = document.createElement("div");
-      botoes.style.cssText =
-        "display:flex;gap:8px;flex-wrap:wrap";
-
       const editar = document.createElement("button");
       editar.type = "button";
       editar.className = "profileAction";
