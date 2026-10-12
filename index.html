@@ -3289,6 +3289,17 @@ selectedImages=[];
 renderImagePreviews();
 openModal("sellModal")};
 $("headerUser").onclick=()=>showInternalPage("profilePage");
+
+$("myStoreBtn").onclick = async () => {
+  if (!currentUser) {
+    showAuth("login");
+    return;
+  }
+
+  showInternalPage("myStorePage");
+  await carregarPainelMinhaLoja();
+};
+  
 $("editProfileBtn").onclick=openProfileEditor;
 $("logoutBtn").onclick=logout;
 // ==================================================
