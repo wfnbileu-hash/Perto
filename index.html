@@ -3227,6 +3227,57 @@ $("storeCity").addEventListener(
   renderizarVitrineLojas
 );
   
+ // ==================================================
+ // CARREGAR DADOS DO GERENCIAMENTO DA LOJA
+ // ==================================================
+ async function carregarPainelMinhaLoja() {
+   const usuario = auth.currentUser || currentUser;
+
+   if (!usuario) {
+     showAuth("login");
+     return;
+   }
+
+   $("myStoreManagerTitle").textContent = "Minha loja";
+   $("myStoreManagerStatus").textContent = "Carregando informações...";
+
+   try {
+     const referencia = doc(db, "lojas", usuario.uid);
+     const resultado = await getDoc(referencia);
+
+     if (!resultado.exists()) {
+       $("myStoreManagerTitle").textContent = "Você ainda não tem uma loja";
+       $("myStoreManagerStatus").textContent =
+         "Cadastre sua loja para começar a divulgar seu negócio no Perto.";
+       $("editMyStoreBtn").textContent = "🏪 Cadastrar minha loja";
+       return;
+     }
+
+     const loja = resultado.data();
+
+     $("myStoreManagerTitle").textContent =
+       "Gerenciar " + (loja.nome || "minha loja");
+
+     if (loja.statusAdmin === "suspensa") {
+       $("myStoreManagerStatus").textContent =
+         "Sua loja está suspensa. Entre em contato com a administração.";
+     } else if (loja.ativo === true) {
+       $("myStoreManagerStatus").textContent =
+         "Sua loja está ativa e pode aparecer na vitrine do Perto.";
+     } else {
+       $("myStoreManagerStatus").textContent =
+         "Sua loja está aguardando ativação pela administração.";
+     }
+
+     $("editMyStoreBtn").textContent = "✏️ Configurar / editar loja";
+
+   } catch (erro) {
+     console.error("Erro ao carregar gerenciamento da loja:", erro);
+     $("myStoreManagerStatus").textContent =
+       "Não foi possível carregar sua loja. Tente novamente.";
+   }
+  }
+  
 $("sellNavBtn").onclick=()=>{
 if(!currentUser)return showAuth("login");
 editingProductId=null;
