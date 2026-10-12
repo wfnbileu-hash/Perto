@@ -1877,6 +1877,146 @@ async function salvarMensalidadeAdmin() {
 }
 
 
+/* ==================================================
+   ADMINISTRADOR — APROVAR E SUSPENDER LOJAS
+   ================================================== */
+
+async function carregarLojasAdmin() {
+  const mensagem = $("adminStoresMessage");
+  const lista = $("adminStoresList");
+
+  if (!currentUser || currentUser.uid !== ADMIN_UID) {
+    mensagem.textContent = "Acesso restrito ao administrador.";
+    lista.innerHTML = "";
+    return;
+  }
+
+  mensagem.textContent = "Carregando lojas...";
+  lista.innerHTML = "";
+
+  try {
+    const resultado = await getDocs(collection(db, "lojas"));
+
+    if (resultado.empty) {
+      mensagem.textContent = "Nenhuma loja cadastrada ainda.";
+      return;
+    }
+
+    const lojas = resultado.docs
+      .map(item => ({
+        id: item.id,
+        ...item.data()
+      }))
+      .sort((a, b) =>
+        String(a.nome || "").localeCompare(
+          String(b.nome || ""),
+          "pt-BR"
+        )
+      );
+
+    lista.innerHTML = lojas.map(loja => {
+      const ativa = loja.ativo === true;
+      const suspensa = loja.statusAdmin === "suspensa";
+
+      const status = ativa
+        ? "✅ Ativa"
+        : suspensa
+          ? "⛔ Suspensa"
+          : "⏳ Aguardando aprovação";
+
+      const botao = ativa
+        ? "Suspender loja"
+        : "Aprovar / ativar loja";
+
+      return `
+        <div style="
+          border:1px solid #e2e8f0;
+          border-radius:12px;
+          padding:14px;
+          margin-top:10px;
+          overflow-wrap:anywhere;
+        ">
+          <strong>${esc(loja.nome || "Loja sem nome")}</strong>
+
+          <p style="margin:6px 0;color:#64748b">
+            Cidade: ${esc(loja.cidade || "Não informada")}
+          </p>
+
+          <p style="margin:6px 0 12px">
+            Status: <strong>${status}</strong>
+          </p>
+
+          <button
+            type="button"
+            class="btn btnPrimary"
+            data-loja-id="${esc(loja.id)}"
+            data-ativar="${ativa ? "false" : "true"}"
+            style="width:100%"
+          >${botao}</button>
+        </div>
+      `;
+    }).join("");
+
+    mensagem.textContent =
+      `${lojas.length} loja(s) encontrada(s).`;
+
+    lista.querySelectorAll("[data-loja-id]").forEach(botao => {
+      botao.onclick = async () => {
+        const id = botao.dataset.lojaId;
+        const ativar = botao.dataset.ativar === "true";
+
+        await alterarStatusLojaAdmin(id, ativar);
+      };
+    });
+
+  } catch (erro) {
+    console.error("Erro ao carregar lojas administrativas:", erro);
+
+    mensagem.textContent =
+      erro.code === "permission-denied"
+        ? "Acesso bloqueado pelas regras do Firestore. Precisamos ajustar as permissões."
+        : "Não foi possível carregar as lojas. Verifique a conexão.";
+  }
+}
+
+async function alterarStatusLojaAdmin(id, ativar) {
+  if (!currentUser || currentUser.uid !== ADMIN_UID) {
+    toast("Acesso restrito ao administrador.");
+    return;
+  }
+
+  const mensagem = $("adminStoresMessage");
+  const confirmar = ativar
+    ? "Deseja realmente ativar esta loja na vitrine pública?"
+    : "Deseja suspender esta loja da vitrine pública?";
+
+  if (!window.confirm(confirmar)) return;
+
+  mensagem.textContent = "Atualizando status da loja...";
+
+  try {
+    await updateDoc(doc(db, "lojas", id), {
+      ativo: ativar,
+      statusAdmin: ativar ? "ativa" : "suspensa",
+      atualizadoEm: serverTimestamp(),
+      atualizadoPor: currentUser.uid
+    });
+
+    toast(ativar ? "Loja ativada!" : "Loja suspensa!");
+
+    await carregarLojasAdmin();
+    await carregarVitrineLojas();
+
+  } catch (erro) {
+    console.error("Erro ao alterar status da loja:", erro);
+
+    mensagem.textContent =
+      erro.code === "permission-denied"
+        ? "O Firebase bloqueou a alteração. Precisamos corrigir as regras de segurança."
+        : "Não foi possível alterar a loja. Tente novamente.";
+  }
+}
+  
 // ==================================================
 // NAVEGAÇÃO ENTRE TELAS DE ACESSO
 // ==================================================
