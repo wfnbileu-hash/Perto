@@ -2795,11 +2795,11 @@ if (servicesPage && ! $("servicesMenu")) {
         "Veja quem precisa de um serviço.",
         () => abrirPainel(painelPedidos)
       ),
-      criarOpcao(
-        "🧰",
-        "Sou profissional",
-        "Cadastre ou gerencie seu perfil.",
-        () => $("serviceProfessionalBtn").click()
+  criarOpcao(
+  "🧰",
+  "Sou profissional",
+  "Cadastre ou gerencie seu perfil.",
+  () => cardProfissional.querySelector("#serviceProfessionalBtn").click()
       ),
       criarOpcao(
         "📝",
