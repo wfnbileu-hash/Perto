@@ -1188,7 +1188,35 @@ button{
       </div>
       <!-- FIM DO CADASTRO DE LOJA -->
 
-      <input
+      
+<!-- PAINEL DO PROPRIETÁRIO DA LOJA -->
+<div class="serviceCard" id="myStoreManager" style="display:none;margin-bottom:18px">
+  <div class="serviceIcon">🛠️</div>
+  <h3 id="myStoreManagerTitle">Gerenciar minha loja</h3>
+  <p id="myStoreManagerStatus" style="margin:8px 0 14px">
+    Consulte e atualize sua loja.
+  </p>
+
+  <button type="button" id="editMyStoreBtn" class="btn btnPrimary" style="width:100%;margin-bottom:8px">
+    ✏️ Configurar / editar loja
+  </button>
+
+  <button type="button" id="addStoreProductBtn" class="btn" style="width:100%;background:#e5e7eb;margin-bottom:8px">
+    ➕ Adicionar produto
+  </button>
+
+  <button type="button" id="toggleStoreProductsBtn" class="btn" style="width:100%;background:#e5e7eb">
+    📦 Ver / editar meus produtos
+  </button>
+
+  <div id="myStoreProductsPanel" style="display:none;margin-top:16px">
+    <h3 style="margin-bottom:10px">Produtos da minha loja</h3>
+    <div id="myStoreProductsList"></div>
+  </div>
+</div>
+<!-- FIM DO PAINEL DO PROPRIETÁRIO DA LOJA -->
+      
+        <input
         id="storeSearch"
         class="storesSearch"
         type="search"
