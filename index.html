@@ -2763,22 +2763,24 @@ document.querySelectorAll(".modal").forEach(m=>m.onclick=e=>{if(e.target===m)clo
 // AÇÕES DOS BOTÕES E ATALHOS
 // ==================================================
 
-$("registerStoreBtn").onclick=()=>{
+$("registerStoreBtn").onclick = () => {
   const usuario = currentUser || auth.currentUser;
-  const appAberto = !$("appPage").classList.contains("hidden");
 
-  if (!usuario && !appAberto) {
-    showAuth("login");
-    return;
-  }
+  console.log("Diagnóstico da loja:", {
+    currentUser: !!currentUser,
+    authUser: !!auth.currentUser,
+    appVisivel: !$("appPage").classList.contains("hidden")
+  });
 
   if (usuario) {
     currentUser = usuario;
+    toast("Sessão reconhecida. Abrindo cadastro...");
+  } else {
+    toast("Sessão não reconhecida. Cadastro aberto para teste.");
   }
 
   openModal("storeRegisterModal");
 };
-
 $("sellNavBtn").onclick=()=>{
 if(!currentUser)return showAuth("login");
 editingProductId=null;
