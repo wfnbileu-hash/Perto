@@ -2764,8 +2764,15 @@ document.querySelectorAll(".modal").forEach(m=>m.onclick=e=>{if(e.target===m)clo
 // ==================================================
 
 $("registerStoreBtn").onclick=()=>{
-if(!currentUser)return showAuth("login");
-openModal("storeRegisterModal");
+  const usuario = currentUser || auth.currentUser;
+
+  if(!usuario){
+    showAuth("login");
+    return;
+  }
+
+  currentUser = usuario;
+  openModal("storeRegisterModal");
 };
 $("sellNavBtn").onclick=()=>{
 if(!currentUser)return showAuth("login");
