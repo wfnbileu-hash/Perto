@@ -1542,7 +1542,225 @@ button{
 <!-- ================================================== -->
 <!-- MODAL: PUBLICAR / EDITAR ANÚNCIO -->
 <!-- ================================================== -->
-<div id="sellModal" class="modal"><div class="modalContent"><div class="modalHeader"><h2>Vender no Perto</h2><button class="closeModal" data-close="sellModal">×</button></div><form id="sellForm"><div class="formGroup"><label for="productName">Produto *</label><input id="productName" required></div><div class="formGroup"><label for="productPrice">Preço *</label><input id="productPrice" type="number" min="0" step="0.01" required></div><div class="formGroup"><label for="productCategory">Categoria *</label><select id="productCategory" required><option value="">Selecione</option><option>Eletrônicos</option><option>Casa</option><option>Ferramentas</option><option>Veículos</option><option>Bicicletas</option><option>Roupas</option><option>Móveis</option><option>Esportes</option><option>Outros</option></select></div><div class="formGroup"><label for="productLocation">Localização *</label><input id="productLocation" placeholder="Ex.: Cerquilho - SP" required></div><div class="formGroup"><label for="productDescription">Descrição *</label><textarea id="productDescription" required></textarea></div><div class="formGroup"><label for="productImages">Fotos do produto</label><input id="productImages" type="file" accept="image/*" multiple><div style="font-size:12px;color:#6b7280;margin-top:6px">Até 5 fotos. As imagens são escolhidas diretamente da galeria do seu celular.</div></div><div id="imagePreviewGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:10px 0"></div><label class="checkboxLine"><input id="acceptsTrade" type="checkbox"><span>Aceito propostas de troca.</span></label><div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:14px;padding:13px;margin-top:12px"><strong>🚀 Turbinar anúncio</strong><p style="font-size:12px;color:#92400e;margin-top:5px"> 
+<!-- MODAL: CADASTRAR LOJA -->
+<div id="storeRegisterModal" class="modal">
+  <div class="modalContent">
+    <div class="modalHeader">
+      <h2>🏪 Cadastrar minha loja</h2>
+      <button
+        type="button"
+        class="closeModal"
+        data-close="storeRegisterModal">×</button>
+    </div>
+
+    <p style="font-size:13px;color:#64748b;margin-bottom:16px">
+      Apresente seu negócio e comece a preparar sua vitrine no Perto.
+    </p>
+
+    <form id="storeForm">
+
+      <div class="formGroup">
+        <label for="storeName">Nome da loja ou negócio *</label>
+        <input
+          id="storeName"
+          maxlength="100"
+          placeholder="Ex.: Lanches do Bairro"
+          required>
+      </div>
+
+      <div class="formGroup">
+        <label for="storeType">Categoria do negócio *</label>
+        <select id="storeType" required>
+          <option value="">Selecione uma categoria</option>
+          <option value="Alimentação">🍔 Alimentação</option>
+          <option value="Moda">👕 Moda e roupas</option>
+          <option value="Casa">🏠 Casa e decoração</option>
+          <option value="Beleza">💄 Beleza e estética</option>
+          <option value="Mercado">🛒 Mercado e mercearia</option>
+          <option value="Eletrônicos">📱 Eletrônicos</option>
+          <option value="Outros">🛍️ Outros negócios</option>
+        </select>
+      </div>
+
+      <div class="formGroup">
+        <label for="storeRegisterCity">Cidade *</label>
+        <input
+          id="storeRegisterCity"
+          maxlength="100"
+          placeholder="Ex.: Tatuí - SP"
+          required>
+      </div>
+
+      <div class="formGroup">
+        <label for="storePhone">WhatsApp para contato *</label>
+        <input
+          id="storePhone"
+          type="tel"
+          maxlength="25"
+          placeholder="(15) 99999-9999"
+          required>
+      </div>
+
+      <div class="formGroup">
+        <label for="storeDescription">Sobre a loja *</label>
+        <textarea
+          id="storeDescription"
+          maxlength="600"
+          placeholder="Conte o que sua loja oferece..."
+          required></textarea>
+      </div>
+
+      <div class="formGroup">
+        <label for="storeAddress">Endereço ou região de atendimento</label>
+        <input
+          id="storeAddress"
+          maxlength="180"
+          placeholder="Bairro, rua ou região">
+      </div>
+
+      <div class="formGroup">
+        <label for="storeHours">Horário de funcionamento</label>
+        <input
+          id="storeHours"
+          maxlength="100"
+          placeholder="Ex.: Seg. a sáb., das 9h às 18h">
+      </div>
+
+      <label class="checkboxLine">
+        <input id="storeOpen24h" type="checkbox">
+        <span>Minha vitrine funciona 24 horas pela internet.</span>
+      </label>
+
+      <button
+        type="submit"
+        id="saveStoreBtn"
+        class="btn btnPrimary"
+        style="width:100%;margin-top:16px">
+        Cadastrar loja
+      </button>
+
+      <button
+        type="button"
+        class="btn"
+        data-close="storeRegisterModal"
+        style="width:100%;margin-top:8px;background:#f1f5f9;color:#334155">
+        Cancelar
+      </button>
+
+    </form>
+  </div>
+</div>
+<!-- FIM DO MODAL: CADASTRAR LOJA -->
+  <!-- MODAL: CADASTRAR LOJA -->
+<div id="storeRegisterModal" class="modal">
+  <div class="modalContent">
+    <div class="modalHeader">
+      <h2>🏪 Cadastrar minha loja</h2>
+      <button
+        type="button"
+        class="closeModal"
+        data-close="storeRegisterModal">×</button>
+    </div>
+
+    <p style="font-size:13px;color:#64748b;margin-bottom:16px">
+      Apresente seu negócio e comece a preparar sua vitrine no Perto.
+    </p>
+
+    <form id="storeForm">
+
+      <div class="formGroup">
+        <label for="storeName">Nome da loja ou negócio *</label>
+        <input
+          id="storeName"
+          maxlength="100"
+          placeholder="Ex.: Lanches do Bairro"
+          required>
+      </div>
+
+      <div class="formGroup">
+        <label for="storeType">Categoria do negócio *</label>
+        <select id="storeType" required>
+          <option value="">Selecione uma categoria</option>
+          <option value="Alimentação">🍔 Alimentação</option>
+          <option value="Moda">👕 Moda e roupas</option>
+          <option value="Casa">🏠 Casa e decoração</option>
+          <option value="Beleza">💄 Beleza e estética</option>
+          <option value="Mercado">🛒 Mercado e mercearia</option>
+          <option value="Eletrônicos">📱 Eletrônicos</option>
+          <option value="Outros">🛍️ Outros negócios</option>
+        </select>
+      </div>
+
+      <div class="formGroup">
+        <label for="storeRegisterCity">Cidade *</label>
+        <input
+          id="storeRegisterCity"
+          maxlength="100"
+          placeholder="Ex.: Tatuí - SP"
+          required>
+      </div>
+
+      <div class="formGroup">
+        <label for="storePhone">WhatsApp para contato *</label>
+        <input
+          id="storePhone"
+          type="tel"
+          maxlength="25"
+          placeholder="(15) 99999-9999"
+          required>
+      </div>
+
+      <div class="formGroup">
+        <label for="storeDescription">Sobre a loja *</label>
+        <textarea
+          id="storeDescription"
+          maxlength="600"
+          placeholder="Conte o que sua loja oferece..."
+          required></textarea>
+      </div>
+
+      <div class="formGroup">
+        <label for="storeAddress">Endereço ou região de atendimento</label>
+        <input
+          id="storeAddress"
+          maxlength="180"
+          placeholder="Bairro, rua ou região">
+      </div>
+
+      <div class="formGroup">
+        <label for="storeHours">Horário de funcionamento</label>
+        <input
+          id="storeHours"
+          maxlength="100"
+          placeholder="Ex.: Seg. a sáb., das 9h às 18h">
+      </div>
+
+      <label class="checkboxLine">
+        <input id="storeOpen24h" type="checkbox">
+        <span>Minha vitrine funciona 24 horas pela internet.</span>
+      </label>
+
+      <button
+        type="submit"
+        id="saveStoreBtn"
+        class="btn btnPrimary"
+        style="width:100%;margin-top:16px">
+        Cadastrar loja
+      </button>
+
+      <button
+        type="button"
+        class="btn"
+        data-close="storeRegisterModal"
+        style="width:100%;margin-top:8px;background:#f1f5f9;color:#334155">
+        Cancelar
+      </button>
+
+    </form>
+  </div>
+</div>
+<!-- FIM DO MODAL: CADASTRAR LOJA -->
+  <div id="sellModal" class="modal"><div class="modalContent"><div class="modalHeader"><h2>Vender no Perto</h2><button class="closeModal" data-close="sellModal">×</button></div><form id="sellForm"><div class="formGroup"><label for="productName">Produto *</label><input id="productName" required></div><div class="formGroup"><label for="productPrice">Preço *</label><input id="productPrice" type="number" min="0" step="0.01" required></div><div class="formGroup"><label for="productCategory">Categoria *</label><select id="productCategory" required><option value="">Selecione</option><option>Eletrônicos</option><option>Casa</option><option>Ferramentas</option><option>Veículos</option><option>Bicicletas</option><option>Roupas</option><option>Móveis</option><option>Esportes</option><option>Outros</option></select></div><div class="formGroup"><label for="productLocation">Localização *</label><input id="productLocation" placeholder="Ex.: Cerquilho - SP" required></div><div class="formGroup"><label for="productDescription">Descrição *</label><textarea id="productDescription" required></textarea></div><div class="formGroup"><label for="productImages">Fotos do produto</label><input id="productImages" type="file" accept="image/*" multiple><div style="font-size:12px;color:#6b7280;margin-top:6px">Até 5 fotos. As imagens são escolhidas diretamente da galeria do seu celular.</div></div><div id="imagePreviewGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:10px 0"></div><label class="checkboxLine"><input id="acceptsTrade" type="checkbox"><span>Aceito propostas de troca.</span></label><div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:14px;padding:13px;margin-top:12px"><strong>🚀 Turbinar anúncio</strong><p style="font-size:12px;color:#92400e;margin-top:5px"> 
 Destaque seu anúncio no topo. Escolha um plano após publicar. A ativação acontece após a confirmação do pagamento.
 </p><label class="checkboxLine" style="margin-bottom:0"><input id="checkBoost" type="checkbox"><span>Quero turbinar este anúncio</span></label></div><button class="btn btnPrimary" style="width:100%;margin-top:16px" type="submit">Publicar anúncio</button></form></div></div>
 
