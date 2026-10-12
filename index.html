@@ -1158,6 +1158,53 @@ button{
 <section id="searchPage" class="page"><div class="sectionTitle">Resultados</div><div class="sectionSubtitle">Pesquise produtos e filtre pela cidade.</div><div style="margin:12px 0 16px"><label for="cityFilter" style="display:block;font-size:13px;font-weight:700;margin-bottom:6px">📍 Filtrar por cidade</label><select id="cityFilter" style="width:100%;padding:13px;border:1px solid #dbe1ea;border-radius:12px;background:#fff;color:#111827"><option value="">Todas as cidades</option><option>Piracicaba</option><option>Cerquilho</option><option>Tietê</option><option>Tatuí</option><option>Boituva</option><option>Iperó</option><option>Porto Feliz</option></select><div style="font-size:11px;color:#6b7280;margin-top:6px">O filtro compara com a cidade informada pelo vendedor no anúncio.</div></div><div id="searchProducts" class="productGrid"></div></section>
     <!-- MEUS ANÚNCIOS -->
 <section id="myAdsPage" class="page"><div class="sectionTitle">Meus anúncios</div><div class="sectionSubtitle">Edite, pause ou marque como vendido.</div><div id="myAdsProducts" class="productGrid"></div></section>
+    
+<!-- MINHA LOJA: GERENCIAMENTO DO PROPRIETÁRIO -->
+<section id="myStorePage" class="page">
+  <div class="sectionTitle">Minha loja</div>
+  <div class="sectionSubtitle">
+    Gerencie os dados da sua loja e os produtos que você anuncia.
+  </div>
+
+  <div class="serviceCard" style="margin-bottom:18px">
+    <div class="serviceIcon">🏪</div>
+    <h3 id="myStoreManagerTitle">Gerenciar minha loja</h3>
+    <p id="myStoreManagerStatus" style="margin:8px 0 14px">
+      Carregando informações da sua loja...
+    </p>
+
+    <button
+      type="button"
+      id="editMyStoreBtn"
+      class="btn btnPrimary"
+      style="width:100%;margin-bottom:8px">
+      ✏️ Configurar / editar loja
+    </button>
+
+    <button
+      type="button"
+      id="addStoreProductBtn"
+      class="btn"
+      style="width:100%;background:#e5e7eb;margin-bottom:8px">
+      ➕ Adicionar produto
+    </button>
+
+    <button
+      type="button"
+      id="toggleStoreProductsBtn"
+      class="btn"
+      style="width:100%;background:#e5e7eb">
+      📦 Ver / editar meus produtos
+    </button>
+
+    <div id="myStoreProductsPanel" style="display:none;margin-top:16px">
+      <h3 style="margin-bottom:10px">Produtos da minha loja</h3>
+      <div id="myStoreProductsList"></div>
+    </div>
+  </div>
+</section>
+<!-- FIM DE MINHA LOJA -->
+    
     <!-- FAVORITOS -->
 <section id="favoritesPage" class="page"><div class="sectionTitle">Favoritos</div><div class="sectionSubtitle">Seus anúncios salvos.</div><div id="favoriteProducts" class="productGrid"></div></section>
     <!-- VITRINE DE LOJAS -->
