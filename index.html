@@ -3267,9 +3267,134 @@ async function carregarVitrineLojas() {
   }
 }
 
-function renderizarVitrineLojas() {
   
+
 async function atualizarPainelMinhaLoja() {
+  const painel = $("myStoreManager");
+  const cadastro = $("storeRegistrationCard");
+  if (!painel || !cadastro) return;
+
+  const usuario = auth.currentUser || currentUser;
+
+  if (!usuario) {
+    painel.style.display = "none";
+    cadastro.style.display = "";
+    return;
+  }
+
+  try {
+    const resultado = await getDoc(doc(db, "lojas", usuario.uid));
+
+    if (!resultado.exists()) {
+      painel.style.display = "none";
+      cadastro.style.display = "";
+      return;
+    }
+
+    const loja = resultado.data();
+
+    painel.style.display = "block";
+    cadastro.style.display = "none";
+
+    $("myStoreManagerTitle").textContent =
+      "Gerenciar " + (loja.nome || "minha loja");
+
+    let status = "⏳ Aguardando aprovação do administrador.";
+
+    if (loja.statusAdmin === "suspensa") {
+      status = "⚠️ Sua loja está suspensa. Entre em contato com o suporte.";
+    } else if (loja.ativo === true) {
+      status = "✅ Sua loja está ativa no Perto.";
+    }
+
+    $("myStoreManagerStatus").textContent = status;
+  } catch (erro) {
+    console.error("Erro ao consultar minha loja:", erro);
+    toast("Não foi possível consultar os dados da sua loja.");
+  }
+}
+
+async function carregarProdutosMinhaLoja() {
+  const lista = $("myStoreProductsList");
+  if (!lista) return;
+
+  const usuario = auth.currentUser || currentUser;
+
+  if (!usuario) {
+    lista.innerHTML = "<p>Entre na sua conta para ver seus produtos.</p>";
+    return;
+  }
+
+  lista.innerHTML = "<p>Carregando produtos...</p>";
+
+  try {
+    const resultado = await getDocs(
+      query(
+        collection(db, "produtos"),
+        where("vendedorId", "==", usuario.uid)
+      )
+    );
+
+    const produtos = resultado.docs
+      .map(item => ({ id: item.id, ...item.data() }))
+      .sort(sortProducts);
+
+    lista.replaceChildren();
+
+    if (!produtos.length) {
+      lista.innerHTML =
+        "<p>Você ainda não publicou produtos nesta loja.</p>";
+      return;
+    }
+
+    produtos.forEach(produto => {
+      const item = document.createElement("div");
+      item.style.cssText =
+        "padding:12px 0;border-bottom:1px solid #e5e7eb";
+
+      const nome = document.createElement("strong");
+      nome.textContent = produto.nome || "Produto sem nome";
+
+      const preco = document.createElement("p");
+      preco.style.margin = "6px 0";
+      preco.textContent = money(produto.preco);
+
+      const status = document.createElement("p");
+      status.style.cssText =
+        "font-size:12px;color:#64748b;margin:4px 0 10px";
+      status.textContent =
+        produto.status === "vendido" ? "Vendido" :
+        produto.ativo === false ? "Pausado" : "Ativo";
+
+      const botoes = document.createElement("div");
+      botoes.style.cssText =
+        "display:flex;gap:8px;flex-wrap:wrap";
+
+      const editar = document.createElement("button");
+      editar.type = "button";
+      editar.className = "profileAction";
+      editar.textContent = "✏️ Editar";
+      editar.onclick = () => editProduct(produto);
+
+      const excluir = document.createElement("button");
+      excluir.type = "button";
+      excluir.className = "profileAction btnDanger";
+      excluir.textContent = "🗑️ Excluir";
+      excluir.onclick = () => deleteProduct(produto);
+
+      botoes.append(editar, excluir);
+      item.append(nome, preco, status, botoes);
+      lista.appendChild(item);
+    });
+  } catch (erro) {
+    console.error("Erro ao carregar produtos da loja:", erro);
+    lista.innerHTML =
+      "<p>Não foi possível carregar os produtos. Confira as regras do Firebase.</p>";
+  }
+}
+  
+  function renderizarVitrineLojas() {
+  
   const painel = $("myStoreManager");
   const cadastro = $("storeRegistrationCard");
   if (!painel || !cadastro) return;
