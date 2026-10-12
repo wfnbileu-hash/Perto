@@ -3291,7 +3291,9 @@ selectedImages=[];
 renderImagePreviews();
 openModal("sellModal")};
 $("headerUser").onclick=()=>showInternalPage("profilePage");
-
+$("addStoreProductBtn").onclick = () => {
+  $("sellNavBtn").click();
+};
 $("editMyStoreBtn").onclick = async () => {
   const usuario = auth.currentUser || currentUser;
 
