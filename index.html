@@ -3051,7 +3051,9 @@ closeModal("storeRegisterModal");
 $("storeForm").reset();
 
 toast("Loja cadastrada com sucesso!");
-
+if ($("myStorePage").classList.contains("active")) {
+  await carregarPainelMinhaLoja();
+  }
 await carregarVitrineLojas();
 
    } catch (erro) {
