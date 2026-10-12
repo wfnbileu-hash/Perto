@@ -3369,31 +3369,8 @@ async function carregarProdutosMinhaLoja() {
       const botoes = document.createElement("div");
       botoes.style.cssText =
         "display:flex;gap:8px;flex-wrap:wrap";
-
-      const editar = document.createElement("button");
-      editar.type = "button";
-      editar.className = "profileAction";
-      editar.textContent = "✏️ Editar";
-      editar.onclick = () => editProduct(produto);
-
-      const excluir = document.createElement("button");
-      excluir.type = "button";
-      excluir.className = "profileAction btnDanger";
-      excluir.textContent = "🗑️ Excluir";
-      excluir.onclick = () => deleteProduct(produto);
-
-      botoes.append(editar, excluir);
-      item.append(nome, preco, status, botoes);
-      lista.appendChild(item);
-    });
-  } catch (erro) {
-    console.error("Erro ao carregar produtos da loja:", erro);
-    lista.innerHTML =
-      "<p>Não foi possível carregar os produtos. Confira as regras do Firebase.</p>";
-  }
-}
-  
-  const busca = $("storeSearch").value.trim().toLowerCase();
+ 
+ const busca = $("storeSearch").value.trim().toLowerCase();
   const cidade = $("storeCity").value.trim().toLowerCase();
 
   const filtradas = lojasVitrine.filter(loja => {
