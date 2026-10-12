@@ -2853,6 +2853,165 @@ $("storeForm").addEventListener("submit", async (event) => {
     botao.textContent = textoOriginal;
   }
 });
+
+// ==================================================
+// VITRINE DE LOJAS E FILTROS
+// ==================================================
+
+let lojasVitrine = [];
+let categoriaLojaSelecionada = "";
+
+async function carregarVitrineLojas() {
+  const resultados = $("storesResults");
+
+  resultados.innerHTML =
+    '<div class="storeEmpty">Carregando lojas...</div>';
+
+  try {
+    // Consulta somente lojas públicas ativas.
+    const consulta = await getDocs(
+      query(
+        collection(db, "lojas"),
+        where("ativo", "==", true)
+      )
+    );
+
+    lojasVitrine = consulta.docs.map(item => ({
+      id: item.id,
+      ...item.data()
+    }));
+
+    // Permite que a proprietária veja sua loja
+    // mesmo enquanto ela aguarda ativação.
+    const usuario = auth.currentUser || currentUser;
+
+    if (usuario) {
+      const minhaLoja = await getDoc(
+        doc(db, "lojas", usuario.uid)
+      );
+
+      if (
+        minhaLoja.exists() &&
+        !lojasVitrine.some(loja => loja.id === minhaLoja.id)
+      ) {
+        lojasVitrine.push({
+          id: minhaLoja.id,
+          ...minhaLoja.data(),
+          aguardandoAtivacao:
+            minhaLoja.data().ativo !== true
+        });
+      }
+    }
+
+    renderizarVitrineLojas();
+
+  } catch (erro) {
+    console.error("Erro ao carregar vitrine:", erro);
+
+    resultados.innerHTML =
+      '<div class="storeEmpty">Não foi possível carregar as lojas. Tente novamente.</div>';
+  }
+}
+
+function renderizarVitrineLojas() {
+  const busca = $("storeSearch").value.trim().toLowerCase();
+  const cidade = $("storeCity").value.trim().toLowerCase();
+
+  const filtradas = lojasVitrine.filter(loja => {
+    const categoriaOK =
+      !categoriaLojaSelecionada ||
+      loja.categoria === categoriaLojaSelecionada ||
+      (
+        categoriaLojaSelecionada === "Outros" &&
+        ![
+          "Alimentação",
+          "Moda",
+          "Casa",
+          "Beleza",
+          "Mercado",
+          "Eletrônicos"
+        ].includes(loja.categoria)
+      );
+
+    const texto = [
+      loja.nome,
+      loja.categoria,
+      loja.descricao,
+      loja.cidade
+    ].join(" ").toLowerCase();
+
+    const buscaOK = !busca || texto.includes(busca);
+    const cidadeOK =
+      !cidade ||
+      String(loja.cidade || "").toLowerCase().includes(cidade);
+
+    // Lojas inativas só aparecem para seu proprietário.
+    const publica = loja.ativo === true;
+    const propria =
+      (auth.currentUser || currentUser)?.uid === loja.usuarioId;
+
+    return categoriaOK && buscaOK && cidadeOK &&
+      (publica || propria);
+  });
+
+  if (!filtradas.length) {
+    $("storesResults").innerHTML =
+      '<div class="storeEmpty"><div style="font-size:38px;margin-bottom:10px">🏪</div><strong>Nenhuma loja encontrada.</strong><div>Tente outra categoria ou cidade.</div></div>';
+    return;
+  }
+
+  $("storesResults").innerHTML = filtradas.map(loja => {
+    const aguardando = loja.ativo !== true;
+
+    return `
+      <article class="storeCard">
+        <div class="storeCover">🏪</div>
+        <div class="storeInfo">
+          <h3>${esc(loja.nome || "Loja")}</h3>
+          <p>
+            ${esc(loja.categoria || "Outros")}<br>
+            📍 ${esc(loja.cidade || "")}
+          </p>
+          <p>${esc(loja.descricao || "")}</p>
+          ${
+            aguardando
+              ? '<span class="storeStatus" style="background:#fef3c7;color:#92400e">Aguardando ativação</span>'
+              : '<span class="storeStatus">Loja ativa</span>'
+          }
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+// Ativar os filtros de categoria.
+document.querySelectorAll(
+  "#storeCategories .storeCategory"
+).forEach(botao => {
+  botao.addEventListener("click", () => {
+    categoriaLojaSelecionada = botao.dataset.category || "";
+
+    document.querySelectorAll(
+      "#storeCategories .storeCategory"
+    ).forEach(item => item.classList.remove("active"));
+
+    botao.classList.add("active");
+    renderizarVitrineLojas();
+  });
+});
+
+// Busca por nome, categoria ou descrição.
+$("storeSearch").addEventListener(
+  "input",
+  renderizarVitrineLojas
+);
+
+// Filtro por cidade.
+$("storeCity").addEventListener(
+  "input",
+  renderizarVitrineLojas
+);
+  
 $("sellNavBtn").onclick=()=>{
 if(!currentUser)return showAuth("login");
 editingProductId=null;
