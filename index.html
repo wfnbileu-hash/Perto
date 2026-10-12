@@ -3343,6 +3343,82 @@ $("myStoreBtn").onclick = async () => {
   await carregarPainelMinhaLoja();
 };
   
+$("toggleStoreProductsBtn").onclick = async () => {
+  const painel = $("myStoreProductsPanel");
+  const botao = $("toggleStoreProductsBtn");
+
+  if (painel.style.display === "block") {
+    painel.style.display = "none";
+    botao.textContent = "📦 Ver / editar meus produtos";
+    return;
+  }
+
+  const usuario = auth.currentUser || currentUser;
+
+  if (!usuario) {
+    showAuth("login");
+    return;
+  }
+
+  painel.style.display = "block";
+  botao.textContent = "🔄 Atualizar meus produtos";
+
+  const lista = $("myStoreProductsList");
+  lista.textContent = "Carregando seus produtos...";
+
+  try {
+    const resultado = await getDocs(
+      query(
+        collection(db, "produtos"),
+        where("vendedorId", "==", usuario.uid)
+      )
+    );
+
+    lista.replaceChildren();
+
+    const produtos = resultado.docs.map(documento => ({
+      id: documento.id,
+      ...documento.data()
+    })).sort(sortProducts);
+
+    if (produtos.length === 0) {
+      lista.textContent = "Você ainda não tem produtos anunciados.";
+      return;
+    }
+
+    produtos.forEach(produto => {
+      const item = document.createElement("div");
+      item.style.cssText =
+        "padding:12px 0;border-bottom:1px solid #e5e7eb";
+
+      const nome = document.createElement("strong");
+      nome.textContent = produto.nome || "Produto sem nome";
+
+      const preco = document.createElement("p");
+      preco.style.margin = "6px 0";
+      preco.textContent =
+        "R$ " + Number(produto.preco || 0).toFixed(2).replace(".", ",");
+
+      const editar = document.createElement("button");
+      editar.type = "button";
+      editar.className = "profileAction";
+      editar.textContent = "✏️ Editar anúncio";
+
+      editar.onclick = () => editProduct(produto);
+
+      item.append(nome, preco, editar);
+      lista.appendChild(item);
+    });
+
+    botao.textContent = "📦 Ocultar meus produtos";
+
+  } catch (erro) {
+    console.error("Erro ao carregar produtos da loja:", erro);
+    lista.textContent =
+      "Não foi possível carregar os produtos. Verifique as regras do Firebase.";
+  }
+};
+  
 $("editProfileBtn").onclick=openProfileEditor;
 $("logoutBtn").onclick=logout;
 // ==================================================
