@@ -3354,9 +3354,15 @@ $("logoutBtn").onclick=logout;
 // ==================================================
 // EVENTOS DO PAINEL ADMINISTRATIVO
 // ==================================================
-$("adminPanelBtn").onclick=abrirPainelAdmin;
+
+$("adminPanelBtn").onclick=async()=>{
+  await abrirPainelAdmin();
+  await carregarLojasAdmin();
+};
+
 $("saveAdminMonthlyPrice").onclick=salvarMensalidadeAdmin;
 $("adminBackBtn").onclick=()=>showInternalPage("profilePage");
+$("reloadAdminStores").onclick=carregarLojasAdmin;
 atualizarBotaoAdmin();
 $("myAdsBtn").onclick=showMyAds;
 $("homeMyAds").onclick=showMyAds;
