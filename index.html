@@ -2606,8 +2606,7 @@ $("homeServices").onclick=()=>showInternalPage("servicesPage");
 // FRETEGO / ATALHO DE ENTREGAS
 // ==================================================
 $("homeDelivery").onclick=()=>toast("Entregas serão integradas ao FreteGo.");
-$("homeIncome").onclick=()=>toast("O módulo de renda extra está no roadmap.");
-
+$("homeIncome").onclick=()=>showInternalPage("storesPage");
 
 $("serviceProfessionalBtn").onclick=async()=>{
   if(!currentUser)return showAuth("login");
