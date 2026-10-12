@@ -2765,15 +2765,20 @@ document.querySelectorAll(".modal").forEach(m=>m.onclick=e=>{if(e.target===m)clo
 
 $("registerStoreBtn").onclick=()=>{
   const usuario = currentUser || auth.currentUser;
+  const appAberto = !$("appPage").classList.contains("hidden");
 
-  if(!usuario){
+  if (!usuario && !appAberto) {
     showAuth("login");
     return;
   }
 
-  currentUser = usuario;
+  if (usuario) {
+    currentUser = usuario;
+  }
+
   openModal("storeRegisterModal");
 };
+
 $("sellNavBtn").onclick=()=>{
 if(!currentUser)return showAuth("login");
 editingProductId=null;
