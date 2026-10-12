@@ -2783,6 +2783,76 @@ $("registerStoreBtn").onclick = (event) => {
 
   openModal("storeRegisterModal");
 };
+  // ==================================================
+// CADASTRO E SALVAMENTO DA LOJA
+// ==================================================
+$("storeForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+
+  const usuario = auth.currentUser || currentUser;
+
+  if (!usuario) {
+    toast("Sua sessão expirou. Entre novamente.");
+    return;
+  }
+
+  const botao = $("saveStoreBtn");
+  const textoOriginal = botao.textContent;
+
+  botao.disabled = true;
+  botao.textContent = "Salvando...";
+
+  try {
+    const lojaRef = doc(db, "lojas", usuario.uid);
+    const lojaExistente = await getDoc(lojaRef);
+    const dadosExistentes = lojaExistente.exists()
+      ? lojaExistente.data()
+      : null;
+
+    const dadosLoja = {
+      usuarioId: usuario.uid,
+      nome: $("storeName").value.trim(),
+      categoria: $("storeType").value,
+      cidade: $("storeRegisterCity").value.trim(),
+      telefone: $("storePhone").value.trim(),
+      descricao: $("storeDescription").value.trim(),
+      endereco: $("storeAddress").value.trim(),
+      horario: $("storeHours").value.trim(),
+      funciona24h: $("storeOpen24h").checked,
+      ativo: dadosExistentes
+        ? dadosExistentes.ativo
+        : false,
+      atualizadoEm: serverTimestamp()
+    };
+
+    if (!dadosExistentes) {
+      dadosLoja.criadoEm = serverTimestamp();
+    }
+
+    await setDoc(lojaRef, dadosLoja, { merge: true });
+
+    currentUser = usuario;
+
+    closeModal("storeRegisterModal");
+    $("storeForm").reset();
+
+    toast("Loja cadastrada com sucesso!");
+
+  } catch (erro) {
+    console.error("Erro ao cadastrar loja:", erro);
+
+    toast(
+      erro.code === "permission-denied"
+        ? "O Firebase não autorizou salvar a loja."
+        : "Não foi possível salvar. Tente novamente."
+    );
+
+  } finally {
+    botao.disabled = false;
+    botao.textContent = textoOriginal;
+  }
+});
 $("sellNavBtn").onclick=()=>{
 if(!currentUser)return showAuth("login");
 editingProductId=null;
