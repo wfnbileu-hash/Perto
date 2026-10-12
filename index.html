@@ -2842,70 +2842,250 @@ if (servicesPage && ! $("servicesMenu")) {
     $("searchOpenRequestsBtn").onclick = searchOpenServiceRequests;
 
     async function carregarMeusPedidos() {
-      const id = "myServiceRequestsResults";
-      let resultados = $(id);
+  const id = "myServiceRequestsResults";
+  let resultados = $(id);
 
-      if (!resultados) {
-        resultados = document.createElement("div");
-        resultados.id = id;
-        resultados.style.marginTop = "16px";
-        painelMeusPedidos.appendChild(resultados);
-      }
+  if (!resultados) {
+    resultados = document.createElement("div");
+    resultados.id = id;
+    resultados.style.marginTop = "16px";
+    painelMeusPedidos.appendChild(resultados);
+  }
 
-      if (!currentUser) {
-        resultados.textContent =
-          "Entre na sua conta para consultar seus pedidos.";
-        return;
-      }
+  if (!currentUser) {
+    resultados.textContent =
+      "Entre na sua conta para consultar seus pedidos.";
+    return;
+  }
 
-      resultados.textContent = "Carregando seus pedidos...";
+  resultados.textContent = "Carregando seus pedidos...";
 
-      try {
-        const consulta = query(
-          collection(db, "solicitacoesServicos"),
-          where("clienteId", "==", currentUser.uid)
+  try {
+    const consulta = query(
+      collection(db, "solicitacoesServicos"),
+      where("clienteId", "==", currentUser.uid)
+    );
+
+    const snapshot = await getDocs(consulta);
+    resultados.replaceChildren();
+
+    if (snapshot.empty) {
+      resultados.textContent = "Você ainda não publicou pedidos.";
+      return;
+    }
+
+    snapshot.forEach((docPedido) => {
+      const pedido = docPedido.data();
+
+      const card = document.createElement("div");
+      card.className = "serviceCard";
+      card.style.marginTop = "10px";
+
+      const tituloPedido = document.createElement("h3");
+      tituloPedido.textContent =
+        pedido.titulo || "Pedido de serviço";
+
+      const descricao = document.createElement("p");
+      descricao.textContent = pedido.descricao || "";
+
+      const categoria = document.createElement("p");
+      categoria.textContent =
+        "Categoria: " + (pedido.categoria || "Outros serviços");
+
+      const local = document.createElement("p");
+      local.textContent =
+        [pedido.bairro, pedido.cidade]
+          .filter(Boolean)
+          .join(" • ");
+
+      const status = document.createElement("p");
+      status.textContent =
+        "Status: " + (pedido.status || "aberta");
+
+      const acoes = document.createElement("div");
+      acoes.style.cssText =
+        "display:flex;flex-wrap:wrap;gap:8px;margin-top:12px";
+
+      const criarBotao = (texto, acao) => {
+        const botao = document.createElement("button");
+        botao.type = "button";
+        botao.className = "btn btnPrimary";
+        botao.textContent = texto;
+        botao.style.cssText =
+          "flex:1;min-width:120px;padding:10px";
+
+        botao.onclick = async () => {
+          if (!currentUser ||
+              pedido.clienteId !== currentUser.uid) {
+            toast("Você não pode alterar este pedido.");
+            return;
+          }
+
+          botao.disabled = true;
+
+          try {
+            await acao();
+          } catch (erro) {
+            console.error(
+              "Erro ao gerenciar pedido de serviço:",
+              erro
+            );
+            toast(
+              "Não foi possível realizar a ação. Confira as regras do Firebase."
+            );
+          } finally {
+            botao.disabled = false;
+          }
+        };
+
+        acoes.appendChild(botao);
+      };
+
+      criarBotao("✏️ Editar", async () => {
+        const titulo = prompt(
+          "Título do pedido:",
+          pedido.titulo || ""
         );
+        if (titulo === null) return;
 
-        const snapshot = await getDocs(consulta);
-        resultados.replaceChildren();
+        const descricaoNova = prompt(
+          "Descrição do pedido:",
+          pedido.descricao || ""
+        );
+        if (descricaoNova === null) return;
 
-        if (snapshot.empty) {
-          resultados.textContent = "Você ainda não publicou pedidos.";
+        const categoriaNova = prompt(
+          "Categoria do serviço:",
+          pedido.categoria || "Outros serviços"
+        );
+        if (categoriaNova === null) return;
+
+        const cidade = prompt(
+          "Cidade:",
+          pedido.cidade || ""
+        );
+        if (cidade === null) return;
+
+        const bairro = prompt(
+          "Bairro:",
+          pedido.bairro || ""
+        );
+        if (bairro === null) return;
+
+        if (
+          !titulo.trim() ||
+          !descricaoNova.trim() ||
+          !categoriaNova.trim() ||
+          !cidade.trim()
+        ) {
+          toast("Preencha título, descrição, categoria e cidade.");
           return;
         }
 
-        snapshot.forEach((docPedido) => {
-          const pedido = docPedido.data();
-          const card = document.createElement("div");
-          card.className = "serviceCard";
-          card.style.marginTop = "10px";
+        await updateDoc(
+          doc(db, "solicitacoesServicos", docPedido.id),
+          {
+            titulo: titulo.trim(),
+            descricao: descricaoNova.trim(),
+            categoria: categoriaNova.trim(),
+            cidade: cidade.trim(),
+            bairro: bairro.trim(),
+            atualizadoEm: serverTimestamp()
+          }
+        );
 
-          const tituloPedido = document.createElement("h3");
-          tituloPedido.textContent = pedido.titulo || "Pedido de serviço";
+        toast("Pedido atualizado!");
+        await carregarMeusPedidos();
+      });
 
-          const descricao = document.createElement("p");
-          descricao.textContent = pedido.descricao || "";
+      if (pedido.status === "aberta" || !pedido.status) {
+        criarBotao("✅ Concluir", async () => {
+          if (!confirm("Deseja marcar este pedido como concluído?")) {
+            return;
+          }
 
-          const local = document.createElement("p");
-          local.textContent =
-            [pedido.bairro, pedido.cidade].filter(Boolean).join(" • ");
+          await updateDoc(
+            doc(db, "solicitacoesServicos", docPedido.id),
+            {
+              status: "concluida",
+              atualizadoEm: serverTimestamp()
+            }
+          );
 
-          const status = document.createElement("p");
-          status.textContent = "Status: " + (pedido.status || "aberta");
-
-          card.append(tituloPedido, descricao, local, status);
-          resultados.appendChild(card);
+          toast("Pedido concluído!");
+          await carregarMeusPedidos();
         });
-      } catch (erro) {
-        console.error("Erro ao carregar meus pedidos:", erro);
-        resultados.textContent =
-          "Não foi possível carregar seus pedidos. Tente novamente.";
+
+        criarBotao("⏸️ Cancelar", async () => {
+          if (!confirm("Deseja cancelar este pedido?")) {
+            return;
+          }
+
+          await updateDoc(
+            doc(db, "solicitacoesServicos", docPedido.id),
+            {
+              status: "cancelada",
+              atualizadoEm: serverTimestamp()
+            }
+          );
+
+          toast("Pedido cancelado.");
+          await carregarMeusPedidos();
+        });
+      } else {
+        criarBotao("🔄 Reabrir", async () => {
+          if (!confirm("Deseja reabrir e divulgar este pedido?")) {
+            return;
+          }
+
+          await updateDoc(
+            doc(db, "solicitacoesServicos", docPedido.id),
+            {
+              status: "aberta",
+              atualizadoEm: serverTimestamp()
+            }
+          );
+
+          toast("Pedido reaberto!");
+          await carregarMeusPedidos();
+        });
       }
+
+      criarBotao("🗑️ Excluir", async () => {
+        if (!confirm(
+          "Tem certeza que deseja excluir este pedido permanentemente?"
+        )) {
+          return;
+        }
+
+        await deleteDoc(
+          doc(db, "solicitacoesServicos", docPedido.id)
+        );
+
+        toast("Pedido excluído.");
+        await carregarMeusPedidos();
+      });
+
+      card.append(
+        tituloPedido,
+        categoria,
+        descricao,
+        local,
+        status,
+        acoes
+      );
+
+      resultados.appendChild(card);
+    });
+
+  } catch (erro) {
+    console.error("Erro ao carregar meus pedidos:", erro);
+    resultados.textContent =
+      "Não foi possível carregar seus pedidos. Tente novamente.";
     }
-  }
+   }
   }
     
-
 renderFavorites();
 
 </script>
