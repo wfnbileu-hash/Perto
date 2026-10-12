@@ -3078,16 +3078,17 @@ if (servicesPage && ! $("servicesMenu")) {
       resultados.appendChild(card);
     });
 
-  } catch (erro) {
-    console.error("Erro ao carregar meus pedidos:", erro);
-    resultados.textContent =
-      "Não foi possível carregar seus pedidos. Tente novamente.";
+        } catch (erro) {
+        console.error("Erro ao carregar meus pedidos:", erro);
+        resultados.textContent =
+          "Não foi possível carregar seus pedidos. Tente novamente.";
+      }
     }
-   }
   }
-    
-renderFavorites();
+}
 
+renderFavorites();
+    
 </script>
 </body>
 </html>
