@@ -3001,7 +3001,14 @@ $("storeForm").addEventListener("submit", async (event) => {
     $("storeForm").reset();
 
     toast("Loja cadastrada com sucesso!");
+    
+closeModal("storeRegisterModal");
+$("storeForm").reset();
 
+toast("Loja cadastrada com sucesso!");
+
+await carregarVitrineLojas();
+    
   } catch (erro) {
     console.error("Erro ao cadastrar loja:", erro);
 
