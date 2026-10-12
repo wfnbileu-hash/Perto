@@ -3290,6 +3290,45 @@ renderImagePreviews();
 openModal("sellModal")};
 $("headerUser").onclick=()=>showInternalPage("profilePage");
 
+$("editMyStoreBtn").onclick = async () => {
+  const usuario = auth.currentUser || currentUser;
+
+  if (!usuario) {
+    showAuth("login");
+    return;
+  }
+
+  try {
+    const resultado = await getDoc(
+      doc(db, "lojas", usuario.uid)
+    );
+
+    $("storeForm").reset();
+
+    if (resultado.exists()) {
+      const loja = resultado.data();
+
+      $("storeName").value = loja.nome || "";
+      $("storeType").value = loja.categoria || "";
+      $("storeRegisterCity").value = loja.cidade || "";
+      $("storePhone").value = loja.telefone || "";
+      $("storeDescription").value = loja.descricao || "";
+      $("storeAddress").value = loja.endereco || "";
+      $("storeHours").value = loja.horario || "";
+      $("storeOpen24h").checked = loja.funciona24h === true;
+    }
+
+    $("saveStoreBtn").textContent = resultado.exists()
+      ? "Salvar alterações"
+      : "Cadastrar minha loja";
+
+    openModal("storeRegisterModal");
+  } catch (erro) {
+    console.error("Erro ao abrir formulário da loja:", erro);
+    toast("Não foi possível carregar os dados da loja.");
+  }
+};
+  
 $("myStoreBtn").onclick = async () => {
   if (!currentUser) {
     showAuth("login");
