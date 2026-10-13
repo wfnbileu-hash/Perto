@@ -2095,6 +2095,10 @@ const app=initializeApp(firebaseConfig);
  const db=getFirestore(app);
 let storage=null,storageRef=null,uploadBytes=null,getDownloadURL=null;
 let currentUser=null,currentUserData=null,allProducts=[],favorites=new Set(),currentSlide=0,slideTimer=null,selectedImages=[],selectedProfessionalPhoto=null,currentConversationId=null,currentChatUnsub=null,currentChatData=null,currentChatProduct=null,currentOfferProduct=null,editingProductId=null,editingProductImages=[],currentProfessionalActive=true;
+  
+let notificationsUnsub = null;
+let notificationsCache = [];
+  
 // ==================================================
 // UTILITÁRIOS GERAIS E MENSAGENS
 // ==================================================
