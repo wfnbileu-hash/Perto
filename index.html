@@ -3609,8 +3609,52 @@ $("storeProductForm").addEventListener("submit", async (evento) => {
 
     const loja = resultadoLoja.data();
 
-    
-    if (editingStoreProductId) {
+    // FOTOS DOS PRODUTOS DA LOJA
+    const arquivosProdutoLoja = Array.from(
+      $("storeProductImages").files || []
+    );
+
+    if (arquivosProdutoLoja.length > 5) {
+      toast("Escolha no máximo 5 fotos.");
+      return;
+    }
+
+    const imagensProdutoLoja = [];
+
+    if (arquivosProdutoLoja.length > 0) {
+      if (!storage) {
+        const mod = await import(
+          "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js"
+        );
+        storage = mod.getStorage(app);
+        storageRef = mod.ref;
+        uploadBytes = mod.uploadBytes;
+        getDownloadURL = mod.getDownloadURL;
+      }
+
+      for (const arquivo of arquivosProdutoLoja) {
+        const blob = await compressImage(arquivo);
+
+        if (!blob) {
+          throw new Error("Não foi possível preparar uma das fotos.");
+        }
+
+        const referenciaFoto = storageRef(
+          storage,
+          `produtos/${usuario.uid}/${crypto.randomUUID()}/${crypto.randomUUID()}.jpg`
+        );
+
+        await uploadBytes(referenciaFoto, blob, {
+          contentType: "image/jpeg"
+        });
+
+        imagensProdutoLoja.push(
+          await getDownloadURL(referenciaFoto)
+        );
+      }
+  }
+          
+     if (editingStoreProductId) {
       await updateDoc(
         doc(db, "produtosLoja", editingStoreProductId),
         {
