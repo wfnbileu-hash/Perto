@@ -3562,23 +3562,43 @@ $("storeProductForm").addEventListener("submit", async (evento) => {
 
     const loja = resultadoLoja.data();
 
-    await addDoc(collection(db, "produtosLoja"), {
-      lojaId: usuario.uid,
-      vendedorId: usuario.uid,
-      nome: $("storeProductName").value.trim(),
-      preco: Number($("storeProductPrice").value),
-      categoria: $("storeProductCategory").value,
-      descricao: $("storeProductDescription").value.trim(),
-      lojaNome: loja.nome || "",
-      cidade: loja.cidade || "",
-      ativo: true,
-      criadoEm: serverTimestamp(),
-      atualizadoEm: serverTimestamp()
-    });
+    
+    if (editingStoreProductId) {
+      await updateDoc(
+        doc(db, "produtosLoja", editingStoreProductId),
+        {
+          nome: $("storeProductName").value.trim(),
+          preco: Number($("storeProductPrice").value),
+          categoria: $("storeProductCategory").value,
+          descricao: $("storeProductDescription").value.trim(),
+          atualizadoEm: serverTimestamp()
+        }
+      );
+
+      editingStoreProductId = null;
+      toast("Produto atualizado com sucesso!");
+
+    } else {
+      await addDoc(collection(db, "produtosLoja"), {
+        lojaId: usuario.uid,
+        vendedorId: usuario.uid,
+        nome: $("storeProductName").value.trim(),
+        preco: Number($("storeProductPrice").value),
+        categoria: $("storeProductCategory").value,
+        descricao: $("storeProductDescription").value.trim(),
+        lojaNome: loja.nome || "",
+        cidade: loja.cidade || "",
+        ativo: true,
+        criadoEm: serverTimestamp(),
+        atualizadoEm: serverTimestamp()
+      });
+
+      toast("Produto cadastrado na sua loja!");
+    }
 
     $("storeProductForm").reset();
     closeModal("storeProductModal");
-    toast("Produto cadastrado na sua loja!");
+
 
   } catch (erro) {
     console.error("Erro ao cadastrar produto da loja:", erro);
