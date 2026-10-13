@@ -3608,8 +3608,9 @@ $("storeProductForm").addEventListener("submit", async (evento) => {
     console.error("Erro ao cadastrar produto da loja:", erro);
     toast("Não foi possível salvar. Verifique as regras do Firebase.");
   } finally {
-    botao.disabled = false;
-    botao.textContent = "Cadastrar produto";
+    botao.disabled = false;botao.textContent = editingStoreProductId
+  ? "Salvar alterações"
+  : "Cadastrar produto";
   }
 });
   
