@@ -3162,6 +3162,45 @@ async function carregarVitrineLojas() {
   }
 }
 
+let lojaSelecionadaId = null;
+
+async function abrirLojaPublica(lojaId) {
+  lojaSelecionadaId = lojaId;
+
+  const loja = lojasVitrine.find(item => item.id === lojaId);
+
+  if (!loja) {
+    toast("Não foi possível encontrar esta loja.");
+    return;
+  }
+
+  $("storeDetailName").textContent = loja.nome || "Loja";
+  $("storeDetailCategory").textContent =
+    "Categoria: " + (loja.categoria || "Outros");
+
+  $("storeDetailCity").textContent =
+    "📍 " + (loja.cidade || "Cidade não informada");
+
+  $("storeDetailDescription").textContent =
+    loja.descricao || "Conheça os produtos desta loja.";
+
+  $("storeDetailHours").textContent =
+    loja.funciona24h
+      ? "🕒 Funcionamento: 24 horas"
+      : "🕒 Horário: " + (loja.horario || "Consulte a loja");
+
+  $("storeDetailPhone").textContent =
+    loja.telefone ? "☎️ " + loja.telefone : "";
+
+  $("storeDetailProducts").innerHTML =
+    '<div class="storeEmpty">Carregando produtos da loja...</div>';
+
+  showInternalPage("storeDetailPage");
+
+  // Os produtos exclusivos da loja serão carregados
+  // quando conectarmos o cadastro de produtos.
+  }
+  
 function renderizarVitrineLojas() {
   const busca = $("storeSearch").value.trim().toLowerCase();
   const cidade = $("storeCity").value.trim().toLowerCase();
