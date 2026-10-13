@@ -1775,6 +1775,74 @@ button{
   </div>
 </div>
 <!-- FIM DO MODAL: CADASTRAR LOJA -->
+  
+<!-- MODAL: CADASTRAR PRODUTO DA LOJA -->
+<div id="storeProductModal" class="modal">
+  <div class="modalContent">
+    <div class="modalHeader">
+      <h2>🏪 Produto da minha loja</h2>
+      <button
+        type="button"
+        class="closeModal"
+        data-close="storeProductModal">×</button>
+    </div>
+
+    <p style="font-size:13px;color:#64748b;margin-bottom:16px">
+      Cadastre um produto exclusivo para aparecer na vitrine da sua loja.
+    </p>
+
+    <form id="storeProductForm">
+      <div class="formGroup">
+        <label for="storeProductName">Nome do produto *</label>
+        <input id="storeProductName" maxlength="120" required>
+      </div>
+
+      <div class="formGroup">
+        <label for="storeProductPrice">Preço (R$) *</label>
+        <input
+          id="storeProductPrice"
+          type="number"
+          min="0.01"
+          step="0.01"
+          required>
+      </div>
+
+      <div class="formGroup">
+        <label for="storeProductCategory">Categoria *</label>
+        <select id="storeProductCategory" required>
+          <option value="">Selecione</option>
+          <option>Alimentos</option>
+          <option>Bebidas</option>
+          <option>Eletrônicos</option>
+          <option>Casa</option>
+          <option>Roupas</option>
+          <option>Beleza</option>
+          <option>Ferramentas</option>
+          <option>Outros</option>
+        </select>
+      </div>
+
+      <div class="formGroup">
+        <label for="storeProductDescription">Descrição *</label>
+        <textarea id="storeProductDescription" required></textarea>
+      </div>
+
+      <div class="modalActions">
+        <button
+          type="button"
+          class="btn"
+          data-close="storeProductModal">
+          Cancelar
+        </button>
+        <button type="submit" class="btn btnPrimary">
+          Cadastrar produto
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- FIM DO CADASTRO DE PRODUTO DA LOJA -->
+  
 <!-- ================================================== -->
 <!-- MODAL: PUBLICAR / EDITAR ANÚNCIO DE PRODUTO -->
 <!-- ================================================== -->
