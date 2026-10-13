@@ -1256,8 +1256,22 @@ display:none!important;
 <!-- APLICAÇÃO PRINCIPAL / CABEÇALHO -->
 <!-- ================================================== -->
 <section id="appPage" class="hidden">
-  <header class="appHeader"><div class="headerTop"><div class="appLogo">perto.</div><button id="headerUser" class="headerUser">?</button></div><div class="searchBox"><input id="globalSearch" placeholder="🔎 O que você está procurando?"></div></header>
-  <main>
+  <header class="appHeader">
+  <div class="headerTop">
+    <div class="appLogo">perto.</div>
+    <div class="headerActions">
+      <button id="headerNotifications" class="headerNotifications" aria-label="Notificações">
+        🔔
+        <span id="notificationBadge" class="notificationBadge hidden">0</span>
+      </button>
+      <button id="headerUser" class="headerUser">?</button>
+    </div>
+  </div>
+  <div class="searchBox">
+    <input id="globalSearch" placeholder="🔎 O que você está procurando?">
+  </div>
+</header>
+<main>
     
 <!-- INÍCIO / PÁGINA PRINCIPAL -->
 <section id="homePage" class="page active">
