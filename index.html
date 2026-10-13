@@ -3730,6 +3730,9 @@ const resultado = await getDocs(
   $("storeProductPrice").value = produto.preco || "";
   $("storeProductCategory").value = produto.categoria || "";
   $("storeProductDescription").value = produto.descricao || "";
+  $("storeProductForm").querySelector(
+  'button[type="submit"]'
+).textContent = "Salvar alterações";
   openModal("storeProductModal");
 };
 
