@@ -1749,6 +1749,30 @@ button{
       <div id="storeLogoPreview" style="margin:10px 0">
       </div>
       
+$("storeLogo").addEventListener("change", () => {
+  const campo = $("storeLogo");
+  const preview = $("storeLogoPreview");
+  const arquivo = campo.files[0];
+
+  preview.replaceChildren();
+
+  if (!arquivo) return;
+
+  if (!arquivo.type.startsWith("image/")) {
+    toast("Escolha um arquivo de imagem.");
+    campo.value = "";
+    return;
+  }
+
+  const imagem = document.createElement("img");
+  imagem.src = URL.createObjectURL(arquivo);
+  imagem.alt = "Prévia da logo da loja";
+  imagem.style.cssText =
+    "width:100px;height:100px;object-fit:contain;border-radius:12px;background:#f8fafc;";
+
+  preview.appendChild(imagem);
+});
+    
 
       <div class="formGroup">
         <label for="storeAddress">Endereço ou região de atendimento</label>
