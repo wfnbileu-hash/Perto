@@ -3177,6 +3177,7 @@ $("storeForm").addEventListener("submit", async (event) => {
     const lojaExistente = await getDoc(lojaRef);
     const dadosExistentes = lojaExistente.exists()
       ? lojaExistente.data()
+      : null;
       
     // UPLOAD DA LOGO DA LOJA
     const arquivoLogo = $("storeLogo").files[0];
@@ -3215,8 +3216,6 @@ $("storeForm").addEventListener("submit", async (event) => {
 
       logoURL = await getDownloadURL(referenciaLogo);
     }
-      
-      : null;
 
     
 const dadosLoja = {
