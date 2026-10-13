@@ -2452,6 +2452,7 @@ function watchNotifications(uid) {
   async function enterApp(u){
   if(!u)return;
   currentUser=u;
+   watchNotifications(u.uid);
   atualizarBotaoAdmin();
   showPage($("appPage"));
   showInternalPage("homePage",false);
