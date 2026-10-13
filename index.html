@@ -3700,7 +3700,14 @@ const resultado = await getDocs(
       editar.className = "profileAction";
       editar.textContent = "✏️ Editar produto";
 
-      editar.onclick = () => editProduct(produto);
+      editar.onclick = () => {
+  editingStoreProductId = produto.id;
+  $("storeProductName").value = produto.nome || "";
+  $("storeProductPrice").value = produto.preco || "";
+  $("storeProductCategory").value = produto.categoria || "";
+  $("storeProductDescription").value = produto.descricao || "";
+  openModal("storeProductModal");
+};
 
       item.append(nome, preco, editar);
       lista.appendChild(item);
