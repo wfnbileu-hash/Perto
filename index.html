@@ -1826,7 +1826,22 @@ button{
         <label for="storeProductDescription">Descrição *</label>
         <textarea id="storeProductDescription" required></textarea>
       </div>
+      <div class="formGroup">
+        <label for="storeProductImages">Fotos do produto</label>
+        <input
+          id="storeProductImages"
+          type="file"
+          accept="image/*"
+          multiple>
+        <div style="font-size:12px;color:#6b7280;margin-top:6px">
+          Escolha até 5 fotos da galeria do celular.
+        </div>
+      </div>
 
+      <div
+        id="storeProductImagePreview"
+        style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:10px 0">
+      </div>
       <div class="modalActions">
         <button
           type="button"
