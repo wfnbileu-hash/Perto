@@ -3308,6 +3308,30 @@ resultado.forEach((documento) => {
   const card = document.createElement("article");
   card.className = "storeCard";
   card.style.padding = "16px";
+  
+  const fotosProduto = produto.imagens?.length
+    ? produto.imagens
+    : (produto.imagem ? [produto.imagem] : []);
+
+  if (fotosProduto.length > 0) {
+    const galeria = document.createElement("div");
+    galeria.style.cssText =
+      "display:flex;gap:8px;overflow-x:auto;margin-bottom:12px;";
+
+    fotosProduto.forEach((url) => {
+      const foto = document.createElement("img");
+      foto.src = url;
+      foto.alt = produto.nome || "Foto do produto";
+      foto.loading = "lazy";
+      foto.style.cssText =
+        "width:100%;min-width:100%;height:210px;object-fit:contain;background:#f8fafc;border-radius:12px;";
+
+      galeria.appendChild(foto);
+    });
+
+    card.appendChild(galeria);
+  }
+  
 
   const nome = document.createElement("h3");
   nome.textContent = produto.nome || "Produto";
