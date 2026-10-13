@@ -3423,11 +3423,22 @@ if (resultado.empty) {
 painelProdutos.innerHTML = "";
 
 resultado.forEach((documento) => {
+resultado.forEach((documento) => {
   const produto = documento.data();
+
+  const produtoParaAbrir = {
+    ...produto,
+    id: documento.id,
+    vendedorId: produto.vendedorId || produto.lojaId,
+    vendedorNome: produto.lojaNome || loja.nome,
+    localizacao: produto.cidade || loja.cidade
+  };
 
   const card = document.createElement("article");
   card.className = "storeCard";
   card.style.padding = "16px";
+  card.style.cursor = "pointer";
+  card.addEventListener("click", () => openProduct(produtoParaAbrir));
   
   const fotosProduto = produto.imagens?.length
     ? produto.imagens
