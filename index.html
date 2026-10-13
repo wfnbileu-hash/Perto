@@ -3920,6 +3920,15 @@ renderImagePreviews();
 openModal("sellModal")};
 $("headerUser").onclick=()=>showInternalPage("profilePage");
 
+$("headerNotifications").onclick = () => {
+  if (!currentUser) {
+    toast("Entre na sua conta para ver as notificações.");
+    return;
+  }
+
+  openModal("notificationsModal");
+};
+  
 $("addStoreProductBtn").onclick = async () => {
   const usuario = auth.currentUser || currentUser;
 
