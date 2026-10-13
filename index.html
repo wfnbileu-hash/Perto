@@ -750,26 +750,89 @@ button{
   border-color: #102a43;
 }
 
-.storeCard {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 18px;
-  overflow: hidden;
-  margin-bottom: 14px;
+/* CARTÕES COMPACTOS DAS LOJAS */
+#storesResults {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  align-items: stretch;
 }
 
-.storeCover {
-  min-height: 125px;
-  background: linear-gradient(135deg, #dbeafe, #fef3c7);
+#storesResults .storeCard {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 15px;
+  overflow: hidden;
+  margin: 0;
+  min-width: 0;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .04);
+  transition: transform .18s ease;
+}
+
+#storesResults .storeCard:active {
+  transform: scale(.97);
+}
+
+#storesResults .storeCover {
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 1 / 1;
+  padding: 9px;
+  background: #f8fafc;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 52px;
+  font-size: 32px;
+  overflow: hidden;
 }
 
-.storeInfo {
-  padding: 15px;
+#storesResults .storeCover img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 10px;
 }
+
+#storesResults .storeInfo {
+  padding: 9px 7px 10px;
+  overflow: hidden;
+}
+
+#storesResults .storeInfo h3 {
+  font-size: 12px;
+  line-height: 1.3;
+  margin-bottom: 5px;
+  overflow-wrap: anywhere;
+}
+
+#storesResults .storeInfo p {
+  font-size: 10px;
+  line-height: 1.4;
+  margin-bottom: 6px;
+  overflow-wrap: anywhere;
+}
+
+#storesResults .storeStatus {
+  display: inline-block;
+  font-size: 9px;
+  padding: 4px 5px;
+  border-radius: 6px;
+}
+
+#storesResults .storeInfo p:last-child {
+  font-size: 10px;
+  margin-top: 8px;
+  margin-bottom: 0;
+  font-weight: 700;
+}
+
+@media (max-width: 340px) {
+  #storesResults {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+                            }
 
 .storeInfo h3 {
   margin-bottom: 6px;
