@@ -3508,7 +3508,13 @@ function renderizarVitrineLojas() {
         class="storeCard"
         data-store-id="${esc(loja.id)}"
         style="cursor:pointer">
-        <div class="storeCover">🏪</div>
+        
+<div class="storeCover">${
+  loja.logoURL
+    ? `<img src="${esc(loja.logoURL)}" alt="Logo da loja" style="width:100%;height:100%;object-fit:contain;background:#fff;border-radius:inherit;">`
+    : "🏪"
+}</div>
+  
         <div class="storeInfo">
           <h3>${esc(loja.nome || "Loja")}</h3>
           <p>
