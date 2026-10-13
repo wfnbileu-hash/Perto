@@ -3922,8 +3922,6 @@ $("storeProductForm").addEventListener("submit", async (evento) => {
 
   editingStoreProductId = null;
   toast("Produto atualizado com sucesso!");
-}
-
     } else {
       
 await addDoc(collection(db, "produtosLoja"), {
