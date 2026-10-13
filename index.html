@@ -2378,7 +2378,78 @@ btn.textContent="Salvar dados";
 // ==================================================
 // ENTRADA NA APLICAÇÃO E SESSÃO
 // ==================================================
-async function enterApp(u){
+
+  
+function watchNotifications(uid) {
+  if (notificationsUnsub) {
+    notificationsUnsub();
+    notificationsUnsub = null;
+  }
+
+  const badge = $("notificationBadge");
+  const lista = $("notificationsList");
+
+  const consulta = query(
+    collection(db, "notificacoes"),
+    where("destinatarioId", "==", uid),
+    limit(30)
+  );
+
+  notificationsUnsub = onSnapshot(
+    consulta,
+    (snapshot) => {
+      notificationsCache = snapshot.docs.map((item) => ({
+        id: item.id,
+        ...item.data()
+      }));
+
+      notificationsCache.sort((a, b) => {
+        const dataA = a.criadoEm?.toMillis?.() || 0;
+        const dataB = b.criadoEm?.toMillis?.() || 0;
+        return dataB - dataA;
+      });
+
+      const naoLidas = notificationsCache.filter(
+        (item) => item.lida !== true
+      ).length;
+
+      badge.textContent = naoLidas > 99 ? "99+" : naoLidas;
+      badge.classList.toggle("hidden", naoLidas === 0);
+
+      if (notificationsCache.length === 0) {
+        lista.innerHTML = `
+          <div style="text-align:center;padding:25px;color:#6b7280">
+            Você ainda não tem notificações.
+          </div>
+        `;
+        return;
+      }
+
+      lista.innerHTML = notificationsCache.map((item) => `
+        <div style="padding:14px;border-bottom:1px solid #e5e7eb;
+          background:${item.lida === true ? "#fff" : "#eff6ff"}">
+          <div style="font-weight:800;margin-bottom:5px">
+            ${esc(item.titulo || "Notificação")}
+          </div>
+          <div style="font-size:14px;color:#4b5563">
+            ${esc(item.mensagem || "")}
+          </div>
+          ${item.lida === true ? "" : `
+            <div style="font-size:12px;color:#2563eb;margin-top:7px">
+              Não lida
+            </div>
+          `}
+        </div>
+      `).join("");
+    },
+    (erro) => {
+      console.error("Erro ao carregar notificações:", erro);
+      toast("Não foi possível carregar as notificações.");
+    }
+  );
+}
+  
+  async function enterApp(u){
   if(!u)return;
   currentUser=u;
   atualizarBotaoAdmin();
