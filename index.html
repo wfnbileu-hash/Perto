@@ -3662,11 +3662,14 @@ $("toggleStoreProductsBtn").onclick = async () => {
   lista.textContent = "Carregando seus produtos...";
 
   try {
-    const resultado = await getDocs(
-      query(
-        collection(db, "produtos"),
-        where("vendedorId", "==", usuario.uid)
-      )
+    
+const resultado = await getDocs(
+  query(
+    collection(db, "produtosLoja"),
+    where("lojaId", "==", usuario.uid)
+  )
+);
+
     );
 
     lista.replaceChildren();
