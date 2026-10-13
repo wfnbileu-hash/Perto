@@ -3997,7 +3997,7 @@ $("saveAdminMonthlyPrice").onclick=salvarMensalidadeAdmin;
 $("adminBackBtn").onclick=()=>showInternalPage("profilePage");
 atualizarBotaoAdmin();
 $("myAdsBtn").onclick=showMyAds;
-$("homeMyAds").onclick=showMyAds;
+if($("homeMyAds")) $("homeMyAds").onclick=showMyAds;
 $("profileFavoritesBtn").onclick=()=>{renderFavorites();
 showInternalPage("favoritesPage")};
 $("homeServices").onclick=()=>showInternalPage("servicesPage");
