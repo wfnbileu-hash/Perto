@@ -3292,13 +3292,11 @@ if ($("myStorePage").classList.contains("active")) {
 await carregarVitrineLojas();
 
    } catch (erro) {
-    console.error("Erro ao cadastrar loja:", erro);
+  console.error("Erro ao cadastrar loja:", erro);
 
-    toast(
-      erro.code === "permission-denied"
-        ? "O Firebase não autorizou salvar a loja."
-        : "Não foi possível salvar. Tente novamente."
-    );
+  toast(
+    "Erro: " + (erro.code || erro.message || "Causa não identificada")
+  );
 
   } finally {
     botao.disabled = false;
