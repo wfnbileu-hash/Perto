@@ -3450,9 +3450,33 @@ selectedImages=[];
 renderImagePreviews();
 openModal("sellModal")};
 $("headerUser").onclick=()=>showInternalPage("profilePage");
-$("addStoreProductBtn").onclick = () => {
-  $("sellNavBtn").click();
+
+$("addStoreProductBtn").onclick = async () => {
+  const usuario = auth.currentUser || currentUser;
+
+  if (!usuario) {
+    showAuth("login");
+    return;
+  }
+
+  try {
+    const resultado = await getDoc(
+      doc(db, "lojas", usuario.uid)
+    );
+
+    if (!resultado.exists()) {
+      toast("Cadastre sua loja antes de adicionar produtos.");
+      return;
+    }
+
+    $("storeProductForm").reset();
+    openModal("storeProductModal");
+  } catch (erro) {
+    console.error("Erro ao verificar a loja:", erro);
+    toast("Não foi possível abrir o cadastro do produto.");
+  }
 };
+
 $("editMyStoreBtn").onclick = async () => {
   const usuario = auth.currentUser || currentUser;
 
