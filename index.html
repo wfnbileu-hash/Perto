@@ -3552,7 +3552,34 @@ openModal("storeProductModal");
     toast("Não foi possível abrir o cadastro do produto.");
   }
 };
+// ==================================================
+// PRÉ-VISUALIZAÇÃO DAS FOTOS DOS PRODUTOS DA LOJA
+// ==================================================
+$("storeProductImages").addEventListener("change", () => {
+  const campo = $("storeProductImages");
+  const preview = $("storeProductImagePreview");
+  const arquivos = Array.from(campo.files || []);
 
+  preview.replaceChildren();
+
+  if (arquivos.length > 5) {
+    toast("Escolha no máximo 5 fotos.");
+    campo.value = "";
+    return;
+  }
+
+  arquivos.forEach((arquivo) => {
+    if (!arquivo.type.startsWith("image/")) return;
+
+    const imagem = document.createElement("img");
+    imagem.src = URL.createObjectURL(arquivo);
+    imagem.alt = "Prévia do produto";
+    imagem.style.cssText =
+      "width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;";
+
+    preview.appendChild(imagem);
+  });
+});
 $("storeProductForm").addEventListener("submit", async (evento) => {
   evento.preventDefault();
 
