@@ -3175,6 +3175,45 @@ $("storeForm").addEventListener("submit", async (event) => {
     const lojaExistente = await getDoc(lojaRef);
     const dadosExistentes = lojaExistente.exists()
       ? lojaExistente.data()
+      
+    // UPLOAD DA LOGO DA LOJA
+    const arquivoLogo = $("storeLogo").files[0];
+    let logoURL = dadosExistentes?.logoURL || "";
+
+    if (arquivoLogo) {
+      if (!arquivoLogo.type.startsWith("image/")) {
+        toast("Escolha um arquivo de imagem.");
+        return;
+      }
+
+      if (!storage) {
+        const mod = await import(
+          "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js"
+        );
+        storage = mod.getStorage(app);
+        storageRef = mod.ref;
+        uploadBytes = mod.uploadBytes;
+        getDownloadURL = mod.getDownloadURL;
+      }
+
+      const blobLogo = await compressImage(arquivoLogo);
+
+      if (!blobLogo) {
+        throw new Error("Não foi possível preparar a logo.");
+      }
+
+      const referenciaLogo = storageRef(
+        storage,
+        `lojas/${usuario.uid}/logo-${crypto.randomUUID()}.jpg`
+      );
+
+      await uploadBytes(referenciaLogo, blobLogo, {
+        contentType: "image/jpeg"
+      });
+
+      logoURL = await getDownloadURL(referenciaLogo);
+    }
+      
       : null;
 
     const dadosLoja = {
