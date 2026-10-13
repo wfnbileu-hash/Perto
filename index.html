@@ -3525,8 +3525,12 @@ $("addStoreProductBtn").onclick = async () => {
       return;
     }
 
-    $("storeProductForm").reset();
-    openModal("storeProductModal");
+    editingStoreProductId = null;
+$("storeProductForm").reset();
+$("storeProductForm").querySelector(
+  'button[type="submit"]'
+).textContent = "Cadastrar produto";
+openModal("storeProductModal");
   } catch (erro) {
     console.error("Erro ao verificar a loja:", erro);
     toast("Não foi possível abrir o cadastro do produto.");
