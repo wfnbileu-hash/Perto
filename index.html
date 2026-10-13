@@ -3900,19 +3900,29 @@ $("storeProductForm").addEventListener("submit", async (evento) => {
   }
           
      if (editingStoreProductId) {
-      await updateDoc(
-        doc(db, "produtosLoja", editingStoreProductId),
-        {
-          nome: $("storeProductName").value.trim(),
-          preco: Number($("storeProductPrice").value),
-          categoria: $("storeProductCategory").value,
-          descricao: $("storeProductDescription").value.trim(),
-          atualizadoEm: serverTimestamp()
-        }
-      );
+  const dadosAtualizacao = {
+    nome: $("storeProductName").value.trim(),
+    preco: Number($("storeProductPrice").value),
+    categoria: $("storeProductCategory").value,
+    descricao: $("storeProductDescription").value.trim(),
+    atualizadoEm: serverTimestamp()
+  };
 
-      editingStoreProductId = null;
-      toast("Produto atualizado com sucesso!");
+  // Atualiza as fotos somente se novas fotos foram selecionadas.
+  // Sem novas fotos, preserva as imagens já cadastradas.
+  if (arquivosProdutoLoja.length > 0) {
+    dadosAtualizacao.imagens = imagensProdutoLoja;
+    dadosAtualizacao.imagem = imagensProdutoLoja[0] || "";
+  }
+
+  await updateDoc(
+    doc(db, "produtosLoja", editingStoreProductId),
+    dadosAtualizacao
+  );
+
+  editingStoreProductId = null;
+  toast("Produto atualizado com sucesso!");
+}
 
     } else {
       
