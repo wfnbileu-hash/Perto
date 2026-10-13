@@ -1152,10 +1152,45 @@ button{
 <section id="appPage" class="hidden">
   <header class="appHeader"><div class="headerTop"><div class="appLogo">perto.</div><button id="headerUser" class="headerUser">?</button></div><div class="searchBox"><input id="globalSearch" placeholder="🔎 O que você está procurando?"></div></header>
   <main>
-    <!-- INÍCIO / PÁGINA PRINCIPAL -->
-<section id="homePage" class="page active"><div class="heroCard"><h1>Compre perto.<br>Venda fácil.</h1><p>Produtos, oportunidades e negócios na sua região.</p></div><div class="categoryGrid"><button class="categoryCard" id="homeServices"><div class="categoryIcon">🛠️</div><strong>Serviços</strong><span>Encontre profissionais perto de você.</span></button><button class="categoryCard" id="homeDelivery"><div class="categoryIcon">🚚</div><strong>Entregas</strong><span>Conecte produtos a entregas locais.</span></button><button class="categoryCard" id="homeIncome"><div class="categoryIcon">💰</div><strong>Renda extra</strong><span>Novas oportunidades na sua região.</span> 
-<button class="categoryCard" id="homeIncome"><div class="categoryIcon">🏪</div><strong>Lojas Parceiras</strong><span>Conheça as lojas da sua região.</span></button>
-</div><div class="sectionTitle">Anúncios perto de você</div><div class="sectionSubtitle">Destaques aparecem primeiro.</div><div id="homeProducts" class="productGrid"></div></section>
+    
+<!-- INÍCIO / PÁGINA PRINCIPAL -->
+<section id="homePage" class="page active">
+  <div class="heroCard">
+    <h1>Compre perto.<br>Venda fácil.</h1>
+    <p>Produtos, oportunidades e negócios na sua região.</p>
+  </div>
+
+  <div class="categoryGrid">
+    <button class="categoryCard" id="homeServices">
+      <div class="categoryIcon">🛠️</div>
+      <strong>Serviços</strong>
+      <span>Encontre profissionais perto de você.</span>
+    </button>
+
+    <button class="categoryCard" id="homeDelivery">
+      <div class="categoryIcon">🚚</div>
+      <strong>Entregas</strong>
+      <span>Conecte produtos a entregas locais.</span>
+    </button>
+
+    <button class="categoryCard" id="homeIncome">
+      <div class="categoryIcon">💰</div>
+      <strong>Renda extra</strong>
+      <span>Novas oportunidades na sua região.</span>
+    </button>
+
+    <button class="categoryCard" id="homeStores">
+      <div class="categoryIcon">🏪</div>
+      <strong>Lojas Parceiras</strong>
+      <span>Conheça as lojas da sua região.</span>
+    </button>
+  </div>
+
+  <div class="sectionTitle">Anúncios perto de você</div>
+  <div class="sectionSubtitle">Destaques aparecem primeiro.</div>
+  <div id="homeProducts" class="productGrid"></div>
+</section>
+
     <!-- BUSCA E FILTRO POR CIDADE -->
 <section id="searchPage" class="page"><div class="sectionTitle">Resultados</div><div class="sectionSubtitle">Pesquise produtos e filtre pela cidade.</div><div style="margin:12px 0 16px"><label for="cityFilter" style="display:block;font-size:13px;font-weight:700;margin-bottom:6px">📍 Filtrar por cidade</label><select id="cityFilter" style="width:100%;padding:13px;border:1px solid #dbe1ea;border-radius:12px;background:#fff;color:#111827"><option value="">Todas as cidades</option><option>Piracicaba</option><option>Cerquilho</option><option>Tietê</option><option>Tatuí</option><option>Boituva</option><option>Iperó</option><option>Porto Feliz</option></select><div style="font-size:11px;color:#6b7280;margin-top:6px">O filtro compara com a cidade informada pelo vendedor no anúncio.</div></div><div id="searchProducts" class="productGrid"></div></section>
     <!-- MEUS ANÚNCIOS -->
