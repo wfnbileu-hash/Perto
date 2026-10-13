@@ -3477,6 +3477,62 @@ $("addStoreProductBtn").onclick = async () => {
   }
 };
 
+$("storeProductForm").addEventListener("submit", async (evento) => {
+  evento.preventDefault();
+
+  const usuario = auth.currentUser || currentUser;
+
+  if (!usuario) {
+    showAuth("login");
+    return;
+  }
+
+  const botao = $("storeProductForm").querySelector(
+    'button[type="submit"]'
+  );
+
+  botao.disabled = true;
+  botao.textContent = "Salvando...";
+
+  try {
+    const resultadoLoja = await getDoc(
+      doc(db, "lojas", usuario.uid)
+    );
+
+    if (!resultadoLoja.exists()) {
+      toast("Cadastre sua loja antes de adicionar produtos.");
+      return;
+    }
+
+    const loja = resultadoLoja.data();
+
+    await addDoc(collection(db, "produtosLoja"), {
+      lojaId: usuario.uid,
+      vendedorId: usuario.uid,
+      nome: $("storeProductName").value.trim(),
+      preco: Number($("storeProductPrice").value),
+      categoria: $("storeProductCategory").value,
+      descricao: $("storeProductDescription").value.trim(),
+      lojaNome: loja.nome || "",
+      cidade: loja.cidade || "",
+      ativo: true,
+      criadoEm: serverTimestamp(),
+      atualizadoEm: serverTimestamp()
+    });
+
+    $("storeProductForm").reset();
+    closeModal("storeProductModal");
+    toast("Produto cadastrado na sua loja!");
+
+  } catch (erro) {
+    console.error("Erro ao cadastrar produto da loja:", erro);
+    toast("Não foi possível salvar. Verifique as regras do Firebase.");
+  } finally {
+    botao.disabled = false;
+    botao.textContent = "Cadastrar produto";
+  }
+});
+  
 $("editMyStoreBtn").onclick = async () => {
   const usuario = auth.currentUser || currentUser;
 
