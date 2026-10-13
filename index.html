@@ -3199,9 +3199,14 @@ async function abrirLojaPublica(lojaId) {
 
   // Os produtos exclusivos da loja serão carregados
   // quando conectarmos o cadastro de produtos.
-  }
-  
+}
+
+$("storeDetailBackBtn").onclick = () => {
+  showInternalPage("storesPage");
+};
+
 function renderizarVitrineLojas() {
+
   const busca = $("storeSearch").value.trim().toLowerCase();
   const cidade = $("storeCity").value.trim().toLowerCase();
 
