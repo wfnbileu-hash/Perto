@@ -3216,9 +3216,12 @@ $("storeForm").addEventListener("submit", async (event) => {
       
       : null;
 
-    const dadosLoja = {
-      usuarioId: usuario.uid,
-      nome: $("storeName").value.trim(),
+    
+const dadosLoja = {
+  usuarioId: usuario.uid,
+  logoURL: logoURL,
+  nome: $("storeName").value.trim(),
+
       categoria: $("storeType").value,
       cidade: $("storeRegisterCity").value.trim(),
       telefone: $("storePhone").value.trim(),
