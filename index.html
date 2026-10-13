@@ -3233,40 +3233,96 @@ async function carregarVitrineLojas() {
 let lojaSelecionadaId = null;
 
 async function abrirLojaPublica(lojaId) {
-  lojaSelecionadaId = lojaId;
+lojaSelecionadaId = lojaId;
 
-  const loja = lojasVitrine.find(item => item.id === lojaId);
+const loja = lojasVitrine.find(item => item.id === lojaId);
 
-  if (!loja) {
-    toast("Não foi possível encontrar esta loja.");
-    return;
-  }
+if (!loja) {
+toast("Não foi possível encontrar esta loja.");
+return;
+}
 
-  $("storeDetailName").textContent = loja.nome || "Loja";
-  $("storeDetailCategory").textContent =
-    "Categoria: " + (loja.categoria || "Outros");
+$("storeDetailName").textContent = loja.nome || "Loja";
 
-  $("storeDetailCity").textContent =
-    "📍 " + (loja.cidade || "Cidade não informada");
+$("storeDetailCategory").textContent =
+"Categoria: " + (loja.categoria || "Outros");
 
-  $("storeDetailDescription").textContent =
-    loja.descricao || "Conheça os produtos desta loja.";
+$("storeDetailCity").textContent =
+"📍 " + (loja.cidade || "Cidade não informada");
 
-  $("storeDetailHours").textContent =
-    loja.funciona24h
-      ? "🕒 Funcionamento: 24 horas"
-      : "🕒 Horário: " + (loja.horario || "Consulte a loja");
+$("storeDetailDescription").textContent =
+loja.descricao || "Conheça os produtos desta loja.";
 
-  $("storeDetailPhone").textContent =
-    loja.telefone ? "☎️ " + loja.telefone : "";
+$("storeDetailHours").textContent =
+loja.funciona24h
+? "🕒 Funcionamento: 24 horas"
+: "🕒 Horário: " + (loja.horario || "Consulte a loja");
 
-  $("storeDetailProducts").innerHTML =
-    '<div class="storeEmpty">Carregando produtos da loja...</div>';
+$("storeDetailPhone").textContent =
+loja.telefone ? "☎️ " + loja.telefone : "";
 
-  showInternalPage("storeDetailPage");
+const painelProdutos = $("storeDetailProducts");
 
-  // Os produtos exclusivos da loja serão carregados
-  // quando conectarmos o cadastro de produtos.
+painelProdutos.innerHTML =
+'<div class="storeEmpty">Carregando produtos da loja...</div>';
+
+showInternalPage("storeDetailPage");
+
+try {
+const consulta = query(
+collection(db, "produtosLoja"),
+where("lojaId", "==", lojaId),
+where("ativo", "==", true)
+);
+
+const resultado = await getDocs(consulta);
+
+if (lojaSelecionadaId !== lojaId) return;
+
+if (resultado.empty) {
+  painelProdutos.innerHTML =
+    '<div class="storeEmpty">Esta loja ainda não possui produtos cadastrados.</div>';
+  return;
+}
+
+painelProdutos.innerHTML = "";
+
+resultado.forEach((documento) => {
+  const produto = documento.data();
+
+  const card = document.createElement("article");
+  card.className = "storeCard";
+  card.style.padding = "16px";
+
+  const nome = document.createElement("h3");
+  nome.textContent = produto.nome || "Produto";
+  nome.style.margin = "0 0 8px";
+
+  const preco = document.createElement("p");
+  preco.textContent = money(produto.preco);
+  preco.style.fontSize = "20px";
+  preco.style.fontWeight = "700";
+  preco.style.margin = "0 0 8px";
+  preco.style.color = "#166534";
+
+  const categoria = document.createElement("p");
+  categoria.textContent =
+    "Categoria: " + (produto.categoria || "Outros");
+
+  const descricao = document.createElement("p");
+  descricao.textContent =
+    produto.descricao || "Sem descrição.";
+
+  card.append(nome, preco, categoria, descricao);
+  painelProdutos.appendChild(card);
+});
+
+} catch (erro) {
+console.error("Erro ao carregar produtos da loja:", erro);
+
+painelProdutos.innerHTML =
+  '<div class="storeEmpty">Não foi possível carregar os produtos. Verifique as regras do Firebase.</div>';
+
 }
 
 $("storeDetailBackBtn").onclick = () => {
