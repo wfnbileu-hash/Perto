@@ -3820,19 +3820,22 @@ $("storeProductForm").addEventListener("submit", async (evento) => {
       toast("Produto atualizado com sucesso!");
 
     } else {
-      await addDoc(collection(db, "produtosLoja"), {
-        lojaId: usuario.uid,
-        vendedorId: usuario.uid,
-        nome: $("storeProductName").value.trim(),
-        preco: Number($("storeProductPrice").value),
-        categoria: $("storeProductCategory").value,
-        descricao: $("storeProductDescription").value.trim(),
-        lojaNome: loja.nome || "",
-        cidade: loja.cidade || "",
-        ativo: true,
-        criadoEm: serverTimestamp(),
-        atualizadoEm: serverTimestamp()
-      });
+      
+await addDoc(collection(db, "produtosLoja"), {
+  lojaId: usuario.uid,
+  vendedorId: usuario.uid,
+  nome: $("storeProductName").value.trim(),
+  preco: Number($("storeProductPrice").value),
+  categoria: $("storeProductCategory").value,
+  descricao: $("storeProductDescription").value.trim(),
+  imagens: imagensProdutoLoja,
+  imagem: imagensProdutoLoja[0] || "",
+  lojaNome: loja.nome || "",
+  cidade: loja.cidade || "",
+  ativo: true,
+  criadoEm: serverTimestamp(),
+  atualizadoEm: serverTimestamp()
+});
 
       toast("Produto cadastrado na sua loja!");
     }
