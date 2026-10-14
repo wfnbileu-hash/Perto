@@ -2631,6 +2631,7 @@ function watchUnreadMessages(uid) {
   console.error("Erro ao contar mensagens:", erro.code, erro.message);
   toast("Erro ao carregar contador: " + erro.code);
 });
+      });
 
     }, erro => {
   console.error("Erro ao acompanhar conversas:", erro.code, erro.message);
