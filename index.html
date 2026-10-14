@@ -2735,10 +2735,42 @@ $("chatModal").classList.add("open");
 $("offerBtn").style.display=currentChatProduct?.vendedorId===currentUser?.uid?"none":"block";
 listenMessages();
 loadConversationOffers()}
-function listenMessages(){if(currentChatUnsub)currentChatUnsub();
-let q=query(collection(db,"conversas",currentConversationId,"mensagens"),orderBy("criadoEm","asc"));
-currentChatUnsub=onSnapshot(q,s=>{let c=$("messagesList");c.innerHTML="";s.forEach(d=>{let m=d.data(),mine=m.remetenteId===currentUser.uid;let row=document.createElement("div");row.style.cssText=`display:flex;justify-content:${mine?'flex-end':'flex-start'};margin:6px 0`;row.innerHTML=`<div style="max-width:82%;padding:9px 12px;border-radius:14px;background:${mine?'#111827':'#fff'};color:${mine?'#fff':'#111827'};font-size:13px">${esc(m.texto)}</div>`;c.appendChild(row)});c.scrollTop=c.scrollHeight})}
-async function sendMessage(){let input=$("chatMessageInput"),text=input.value.trim();
+function listenMessages(){
+  if(currentChatUnsub)currentChatUnsub();
+
+  let q=query(
+    collection(db,"conversas",currentConversationId,"mensagens"),
+    orderBy("criadoEm","asc")
+  );
+
+  currentChatUnsub=onSnapshot(q,s=>{
+    let c=$("messagesList");
+    c.innerHTML="";
+
+    s.forEach(d=>{
+      let m=d.data();
+      let mine=m.remetenteId===currentUser.uid;
+
+      let row=document.createElement("div");
+      row.style.cssText=`display:flex;justify-content:${mine?'flex-end':'flex-start'};margin:6px 0`;
+
+      row.innerHTML=`<div style="max-width:82%;padding:9px 12px;border-radius:14px;background:${mine?'#111827':'#fff'};color:${mine?'#fff':'#111827'};font-size:13px">${esc(m.texto)}</div>`;
+
+      c.appendChild(row);
+
+      if(!mine && m.lida!==true){
+        updateDoc(
+          doc(db,"conversas",currentConversationId,"mensagens",d.id),
+          {lida:true}
+        ).catch(e=>{
+          console.error("Erro ao marcar mensagem como lida:",e);
+        });
+      }
+    });
+
+    c.scrollTop=c.scrollHeight;
+  });
+}async function sendMessage(){let input=$("chatMessageInput"),text=input.value.trim();
 if(!text||!currentConversationId)return;
 try{await addDoc(collection(db,"conversas",currentConversationId,"mensagens"),{remetenteId:currentUser.uid,texto:text,criadoEm:serverTimestamp(),lida:false});
 await updateDoc(doc(db,"conversas",currentConversationId),{ultimaMensagem:text,atualizadoEm:serverTimestamp()});
