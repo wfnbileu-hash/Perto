@@ -2490,13 +2490,21 @@ function watchUnreadMessages(uid) {
 
   const badge = $("chatUnreadBadge");
   const contagens = {};
+  const carregadas = new Set();
 
   function atualizarContador() {
+    if (carregadas.size === 0) {
+      badge.classList.add("hidden");
+      badge.textContent = "0";
+      return;
+    }
+
     const total = Object.values(contagens).reduce(
-      (soma, quantidade) => soma + quantidade, 0
+      (soma, quantidade) => soma + quantidade,
+      0
     );
 
-    badge.textContent = total > 99 ? "99+" : total;
+    badge.textContent = total > 99 ? "99+" : String(total);
     badge.classList.toggle("hidden", total === 0);
   }
 
@@ -2517,6 +2525,7 @@ function watchUnreadMessages(uid) {
         chatMessageUnsubs[id]();
         delete chatMessageUnsubs[id];
         delete contagens[id];
+        carregadas.delete(id);
       }
     });
 
@@ -2536,6 +2545,7 @@ function watchUnreadMessages(uid) {
           return m.remetenteId !== uid && m.lida !== true;
         }).length;
 
+        carregadas.add(id);
         atualizarContador();
       }, erro => {
         console.error("Erro ao contar mensagens:", erro);
