@@ -2129,6 +2129,8 @@ let currentUser=null,currentUserData=null,allProducts=[],favorites=new Set(),cur
   
 let notificationsUnsub = null;
 let notificationsCache = [];
+let chatUnreadUnsub = null;
+let chatMessageUnsubs = {};
   
 // ==================================================
 // UTILITÁRIOS GERAIS E MENSAGENS
