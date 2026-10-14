@@ -2482,6 +2482,72 @@ function watchNotifications(uid) {
   );
 }
   
+function watchUnreadMessages(uid) {
+  if (chatUnreadUnsub) chatUnreadUnsub();
+
+  Object.values(chatMessageUnsubs).forEach(unsub => unsub());
+  chatMessageUnsubs = {};
+
+  const badge = $("chatUnreadBadge");
+  const contagens = {};
+
+  function atualizarContador() {
+    const total = Object.values(contagens).reduce(
+      (soma, quantidade) => soma + quantidade, 0
+    );
+
+    badge.textContent = total > 99 ? "99+" : total;
+    badge.classList.toggle("hidden", total === 0);
+  }
+
+  badge.classList.add("hidden");
+  badge.textContent = "0";
+
+  const consulta = query(
+    collection(db, "conversas"),
+    where("participantes", "array-contains", uid),
+    limit(50)
+  );
+
+  chatUnreadUnsub = onSnapshot(consulta, snapshot => {
+    const idsAtuais = new Set(snapshot.docs.map(d => d.id));
+
+    Object.keys(chatMessageUnsubs).forEach(id => {
+      if (!idsAtuais.has(id)) {
+        chatMessageUnsubs[id]();
+        delete chatMessageUnsubs[id];
+        delete contagens[id];
+      }
+    });
+
+    snapshot.docs.forEach(conversa => {
+      const id = conversa.id;
+
+      if (chatMessageUnsubs[id]) return;
+
+      const mensagens = query(
+        collection(db, "conversas", id, "mensagens"),
+        limit(100)
+      );
+
+      chatMessageUnsubs[id] = onSnapshot(mensagens, resultado => {
+        contagens[id] = resultado.docs.filter(d => {
+          const m = d.data();
+          return m.remetenteId !== uid && m.lida !== true;
+        }).length;
+
+        atualizarContador();
+      }, erro => {
+        console.error("Erro ao contar mensagens:", erro);
+      });
+    });
+
+    atualizarContador();
+  }, erro => {
+    console.error("Erro ao acompanhar conversas:", erro);
+  });
+}
+  
   async function enterApp(u){
   if(!u)return;
   currentUser=u;
