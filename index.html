@@ -2628,14 +2628,14 @@ function watchUnreadMessages(uid) {
         carregadas.add(id);
         atualizarContador();
       }, erro => {
-        console.error("Erro ao contar mensagens:", erro);
-      });
-    });
+  console.error("Erro ao contar mensagens:", erro.code, erro.message);
+  toast("Erro ao carregar contador: " + erro.code);
+});
 
-    atualizarContador();
-  }, erro => {
-    console.error("Erro ao acompanhar conversas:", erro);
-  });
+    }, erro => {
+  console.error("Erro ao acompanhar conversas:", erro.code, erro.message);
+  toast("Erro ao consultar conversas: " + erro.code);
+});
 }
   
   async function enterApp(u){
