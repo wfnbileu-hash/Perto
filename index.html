@@ -2488,21 +2488,19 @@ async function abrirPainelAdmin() {
       return;
     }
 
-    // Se houver lógica adicional de abertura de painel aqui, coloque-a antes ou depois
     showInternalPage("adminPage");
     carregarPublicidadeAdmin();
     carregarLojasAdmin();
     
-    // Carrega também as tarifas atuais ao abrir o painel
     if (typeof carregarTarifasAdmin === 'function') {
       await carregarTarifasAdmin();
     }
-
   } catch (err) {
     console.error("Erro ao abrir painel admin:", err);
     toast("Erro ao carregar o painel administrativo.");
   }
 }
+
 
   showInternalPage("adminPage");
   carregarPublicidadeAdmin();
