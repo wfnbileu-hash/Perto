@@ -2482,29 +2482,27 @@ function atualizarBotaoAdmin() {
 }
 
 async function abrirPainelAdmin() {
-  if (!currentUser || currentUser.uid !== ADMIN_UID) {
-    toast("Acesso restrito ao administrador.");
-    return;
-  }
-    // Grava diretamente na coleção 'configuracoes/frete' do Firestore
-    await db.collection('configuracoes').doc('frete').set({
-      distanciaBaseKm: distanciaBaseKm,
-      delivery: {
-        precoBase: precoBase,
-        valorKmAdicional: valorKmAdicional
-      },
-      atualizadoEm: new Date()
-    }, { merge: true });
+  try {
+    if (!currentUser || currentUser.uid !== ADMIN_UID) {
+      toast("Acesso restrito ao administrador.");
+      return;
+    }
 
-    document.getElementById('statusSalvarTarifas').innerText = '✅ Tarifas atualizadas com sucesso!';
-    document.getElementById('statusSalvarTarifas').style.color = '#047857';
+    // Se houver lógica adicional de abertura de painel aqui, coloque-a antes ou depois
+    showInternalPage("adminPage");
+    carregarPublicidadeAdmin();
+    carregarLojasAdmin();
+    
+    // Carrega também as tarifas atuais ao abrir o painel
+    if (typeof carregarTarifasAdmin === 'function') {
+      await carregarTarifasAdmin();
+    }
+
   } catch (err) {
-    console.error(err);
-    document.getElementById('statusSalvarTarifas').innerText = '❌ Erro ao guardar tarifas.';
-    document.getElementById('statusSalvarTarifas').style.color = '#dc2626';
+    console.error("Erro ao abrir painel admin:", err);
+    toast("Erro ao carregar o painel administrativo.");
   }
 }
-
 
   showInternalPage("adminPage");
   carregarPublicidadeAdmin();
