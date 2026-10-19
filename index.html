@@ -2447,7 +2447,7 @@ firebase.auth().onAuthStateChanged((user) => {
   }
 });
   
-
+  
 // Chama ao fazer login/carregar a área admin
 firebase.auth().onAuthStateChanged((user) => {
   if (user && user.uid === ADMIN_UID) {
@@ -2486,12 +2486,6 @@ async function abrirPainelAdmin() {
     toast("Acesso restrito ao administrador.");
     return;
   }
-  async function salvarNovasTarifasAdmin() {
-  try {
-    const distanciaBaseKm = Number(document.getElementById('inputDistanciaBase').value);
-    const precoBase = Number(document.getElementById('inputDeliveryBase').value);
-    const valorKmAdicional = Number(document.getElementById('inputDeliveryKm').value);
-
     // Grava diretamente na coleção 'configuracoes/frete' do Firestore
     await db.collection('configuracoes').doc('frete').set({
       distanciaBaseKm: distanciaBaseKm,
