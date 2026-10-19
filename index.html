@@ -2454,49 +2454,8 @@ firebase.auth().onAuthStateChanged((user) => {
     carregarTarifasAdmin();
   }
 });
-  
-  
-  async function salvarNovasTarifasAdmin() {
-  try {
-    const distanciaBaseKm = Number(document.getElementById('inputDistanciaBase').value);
 
-    const motoBase = Number(document.getElementById('inputMotoBase').value);
-    const motoKm = Number(document.getElementById('inputMotoKm').value);
-
-    const carroBase = Number(document.getElementById('inputCarroBase').value);
-    const carroKm = Number(document.getElementById('inputCarroKm').value);
-
-    const utilitarioBase = Number(document.getElementById('inputUtilitarioBase').value);
-    const utilitarioKm = Number(document.getElementById('inputUtilitarioKm').value);
-
-    await db.collection('configuracoes').doc('frete').set({
-      distanciaBaseKm: distanciaBaseKm,
-      moto: {
-        precoBase: motoBase,
-        valorKmAdicional: motoKm
-      },
-      carro: {
-        precoBase: carroBase,
-        valorKmAdicional: carroKm
-      },
-      utilitario: {
-        precoBase: utilitarioBase,
-        valorKmAdicional: utilitarioKm
-      },
-      atualizadoEm: new Date()
-    }, { merge: true });
-
-    document.getElementById('statusSalvarTarifas').innerText = '✅ Tarifas salvas com sucesso para Moto, Carro e Utilitário!';
-    document.getElementById('statusSalvarTarifas').style.color = '#047857';
-  } catch (err) {
-    console.error(err);
-    document.getElementById('statusSalvarTarifas').innerText = '❌ Erro ao guardar tarifas.';
-    document.getElementById('statusSalvarTarifas').style.color = '#dc2626';
-  }
-  }
-  
-  
-// ==================================================
+  // ==================================================
 // UTILITÁRIOS GERAIS E MENSAGENS
 // ==================================================
 const $=id=>document.getElementById(id);
