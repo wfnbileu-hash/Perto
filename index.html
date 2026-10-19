@@ -2361,8 +2361,8 @@ import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/
 // ==================================================
 const firebaseConfig={apiKey:"AIzaSyCchIeHvUILX9fiv99C6q_OQ2AiMIzVkwI",authDomain:"perto-65099.firebaseapp.com",projectId:"perto-65099",storageBucket:"perto-65099.firebasestorage.app",messagingSenderId:"659764302578",appId:"1:659764302578:web:3ea6f8fd718bf1842bf66b"};
 const app=initializeApp(firebaseConfig);
- const auth=getAuth(app);
- const db=getFirestore(app);
+const auth=getAuth(app);
+const db=getFirestore(app);
 const functions=getFunctions(app, "southamerica-east1");
 const solicitarEntregaMarketplaceFn=httpsCallable(functions, "solicitarEntregaMarketplace");
 const calcularFreteMarketplaceFn=httpsCallable(functions, "calcularFreteMarketplace");
@@ -2374,7 +2374,8 @@ let notificationsUnsub = null;
 let notificationsCache = [];
 let chatUnreadUnsub = null;
 let chatMessageUnsubs = {};
-  async function salvarNovasTarifasAdmin() {
+
+async function salvarNovasTarifasAdmin() {
   try {
     const distanciaBaseKm = Number(document.getElementById('inputDistanciaBase').value);
 
@@ -2439,6 +2440,12 @@ async function carregarTarifasAdmin() {
     console.error("Erro ao carregar tarifas:", err);
   }
 }
+
+firebase.auth().onAuthStateChanged((user) => {
+  if (user && user.uid === ADMIN_UID) {
+    carregarTarifasAdmin();
+  }
+});
 
 // Chama ao fazer login/carregar a área admin
 firebase.auth().onAuthStateChanged((user) => {
