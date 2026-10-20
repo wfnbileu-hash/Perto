@@ -4778,43 +4778,32 @@ function assinaturaEnderecoFrete(){
   return [pickupAddress, pickupCity, `${street}, ${number} - ${neighborhood}`, dropoffCity].join("|").toLowerCase();
 }
 
-// 2. Evento do botão de cálculo
 $("calculateDeliveryQuote").onclick = async () => {
   const usuario = auth.currentUser || currentUser;
   const lojaId = lojaSelecionadaId;
-  
-  const street = $("deliveryStreet")?.value.trim();
-  const number = $("deliveryNumber")?.value.trim();
-  const neighborhood = $("deliveryNeighborhood")?.value.trim(); // Corrigido o colchete por parêntese
-  const dropoffCity = $("deliveryDropoffCity")?.value.trim();
-  const pickupAddress = $("deliveryPickupAddress")?.value.trim();
-  const pickupCity = $("deliveryPickupCity")?.value.trim();
+  const pickupAddress = $("deliveryPickupAddress").value.trim();
+  const pickupCity = $("deliveryPickupCity").value.trim();
+  const dropoffAddress = $("deliveryDropoffAddress").value.trim();
+  const dropoffCity = $("deliveryDropoffCity").value.trim();
 
   if (!usuario) {
     showAuth("login");
     return;
   }
-  
-  if (!lojaId || !street || !number || !neighborhood || !dropoffCity || !pickupAddress || !pickupCity) {
-    toast("Preencha todos os campos obrigatórios: Rua, Número, Bairro e Cidade.");
+  if (!lojaId || !pickupAddress || !pickupCity || !dropoffAddress || !dropoffCity) {
+    toast("Preencha os endereços de coleta e entrega para calcular o frete.");
     return;
   }
 
-  const dropoffAddress = `${street}, ${number} - ${neighborhood}`; // Adicionadas as crases
   const botao = $("calculateDeliveryQuote");
   const assinaturaSolicitada = assinaturaEnderecoFrete();
-  
   botao.disabled = true;
   botao.textContent = "Calculando rota e frete...";
   $("submitStoreDelivery").disabled = true;
   cotacaoFreteAtual = null;
 
   try {
-    const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error("O servidor demorou muito para responder. Tente novamente.")), 12000)
-    );
-
-    const chamadaFuncao = calcularFreteMarketplaceFn({
+    const resposta = await calcularFreteMarketplaceFn({
       tipoServico: "delivery",
       pickupAddress,
       pickupCity,
@@ -4822,7 +4811,6 @@ $("calculateDeliveryQuote").onclick = async () => {
       deliveryCity: dropoffCity
     });
 
-    const resposta = await Promise.race([chamadaFuncao, timeoutPromise]);
     const dados = resposta.data || {};
 
     if (assinaturaEnderecoFrete() !== assinaturaSolicitada) {
@@ -4857,12 +4845,13 @@ $("calculateDeliveryQuote").onclick = async () => {
     console.error("Erro ao calcular frete do Perto:", erro);
     $("storeDeliveryResult").textContent = erro?.message || "Não foi possível calcular o frete.";
     $("storeDeliveryResult").style.display = "block";
-    toast(erro?.message || "Não foi possível calcular o frete.");
+    toast("Não foi possível calcular o frete.");
   } finally {
     botao.disabled = false;
     botao.textContent = "Calcular valor do frete";
   }
 };
+
 
 ["deliveryPickupAddress","deliveryPickupCity","deliveryDropoffAddress","deliveryDropoffCity"].forEach(id=>$(id).addEventListener("input",()=>{
   if(cotacaoFreteAtual&&cotacaoFreteAtual.assinatura!==assinaturaEnderecoFrete()){
