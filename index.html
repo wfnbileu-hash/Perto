@@ -4771,21 +4771,32 @@ function assinaturaEnderecoFrete(){
 }
 
 $("calculateDeliveryQuote").onclick = async () => {
+$("calculateDeliveryQuote").onclick = async () => {
   const usuario = auth.currentUser || currentUser;
   const lojaId = lojaSelecionadaId;
-  const pickupAddress = $("deliveryPickupAddress").value.trim();
-  const pickupCity = $("deliveryPickupCity").value.trim();
-  const dropoffAddress = $("deliveryDropoffAddress").value.trim();
-  const dropoffCity = $("deliveryDropoffCity").value.trim();
+  
+  // Captura os campos novos e separados
+  const street = $("deliveryStreet")?.value.trim();
+  const number = $("deliveryNumber")?.value.trim();
+  const neighborhood = $("deliveryNeighborhood")?.value.trim();
+  const dropoffCity = $("deliveryDropoffCity")?.value.trim();
+  const pickupAddress = $("deliveryPickupAddress")?.value.trim();
+  const pickupCity = $("deliveryPickupCity")?.value.trim();
 
   if (!usuario) {
     showAuth("login");
     return;
   }
-  if (!lojaId || !pickupAddress || !pickupCity || !dropoffAddress || !dropoffCity) {
-    toast("Preencha os endereços de coleta e entrega para calcular o frete.");
+  
+  // Validação rígida obrigando o preenchimento de rua, número e bairro
+  if (!lojaId || !street || !number || !neighborhood || !dropoffCity || !pickupAddress || !pickupCity) {
+    toast("Preencha todos os campos obrigatórios: Rua, Número, Bairro e Cidade.");
     return;
   }
+
+  // Junta automaticamente os campos para formar o endereço detalhado com o número
+  const dropoffAddress = `${street}, ${number} - ${neighborhood}`;
+
 
   const botao = $("calculateDeliveryQuote");
   const assinaturaSolicitada = assinaturaEnderecoFrete();
