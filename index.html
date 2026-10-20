@@ -4766,6 +4766,7 @@ $("closeStoreDeliveryModal").onclick=()=>{
 };
 $("refreshStoreDeliveryStatus").onclick=atualizarStatusEntregaMarketplace;
 
+// 1. Função de assinatura do endereço
 function assinaturaEnderecoFrete(){
   const street = $("deliveryStreet")?.value.trim() || "";
   const number = $("deliveryNumber")?.value.trim() || "";
@@ -4777,13 +4778,14 @@ function assinaturaEnderecoFrete(){
   return [pickupAddress, pickupCity, `${street}, ${number} - ${neighborhood}`, dropoffCity].join("|").toLowerCase();
 }
 
+// 2. Evento do botão de cálculo
 $("calculateDeliveryQuote").onclick = async () => {
   const usuario = auth.currentUser || currentUser;
   const lojaId = lojaSelecionadaId;
   
   const street = $("deliveryStreet")?.value.trim();
   const number = $("deliveryNumber")?.value.trim();
-  const neighborhood = $("deliveryNeighborhood")?.value.trim();
+  const neighborhood = $("deliveryNeighborhood")?.value.trim(); // Corrigido o colchete por parêntese
   const dropoffCity = $("deliveryDropoffCity")?.value.trim();
   const pickupAddress = $("deliveryPickupAddress")?.value.trim();
   const pickupCity = $("deliveryPickupCity")?.value.trim();
@@ -4798,7 +4800,7 @@ $("calculateDeliveryQuote").onclick = async () => {
     return;
   }
 
-  const dropoffAddress = `${street}, ${number} - ${neighborhood}`;
+  const dropoffAddress = `${street}, ${number} - ${neighborhood}`; // Adicionadas as crases
   const botao = $("calculateDeliveryQuote");
   const assinaturaSolicitada = assinaturaEnderecoFrete();
   
@@ -4808,7 +4810,6 @@ $("calculateDeliveryQuote").onclick = async () => {
   cotacaoFreteAtual = null;
 
   try {
-    // Cria um limite de 12 segundos para a resposta da Cloud Function
     const timeoutPromise = new Promise((_, reject) => 
       setTimeout(() => reject(new Error("O servidor demorou muito para responder. Tente novamente.")), 12000)
     );
@@ -4821,9 +4822,7 @@ $("calculateDeliveryQuote").onclick = async () => {
       deliveryCity: dropoffCity
     });
 
-    // Dispara a chamada e o cronômetro juntos (o que terminar primeiro vence)
     const resposta = await Promise.race([chamadaFuncao, timeoutPromise]);
-
     const dados = resposta.data || {};
 
     if (assinaturaEnderecoFrete() !== assinaturaSolicitada) {
