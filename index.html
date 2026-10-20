@@ -4767,10 +4767,16 @@ $("closeStoreDeliveryModal").onclick=()=>{
 $("refreshStoreDeliveryStatus").onclick=atualizarStatusEntregaMarketplace;
 
 function assinaturaEnderecoFrete(){
-  return [$("deliveryPickupAddress").value.trim(),$("deliveryPickupCity").value.trim(),$("deliveryDropoffAddress").value.trim(),$("deliveryDropoffCity").value.trim()].join("|").toLowerCase();
+  const street = $("deliveryStreet")?.value.trim() || "";
+  const number = $("deliveryNumber")?.value.trim() || "";
+  const neighborhood = $("deliveryNeighborhood")?.value.trim() || "";
+  const dropoffCity = $("deliveryDropoffCity")?.value.trim() || "";
+  const pickupAddress = $("deliveryPickupAddress")?.value.trim() || "";
+  const pickupCity = $("deliveryPickupCity")?.value.trim() || "";
+  
+  return [pickupAddress, pickupCity, `${street}, ${number} - ${neighborhood}`, dropoffCity].join("|").toLowerCase();
 }
 
-$("calculateDeliveryQuote").onclick = async () => {
 $("calculateDeliveryQuote").onclick = async () => {
   const usuario = auth.currentUser || currentUser;
   const lojaId = lojaSelecionadaId;
@@ -4796,7 +4802,6 @@ $("calculateDeliveryQuote").onclick = async () => {
 
   // Junta automaticamente os campos para formar o endereço detalhado com o número
   const dropoffAddress = `${street}, ${number} - ${neighborhood}`;
-
 
   const botao = $("calculateDeliveryQuote");
   const assinaturaSolicitada = assinaturaEnderecoFrete();
@@ -4854,6 +4859,7 @@ $("calculateDeliveryQuote").onclick = async () => {
     botao.textContent = "Calcular valor do frete";
   }
 };
+  
 
 ["deliveryPickupAddress","deliveryPickupCity","deliveryDropoffAddress","deliveryDropoffCity"].forEach(id=>$(id).addEventListener("input",()=>{
   if(cotacaoFreteAtual&&cotacaoFreteAtual.assinatura!==assinaturaEnderecoFrete()){
