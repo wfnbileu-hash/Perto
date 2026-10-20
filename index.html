@@ -2329,7 +2329,22 @@ Você será direcionado ao Mercado Pago para concluir o pagamento. O destaque se
     <form id="storeDeliveryForm">
       <div class="formGroup"><label for="deliveryPickupAddress">Endereço de coleta na loja *</label><input id="deliveryPickupAddress" required readonly maxlength="180" placeholder="Rua, número e bairro"></div>
       <div class="formGroup"><label for="deliveryPickupCity">Cidade da coleta *</label><input id="deliveryPickupCity" required readonly maxlength="100" placeholder="Ex.: Tietê"></div>
-      <div class="formGroup"><label for="deliveryDropoffAddress">Endereço de entrega *</label><input id="deliveryDropoffAddress" required maxlength="180" placeholder="Rua, número e bairro"></div>
+      <div class="formGroup">
+  <label for="deliveryStreet">Nome da Rua / Avenida *</label>
+  <input id="deliveryStreet" type="text" placeholder="Ex: Rua das Flores" required>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+  <div class="formGroup">
+    <label for="deliveryNumber">Número *</label>
+    <input id="deliveryNumber" type="text" placeholder="Ex: 150" required>
+  </div>
+  <div class="formGroup">
+    <label for="deliveryNeighborhood">Bairro *</label>
+    <input id="deliveryNeighborhood" type="text" placeholder="Ex: Centro" required>
+  </div>
+</div>
+
       <div class="formGroup"><label for="deliveryDropoffCity">Cidade da entrega *</label><input id="deliveryDropoffCity" required maxlength="100" placeholder="Ex.: Cerquilho"></div>
       <div class="formGroup"><label for="deliveryContactPhone">Telefone para contato *</label><input id="deliveryContactPhone" type="tel" required maxlength="30" placeholder="DDD + telefone"></div>
       <div class="formGroup"><label for="deliveryNotes">Instruções para o entregador (opcional)</label><textarea id="deliveryNotes" rows="2" maxlength="500" placeholder="Referência, portaria ou observações"></textarea></div>
