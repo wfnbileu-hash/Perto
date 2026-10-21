@@ -5229,7 +5229,17 @@ $("storeCity").addEventListener(
       toast("Escolha o veículo que fará a entrega antes de liberar o FreteGo.");
       return false;
     }
-    const resposta = await solicitarEntregaMarketplaceFn({ pedidoId: pedido.id, veiculo });
+
+    // Envia todos os dados obrigatórios que a Cloud Function exige
+    const resposta = await solicitarEntregaMarketplaceFn({ 
+      pedidoId: pedido.id, 
+      veiculo,
+      lojaId: pedido.lojaId,
+      deliveryAddress: pedido.dropoffAddress || pedido.deliveryAddress,
+      deliveryCity: pedido.dropoffCity || pedido.deliveryCity,
+      contactPhone: pedido.contactPhone || pedido.clienteTelefone
+    });
+
     const dados = resposta.data || {};
     // Guarda no pedido do Perto o identificador retornado pelo FreteGo para o cliente consultar a entrega.
     const idFreteGo = dados.freteGoId || dados.freteId || dados.pedidoId || dados.entregaId || "";
@@ -5257,7 +5267,8 @@ $("storeCity").addEventListener(
     await carregarPedidosRecebidosLoja();
     return false;
   }
- }
+  }
+      
  async function carregarPedidosRecebidosLoja() {
   const usuario = auth.currentUser || currentUser;
   const painel = $("storeOrdersPanel");
