@@ -2731,6 +2731,29 @@ async function carregarPublicidadeAdmin() {
     $("adminAdImageUrl").value = dados.imagemURL || "";
     $("adminAdLinkUrl").value = dados.linkURL || "";
     $("adminAdButtonText").value = dados.textoBotao || "";
+
+    const listaSlides = $("adminAdSlidesList");
+    if (listaSlides) {
+      listaSlides.replaceChildren();
+      adminAdSlideId = 0;
+
+      (Array.isArray(dados.slides) ? dados.slides : []).forEach(slide => {
+        adicionarCampoPublicidade(slide);
+
+        const card = listaSlides.lastElementChild;
+        const preview = card?.querySelector("img");
+        if (preview && slide.imagemURL) {
+          preview.src = slide.imagemURL;
+          preview.style.display = "block";
+        }
+
+        const nota = document.createElement("p");
+        nota.className = "adminInlineNote";
+        nota.textContent = "Imagem salva. Selecione outra foto apenas se quiser substituí-la.";
+        card?.insertBefore(nota, card.querySelector("button"));
+      });
+  }
+  
     mensagem.textContent = "Configuração carregada.";
   } catch (erro) {
     console.error("Erro ao carregar publicidade:", erro);
