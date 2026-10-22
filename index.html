@@ -4934,6 +4934,9 @@ $("storeDeliveryForm").addEventListener("submit",async e=>{
   if(!lojaId||!itens.length){toast("Seu carrinho está vazio.");return;}
   const loja=lojasVitrine.find(x=>x.id===lojaId);
   if(!loja){toast("Não foi possível localizar esta loja.");return;}
+    const modalidade = String(
+    loja.modalidadeEntrega || "Moto"
+  ).trim();
   const pickupAddress=$("deliveryPickupAddress").value.trim();
   const pickupCity=$("deliveryPickupCity").value.trim();
   const dropoffAddress=$("deliveryDropoffAddress").value.trim();
