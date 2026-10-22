@@ -2680,56 +2680,6 @@ async function carregarConfiguracaoPublicidade() {
 }
 
 
-let publicidadeCarouselTimer = null;
-
-function aplicarPublicidadeHome() {
-  const slogan = $("homeSloganContent");
-  const anuncio = $("homeAdContent");
-  if (!slogan || !anuncio) return;
-
-  if (publicidadeCarouselTimer) {
-    clearInterval(publicidadeCarouselTimer);
-    publicidadeCarouselTimer = null;
-  }
-
-  if (publicidadeAtual?.ativo !== true) {
-    slogan.classList.remove("hidden");
-    anuncio.classList.add("hidden");
-    anuncio.replaceChildren();
-    return;
-  }
-
-  slogan.classList.add("hidden");
-  anuncio.classList.remove("hidden");
-  anuncio.replaceChildren();
-
-  const slides = Array.isArray(publicidadeAtual.slides)
-    ? publicidadeAtual.slides.filter(s => s && s.imagemURL)
-    : [];
-
-  // Mantém compatibilidade com a publicidade antiga.
-  const itens = slides.length
-    ? slides
-    : [{
-        imagemURL: publicidadeAtual.imagemURL || "",
-        titulo: publicidadeAtual.titulo || "Conheça esta oferta",
-        descricao: publicidadeAtual.descricao || "",
-        linkURL: publicidadeAtual.linkURL || "",
-        textoBotao: publicidadeAtual.textoBotao || "Saiba mais"
-      }];
-
-  if (!itens.some(s => s.imagemURL || s.titulo || s.descricao)) {
-    slogan.classList.remove("hidden");
-    anuncio.classList.add("hidden");
-    return;
-  }
-
-  let indice = 0;
-
-  const conteudo = document.createElement("div");
-  const controles = document.createElement("div");
-  controles.style.cssText =
-    "display:flex;align-items:center;justify-content:center;gap:16px;margin-top:12px";
 
   const anterior = document.createElement("button");
   anterior.type = "button";
@@ -2744,6 +2694,7 @@ function aplicarPublicidadeHome() {
   proximo.className = "btn";
   proximo.textContent = "Próxima ›";
   proximo.setAttribute("aria-label", "Próxima publicidade");
+
 
 
 let publicidadeCarouselTimer = null;
@@ -2871,7 +2822,7 @@ function aplicarPublicidadeHome() {
       mostrarSlide();
     }, 5000);
   }
-  }
+}
 
 async function carregarPublicidadeAdmin() {
   if (!currentUser || currentUser.uid !== ADMIN_UID) return;
