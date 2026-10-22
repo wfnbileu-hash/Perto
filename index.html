@@ -1259,7 +1259,17 @@ display:none!important;
 #storeCartFloatingDelivery{background:#0f766e;color:#fff}
 @media(max-width:390px){#storeCartFloatingBar{left:6px;right:6px;padding:8px;gap:6px}#storeCartFloatingBar button{padding:10px 8px;font-size:11px}#storeCartFloatingInfo{font-size:11px}#storeCartFloatingTotal{font-size:15px}}
 .cartQty{font-weight:800;min-width:22px;text-align:center}
-.adHeroImage{display:block;width:100%;max-height:190px;object-fit:cover;border-radius:14px;margin:0 0 12px;position:relative;z-index:2}
+.adHeroImage{
+  display:block;
+  width:100%;
+  height:auto;
+  max-height:260px;
+  object-fit:contain;
+  border-radius:14px;
+  margin:0 auto 12px;
+  position:relative;
+  z-index:2;
+}
 #homeAdContent{position:relative;z-index:2}
 #homeAdContent a{display:inline-block;margin-top:14px;padding:10px 14px;background:var(--accent);color:#111827;border-radius:10px;font-weight:800;text-decoration:none}
 #homeAdContent .adEyebrow{font-size:11px;font-weight:900;color:var(--accent2);letter-spacing:1px;margin-bottom:8px}
@@ -1354,8 +1364,8 @@ display:none!important;
 
     <button class="categoryCard" id="homeDelivery">
       <div class="categoryIcon">🚚</div>
-      <strong>Entregas</strong>
-      <span>Conecte produtos a entregas locais.</span>
+      <strong>Painel da Loja</strong>
+      <span>Gerencie pedidos, entregas, produtos e mensalidade.</span>
     </button>
 
     <button class="categoryCard" id="homeIncome">
@@ -1383,10 +1393,10 @@ display:none!important;
     
 <!-- MINHA LOJA: GERENCIAMENTO DO PROPRIETÁRIO -->
 <section id="myStorePage" class="page">
-  <div class="sectionTitle">Minha loja</div>
-  <div class="sectionSubtitle">
-    Gerencie os dados da sua loja e os produtos que você anuncia.
-  </div>
+  <div class="sectionTitle">Painel da Loja</div>
+  <div class="sectionSubtitle">Gerencie pedidos, entregas, produtos, configurações e mensalidade da sua loja.</div>
+
+  <div class="sectionTitle" style="font-size:18px;margin-top:8px">Configurações e produtos</div>
 
   <div class="serviceCard" style="margin-bottom:18px">
     <div class="serviceIcon">🏪</div>
@@ -1401,6 +1411,14 @@ display:none!important;
       class="btn btnPrimary"
       style="width:100%;margin-bottom:8px">
       ✏️ Configurar / editar loja
+    </button>
+
+    <button
+  type="button"
+  id="toggleStoreOpenBtn"
+  class="btn"
+  style="width:100%;margin-bottom:8px;background:#dcfce7;color:#166534;display:block">
+  🟢 Abrir loja
     </button>
 
     <button
@@ -1432,6 +1450,8 @@ display:none!important;
       <div id="myStoreProductsList"></div>
     </div>
   </div>
+
+  <div class="serviceCard" style="margin-bottom:18px"><div class="serviceIcon">🧾</div><h3>Pedidos recebidos</h3><p style="margin:8px 0 12px">A loja poderá conferir os pedidos, confirmar ou recusar. Para pedidos com FreteGo, a loja escolhe o veículo e somente depois a entrega é liberada.</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><button type="button" id="refreshStoreOrdersBtn" class="btn btnPrimary">Atualizar pedidos</button><button type="button" id="toggleStoreFreteGoBtn" class="btn" style="background:#dcfce7;color:#166534;">🚚 FreteGo: ativado</button></div><p id="storeFreteGoStatus" style="font-size:12px;color:#64748b;margin:0 0 10px;">Quando desativado, os clientes não poderão escolher entrega pelo FreteGo nesta loja.</p><div id="storeOrdersPanel" style="border:1px solid #e5e7eb;border-radius:14px;padding:14px;background:#f8fafc;color:#64748b">Os pedidos recebidos aparecerão aqui. A confirmação da loja será necessária antes de liberar uma entrega pelo FreteGo.</div></div>
 </section>
 <!-- FIM DE MINHA LOJA -->
     
@@ -1862,12 +1882,79 @@ display:none!important;
 <section id="chatPage" class="page"><div class="sectionTitle">Conversas</div><div class="sectionSubtitle">Negocie diretamente com compradores e vendedores.</div><div id="chatList"></div></section>
     <!-- PERFIL DO USUÁRIO -->
 <section id="profilePage" class="page"><div class="sectionTitle">Meu perfil</div><div class="profileCard"><div id="profileAvatar" class="profileAvatar">?</div><div id="profileName" class="profileName">Usuário</div><div id="profileEmail" class="profileEmail"></div><div id="profileCity" class="profileEmail"></div>
-<div class="profileActions"><button class="profileAction" id="editProfileBtn">⚙️ Configurar meus dados</button><button class="profileAction" id="myAdsBtn">📦 Meus anúncios</button>
+<div class="profileActions"><button class="profileAction" id="myOrdersBtn" type="button">🛍️ Minhas compras e entregas</button><button class="profileAction" id="editProfileBtn">⚙️ Configurar meus dados</button><button class="profileAction" id="myAdsBtn">📦 Meus anúncios</button>
    <button class="profileAction" id="myStoreBtn" type="button">🏪 Minha loja</button>
   <button class="profileAction" id="profileFavoritesBtn">❤️ Meus favoritos</button>
   <!-- PAINEL ADMINISTRATIVO: aparece somente para a conta autorizada -->
   <button class="profileAction" id="adminPanelBtn" type="button" style="display:none">🛡️ Administrador</button>
   <button class="profileAction btnDanger" id="logoutBtn">🚪 Sair da conta</button></div></div></section>
+  <!-- CONFIGURAÇÃO DE TARIFAS DE FRETE (Painel Admin) -->
+<div id="painelConfigTarifas" style="display:none;margin-top: 20px; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+  <h4 style="font-weight: bold; margin-bottom: 12px;">⚙️ Gerir Tarifas de Frete (Perto & FreteGo)</h4>
+  
+  <div style="margin-bottom: 12px;">
+    <label style="font-size: 0.85rem; font-weight: bold;">Franquia Fixa (KM):</label>
+    <input type="number" id="inputDistanciaBase" value="3.0" step="0.1" style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px;">
+  </div>
+
+  <!-- MOTO -->
+  <div style="margin-bottom: 12px; padding: 8px; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px;">
+    <strong style="font-size: 0.9rem;">🛵 Moto (Entregas / Frete)</strong>
+    <div style="display: flex; gap: 8px; margin-top: 5px;">
+      <div style="flex: 1;">
+        <label style="font-size: 0.75rem;">Fixo (R$):</label>
+        <input type="number" id="inputMotoBase" value="8.00" step="0.5" style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
+      </div>
+      <div style="flex: 1;">
+        <label style="font-size: 0.75rem;">KM Excedente (R$):</label>
+        <input type="number" id="inputMotoKm" value="2.00" step="0.1" style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
+      </div>
+    </div>
+  </div>
+
+  <!-- CARRO -->
+  <div style="margin-bottom: 12px; padding: 8px; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px;">
+    <strong style="font-size: 0.9rem;">🚗 Carro</strong>
+    <div style="display: flex; gap: 8px; margin-top: 5px;">
+      <div style="flex: 1;">
+        <label style="font-size: 0.75rem;">Fixo (R$):</label>
+        <input type="number" id="inputCarroBase" value="12.00" step="0.5" style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
+      </div>
+      <div style="flex: 1;">
+        <label style="font-size: 0.75rem;">KM Excedente (R$):</label>
+        <input type="number" id="inputCarroKm" value="2.50" step="0.1" style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
+      </div>
+    </div>
+  </div>
+
+  <!-- UTILITÁRIO -->
+  <div style="margin-bottom: 15px; padding: 8px; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px;">
+    <strong style="font-size: 0.9rem;">🛻 Utilitário</strong>
+    <div style="display: flex; gap: 8px; margin-top: 5px;">
+      <div style="flex: 1;">
+        <label style="font-size: 0.75rem;">Fixo (R$):</label>
+        <input type="number" id="inputUtilitarioBase" value="25.00" step="0.5" style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
+      </div>
+      <div style="flex: 1;">
+        <label style="font-size: 0.75rem;">KM Excedente (R$):</label>
+        <input type="number" id="inputUtilitarioKm" value="4.00" step="0.1" style="width: 100%; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
+      </div>
+    </div>
+  </div>
+
+  <button type="button" onclick="salvarNovasTarifasAdmin()" style="width: 100%; background: #059669; color: white; padding: 10px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
+    Salvar Tarifas
+  </button>
+  <p id="statusSalvarTarifas" style="margin-top: 8px; font-size: 0.85rem; font-weight: bold; text-align: center;"></p>
+</div>
+
+   <!-- MINHAS COMPRAS: área do cliente -->
+    <section id="myOrdersPage" class="page">
+      <div class="sectionTitle">🛍️ Minhas compras</div>
+      <div class="sectionSubtitle">Consulte seus pedidos, valores e o andamento das entregas.</div>
+      <button id="refreshMyOrdersBtn" type="button" class="btn" style="width:100%;margin-bottom:14px;background:#e5e7eb;color:#111827">🔄 Atualizar pedidos</button>
+      <div id="myOrdersResults"><div class="emptyState"><div class="emptyIcon">📦</div>Seus pedidos aparecerão aqui.</div></div>
+    </section>
 
     <!-- PAINEL ADMINISTRATIVO: configurações da plataforma -->
     <section id="adminPage" class="page">
@@ -1904,9 +1991,46 @@ display:none!important;
         </label>
         <div class="formGroup"><label for="adminAdTitle">Título do anúncio</label><input id="adminAdTitle" maxlength="100" placeholder="Ex.: Oferta especial da semana"></div>
         <div class="formGroup"><label for="adminAdDescription">Descrição</label><textarea id="adminAdDescription" maxlength="500" placeholder="Descreva a campanha"></textarea></div>
-        <div class="formGroup"><label for="adminAdImageUrl">URL da imagem (opcional)</label><input id="adminAdImageUrl" type="url" placeholder="https://..."></div>
+        
+<div class="formGroup">
+  <label for="adminAdImageFile">Foto da publicidade</label>
+  <input
+    id="adminAdImageFile"
+    type="file"
+    accept="image/*">
+  <img
+    id="adminAdImagePreview"
+    alt="Prévia da publicidade"
+    style="display:none;width:100%;max-height:220px;object-fit:contain;margin-top:10px;border-radius:10px">
+  <p class="adminInlineNote">
+    Selecione uma foto da galeria do celular ou computador.
+  </p>
+</div>
+<div class="formGroup">
+  <label for="adminAdImageUrl">URL da imagem existente (opcional)</label>
+  <input id="adminAdImageUrl" type="url" placeholder="https://...">
+</div>
+
         <div class="formGroup"><label for="adminAdLinkUrl">Link de destino (opcional)</label><input id="adminAdLinkUrl" type="url" placeholder="https://..."></div>
         <div class="formGroup"><label for="adminAdButtonText">Texto do botão (opcional)</label><input id="adminAdButtonText" maxlength="35" placeholder="Saiba mais"></div>
+        
+<div style="border-top:1px solid #e5e7eb;margin-top:18px;padding-top:14px">
+  <h4>🖼️ Imagens do carrossel</h4>
+  <p class="adminInlineNote">
+    Cada imagem terá sua própria foto, título, descrição e link.
+  </p>
+
+  <div id="adminAdSlidesList"></div>
+
+  <button
+    type="button"
+    id="addAdminAdSlideBtn"
+    class="btn"
+    style="width:100%;margin-top:10px">
+    ＋ Adicionar imagem ao carrossel
+  </button>
+</div>
+        
         <button type="button" id="saveAdminAdBtn" class="btn btnPrimary" style="width:100%">Salvar publicidade</button>
         <button type="button" id="payAdvertisingBtn" class="btn" style="width:100%;margin-top:8px;background:#dcfce7;color:#166534">💳 Contratar publicidade paga</button>
         <p id="adminAdMessage" role="status" aria-live="polite" class="adminInlineNote"></p>
@@ -2032,6 +2156,21 @@ display:none!important;
           maxlength="100"
           placeholder="Ex.: Seg. a sáb., das 9h às 18h">
       </div>
+
+      
+<div class="formGroup">
+  <label for="storeDeliveryVehicle">Modalidade padrão de entrega pelo FreteGo</label>
+  <select id="storeDeliveryVehicle">
+    <option value="">Selecione a modalidade</option>
+    <option value="Moto">🏍️ Moto</option>
+    <option value="Carro">🚗 Carro</option>
+    <option value="Utilitário/Fiorino">🚐 Utilitário/Fiorino</option>
+  </select>
+  <small style="color:#64748b">
+    Essa escolha será utilizada automaticamente nos pedidos da loja.
+  </small>
+</div>
+      
 
       <label class="checkboxLine">
         <input id="storeOpen24h" type="checkbox">
@@ -2258,21 +2397,56 @@ Você será direcionado ao Mercado Pago para concluir o pagamento. O destaque se
       <button type="button" id="closeStoreDeliveryModal" class="closeModal" aria-label="Fechar">×</button>
     </div>
     <p style="font-size:13px;color:#64748b;margin:0 0 14px;">
-      Use depois de confirmar com a loja que os produtos estão disponíveis. O pagamento do frete é combinado e feito diretamente com a loja; o Perto não cobra comissão sobre a entrega.
+      Você poderá informar o endereço e consultar o valor estimado do frete. A solicitação ao FreteGo só será liberada pela loja depois que ela confirmar o pedido.
     </p>
     <form id="storeDeliveryForm">
-      <div class="formGroup"><label for="deliveryPickupAddress">Endereço de coleta na loja *</label><input id="deliveryPickupAddress" required maxlength="180" placeholder="Rua, número e bairro"></div>
-      <div class="formGroup"><label for="deliveryPickupCity">Cidade da coleta *</label><input id="deliveryPickupCity" required maxlength="100" placeholder="Ex.: Tietê"></div>
+      <div class="formGroup"><label for="deliveryPickupAddress">Endereço de coleta na loja *</label><input id="deliveryPickupAddress" required readonly maxlength="180" placeholder="Rua, número e bairro"></div>
+      <div class="formGroup"><label for="deliveryPickupCity">Cidade da coleta *</label><input id="deliveryPickupCity" required readonly maxlength="100" placeholder="Ex.: Tietê"></div>
       <div class="formGroup"><label for="deliveryDropoffAddress">Endereço de entrega *</label><input id="deliveryDropoffAddress" required maxlength="180" placeholder="Rua, número e bairro"></div>
       <div class="formGroup"><label for="deliveryDropoffCity">Cidade da entrega *</label><input id="deliveryDropoffCity" required maxlength="100" placeholder="Ex.: Cerquilho"></div>
       <div class="formGroup"><label for="deliveryContactPhone">Telefone para contato *</label><input id="deliveryContactPhone" type="tel" required maxlength="30" placeholder="DDD + telefone"></div>
       <div class="formGroup"><label for="deliveryNotes">Instruções para o entregador (opcional)</label><textarea id="deliveryNotes" rows="2" maxlength="500" placeholder="Referência, portaria ou observações"></textarea></div>
+
       <div id="storeDeliveryResult" style="display:none;padding:12px;border-radius:12px;background:#f1f5f9;margin:12px 0;font-size:14px;"></div>
-      <button type="submit" id="submitStoreDelivery" class="btn btnPrimary" style="width:100%;">Calcular e solicitar entrega</button>
+      <button type="button" id="calculateDeliveryQuote" class="btn" style="width:100%;margin:8px 0;background:#0f766e;color:#fff;">Calcular valor do frete</button>
+      <button type="submit" id="submitStoreDelivery" class="btn btnPrimary" style="width:100%;" disabled>Enviar pedido para confirmação da loja</button>
       <button type="button" id="refreshStoreDeliveryStatus" class="btn" style="display:none;width:100%;margin-top:8px;">Atualizar status da entrega</button>
     </form>
   </div>
 </div>
+
+<
+<!-- MODAL DE ESCOLHA DE VEÍCULO PARA O FRETEGO -->
+<div id="storeVehicleModal" class="modal" style="display:none;z-index:10060;">
+  <div class="modalContent" style="max-width:460px;width:calc(100% - 28px);padding:20px;border-radius:20px;">
+    <div class="modalHeader">
+      <h2>🚚 Escolher veículo</h2>
+      <button type="button" id="closeStoreVehicleModal" class="closeModal" aria-label="Fechar">×</button>
+    </div>
+
+    <p style="font-size:13px;color:#64748b;line-height:1.5;margin-bottom:14px;">
+      Escolha o veículo mais adequado para este pedido. A entrega só será enviada ao FreteGo depois da confirmação.
+    </p>
+
+    <div class="formGroup">
+      <label for="storeVehicleSelect">Veículo para a entrega *</label>
+      <select id="storeVehicleSelect" required>
+        <option value="">Selecione um veículo</option>
+        <option value="Moto">🏍️ Moto</option>
+        <option value="Carro">🚗 Carro</option>
+        <option value="Utilitário/Fiorino">🚐 Utilitário / Fiorino</option>
+      </select>
+    </div>
+
+    <div id="storeVehicleError" style="display:none;color:#b91c1c;font-size:12px;margin-top:8px;"></div>
+
+    <div class="modalActions">
+      <button type="button" id="cancelStoreVehicleBtn" class="btn" style="background:#e5e7eb;">Cancelar</button>
+      <button type="button" id="confirmStoreVehicleBtn" class="btn btnPrimary">Continuar</button>
+    </div>
+  </div>
+</div>
+  
 
 <!-- AVISOS TEMPORÁRIOS -->
 <div id="toast"></div>
@@ -2293,10 +2467,11 @@ import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/
 // ==================================================
 const firebaseConfig={apiKey:"AIzaSyCchIeHvUILX9fiv99C6q_OQ2AiMIzVkwI",authDomain:"perto-65099.firebaseapp.com",projectId:"perto-65099",storageBucket:"perto-65099.firebasestorage.app",messagingSenderId:"659764302578",appId:"1:659764302578:web:3ea6f8fd718bf1842bf66b"};
 const app=initializeApp(firebaseConfig);
- const auth=getAuth(app);
- const db=getFirestore(app);
+const auth=getAuth(app);
+const db=getFirestore(app);
 const functions=getFunctions(app, "southamerica-east1");
 const solicitarEntregaMarketplaceFn=httpsCallable(functions, "solicitarEntregaMarketplace");
+const calcularFreteMarketplaceFn=httpsCallable(functions, "calcularFreteMarketplace");
 const consultarEntregaMarketplaceFn=httpsCallable(functions, "consultarEntregaMarketplace");
 let storage=null,storageRef=null,uploadBytes=null,getDownloadURL=null;
 let currentUser=null,currentUserData=null,allProducts=[],favorites=new Set(),currentSlide=0,slideTimer=null,selectedImages=[],selectedProfessionalPhoto=null,currentConversationId=null,currentChatUnsub=null,currentChatData=null,currentChatProduct=null,currentOfferProduct=null,editingProductId=null,editingProductImages=[],currentProfessionalActive=true;
@@ -2305,7 +2480,71 @@ let notificationsUnsub = null;
 let notificationsCache = [];
 let chatUnreadUnsub = null;
 let chatMessageUnsubs = {};
-  
+
+async function salvarNovasTarifasAdmin() {
+  const painel = document.getElementById("painelConfigTarifas");
+  const status = document.getElementById("statusSalvarTarifas");
+  const botao = painel?.querySelector("button[onclick=\"salvarNovasTarifasAdmin()\"]");
+  if (!currentUser || currentUser.uid !== ADMIN_UID) {
+    if (status) { status.textContent = "❌ Acesso restrito ao administrador."; status.style.color = "#dc2626"; }
+    return;
+  }
+  const ids = ["inputDistanciaBase", "inputMotoBase", "inputMotoKm", "inputCarroBase", "inputCarroKm", "inputUtilitarioBase", "inputUtilitarioKm"];
+  const valores = Object.fromEntries(ids.map(id => [id, Number(document.getElementById(id)?.value)]));
+  if (ids.some(id => !Number.isFinite(valores[id]) || valores[id] < 0) || valores.inputDistanciaBase <= 0) {
+    status.textContent = "❌ Confira os valores: devem ser números válidos e não negativos.";
+    status.style.color = "#dc2626";
+    return;
+  }
+  if (botao) { botao.disabled = true; botao.textContent = "Salvando..."; }
+  status.textContent = "Salvando tarifas...";
+  status.style.color = "#374151";
+  try {
+    await setDoc(doc(db, "configuracoes", "frete"), {
+      distanciaBaseKm: valores.inputDistanciaBase,
+      moto: { precoBase: valores.inputMotoBase, valorKmAdicional: valores.inputMotoKm },
+      carro: { precoBase: valores.inputCarroBase, valorKmAdicional: valores.inputCarroKm },
+      utilitario: { precoBase: valores.inputUtilitarioBase, valorKmAdicional: valores.inputUtilitarioKm },
+      atualizadoEm: serverTimestamp(),
+      atualizadoPor: currentUser.uid
+    }, { merge: true });
+    status.textContent = "✅ Tarifas salvas com sucesso no Firebase.";
+    status.style.color = "#047857";
+    toast("Tarifas de frete salvas!");
+  } catch (err) {
+    console.error("Erro ao salvar tarifas de frete:", err);
+    status.textContent = err?.code === "permission-denied"
+      ? "❌ Firebase bloqueou a gravação. Confira as regras de configuracoes/frete."
+      : "❌ Não foi possível salvar. Verifique a conexão e tente novamente.";
+    status.style.color = "#dc2626";
+  } finally {
+    if (botao) { botao.disabled = false; botao.textContent = "Salvar Tarifas"; }
+  }
+}
+
+// Expõe a função ao botão HTML: scripts type="module" não disponibilizam
+// funções declaradas no módulo para atributos onclick automaticamente.
+window.salvarNovasTarifasAdmin = salvarNovasTarifasAdmin;
+
+async function carregarTarifasAdmin() {
+  if (!currentUser || currentUser.uid !== ADMIN_UID) return;
+  const status = document.getElementById("statusSalvarTarifas");
+  try {
+    const snap = await getDoc(doc(db, "configuracoes", "frete"));
+    if (!snap.exists()) return;
+    const d = snap.data();
+    const definir = (id, valor) => { if (valor !== undefined && valor !== null && Number.isFinite(Number(valor))) document.getElementById(id).value = Number(valor); };
+    definir("inputDistanciaBase", d.distanciaBaseKm);
+    definir("inputMotoBase", d.moto?.precoBase); definir("inputMotoKm", d.moto?.valorKmAdicional);
+    definir("inputCarroBase", d.carro?.precoBase); definir("inputCarroKm", d.carro?.valorKmAdicional);
+    definir("inputUtilitarioBase", d.utilitario?.precoBase); definir("inputUtilitarioKm", d.utilitario?.valorKmAdicional);
+  } catch (err) {
+    console.error("Erro ao carregar tarifas:", err);
+    if (status) { status.textContent = err?.code === "permission-denied" ? "⚠️ Sem permissão para ler configuracoes/frete." : "⚠️ Não foi possível carregar as tarifas salvas."; status.style.color = "#b45309"; }
+  }
+}
+
+
 // ==================================================
 // UTILITÁRIOS GERAIS E MENSAGENS
 // ==================================================
@@ -2337,8 +2576,10 @@ async function abrirPainelAdmin() {
     toast("Acesso restrito ao administrador.");
     return;
   }
-
   showInternalPage("adminPage");
+  const painelTarifas = $("painelConfigTarifas");
+  if (painelTarifas) painelTarifas.style.display = "block";
+  await carregarTarifasAdmin();
   carregarPublicidadeAdmin();
   carregarLojasAdmin();
   const mensagem = $("adminPriceMessage");
@@ -2346,20 +2587,12 @@ async function abrirPainelAdmin() {
   const botao = $("adminPanelBtn");
   mensagem.textContent = "Carregando configuração...";
   botao.disabled = true;
-
   try {
-    const referencia = doc(db, "configuracoes", ADMIN_CONFIG_DOC);
-    const resultado = await getDoc(referencia);
-    const valorSalvo = resultado.exists()
-      ? Number(resultado.data().mensalidadeLoja)
-      : NaN;
+    const resultado = await getDoc(doc(db, "configuracoes", ADMIN_CONFIG_DOC));
+    const valorSalvo = resultado.exists() ? Number(resultado.data().mensalidadeLoja) : NaN;
     const temValorSalvo = Number.isFinite(valorSalvo) && valorSalvo >= 0;
     const valor = temValorSalvo ? valorSalvo : MENSALIDADE_LOJA_PADRAO;
-
-    campo.value = valor.toLocaleString("pt-BR", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
+    campo.value = valor.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     mensagem.textContent = temValorSalvo
       ? "Valor carregado do Firebase. Nenhuma cobrança é realizada por esta tela."
       : "Valor inicial sugerido: R$ 49,90. Salve para gravá-lo no Firebase.";
@@ -2446,53 +2679,130 @@ async function carregarConfiguracaoPublicidade() {
   }
 }
 
+let publicidadeCarouselTimer = null;
+
 function aplicarPublicidadeHome() {
   const slogan = $("homeSloganContent");
   const anuncio = $("homeAdContent");
   if (!slogan || !anuncio) return;
 
-  if (publicidadeAtual?.ativo === true) {
-    slogan.classList.add("hidden");
-    anuncio.classList.remove("hidden");
-    anuncio.replaceChildren();
+  if (publicidadeCarouselTimer) {
+    clearInterval(publicidadeCarouselTimer);
+    publicidadeCarouselTimer = null;
+  }
 
-    if (publicidadeAtual.imagemURL) {
-      const imagem = document.createElement("img");
-      imagem.className = "adHeroImage";
-      imagem.src = publicidadeAtual.imagemURL;
-      imagem.alt = publicidadeAtual.titulo || "Publicidade";
-      imagem.loading = "lazy";
-      imagem.onerror = () => imagem.remove();
-      anuncio.appendChild(imagem);
-    }
-
-    const eyebrow = document.createElement("div");
-    eyebrow.className = "adEyebrow";
-    eyebrow.textContent = "PUBLICIDADE";
-    anuncio.appendChild(eyebrow);
-
-    const titulo = document.createElement("h1");
-    titulo.textContent = publicidadeAtual.titulo || "Conheça esta oferta";
-    anuncio.appendChild(titulo);
-
-    if (publicidadeAtual.descricao) {
-      const descricao = document.createElement("p");
-      descricao.textContent = publicidadeAtual.descricao;
-      anuncio.appendChild(descricao);
-    }
-
-    if (publicidadeAtual.linkURL) {
-      const link = document.createElement("a");
-      link.href = publicidadeAtual.linkURL;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.textContent = publicidadeAtual.textoBotao || "Saiba mais";
-      anuncio.appendChild(link);
-    }
-  } else {
+  if (publicidadeAtual?.ativo !== true) {
     slogan.classList.remove("hidden");
     anuncio.classList.add("hidden");
     anuncio.replaceChildren();
+    return;
+  }
+
+  slogan.classList.add("hidden");
+  anuncio.classList.remove("hidden");
+  anuncio.replaceChildren();
+
+  const slides = Array.isArray(publicidadeAtual.slides)
+    ? publicidadeAtual.slides.filter(s => s && s.imagemURL)
+    : [];
+
+  const itens = slides.length
+    ? slides
+    : [{
+        imagemURL: publicidadeAtual.imagemURL || "",
+        titulo: publicidadeAtual.titulo || "Conheça esta oferta",
+        descricao: publicidadeAtual.descricao || "",
+        linkURL: publicidadeAtual.linkURL || "",
+        textoBotao: publicidadeAtual.textoBotao || "Saiba mais"
+      }];
+
+  if (!itens.some(s => s.imagemURL || s.titulo || s.descricao)) {
+    slogan.classList.remove("hidden");
+    anuncio.classList.add("hidden");
+    return;
+  }
+
+  let indice = 0;
+  let inicioX = 0;
+  let inicioY = 0;
+
+  const conteudo = document.createElement("div");
+  conteudo.style.touchAction = "pan-y";
+
+  function mostrarSlide() {
+    conteudo.replaceChildren();
+    const slide = itens[indice];
+
+    if (slide.imagemURL) {
+      const imagem = document.createElement("img");
+      imagem.className = "adHeroImage";
+      imagem.src = slide.imagemURL;
+      imagem.alt = slide.titulo || "Publicidade";
+      imagem.loading = "lazy";
+      conteudo.appendChild(imagem);
+    }
+
+    const etiqueta = document.createElement("div");
+    etiqueta.className = "adEyebrow";
+    etiqueta.textContent = "PUBLICIDADE";
+    conteudo.appendChild(etiqueta);
+
+    const titulo = document.createElement("h1");
+    titulo.textContent = slide.titulo || "Conheça esta oferta";
+    conteudo.appendChild(titulo);
+
+    if (slide.descricao) {
+      const descricao = document.createElement("p");
+      descricao.textContent = slide.descricao;
+      conteudo.appendChild(descricao);
+    }
+
+    if (slide.linkURL && /^https?:\/\//i.test(slide.linkURL)) {
+      const link = document.createElement("a");
+      link.href = slide.linkURL;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = slide.textoBotao || "Saiba mais";
+      conteudo.appendChild(link);
+    }
+  }
+
+  conteudo.addEventListener("touchstart", e => {
+    const toque = e.changedTouches[0];
+    inicioX = toque.clientX;
+    inicioY = toque.clientY;
+  }, { passive: true });
+
+  conteudo.addEventListener("touchend", e => {
+    if (itens.length < 2) return;
+
+    const toque = e.changedTouches[0];
+    const distanciaX = toque.clientX - inicioX;
+    const distanciaY = toque.clientY - inicioY;
+
+    // Só troca quando o gesto for horizontal.
+    if (Math.abs(distanciaX) < 50 ||
+        Math.abs(distanciaX) < Math.abs(distanciaY)) {
+      return;
+    }
+
+    if (distanciaX < 0) {
+      indice = (indice + 1) % itens.length;
+    } else {
+      indice = (indice - 1 + itens.length) % itens.length;
+    }
+
+    mostrarSlide();
+  }, { passive: true });
+
+  anuncio.appendChild(conteudo);
+  mostrarSlide();
+
+  if (itens.length > 1) {
+    publicidadeCarouselTimer = setInterval(() => {
+      indice = (indice + 1) % itens.length;
+      mostrarSlide();
+    }, 5000);
   }
 }
 
@@ -2508,6 +2818,29 @@ async function carregarPublicidadeAdmin() {
     $("adminAdImageUrl").value = dados.imagemURL || "";
     $("adminAdLinkUrl").value = dados.linkURL || "";
     $("adminAdButtonText").value = dados.textoBotao || "";
+
+    const listaSlides = $("adminAdSlidesList");
+    if (listaSlides) {
+      listaSlides.replaceChildren();
+      adminAdSlideId = 0;
+
+      (Array.isArray(dados.slides) ? dados.slides : []).forEach(slide => {
+        adicionarCampoPublicidade(slide);
+
+        const card = listaSlides.lastElementChild;
+        const preview = card?.querySelector("img");
+        if (preview && slide.imagemURL) {
+          preview.src = slide.imagemURL;
+          preview.style.display = "block";
+        }
+
+        const nota = document.createElement("p");
+        nota.className = "adminInlineNote";
+        nota.textContent = "Imagem salva. Selecione outra foto apenas se quiser substituí-la.";
+        card?.insertBefore(nota, card.querySelector("button"));
+      });
+  }
+  
     mensagem.textContent = "Configuração carregada.";
   } catch (erro) {
     console.error("Erro ao carregar publicidade:", erro);
@@ -2546,7 +2879,90 @@ async function salvarPublicidadeAdmin() {
   }
   botao.disabled = true;
   botao.textContent = "Salvando...";
-  try {
+  try { 
+  const arquivoPublicidade = $("adminAdImageFile")?.files?.[0];
+
+if (arquivoPublicidade) {
+  if (!storage) {
+    const mod = await import(
+      "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js"
+    );
+    storage = mod.getStorage(app);
+    storageRef = mod.ref;
+    uploadBytes = mod.uploadBytes;
+    getDownloadURL = mod.getDownloadURL;
+  }
+
+  const caminhoImagem = storageRef(
+    storage,
+    `publicidade/${currentUser.uid}/${crypto.randomUUID()}`
+  );
+
+  await uploadBytes(caminhoImagem, arquivoPublicidade, {
+    contentType: arquivoPublicidade.type
+  });
+
+  dados.imagemURL = await getDownloadURL(caminhoImagem);
+  }
+
+    
+    const slidesPublicidade = [];
+
+    const cardsSlides = Array.from(
+      $("adminAdSlidesList")?.children || []
+    );
+
+    for (const card of cardsSlides) {
+      const tituloSlide = card.querySelector('[data-campo="titulo"]')?.value.trim() || "";
+      const descricaoSlide = card.querySelector('[data-campo="descricao"]')?.value.trim() || "";
+      const linkSlide = card.querySelector('[data-campo="linkURL"]')?.value.trim() || "";
+      const arquivoSlide = card.querySelector('[data-campo="foto"]')?.files?.[0];
+
+      if (linkSlide && !/^https?:\/\//i.test(linkSlide)) {
+        mensagem.textContent = "Confira os links das imagens do carrossel.";
+        return;
+      }
+
+      if (!arquivoSlide) {
+        mensagem.textContent = "Selecione uma foto para cada imagem do carrossel.";
+        return;
+      }
+
+      if (!tituloSlide) {
+        mensagem.textContent = "Informe o título de cada imagem do carrossel.";
+        return;
+      }
+
+      if (!storage) {
+        const mod = await import(
+          "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js"
+        );
+        storage = mod.getStorage(app);
+        storageRef = mod.ref;
+        uploadBytes = mod.uploadBytes;
+        getDownloadURL = mod.getDownloadURL;
+      }
+
+      const caminhoSlide = storageRef(
+        storage,
+        `publicidade/${currentUser.uid}/${crypto.randomUUID()}`
+      );
+
+      await uploadBytes(caminhoSlide, arquivoSlide, {
+        contentType: arquivoSlide.type
+      });
+
+      slidesPublicidade.push({
+        titulo: tituloSlide,
+        descricao: descricaoSlide,
+        linkURL: linkSlide,
+        imagemURL: await getDownloadURL(caminhoSlide),
+        textoBotao: "Saiba mais"
+      });
+    }
+
+    dados.slides = slidesPublicidade;
+  
     await setDoc(doc(db, "configuracoes", ADMIN_AD_DOC), dados, { merge: true });
     publicidadeAtual = dados;
     aplicarPublicidadeHome();
@@ -2556,9 +2972,11 @@ async function salvarPublicidadeAdmin() {
     toast("Publicidade atualizada!");
   } catch (erro) {
     console.error("Erro ao salvar publicidade:", erro);
-    mensagem.textContent = erro.code === "permission-denied"
-      ? "O Firebase bloqueou a gravação. Confira as regras da coleção configuracoes."
-      : "Não foi possível salvar a publicidade.";
+    
+mensagem.textContent =
+  "Erro: " + (erro.code || "") + " — " +
+  (erro.message || "Erro desconhecido");
+
   } finally {
     botao.disabled = false;
     botao.textContent = "Salvar publicidade";
@@ -2678,6 +3096,105 @@ async function chamarEndpointPagamento(caminho, corpo, mensagemFalha) {
 
 $("refreshAdminStoresBtn").onclick = carregarLojasAdmin;
 $("saveAdminAdBtn").onclick = salvarPublicidadeAdmin;
+  
+let adminAdSlides = [];
+let adminAdSlideId = 0;
+
+function adicionarCampoPublicidade(dados = {}) {
+  const lista = $("adminAdSlidesList");
+  if (!lista) return;
+
+  if (lista.children.length >= 5) {
+    toast("O carrossel permite até 5 imagens.");
+    return;
+  }
+
+  const id = ++adminAdSlideId;
+  const card = document.createElement("div");
+  card.style.cssText =
+    "border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin-top:12px";
+
+  const titulo = document.createElement("input");
+  titulo.type = "text";
+  titulo.maxLength = 100;
+  titulo.placeholder = "Título desta publicidade";
+  titulo.value = dados.titulo || "";
+  titulo.dataset.campo = "titulo";
+
+  const descricao = document.createElement("textarea");
+  descricao.maxLength = 500;
+  descricao.placeholder = "Descrição desta publicidade";
+  descricao.value = dados.descricao || "";
+  descricao.dataset.campo = "descricao";
+
+  const arquivo = document.createElement("input");
+  arquivo.type = "file";
+  arquivo.accept = "image/*";
+  arquivo.dataset.campo = "foto";
+
+  const link = document.createElement("input");
+  link.type = "url";
+  link.placeholder = "Link de destino (opcional)";
+  link.value = dados.linkURL || "";
+  link.dataset.campo = "linkURL";
+
+  const preview = document.createElement("img");
+  preview.alt = "Prévia da imagem";
+  preview.style.cssText =
+    "display:none;width:100%;max-height:180px;object-fit:contain;margin-top:8px";
+
+  const remover = document.createElement("button");
+  remover.type = "button";
+  remover.className = "btn";
+  remover.textContent = "Remover esta publicidade";
+  remover.style.cssText =
+    "width:100%;margin-top:10px;background:#fee2e2;color:#991b1b";
+  remover.onclick = () => card.remove();
+
+  function campo(rotulo, controle) {
+    const grupo = document.createElement("div");
+    grupo.className = "formGroup";
+    const label = document.createElement("label");
+    label.textContent = rotulo;
+    grupo.append(label, controle);
+    return grupo;
+  }
+
+  arquivo.addEventListener("change", () => {
+    const foto = arquivo.files?.[0];
+    if (!foto) return;
+
+    if (!foto.type.startsWith("image/") ||
+        foto.size > 5 * 1024 * 1024) {
+      toast("Escolha uma imagem de até 5 MB.");
+      arquivo.value = "";
+      preview.removeAttribute("src");
+      preview.style.display = "none";
+      return;
+    }
+
+    preview.src = URL.createObjectURL(foto);
+    preview.style.display = "block";
+  });
+
+  card.append(
+    Object.assign(document.createElement("h4"), {
+      textContent: `Publicidade ${id}`
+    }),
+    campo("Foto da galeria", arquivo),
+    preview,
+    campo("Título", titulo),
+    campo("Descrição", descricao),
+    campo("Link de destino", link),
+    remover
+  );
+
+  lista.appendChild(card);
+}
+
+$("addAdminAdSlideBtn")?.addEventListener("click", () => {
+  adicionarCampoPublicidade();
+});
 $("payAdvertisingBtn").onclick = () => {
   if (!currentUser || currentUser.uid !== ADMIN_UID) {
     toast("Acesso restrito ao administrador.");
@@ -3105,7 +3622,7 @@ function limparListenersDaSessao(){
   if($("notificationBadge"))$("notificationBadge").textContent="0";
   if($("chatUnreadBadge"))$("chatUnreadBadge").textContent="0";
 }
-async function logout(){try{await signOut(auth);
+async function logout(){try{if(myOrdersRefreshTimer){clearInterval(myOrdersRefreshTimer);myOrdersRefreshTimer=null;}await signOut(auth);
 limparListenersDaSessao();
 currentUser=null;
 atualizarBotaoAdmin();
@@ -3156,6 +3673,7 @@ restartSlides();
 // ==================================================
 function showInternalPage(id,scroll=true){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
 $(id)?.classList.add("active");
+const painelTarifas=$("painelConfigTarifas"); if(painelTarifas) painelTarifas.style.display=(id==="adminPage" && currentUser?.uid===ADMIN_UID)?"block":"none";
 document.querySelectorAll(".navBtn[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
 if(id==="chatPage")loadConversations(); 
 if(id==="storesPage")carregarVitrineLojas();
@@ -4271,6 +4789,12 @@ const dadosLoja = {
       atualizadoEm: serverTimestamp()
     };
 
+    const modalidadeEntrega = $
+      ("storeDeliveryVehicle").value;
+if (["Moto", "Carro", "Utilitário/Fiorino"].includes(modalidadeEntrega)) {
+  dadosLoja.modalidadeEntrega = modalidadeEntrega;
+}
+
     if (!dadosExistentes) {
       dadosLoja.criadoEm = serverTimestamp();
     }
@@ -4469,28 +4993,89 @@ function atualizarQuantidadeCarrinho(lojaId, produtoId, delta) {
   renderCarrinhoLoja(lojaId);
 }
 
+let pedidoCheckoutEmAndamento = false;
+
 async function continuarPedidoCarrinho() {
+  const usuario = auth.currentUser || currentUser;
+  if (!usuario) {
+    toast("Entre na sua conta para registrar o pedido.");
+    showAuth("login");
+    return;
+  }
+  if (pedidoCheckoutEmAndamento) return;
   const lojaId = lojaSelecionadaId;
   if (!lojaId) return toast("Abra uma loja antes de continuar.");
-  const itens = Object.values(carrinhoLoja[lojaId] || {});
-  if (!itens.length) return toast("Adicione pelo menos um produto ao carrinho.");
-  const loja = lojasVitrine.find(item => item.id === lojaId);
-  if (!loja) return toast("Não foi possível localizar os dados desta loja.");
+  
+const itens = Object.values(carrinhoLoja[lojaId] || {});
+if (!itens.length) return toast("Adicione pelo menos um produto ao carrinho.");
+
+const loja = lojasVitrine.find(item => item.id === lojaId);
+
+if (!loja) {
+  return toast("Não foi possível localizar os dados desta loja.");
+}
+
+if (loja.lojaAberta === false) {
+  toast("Esta loja está fechada no momento e não está recebendo pedidos.");
+  return;
+}
+
   const telefone = String(loja.telefone || "").replace(/\D/g, "");
   if (!telefone) return toast("Esta loja ainda não informou um WhatsApp para contato.");
-  const total = itens.reduce((soma, item) => soma + Number(item.preco || 0) * Number(item.quantidade || 1), 0);
-  const mensagem = [
-    `Olá! Tenho interesse em comprar na loja ${loja.nome || ""}:`,
-    ...itens.map(item => `• ${item.nome} — ${item.quantidade} × ${money(item.preco)} = ${money(item.preco * item.quantidade)}`),
-    `Total estimado dos produtos: ${money(total)}`,
-    "Poderia confirmar disponibilidade e combinar o pagamento/retirada ou entrega?"
-  ].join("\n");
-  window.open(`https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`, "_blank", "noopener,noreferrer");
+  const itensPedido = itens.map(item => ({
+    produtoId: String(item.id || ""),
+    nome: String(item.nome || "Produto"),
+    preco: Number(item.preco || 0),
+    quantidade: Math.max(1, Math.min(99, Number(item.quantidade) || 1)),
+    imagem: String(item.imagem || item.imagens?.[0] || "")
+  }));
+  const total = itensPedido.reduce((soma, item) => soma + item.preco * item.quantidade, 0);
+  pedidoCheckoutEmAndamento = true;
+  // Abre a janela durante o clique do usuário para evitar bloqueio de pop-up após o await.
+  const janelaWhatsApp = window.open("about:blank", "_blank");
+  try {
+    const pedidoRef = await addDoc(collection(db, "pedidos"), {
+      clienteUid: usuario.uid,
+      clienteNome: String(currentUserData?.nome || currentUserData?.nomeCompleto || usuario.displayName || ""),
+      clienteTelefone: String(currentUserData?.telefone || currentUserData?.celular || ""),
+      lojaId,
+      lojaNome: String(loja.nome || ""),
+      lojaTelefone: telefone,
+      itens: itensPedido,
+      totalProdutos: total,
+      tipoEntrega: "combinar_com_loja",
+      status: "aguardando_confirmacao",
+      criadoEm: serverTimestamp(),
+      atualizadoEm: serverTimestamp()
+    });
+    const mensagem = [
+      `Olá! Enviei o pedido #${pedidoRef.id} pelo Perto para a loja ${loja.nome || ""}:`,
+      ...itensPedido.map(item => `• ${item.nome} — ${item.quantidade} × ${money(item.preco)} = ${money(item.preco * item.quantidade)}`),
+      `Total estimado dos produtos: ${money(total)}`,
+      "Meu pedido está registrado no Perto. Poderia confirmar a disponibilidade e combinar o pagamento/retirada ou entrega?"
+    ].join("\n");
+    if (janelaWhatsApp) {
+      janelaWhatsApp.opener = null;
+      janelaWhatsApp.location.href = `https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`;
+      toast("Pedido registrado! Agora confirme os detalhes com a loja pelo WhatsApp.");
+    } else {
+      toast("Pedido registrado. O navegador bloqueou o WhatsApp; entre em contato com a loja pelo telefone informado.");
+    }
+  } catch (erro) {
+    if (janelaWhatsApp && !janelaWhatsApp.closed) janelaWhatsApp.close();
+    console.error("Erro ao registrar pedido:", erro);
+    toast(erro?.code === "permission-denied"
+      ? "O Firebase bloqueou o registro do pedido. Precisamos ajustar as regras do Firestore."
+      : "Não foi possível registrar o pedido. Tente novamente.");
+  } finally {
+    pedidoCheckoutEmAndamento = false;
+  }
 }
 
 
 let entregaMarketplaceAtual=null;
 let entregaMarketplaceTimer=null;
+let cotacaoFreteAtual=null;
 
 function abrirEscolhaFinalizacaoCarrinho(){
   const lojaId=lojaSelecionadaId;
@@ -4500,6 +5085,14 @@ function abrirEscolhaFinalizacaoCarrinho(){
   const quantidade=itens.reduce((soma,item)=>soma+Math.max(1,Number(item.quantidade||1)),0);
   $("storeCheckoutChoiceCount").textContent=`${quantidade} ${quantidade===1?"item":"itens"} no pedido`;
   $("storeCheckoutChoiceTotal").textContent=money(total);
+  const lojaAtual = lojasVitrine.find(item => item.id === lojaId);
+  const botaoEntrega = $("storeCheckoutDeliveryBtn");
+  if (botaoEntrega) {
+    const freteDisponivel = lojaAtual?.freteGoAtivo !== false;
+    botaoEntrega.disabled = !freteDisponivel;
+    botaoEntrega.textContent = freteDisponivel ? "🚚 Quero receber em casa" : "🚚 FreteGo indisponível nesta loja";
+    botaoEntrega.style.opacity = freteDisponivel ? "1" : ".55";
+  }
   $("storeCheckoutChoiceModal").style.display="flex";
 }
 $("closeStoreCheckoutChoice").onclick=()=>$("storeCheckoutChoiceModal").style.display="none";
@@ -4520,6 +5113,7 @@ function abrirModalEntregaMarketplace(){
   if(!lojaId || !itens.length){ toast("Abra uma loja e adicione produtos ao carrinho primeiro."); return; }
   const loja=lojasVitrine.find(x=>x.id===lojaId);
   if(!loja){ toast("Não foi possível localizar esta loja."); return; }
+  if(loja.freteGoAtivo === false){ toast("Esta loja está com a entrega pelo FreteGo desativada. Escolha continuar sem entrega ou fale com a loja."); return; }
   $("deliveryPickupAddress").value=loja.enderecoCompleto||loja.endereco||loja.enderecoRua||"";
   $("deliveryPickupCity").value=loja.cidade||"";
   $("deliveryDropoffAddress").value="";
@@ -4528,8 +5122,11 @@ function abrirModalEntregaMarketplace(){
   $("deliveryNotes").value="";
   $("storeDeliveryResult").style.display="none";
   $("refreshStoreDeliveryStatus").style.display="none";
-  $("submitStoreDelivery").disabled=false;
-  $("submitStoreDelivery").textContent="Calcular e solicitar entrega";
+  cotacaoFreteAtual=null;
+  $("calculateDeliveryQuote").disabled=false;
+  $("calculateDeliveryQuote").textContent="Calcular valor do frete";
+  $("submitStoreDelivery").disabled=true;
+  $("submitStoreDelivery").textContent="Enviar pedido para confirmação da loja";
   entregaMarketplaceAtual=null;
   if(entregaMarketplaceTimer){clearInterval(entregaMarketplaceTimer);entregaMarketplaceTimer=null;}
   $("storeDeliveryModal").style.display="flex";
@@ -4569,43 +5166,204 @@ $("closeStoreDeliveryModal").onclick=()=>{
   if(entregaMarketplaceTimer){clearInterval(entregaMarketplaceTimer);entregaMarketplaceTimer=null;}
 };
 $("refreshStoreDeliveryStatus").onclick=atualizarStatusEntregaMarketplace;
+
+function assinaturaEnderecoFrete(){
+  return [$("deliveryPickupAddress").value.trim(),$("deliveryPickupCity").value.trim(),$("deliveryDropoffAddress").value.trim(),$("deliveryDropoffCity").value.trim()].join("|").toLowerCase();
+}
+
+$("calculateDeliveryQuote").onclick = async () => {
+  const usuario = auth.currentUser || currentUser;
+  const lojaId = lojaSelecionadaId;
+  const pickupAddress = $("deliveryPickupAddress").value.trim();
+  const pickupCity = $("deliveryPickupCity").value.trim();
+  const dropoffAddress = $("deliveryDropoffAddress").value.trim();
+  const dropoffCity = $("deliveryDropoffCity").value.trim();
+
+  if (!usuario) {
+    showAuth("login");
+    return;
+  }
+  if (!lojaId || !pickupAddress || !pickupCity || !dropoffAddress || !dropoffCity) {
+    toast("Preencha os endereços de coleta e entrega para calcular o frete.");
+    return;
+  }
+
+  const botao = $("calculateDeliveryQuote");
+  const assinaturaSolicitada = assinaturaEnderecoFrete();
+  botao.disabled = true;
+  botao.textContent = "Calculando rota e frete...";
+  $("submitStoreDelivery").disabled = true;
+  cotacaoFreteAtual = null;
+
+  
+try {
+    const lojaSnap = await getDoc(doc(db, "lojas", lojaId));
+    if (!lojaSnap.exists()) {
+      throw new Error("Não foi possível localizar a configuração da loja.");
+    }
+
+    const modalidade = String(
+      lojaSnap.data().modalidadeEntrega || "Moto"
+    ).trim();
+
+    const tiposServico = {
+      "Moto": "delivery",
+      "Carro": "frete_carro",
+      "Utilitário/Fiorino": "utilitario"
+    };
+
+    const tipoServico = tiposServico[modalidade];
+    if (!tipoServico) {
+      throw new Error("A modalidade de entrega da loja é inválida.");
+    }
+
+    const resposta = await calcularFreteMarketplaceFn({
+      tipoServico,
+      pickupAddress,
+      pickupCity,
+      deliveryAddress: dropoffAddress,
+      deliveryCity: dropoffCity
+    });
+
+
+    const dados = resposta.data || {};
+
+    if (assinaturaEnderecoFrete() !== assinaturaSolicitada) {
+      throw new Error("Os endereços foram alterados durante o cálculo. Calcule novamente.");
+    }
+
+    const itens = Object.values(carrinhoLoja[lojaId] || {});
+    const totalProdutos = itens.reduce((soma, item) => soma + Number(item.preco || 0) * Math.max(1, Number(item.quantidade || 1)), 0);
+
+    const valorFrete = Number(dados.valorFrete || 8.00);
+    const distanciaKm = Number(dados.distanciaKm || 1.00);
+    const tempoMinutos = Number(dados.tempoMinutos || 15);
+
+    cotacaoFreteAtual = {
+      assinatura: assinaturaSolicitada,
+      valorFrete,
+      distanciaKm,
+      tempoMinutos
+    };
+
+    $("storeDeliveryResult").innerHTML = `
+      <b>Estimativa do frete:</b> ${money(cotacaoFreteAtual.valorFrete)}<br>
+      <b>Produtos:</b> ${money(totalProdutos)}<br>
+      <b>Total estimado:</b> ${money(totalProdutos + cotacaoFreteAtual.valorFrete)}<br>
+      <small>Distância aproximada: ${cotacaoFreteAtual.distanciaKm.toFixed(2).replace(".", ",")} km · Tempo estimado de rota: ${cotacaoFreteAtual.tempoMinutos} min.</small>
+    `;
+    $("storeDeliveryResult").style.display = "block";
+    $("submitStoreDelivery").disabled = false;
+    toast("Frete calculado com sucesso!");
+
+  } catch (erro) {
+    console.error("Erro ao calcular frete do Perto:", erro);
+    $("storeDeliveryResult").textContent = erro?.message || "Não foi possível calcular o frete.";
+    $("storeDeliveryResult").style.display = "block";
+    toast("Não foi possível calcular o frete.");
+  } finally {
+    botao.disabled = false;
+    botao.textContent = "Calcular valor do frete";
+  }
+};
+
+["deliveryPickupAddress","deliveryPickupCity","deliveryDropoffAddress","deliveryDropoffCity"].forEach(id=>$(id).addEventListener("input",()=>{
+  if(cotacaoFreteAtual&&cotacaoFreteAtual.assinatura!==assinaturaEnderecoFrete()){
+    cotacaoFreteAtual=null;
+    $("submitStoreDelivery").disabled=true;
+    $("storeDeliveryResult").textContent="O endereço foi alterado. Calcule novamente o frete antes de enviar o pedido.";
+    $("storeDeliveryResult").style.display="block";
+  }
+}));
 $("storeDeliveryModal").addEventListener("click",e=>{
   if(e.target===$("storeDeliveryModal")) $("closeStoreDeliveryModal").click();
 });
 $("storeDeliveryForm").addEventListener("submit",async e=>{
   e.preventDefault();
+  const usuario=auth.currentUser||currentUser;
   const lojaId=lojaSelecionadaId;
   const itens=Object.values(carrinhoLoja[lojaId]||{});
-  if(!currentUser){showAuth("login");return;}
+  if(!usuario){showAuth("login");return;}
   if(!lojaId||!itens.length){toast("Seu carrinho está vazio.");return;}
+const loja=lojasVitrine.find(x=>x.id===lojaId);
+
+if(!loja){
+  toast("Não foi possível localizar esta loja.");
+  return;
+}
+
+if(loja.lojaAberta === false){
+  toast("Esta loja está fechada no momento.");
+  return;
+}
+
+const modalidade = String(
+  loja.modalidadeEntrega || "Moto"
+).trim();
   const pickupAddress=$("deliveryPickupAddress").value.trim();
   const pickupCity=$("deliveryPickupCity").value.trim();
   const dropoffAddress=$("deliveryDropoffAddress").value.trim();
   const dropoffCity=$("deliveryDropoffCity").value.trim();
   const contactPhone=$("deliveryContactPhone").value.trim();
-  const notes=$("deliveryNotes").value.trim();
+  const notes=$("deliveryNotes").value.trim().slice(0,500);
   if(!pickupAddress||!pickupCity||!dropoffAddress||!dropoffCity||!contactPhone){
     toast("Preencha os campos obrigatórios da entrega.");return;
   }
+  if(!cotacaoFreteAtual||cotacaoFreteAtual.assinatura!==assinaturaEnderecoFrete()){
+    toast("Calcule o frete para estes endereços antes de enviar o pedido.");
+    $("submitStoreDelivery").disabled=true;
+    return;
+  }
+  const itensPedido=itens.map(item=>({
+    produtoId:String(item.id||""),
+    nome:String(item.nome||"Produto"),
+    preco:Number(item.preco||0),
+    quantidade:Math.max(1,Math.min(20,Number(item.quantidade)||1)),
+    imagem:String(item.imagem||item.imagens?.[0]||"")
+  }));
+  const total=itensPedido.reduce((soma,item)=>soma+item.preco*item.quantidade,0);
   const btn=$("submitStoreDelivery");
-  btn.disabled=true;btn.textContent="Calculando rota e solicitando...";
+  btn.disabled=true;btn.textContent="Enviando pedido à loja...";
   try{
-    const resposta=await solicitarEntregaMarketplaceFn({
+    const pedidoRef=await addDoc(collection(db,"pedidos"),{
+      clienteUid:usuario.uid,
+      clienteNome:String(currentUserData?.nome||currentUserData?.nomeCompleto||usuario.displayName||""),
+      clienteEmail:String(usuario.email||""),
+      clienteTelefone:String(currentUserData?.telefone||currentUserData?.celular||contactPhone),
       lojaId,
-      itens:itens.map(x=>({produtoId:x.id,quantidade:Math.max(1,Math.min(20,Number(x.quantidade)||1))})),
-      pickupAddress,pickupCity,dropoffAddress,dropoffCity,contactPhone,notes
+      lojaNome:String(loja.nome||""),
+      lojaTelefone:String(loja.telefone||"").replace(/\D/g,""),
+      itens:itensPedido,
+      totalProdutos:total,
+      valorFreteEstimado:cotacaoFreteAtual.valorFrete,
+      distanciaFreteKm:cotacaoFreteAtual.distanciaKm,
+      tempoEstimadoFreteMinutos:cotacaoFreteAtual.tempoMinutos,
+      tipoEntrega:"fretego",
+      veiculo: modalidade,
+      pickupAddress,
+      pickupCity,
+      dropoffAddress,
+      dropoffCity,
+      contactPhone,
+      notes,
+      status:"aguardando_confirmacao",
+      criadoEm:serverTimestamp(),
+      atualizadoEm:serverTimestamp()
     });
-    entregaMarketplaceAtual=resposta.data;
-    $("refreshStoreDeliveryStatus").style.display="block";
-    btn.textContent="Entrega solicitada";
-    await atualizarStatusEntregaMarketplace();
-    if(entregaMarketplaceTimer) clearInterval(entregaMarketplaceTimer);
-    entregaMarketplaceTimer=setInterval(atualizarStatusEntregaMarketplace,15000);
-  }catch(err){
-    console.error("Falha ao solicitar entrega FreteGo:",err);
+    $("storeDeliveryResult").innerHTML=`<b>Pedido #${esc(pedidoRef.id)} registrado.</b><br>Produtos: ${money(total)}<br>Frete estimado: ${money(cotacaoFreteAtual.valorFrete)}<br><b>Total estimado: ${money(total+cotacaoFreteAtual.valorFrete)}</b><br><small>A loja precisa confirmar o pedido antes de liberar a entrega. O frete será recalculado ao autorizar a entrega.</small>`;
     $("storeDeliveryResult").style.display="block";
-    $("storeDeliveryResult").textContent=err?.message||"Não foi possível solicitar a entrega. Tente novamente.";
-    btn.disabled=false;btn.textContent="Tentar novamente";
+    $("refreshStoreDeliveryStatus").style.display="none";
+    btn.textContent="Pedido enviado à loja";
+    btn.disabled=true;
+    $("calculateDeliveryQuote").disabled=true;
+    toast("Pedido registrado. A loja precisa confirmar antes de solicitar o entregador.");
+  }catch(err){
+    console.error("Falha ao registrar pedido com entrega:",err);
+    $("storeDeliveryResult").textContent=err?.code==="permission-denied"
+      ?"O Firebase bloqueou o registro do pedido. Confira as regras da coleção pedidos."
+      :(err?.message||"Não foi possível registrar o pedido. Tente novamente.");
+    $("storeDeliveryResult").style.display="block";
+    btn.disabled=false;btn.textContent="Enviar pedido para confirmação da loja";
   }
 });
 
@@ -4916,7 +5674,392 @@ $("storeCity").addEventListener(
  // ==================================================
  // CARREGAR DADOS DO GERENCIAMENTO DA LOJA
  // ==================================================
- async function carregarPainelMinhaLoja() {
+ let resolverEscolhaVeiculoFreteGo = null;
+function escolherVeiculoEntregaMarketplace(veiculoAtual = "") {
+  const modal = $("storeVehicleModal");
+  const select = $("storeVehicleSelect");
+  const erro = $("storeVehicleError");
+  if (!modal || !select) return Promise.resolve(null);
+  select.value = ["Moto", "Carro", "Utilitário/Fiorino"].includes(veiculoAtual) ? veiculoAtual : "";
+  erro.style.display = "none";
+  modal.style.display = "flex";
+  return new Promise(resolve => { resolverEscolhaVeiculoFreteGo = resolve; });
+}
+function fecharEscolhaVeiculoFreteGo(valor = null) {
+  $("storeVehicleModal").style.display = "none";
+  const resolver = resolverEscolhaVeiculoFreteGo;
+  resolverEscolhaVeiculoFreteGo = null;
+  if (resolver) resolver(valor);
+}
+$("closeStoreVehicleModal")?.addEventListener("click", () => fecharEscolhaVeiculoFreteGo(null));
+$("cancelStoreVehicleBtn")?.addEventListener("click", () => fecharEscolhaVeiculoFreteGo(null));
+$("storeVehicleModal")?.addEventListener("click", e => { if (e.target === $("storeVehicleModal")) fecharEscolhaVeiculoFreteGo(null); });
+$("confirmStoreVehicleBtn")?.addEventListener("click", () => {
+  const veiculo = String($("storeVehicleSelect")?.value || "").trim();
+  if (!veiculo) {
+    $("storeVehicleError").textContent = "Selecione um veículo para continuar.";
+    $("storeVehicleError").style.display = "block";
+    return;
+  }
+  fecharEscolhaVeiculoFreteGo(veiculo);
+});
+
+  
+async function obterModalidadeEntregaLoja(usuario, veiculoPedido = "") {
+  try {
+    const resultado = await getDoc(doc(db, "lojas", usuario.uid));
+
+    if (resultado.exists()) {
+      const modalidade = String(
+        resultado.data().modalidadeEntrega || ""
+      ).trim();
+
+      if (["Moto", "Carro", "Utilitário/Fiorino"].includes(modalidade)) {
+        return modalidade;
+      }
+    }
+  } catch (erro) {
+    console.error("Erro ao consultar modalidade da loja:", erro);
+  }
+
+  // Mantém a janela antiga para lojas sem modalidade configurada.
+  return await escolherVeiculoEntregaMarketplace(veiculoPedido);
+}
+  
+
+async function autorizarEntregaMarketplacePedido(pedido, usuario, veiculoSelecionado) {
+  try {
+    const veiculo = String(veiculoSelecionado || pedido.veiculo || "").trim();
+    if (!veiculo) {
+      toast("Escolha o veículo que fará a entrega antes de liberar o FreteGo.");
+      return false;
+    }
+
+    // Envia todos os dados obrigatórios que a Cloud Function exige
+    const dadosRequisicao = {
+      pedidoId: pedido.id,
+      veiculo,
+      lojaId: pedido.lojaId,
+      pickupAddress: pedido.pickupAddress || pedido.enderecoColeta || "",
+      pickupCity: pedido.pickupCity || pedido.cidadeColeta || "",
+      deliveryAddress: pedido.dropoffAddress || pedido.deliveryAddress || "",
+      deliveryCity: pedido.dropoffCity || pedido.deliveryCity || "",
+      dropoffAddress: pedido.dropoffAddress || pedido.deliveryAddress || "",
+      dropoffCity: pedido.dropoffCity || pedido.deliveryCity || "",
+      contactPhone: pedido.contactPhone || pedido.clienteTelefone || ""
+    };
+    if (!dadosRequisicao.pickupAddress || !dadosRequisicao.pickupCity || !dadosRequisicao.deliveryAddress || !dadosRequisicao.deliveryCity || !dadosRequisicao.contactPhone) {
+      toast("Não foi possível liberar: confira os endereços de coleta e entrega e o telefone do cliente no pedido.");
+      console.error("Dados incompletos para solicitar entrega ao FreteGo:", dadosRequisicao);
+      return false;
+    }
+    const resposta = await solicitarEntregaMarketplaceFn(dadosRequisicao);
+
+    const dados = resposta.data || {};
+    // Guarda no pedido do Perto o identificador retornado pelo FreteGo para o cliente consultar a entrega.
+    const idFreteGo = dados.freteGoId || dados.freteId || dados.pedidoId || dados.entregaId || "";
+    const atualizacaoPedido = { atualizadoEm: serverTimestamp(), veiculo };
+    if (idFreteGo) atualizacaoPedido.freteGoId = String(idFreteGo);
+    if (dados.valorFrete != null && Number.isFinite(Number(dados.valorFrete))) {
+      atualizacaoPedido.valorFrete = Number(dados.valorFrete);
+    }
+    atualizacaoPedido.status = "entrega_solicitada";
+    try {
+      await updateDoc(doc(db, "pedidos", pedido.id), atualizacaoPedido);
+    } catch (erroSalvarVinculo) {
+      // A entrega já foi criada; não apresentar isso como falha total nem incentivar uma segunda solicitação.
+      console.error("Entrega criada, mas não foi possível salvar o vínculo no pedido do Perto:", erroSalvarVinculo);
+      toast("A entrega foi enviada ao FreteGo, mas o Perto não conseguiu salvar o código para acompanhamento. Não tente liberar novamente este pedido; precisamos revisar as permissões de atualização.");
+      await carregarPedidosRecebidosLoja();
+      return;
+    }
+    toast(`Pedido confirmado. Entrega enviada ao FreteGo${dados.valorFrete != null ? ` (frete estimado ${money(dados.valorFrete)}).` : "."}`);
+    await carregarPedidosRecebidosLoja();
+    return true;
+  } catch (erro) {
+    console.error("Erro ao autorizar entrega no FreteGo:", {
+      code: erro?.code || "", message: erro?.message || "", details: erro?.details || null, pedidoId: pedido?.id || "", lojaId: pedido?.lojaId || ""
+    }, erro);
+    const codigo = erro?.code ? ` (${String(erro.code).replace("functions/","")})` : "";
+    toast((erro?.message || "Não foi possível liberar a entrega no FreteGo.") + codigo);
+    await carregarPedidosRecebidosLoja();
+    return false;
+  }
+  }
+      
+ async function carregarPedidosRecebidosLoja() {
+  const usuario = auth.currentUser || currentUser;
+  const painel = $("storeOrdersPanel");
+  if (!painel) return;
+  if (!usuario) {
+    painel.textContent = "Entre na sua conta para consultar os pedidos.";
+    return;
+  }
+  painel.textContent = "Carregando pedidos recebidos...";
+  try {
+    const resultado = await getDocs(query(
+      collection(db, "pedidos"),
+      where("lojaId", "==", usuario.uid)
+    ));
+    const pedidos = resultado.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => (b.criadoEm?.toMillis?.() || 0) - (a.criadoEm?.toMillis?.() || 0));
+    painel.replaceChildren();
+    if (!pedidos.length) {
+      painel.textContent = "Você ainda não recebeu pedidos pelo Perto.";
+      return;
+    }
+    pedidos.forEach(pedido => {
+      const card = document.createElement("div");
+      card.style.cssText = "background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px;margin-bottom:10px;color:#111827";
+      const titulo = document.createElement("strong");
+      titulo.textContent = "Pedido #" + pedido.id.slice(-8);
+      const status = document.createElement("p");
+      status.style.cssText = "margin:6px 0;color:#475569;font-size:13px";
+      const nomesStatus = {
+        aguardando_confirmacao: "Aguardando confirmação da loja",
+        confirmado: "Confirmado pela loja",
+        recusado: "Recusado pela loja",
+        entrega_solicitada: "Entrega solicitada ao FreteGo",
+        em_preparacao: "Em preparação",
+        pronto: "Pronto para retirada/entrega",
+        concluido: "Concluído"
+      };
+      status.textContent = "Status: " + (nomesStatus[pedido.status] || pedido.status || "Sem status");
+      const itens = document.createElement("p");
+      itens.style.cssText = "margin:8px 0;white-space:pre-line;font-size:14px";
+      itens.textContent = (Array.isArray(pedido.itens) ? pedido.itens : [])
+        .map(item => "• " + (item.nome || "Produto") + " — " + (Number(item.quantidade) || 1) + " × " + money(item.preco))
+        .join("\n") || "Itens não informados";
+      const total = document.createElement("strong");
+      total.textContent = "Total: " + money(pedido.totalProdutos);
+      card.append(titulo, status, itens, total);
+      if (pedido.tipoEntrega === "fretego") {
+        const entregaInfo = document.createElement("p");
+        entregaInfo.style.cssText = "margin:8px 0;white-space:pre-line;font-size:13px;color:#334155";
+        entregaInfo.textContent = [
+          "Entrega pelo FreteGo",
+          `Destino: ${pedido.dropoffAddress || "Endereço não informado"}, ${pedido.dropoffCity || ""}`,
+          `Telefone para contato: ${pedido.contactPhone || "Não informado"}`,
+          pedido.veiculo ? `Veículo escolhido: ${pedido.veiculo}` : "Veículo ainda não escolhido",
+          pedido.notes ? `Observações: ${pedido.notes}` : ""
+        ].filter(Boolean).join("\n");
+        card.appendChild(entregaInfo);
+        if (pedido.freteGoId) {
+          const freteInfo = document.createElement("p");
+          freteInfo.style.cssText = "margin:6px 0;font-size:12px;color:#475569";
+          freteInfo.textContent = `Entrega FreteGo: ${pedido.freteGoId} · Frete estimado: ${money(pedido.valorFrete)}`;
+          card.appendChild(freteInfo);
+        }
+      }
+      if (pedido.status === "aguardando_confirmacao") {
+        const acoes = document.createElement("div");
+        acoes.style.cssText = "display:flex;gap:8px;margin-top:12px;flex-wrap:wrap";
+        const confirmar = document.createElement("button");
+        confirmar.type = "button";
+        confirmar.className = "btn btnPrimary";
+        confirmar.textContent = "Confirmar pedido";
+        confirmar.onclick = async () => {
+          confirmar.disabled = true;
+          confirmar.textContent = "Confirmando...";
+          try {
+            let veiculo = String(pedido.veiculo || "").trim();
+            if (pedido.tipoEntrega === "fretego") {
+              veiculo = await obterModalidadeEntregaLoja(usuario, veiculo);
+              if (!veiculo) {
+                confirmar.disabled = false;
+                confirmar.textContent = "Confirmar pedido";
+                return;
+              }
+            }
+            await updateDoc(doc(db, "pedidos", pedido.id), {
+              status: "confirmado",
+              confirmadoEm: serverTimestamp(),
+              confirmadoPor: usuario.uid,
+              veiculo: veiculo || null,
+              atualizadoEm: serverTimestamp()
+            });
+            if (pedido.tipoEntrega === "fretego") {
+              await autorizarEntregaMarketplacePedido({ ...pedido, status: "confirmado", veiculo }, usuario, veiculo);
+            } else {
+              toast("Pedido confirmado. Combine os detalhes diretamente com o cliente.");
+              await carregarPedidosRecebidosLoja();
+            }
+          } catch (erro) {
+            console.error("Erro ao confirmar pedido:", erro);
+            toast(erro?.code === "permission-denied"
+              ? "O Firebase bloqueou a confirmação. Precisamos ajustar as regras do Firestore."
+              : "Não foi possível confirmar o pedido.");
+            confirmar.disabled = false;
+            confirmar.textContent = "Confirmar pedido";
+          }
+        };
+        const recusar = document.createElement("button");
+        recusar.type = "button";
+        recusar.className = "btn";
+        recusar.style.cssText = "background:#fee2e2;color:#991b1b";
+        recusar.textContent = "Recusar";
+        recusar.onclick = async () => {
+          if (!confirm("Deseja recusar este pedido?")) return;
+          recusar.disabled = true;
+          try {
+            await updateDoc(doc(db, "pedidos", pedido.id), {
+              status: "recusado",
+              recusadoEm: serverTimestamp(),
+              recusadoPor: usuario.uid,
+              atualizadoEm: serverTimestamp()
+            });
+            toast("Pedido recusado.");
+            await carregarPedidosRecebidosLoja();
+          } catch (erro) {
+            console.error("Erro ao recusar pedido:", erro);
+            toast(erro?.code === "permission-denied"
+              ? "O Firebase bloqueou a alteração. Precisamos ajustar as regras do Firestore."
+              : "Não foi possível recusar o pedido.");
+            recusar.disabled = false;
+          }
+        };
+        acoes.append(confirmar, recusar);
+        card.appendChild(acoes);
+      } else if (pedido.status === "confirmado" && pedido.tipoEntrega === "fretego" && !pedido.freteGoId) {
+        const acoes = document.createElement("div");
+        acoes.style.cssText = "display:flex;gap:8px;margin-top:12px;flex-wrap:wrap";
+        const liberar = document.createElement("button");
+        liberar.type = "button";
+        liberar.className = "btn btnPrimary";
+        liberar.textContent = "Tentar liberar entrega no FreteGo";
+        liberar.onclick = async () => {
+          const veiculo = await obterModalidadeEntregaLoja(usuario, pedido.veiculo || "");
+          if (!veiculo) return;
+          liberar.disabled = true;
+          liberar.textContent = "Enviando ao FreteGo...";
+          try {
+            await updateDoc(doc(db, "pedidos", pedido.id), { veiculo, atualizadoEm: serverTimestamp() });
+            await autorizarEntregaMarketplacePedido({ ...pedido, veiculo }, usuario, veiculo);
+          } catch (erro) {
+            console.error("Falha ao preparar nova tentativa de entrega:", erro);
+            toast(erro?.message || "Não foi possível preparar a solicitação ao FreteGo.");
+            liberar.disabled = false;
+            liberar.textContent = "Tentar liberar entrega no FreteGo";
+          }
+        };
+        acoes.appendChild(liberar);
+        card.appendChild(acoes);
+      }
+      painel.appendChild(card);
+    });
+  } catch (erro) {
+    console.error("Erro ao carregar pedidos da loja:", erro);
+    painel.textContent = erro?.code === "permission-denied"
+      ? "O Firebase bloqueou a leitura dos pedidos. Precisamos ajustar as regras do Firestore."
+      : "Não foi possível carregar os pedidos. Tente atualizar.";
+  }
+}
+$("refreshStoreOrdersBtn")?.addEventListener("click", carregarPedidosRecebidosLoja);
+
+let freteGoAtivoNaMinhaLoja = true;
+function atualizarVisualBotaoFreteGo(ativo) {
+  freteGoAtivoNaMinhaLoja = ativo !== false;
+  const botao = $("toggleStoreFreteGoBtn");
+  const status = $("storeFreteGoStatus");
+  if (botao) {
+    botao.textContent = freteGoAtivoNaMinhaLoja ? "🚚 FreteGo: ativado" : "⏸️ FreteGo: desativado";
+    botao.style.background = freteGoAtivoNaMinhaLoja ? "#dcfce7" : "#fee2e2";
+    botao.style.color = freteGoAtivoNaMinhaLoja ? "#166534" : "#991b1b";
+  }
+  if (status) status.textContent = freteGoAtivoNaMinhaLoja
+    ? "O FreteGo está disponível para os clientes desta loja."
+    : "O FreteGo está desligado nesta loja. Os clientes não poderão escolher essa modalidade.";
+}
+$("toggleStoreFreteGoBtn")?.addEventListener("click", async () => {
+  const usuario = auth.currentUser || currentUser;
+  if (!usuario) { showAuth("login"); return; }
+  const proximoEstado = !freteGoAtivoNaMinhaLoja;
+  const botao = $("toggleStoreFreteGoBtn");
+  if (botao) botao.disabled = true;
+  try {
+    await updateDoc(doc(db, "lojas", usuario.uid), { freteGoAtivo: proximoEstado, freteGoAtualizadoEm: serverTimestamp() });
+    atualizarVisualBotaoFreteGo(proximoEstado);
+    const indice = lojasVitrine.findIndex(loja => loja.id === usuario.uid);
+    if (indice >= 0) lojasVitrine[indice].freteGoAtivo = proximoEstado;
+    toast(proximoEstado ? "FreteGo ativado para sua loja." : "FreteGo desativado para sua loja.");
+  } catch (erro) {
+    console.error("Erro ao alterar disponibilidade do FreteGo:", erro);
+    toast(erro?.code === "permission-denied" ? "O Firebase bloqueou a alteração. Verifique as regras do Firestore da sua loja." : (erro?.message || "Não foi possível alterar o FreteGo."));
+  } finally {
+    if (botao) botao.disabled = false;
+  }
+});
+ 
+let lojaAbertaNaMinhaLoja = true;
+
+function atualizarVisualBotaoLoja(aberta) {
+  lojaAbertaNaMinhaLoja = aberta !== false;
+
+  const botao = $("toggleStoreOpenBtn");
+  if (!botao) return;
+
+  botao.textContent = lojaAbertaNaMinhaLoja
+    ? "🔴 Fechar loja"
+    : "🟢 Abrir loja";
+
+  botao.style.background = lojaAbertaNaMinhaLoja
+    ? "#fee2e2"
+    : "#dcfce7";
+
+  botao.style.color = lojaAbertaNaMinhaLoja
+    ? "#991b1b"
+    : "#166534";
+}
+
+$("toggleStoreOpenBtn")?.addEventListener("click", async () => {
+  const usuario = auth.currentUser || currentUser;
+
+  if (!usuario) {
+    showAuth("login");
+    return;
+  }
+
+  const proximoEstado = !lojaAbertaNaMinhaLoja;
+  const botao = $("toggleStoreOpenBtn");
+
+  if (botao) botao.disabled = true;
+
+  try {
+    await updateDoc(doc(db, "lojas", usuario.uid), {
+      lojaAberta: proximoEstado,
+      lojaAbertaAtualizadoEm: serverTimestamp()
+    });
+
+    atualizarVisualBotaoLoja(proximoEstado);
+
+    const indice = lojasVitrine.findIndex(
+      loja => loja.id === usuario.uid
+    );
+
+    if (indice >= 0) {
+      lojasVitrine[indice].lojaAberta = proximoEstado;
+    }
+
+    toast(
+      proximoEstado
+        ? "Loja aberta!"
+        : "Loja fechada para novos pedidos."
+    );
+  } catch (erro) {
+    console.error("Erro ao alterar estado da loja:", erro);
+
+    toast(
+      erro?.code === "permission-denied"
+        ? "O Firebase bloqueou a alteração. Verifique as regras do Firestore."
+        : "Não foi possível alterar o estado da loja."
+    );
+  } finally {
+    if (botao) botao.disabled = false;
+  }
+});
+  
+async function carregarPainelMinhaLoja() {
     const usuario = auth.currentUser || currentUser;
     if (!usuario) {
       showAuth("login");
@@ -4944,6 +6087,7 @@ $("storeCity").addEventListener(
         return;
       }
       const loja = resultado.data();
+      atualizarVisualBotaoFreteGo(loja.freteGoAtivo !== false);
       $("myStoreManagerTitle").textContent = "Gerenciar " + (loja.nome || "minha loja");
       if (loja.statusAdmin === "suspensa") {
         $("myStoreManagerStatus").textContent = "Sua loja está suspensa pela administração. Você ainda pode gerenciar os dados, mas ela não aparece publicamente.";
@@ -4952,6 +6096,7 @@ $("storeCity").addEventListener(
       } else {
         $("myStoreManagerStatus").textContent = "Sua loja está aguardando aprovação/ativação pela administração.";
       }
+      await carregarPedidosRecebidosLoja();
     } catch (erro) {
       console.error("Erro ao carregar gerenciamento da loja:", erro);
       $("myStoreManagerStatus").textContent = "Não foi possível carregar sua loja. Tente novamente.";
@@ -5193,6 +6338,7 @@ $("editMyStoreBtn").onclick = async () => {
       $("storeDescription").value = loja.descricao || "";
       $("storeAddress").value = loja.endereco || "";
       $("storeHours").value = loja.horario || "";
+      $("storeDeliveryVehicle").value = loja.modalidadeEntrega || "";
       $("storeOpen24h").checked = loja.funciona24h === true;
     }
 
@@ -5366,6 +6512,156 @@ $("toggleStoreProductsBtn").onclick = async () => {
   botao.textContent = "📦 Ocultar meus produtos";
 };
 
+// ==================================================
+// ÁREA DO CLIENTE — MINHAS COMPRAS E ENTREGAS
+// ==================================================
+let myOrdersRefreshTimer = null;
+const nomesStatusPedidoCliente = {
+  aguardando_confirmacao: "Aguardando confirmação da loja",
+  confirmado: "Pedido confirmado pela loja",
+  entrega_solicitada: "Entrega solicitada ao FreteGo",
+  recusado: "Pedido recusado pela loja",
+  cancelado: "Pedido cancelado",
+  cancelada: "Pedido cancelado",
+  concluido: "Pedido concluído",
+  concluida: "Pedido concluído",
+  entregue: "Pedido entregue"
+};
+const nomesStatusEntregaCliente = {
+  criando_entrega: "Preparando solicitação",
+  disponivel: "Procurando entregador",
+  aceito: "Entregador aceitou a entrega",
+  em_rota: "Entregador a caminho da coleta/entrega",
+  coletado: "Produto coletado",
+  entregue: "Entrega concluída",
+  cancelado: "Entrega cancelada",
+  erro: "Não foi possível criar a entrega"
+};
+
+async function consultarStatusFreteCliente(pedido, statusEntregaEl, freteEl, botao) {
+  if (!pedido.freteGoId) {
+    statusEntregaEl.textContent = pedido.status === "aguardando_confirmacao"
+      ? "A entrega será liberada depois que a loja confirmar o pedido."
+      : "Aguardando o identificador da entrega do FreteGo.";
+    return;
+  }
+  if (botao) { botao.disabled = true; botao.textContent = "Consultando..."; }
+  try {
+    const resposta = await consultarEntregaMarketplaceFn({ pedidoId: pedido.freteGoId });
+    const dados = resposta.data || {};
+    const status = dados.statusEntrega || dados.status || "";
+    statusEntregaEl.textContent = "Entrega: " + (nomesStatusEntregaCliente[status] || status || "Aguardando atualização");
+    if (dados.valorFrete != null && Number.isFinite(Number(dados.valorFrete))) {
+      freteEl.textContent = "Frete: " + money(Number(dados.valorFrete));
+      // O backend é a fonte do valor final estimado do frete; não alterar o total dos produtos.
+    } else if (pedido.valorFrete != null) {
+      freteEl.textContent = "Frete estimado: " + money(pedido.valorFrete);
+    }
+  } catch (erro) {
+    console.warn("Não foi possível consultar a entrega do cliente:", erro);
+    statusEntregaEl.textContent = "Não foi possível atualizar o status agora. Tente novamente.";
+  } finally {
+    if (botao) { botao.disabled = false; botao.textContent = "🔄 Atualizar entrega"; }
+  }
+}
+
+async function carregarMinhasCompras(silencioso = false) {
+  const area = $("myOrdersResults");
+  const usuario = auth.currentUser || currentUser;
+  if (!area) return;
+  if (!usuario) {
+    area.replaceChildren();
+    const aviso = document.createElement("div");
+    aviso.className = "emptyState";
+    aviso.textContent = "Entre na sua conta para consultar suas compras.";
+    area.appendChild(aviso);
+    return;
+  }
+  if (!silencioso) area.innerHTML = '<div class="emptyState"><div class="emptyIcon">⏳</div>Carregando suas compras...</div>';
+  try {
+    const consulta = query(collection(db, "pedidos"), where("clienteUid", "==", usuario.uid));
+    const snapshot = await getDocs(consulta);
+    const pedidos = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => (b.criadoEm?.toMillis?.() || 0) - (a.criadoEm?.toMillis?.() || 0));
+    area.replaceChildren();
+    if (!pedidos.length) {
+      const vazio = document.createElement("div");
+      vazio.className = "emptyState";
+      vazio.innerHTML = '<div class="emptyIcon">🛍️</div><strong>Você ainda não fez compras pelo Perto.</strong><p style="margin-top:8px">Quando concluir um pedido em uma loja parceira, ele aparecerá aqui.</p>';
+      area.appendChild(vazio);
+      return;
+    }
+    pedidos.forEach(pedido => {
+      const card = document.createElement("article");
+      card.style.cssText = "background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:15px;margin-bottom:12px;box-shadow:0 3px 12px rgba(0,0,0,.04)";
+      const titulo = document.createElement("h3");
+      titulo.style.cssText = "font-size:16px;margin-bottom:7px;overflow-wrap:anywhere";
+      titulo.textContent = (pedido.lojaNome || "Loja") + " · Pedido #" + pedido.id.slice(-8);
+      const status = document.createElement("p");
+      status.style.cssText = "font-size:13px;color:#1d4ed8;font-weight:700;margin:6px 0 10px";
+      status.textContent = "Pedido: " + (nomesStatusPedidoCliente[pedido.status] || pedido.status || "Registrado");
+      const itens = document.createElement("div");
+      itens.style.cssText = "font-size:13px;line-height:1.6;color:#374151;white-space:pre-line;margin-bottom:10px";
+      itens.textContent = (Array.isArray(pedido.itens) ? pedido.itens : []).map(item => {
+        const qtd = Math.max(1, Number(item.quantidade) || 1);
+        return `• ${item.nome || "Produto"} — ${qtd} × ${money(Number(item.preco) || 0)} = ${money((Number(item.preco) || 0) * qtd)}`;
+      }).join("\n") || "Itens não informados";
+      const total = document.createElement("p");
+      total.style.cssText = "font-weight:900;font-size:16px;margin:8px 0";
+      total.textContent = "Total dos produtos: " + money(Number(pedido.totalProdutos) || 0);
+      const tipo = document.createElement("p");
+      tipo.style.cssText = "font-size:13px;color:#475569;margin:6px 0";
+      tipo.textContent = pedido.tipoEntrega === "fretego" ? "🚚 Entrega pelo FreteGo" : "📲 Entrega/retirada combinada diretamente com a loja";
+      card.append(titulo, status, itens, total, tipo);
+      if (pedido.tipoEntrega === "fretego") {
+        const destino = document.createElement("p");
+        destino.style.cssText = "font-size:12px;color:#64748b;margin:5px 0";
+        destino.textContent = "Destino: " + [pedido.dropoffAddress, pedido.dropoffCity].filter(Boolean).join(", ");
+        const statusEntrega = document.createElement("p");
+        statusEntrega.style.cssText = "font-size:13px;font-weight:700;margin:8px 0;color:#0f766e";
+        statusEntrega.textContent = pedido.freteGoId ? "Consultando status da entrega..." : (pedido.status === "aguardando_confirmacao" ? "A entrega será liberada depois que a loja confirmar o pedido." : "Aguardando liberação da entrega pelo FreteGo.");
+        const frete = document.createElement("p");
+        frete.style.cssText = "font-size:13px;color:#334155;margin:5px 0";
+        frete.textContent = pedido.valorFrete != null ? "Frete estimado: " + money(pedido.valorFrete) : "Valor do frete: aguardando retorno do FreteGo";
+        const atualizar = document.createElement("button");
+        atualizar.type = "button";
+        atualizar.className = "btn";
+        atualizar.style.cssText = "width:100%;margin-top:10px;background:#ecfeff;color:#155e75";
+        atualizar.textContent = "🔄 Atualizar entrega";
+        atualizar.onclick = () => consultarStatusFreteCliente(pedido, statusEntrega, frete, atualizar);
+        card.append(destino, statusEntrega, frete, atualizar);
+        if (pedido.freteGoId) consultarStatusFreteCliente(pedido, statusEntrega, frete, null);
+      }
+      if (pedido.criadoEm?.toDate) {
+        const data = document.createElement("p");
+        data.style.cssText = "font-size:11px;color:#9ca3af;margin-top:10px";
+        data.textContent = "Pedido feito em " + pedido.criadoEm.toDate().toLocaleString("pt-BR");
+        card.appendChild(data);
+      }
+      area.appendChild(card);
+    });
+  } catch (erro) {
+    console.error("Erro ao carregar compras do cliente:", erro);
+    area.replaceChildren();
+    const aviso = document.createElement("div");
+    aviso.className = "emptyState";
+    aviso.textContent = erro?.code === "permission-denied"
+      ? "O Firebase bloqueou a leitura dos seus pedidos. É necessário conferir as regras da coleção pedidos."
+      : "Não foi possível carregar suas compras. Toque em Atualizar pedidos para tentar novamente.";
+    area.appendChild(aviso);
+  }
+}
+
+$("myOrdersBtn").onclick = async () => {
+  showInternalPage("myOrdersPage");
+  await carregarMinhasCompras();
+  if (myOrdersRefreshTimer) clearInterval(myOrdersRefreshTimer);
+  myOrdersRefreshTimer = setInterval(() => {
+    if ($("myOrdersPage")?.classList.contains("active")) carregarMinhasCompras(true);
+  }, 45000);
+};
+$("refreshMyOrdersBtn").onclick = () => carregarMinhasCompras();
+
 $("editProfileBtn").onclick=openProfileEditor;
 $("logoutBtn").onclick=logout;
 // ==================================================
@@ -5384,7 +6680,7 @@ $("homeServices").onclick=()=>showInternalPage("servicesPage");
 // ==================================================
 // FRETEGO / ATALHO DE ENTREGAS
 // ==================================================
-$("homeDelivery").onclick=()=>{ showInternalPage("storesPage"); toast("Escolha uma loja, adicione produtos ao carrinho e solicite a entrega pelo FreteGo."); };
+$("homeDelivery").onclick=async()=>{if(!currentUser){showAuth("login");return;}showInternalPage("myStorePage");await carregarPainelMinhaLoja();};
 
 $("homeIncome").onclick=()=>showMyAds();
 $("homeStores").onclick=()=>showInternalPage("storesPage");
