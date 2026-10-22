@@ -2794,6 +2794,64 @@ if (arquivoPublicidade) {
 
   dados.imagemURL = await getDownloadURL(caminhoImagem);
   }
+
+    
+    const slidesPublicidade = [];
+
+    const cardsSlides = Array.from(
+      $("adminAdSlidesList")?.children || []
+    );
+
+    for (const card of cardsSlides) {
+      const tituloSlide = card.querySelector('[data-campo="titulo"]')?.value.trim() || "";
+      const descricaoSlide = card.querySelector('[data-campo="descricao"]')?.value.trim() || "";
+      const linkSlide = card.querySelector('[data-campo="linkURL"]')?.value.trim() || "";
+      const arquivoSlide = card.querySelector('[data-campo="foto"]')?.files?.[0];
+
+      if (linkSlide && !/^https?:\/\//i.test(linkSlide)) {
+        mensagem.textContent = "Confira os links das imagens do carrossel.";
+        return;
+      }
+
+      if (!arquivoSlide) {
+        mensagem.textContent = "Selecione uma foto para cada imagem do carrossel.";
+        return;
+      }
+
+      if (!tituloSlide) {
+        mensagem.textContent = "Informe o título de cada imagem do carrossel.";
+        return;
+      }
+
+      if (!storage) {
+        const mod = await import(
+          "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js"
+        );
+        storage = mod.getStorage(app);
+        storageRef = mod.ref;
+        uploadBytes = mod.uploadBytes;
+        getDownloadURL = mod.getDownloadURL;
+      }
+
+      const caminhoSlide = storageRef(
+        storage,
+        `publicidade/${currentUser.uid}/${crypto.randomUUID()}`
+      );
+
+      await uploadBytes(caminhoSlide, arquivoSlide, {
+        contentType: arquivoSlide.type
+      });
+
+      slidesPublicidade.push({
+        titulo: tituloSlide,
+        descricao: descricaoSlide,
+        linkURL: linkSlide,
+        imagemURL: await getDownloadURL(caminhoSlide),
+        textoBotao: "Saiba mais"
+      });
+    }
+
+    dados.slides = slidesPublicidade;
   
     await setDoc(doc(db, "configuracoes", ADMIN_AD_DOC), dados, { merge: true });
     publicidadeAtual = dados;
