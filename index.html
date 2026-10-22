@@ -4674,10 +4674,21 @@ async function continuarPedidoCarrinho() {
   if (pedidoCheckoutEmAndamento) return;
   const lojaId = lojaSelecionadaId;
   if (!lojaId) return toast("Abra uma loja antes de continuar.");
-  const itens = Object.values(carrinhoLoja[lojaId] || {});
-  if (!itens.length) return toast("Adicione pelo menos um produto ao carrinho.");
-  const loja = lojasVitrine.find(item => item.id === lojaId);
-  if (!loja) return toast("Não foi possível localizar os dados desta loja.");
+  
+const itens = Object.values(carrinhoLoja[lojaId] || {});
+if (!itens.length) return toast("Adicione pelo menos um produto ao carrinho.");
+
+const loja = lojasVitrine.find(item => item.id === lojaId);
+
+if (!loja) {
+  return toast("Não foi possível localizar os dados desta loja.");
+}
+
+if (loja.lojaAberta === false) {
+  toast("Esta loja está fechada no momento e não está recebendo pedidos.");
+  return;
+}
+
   const telefone = String(loja.telefone || "").replace(/\D/g, "");
   if (!telefone) return toast("Esta loja ainda não informou um WhatsApp para contato.");
   const itensPedido = itens.map(item => ({
