@@ -2679,24 +2679,6 @@ async function carregarConfiguracaoPublicidade() {
   }
 }
 
-
-
-  const anterior = document.createElement("button");
-  anterior.type = "button";
-  anterior.className = "btn";
-  anterior.textContent = "‹ Anterior";
-  anterior.setAttribute("aria-label", "Publicidade anterior");
-
-  const contador = document.createElement("span");
-
-  const proximo = document.createElement("button");
-  proximo.type = "button";
-  proximo.className = "btn";
-  proximo.textContent = "Próxima ›";
-  proximo.setAttribute("aria-label", "Próxima publicidade");
-
-
-
 let publicidadeCarouselTimer = null;
 
 function aplicarPublicidadeHome() {
