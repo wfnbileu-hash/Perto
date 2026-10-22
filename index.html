@@ -1981,7 +1981,26 @@ display:none!important;
         </label>
         <div class="formGroup"><label for="adminAdTitle">Título do anúncio</label><input id="adminAdTitle" maxlength="100" placeholder="Ex.: Oferta especial da semana"></div>
         <div class="formGroup"><label for="adminAdDescription">Descrição</label><textarea id="adminAdDescription" maxlength="500" placeholder="Descreva a campanha"></textarea></div>
-        <div class="formGroup"><label for="adminAdImageUrl">URL da imagem (opcional)</label><input id="adminAdImageUrl" type="url" placeholder="https://..."></div>
+        
+<div class="formGroup">
+  <label for="adminAdImageFile">Foto da publicidade</label>
+  <input
+    id="adminAdImageFile"
+    type="file"
+    accept="image/*">
+  <img
+    id="adminAdImagePreview"
+    alt="Prévia da publicidade"
+    style="display:none;width:100%;max-height:220px;object-fit:contain;margin-top:10px;border-radius:10px">
+  <p class="adminInlineNote">
+    Selecione uma foto da galeria do celular ou computador.
+  </p>
+</div>
+<div class="formGroup">
+  <label for="adminAdImageUrl">URL da imagem existente (opcional)</label>
+  <input id="adminAdImageUrl" type="url" placeholder="https://...">
+</div>
+
         <div class="formGroup"><label for="adminAdLinkUrl">Link de destino (opcional)</label><input id="adminAdLinkUrl" type="url" placeholder="https://..."></div>
         <div class="formGroup"><label for="adminAdButtonText">Texto do botão (opcional)</label><input id="adminAdButtonText" maxlength="35" placeholder="Saiba mais"></div>
         <button type="button" id="saveAdminAdBtn" class="btn btnPrimary" style="width:100%">Salvar publicidade</button>
@@ -2732,7 +2751,32 @@ async function salvarPublicidadeAdmin() {
   }
   botao.disabled = true;
   botao.textContent = "Salvando...";
-  try {
+  try { 
+  const arquivoPublicidade = $("adminAdImageFile")?.files?.[0];
+
+if (arquivoPublicidade) {
+  if (!storage) {
+    const mod = await import(
+      "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js"
+    );
+    storage = mod.getStorage(app);
+    storageRef = mod.ref;
+    uploadBytes = mod.uploadBytes;
+    getDownloadURL = mod.getDownloadURL;
+  }
+
+  const caminhoImagem = storageRef(
+    storage,
+    `publicidade/${currentUser.uid}/${crypto.randomUUID()}`
+  );
+
+  await uploadBytes(caminhoImagem, arquivoPublicidade, {
+    contentType: arquivoPublicidade.type
+  });
+
+  dados.imagemURL = await getDownloadURL(caminhoImagem);
+  }
+  
     await setDoc(doc(db, "configuracoes", ADMIN_AD_DOC), dados, { merge: true });
     publicidadeAtual = dados;
     aplicarPublicidadeHome();
