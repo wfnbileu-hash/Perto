@@ -2669,53 +2669,133 @@ async function carregarConfiguracaoPublicidade() {
   }
 }
 
+
+let publicidadeCarouselTimer = null;
+
 function aplicarPublicidadeHome() {
   const slogan = $("homeSloganContent");
   const anuncio = $("homeAdContent");
   if (!slogan || !anuncio) return;
 
-  if (publicidadeAtual?.ativo === true) {
-    slogan.classList.add("hidden");
-    anuncio.classList.remove("hidden");
-    anuncio.replaceChildren();
+  if (publicidadeCarouselTimer) {
+    clearInterval(publicidadeCarouselTimer);
+    publicidadeCarouselTimer = null;
+  }
 
-    if (publicidadeAtual.imagemURL) {
-      const imagem = document.createElement("img");
-      imagem.className = "adHeroImage";
-      imagem.src = publicidadeAtual.imagemURL;
-      imagem.alt = publicidadeAtual.titulo || "Publicidade";
-      imagem.loading = "lazy";
-      imagem.onerror = () => imagem.remove();
-      anuncio.appendChild(imagem);
-    }
-
-    const eyebrow = document.createElement("div");
-    eyebrow.className = "adEyebrow";
-    eyebrow.textContent = "PUBLICIDADE";
-    anuncio.appendChild(eyebrow);
-
-    const titulo = document.createElement("h1");
-    titulo.textContent = publicidadeAtual.titulo || "Conheça esta oferta";
-    anuncio.appendChild(titulo);
-
-    if (publicidadeAtual.descricao) {
-      const descricao = document.createElement("p");
-      descricao.textContent = publicidadeAtual.descricao;
-      anuncio.appendChild(descricao);
-    }
-
-    if (publicidadeAtual.linkURL) {
-      const link = document.createElement("a");
-      link.href = publicidadeAtual.linkURL;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.textContent = publicidadeAtual.textoBotao || "Saiba mais";
-      anuncio.appendChild(link);
-    }
-  } else {
+  if (publicidadeAtual?.ativo !== true) {
     slogan.classList.remove("hidden");
     anuncio.classList.add("hidden");
     anuncio.replaceChildren();
+    return;
+  }
+
+  slogan.classList.add("hidden");
+  anuncio.classList.remove("hidden");
+  anuncio.replaceChildren();
+
+  const slides = Array.isArray(publicidadeAtual.slides)
+    ? publicidadeAtual.slides.filter(s => s && s.imagemURL)
+    : [];
+
+  // Mantém compatibilidade com a publicidade antiga.
+  const itens = slides.length
+    ? slides
+    : [{
+        imagemURL: publicidadeAtual.imagemURL || "",
+        titulo: publicidadeAtual.titulo || "Conheça esta oferta",
+        descricao: publicidadeAtual.descricao || "",
+        linkURL: publicidadeAtual.linkURL || "",
+        textoBotao: publicidadeAtual.textoBotao || "Saiba mais"
+      }];
+
+  if (!itens.some(s => s.imagemURL || s.titulo || s.descricao)) {
+    slogan.classList.remove("hidden");
+    anuncio.classList.add("hidden");
+    return;
+  }
+
+  let indice = 0;
+
+  const conteudo = document.createElement("div");
+  const controles = document.createElement("div");
+  controles.style.cssText =
+    "display:flex;align-items:center;justify-content:center;gap:16px;margin-top:12px";
+
+  const anterior = document.createElement("button");
+  anterior.type = "button";
+  anterior.className = "btn";
+  anterior.textContent = "‹ Anterior";
+  anterior.setAttribute("aria-label", "Publicidade anterior");
+
+  const contador = document.createElement("span");
+
+  const proximo = document.createElement("button");
+  proximo.type = "button";
+  proximo.className = "btn";
+  proximo.textContent = "Próxima ›";
+  proximo.setAttribute("aria-label", "Próxima publicidade");
+
+  function mostrarSlide() {
+    conteudo.replaceChildren();
+    const slide = itens[indice];
+
+    if (slide.imagemURL) {
+      const imagem = document.createElement("img");
+      imagem.className = "adHeroImage";
+      imagem.src = slide.imagemURL;
+      imagem.alt = slide.titulo || "Publicidade";
+      imagem.loading = "lazy";
+      conteudo.appendChild(imagem);
+    }
+
+    const etiqueta = document.createElement("div");
+    etiqueta.className = "adEyebrow";
+    etiqueta.textContent = "PUBLICIDADE";
+    conteudo.appendChild(etiqueta);
+
+    const titulo = document.createElement("h1");
+    titulo.textContent = slide.titulo || "Conheça esta oferta";
+    conteudo.appendChild(titulo);
+
+    if (slide.descricao) {
+      const descricao = document.createElement("p");
+      descricao.textContent = slide.descricao;
+      conteudo.appendChild(descricao);
+    }
+
+    if (slide.linkURL && /^https?:\/\//i.test(slide.linkURL)) {
+      const link = document.createElement("a");
+      link.href = slide.linkURL;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = slide.textoBotao || "Saiba mais";
+      conteudo.appendChild(link);
+    }
+
+    contador.textContent = `${indice + 1} / ${itens.length}`;
+    anterior.disabled = itens.length < 2;
+    proximo.disabled = itens.length < 2;
+  }
+
+  anterior.onclick = () => {
+    indice = (indice - 1 + itens.length) % itens.length;
+    mostrarSlide();
+  };
+
+  proximo.onclick = () => {
+    indice = (indice + 1) % itens.length;
+    mostrarSlide();
+  };
+
+  controles.append(anterior, contador, proximo);
+  anuncio.append(conteudo, controles);
+  mostrarSlide();
+
+  if (itens.length > 1) {
+    publicidadeCarouselTimer = setInterval(() => {
+      indice = (indice + 1) % itens.length;
+      mostrarSlide();
+    }, 5000);
   }
 }
 
