@@ -2926,6 +2926,105 @@ async function chamarEndpointPagamento(caminho, corpo, mensagemFalha) {
 
 $("refreshAdminStoresBtn").onclick = carregarLojasAdmin;
 $("saveAdminAdBtn").onclick = salvarPublicidadeAdmin;
+  
+let adminAdSlides = [];
+let adminAdSlideId = 0;
+
+function adicionarCampoPublicidade(dados = {}) {
+  const lista = $("adminAdSlidesList");
+  if (!lista) return;
+
+  if (lista.children.length >= 5) {
+    toast("O carrossel permite até 5 imagens.");
+    return;
+  }
+
+  const id = ++adminAdSlideId;
+  const card = document.createElement("div");
+  card.style.cssText =
+    "border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin-top:12px";
+
+  const titulo = document.createElement("input");
+  titulo.type = "text";
+  titulo.maxLength = 100;
+  titulo.placeholder = "Título desta publicidade";
+  titulo.value = dados.titulo || "";
+  titulo.dataset.campo = "titulo";
+
+  const descricao = document.createElement("textarea");
+  descricao.maxLength = 500;
+  descricao.placeholder = "Descrição desta publicidade";
+  descricao.value = dados.descricao || "";
+  descricao.dataset.campo = "descricao";
+
+  const arquivo = document.createElement("input");
+  arquivo.type = "file";
+  arquivo.accept = "image/*";
+  arquivo.dataset.campo = "foto";
+
+  const link = document.createElement("input");
+  link.type = "url";
+  link.placeholder = "Link de destino (opcional)";
+  link.value = dados.linkURL || "";
+  link.dataset.campo = "linkURL";
+
+  const preview = document.createElement("img");
+  preview.alt = "Prévia da imagem";
+  preview.style.cssText =
+    "display:none;width:100%;max-height:180px;object-fit:contain;margin-top:8px";
+
+  const remover = document.createElement("button");
+  remover.type = "button";
+  remover.className = "btn";
+  remover.textContent = "Remover esta publicidade";
+  remover.style.cssText =
+    "width:100%;margin-top:10px;background:#fee2e2;color:#991b1b";
+  remover.onclick = () => card.remove();
+
+  function campo(rotulo, controle) {
+    const grupo = document.createElement("div");
+    grupo.className = "formGroup";
+    const label = document.createElement("label");
+    label.textContent = rotulo;
+    grupo.append(label, controle);
+    return grupo;
+  }
+
+  arquivo.addEventListener("change", () => {
+    const foto = arquivo.files?.[0];
+    if (!foto) return;
+
+    if (!foto.type.startsWith("image/") ||
+        foto.size > 5 * 1024 * 1024) {
+      toast("Escolha uma imagem de até 5 MB.");
+      arquivo.value = "";
+      preview.removeAttribute("src");
+      preview.style.display = "none";
+      return;
+    }
+
+    preview.src = URL.createObjectURL(foto);
+    preview.style.display = "block";
+  });
+
+  card.append(
+    Object.assign(document.createElement("h4"), {
+      textContent: `Publicidade ${id}`
+    }),
+    campo("Foto da galeria", arquivo),
+    preview,
+    campo("Título", titulo),
+    campo("Descrição", descricao),
+    campo("Link de destino", link),
+    remover
+  );
+
+  lista.appendChild(card);
+}
+
+$("addAdminAdSlideBtn")?.addEventListener("click", () => {
+  adicionarCampoPublicidade();
+});
 $("payAdvertisingBtn").onclick = () => {
   if (!currentUser || currentUser.uid !== ADMIN_UID) {
     toast("Acesso restrito ao administrador.");
