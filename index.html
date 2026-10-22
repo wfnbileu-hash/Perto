@@ -5638,7 +5638,75 @@ $("toggleStoreFreteGoBtn")?.addEventListener("click", async () => {
     if (botao) botao.disabled = false;
   }
 });
+ 
+let lojaAbertaNaMinhaLoja = true;
 
+function atualizarVisualBotaoLoja(aberta) {
+  lojaAbertaNaMinhaLoja = aberta !== false;
+
+  const botao = $("toggleStoreOpenBtn");
+  if (!botao) return;
+
+  botao.textContent = lojaAbertaNaMinhaLoja
+    ? "🔴 Fechar loja"
+    : "🟢 Abrir loja";
+
+  botao.style.background = lojaAbertaNaMinhaLoja
+    ? "#fee2e2"
+    : "#dcfce7";
+
+  botao.style.color = lojaAbertaNaMinhaLoja
+    ? "#991b1b"
+    : "#166534";
+}
+
+$("toggleStoreOpenBtn")?.addEventListener("click", async () => {
+  const usuario = auth.currentUser || currentUser;
+
+  if (!usuario) {
+    showAuth("login");
+    return;
+  }
+
+  const proximoEstado = !lojaAbertaNaMinhaLoja;
+  const botao = $("toggleStoreOpenBtn");
+
+  if (botao) botao.disabled = true;
+
+  try {
+    await updateDoc(doc(db, "lojas", usuario.uid), {
+      lojaAberta: proximoEstado,
+      lojaAbertaAtualizadoEm: serverTimestamp()
+    });
+
+    atualizarVisualBotaoLoja(proximoEstado);
+
+    const indice = lojasVitrine.findIndex(
+      loja => loja.id === usuario.uid
+    );
+
+    if (indice >= 0) {
+      lojasVitrine[indice].lojaAberta = proximoEstado;
+    }
+
+    toast(
+      proximoEstado
+        ? "Loja aberta!"
+        : "Loja fechada para novos pedidos."
+    );
+  } catch (erro) {
+    console.error("Erro ao alterar estado da loja:", erro);
+
+    toast(
+      erro?.code === "permission-denied"
+        ? "O Firebase bloqueou a alteração. Verifique as regras do Firestore."
+        : "Não foi possível alterar o estado da loja."
+    );
+  } finally {
+    if (botao) botao.disabled = false;
+  }
+});
+  
 async function carregarPainelMinhaLoja() {
     const usuario = auth.currentUser || currentUser;
     if (!usuario) {
