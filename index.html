@@ -5540,7 +5540,7 @@ async function autorizarEntregaMarketplacePedido(pedido, usuario, veiculoSelecio
         liberar.className = "btn btnPrimary";
         liberar.textContent = "Tentar liberar entrega no FreteGo";
         liberar.onclick = async () => {
-          const veiculo = await escolherVeiculoEntregaMarketplace(pedido.veiculo || "");
+          const veiculo = await obterModalidadeEntregaLoja(usuario, pedido.veiculo || "");
           if (!veiculo) return;
           liberar.disabled = true;
           liberar.textContent = "Enviando ao FreteGo...";
