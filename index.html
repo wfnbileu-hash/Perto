@@ -4842,14 +4842,36 @@ $("calculateDeliveryQuote").onclick = async () => {
   $("submitStoreDelivery").disabled = true;
   cotacaoFreteAtual = null;
 
-  try {
+  
+try {
+    const lojaSnap = await getDoc(doc(db, "lojas", lojaId));
+    if (!lojaSnap.exists()) {
+      throw new Error("Não foi possível localizar a configuração da loja.");
+    }
+
+    const modalidade = String(
+      lojaSnap.data().modalidadeEntrega || "Moto"
+    ).trim();
+
+    const tiposServico = {
+      "Moto": "delivery",
+      "Carro": "frete_carro",
+      "Utilitário/Fiorino": "utilitario"
+    };
+
+    const tipoServico = tiposServico[modalidade];
+    if (!tipoServico) {
+      throw new Error("A modalidade de entrega da loja é inválida.");
+    }
+
     const resposta = await calcularFreteMarketplaceFn({
-      tipoServico: "delivery",
+      tipoServico,
       pickupAddress,
       pickupCity,
       deliveryAddress: dropoffAddress,
       deliveryCity: dropoffCity
     });
+
 
     const dados = resposta.data || {};
 
@@ -4951,6 +4973,7 @@ $("storeDeliveryForm").addEventListener("submit",async e=>{
       distanciaFreteKm:cotacaoFreteAtual.distanciaKm,
       tempoEstimadoFreteMinutos:cotacaoFreteAtual.tempoMinutos,
       tipoEntrega:"fretego",
+      veiculo: modalidade,
       pickupAddress,
       pickupCity,
       dropoffAddress,
