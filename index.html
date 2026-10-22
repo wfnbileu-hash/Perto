@@ -2965,9 +2965,11 @@ if (arquivoPublicidade) {
     toast("Publicidade atualizada!");
   } catch (erro) {
     console.error("Erro ao salvar publicidade:", erro);
-    mensagem.textContent = erro.code === "permission-denied"
-      ? "O Firebase bloqueou a gravação. Confira as regras da coleção configuracoes."
-      : "Não foi possível salvar a publicidade.";
+    
+mensagem.textContent =
+  "Erro: " + (erro.code || "") + " — " +
+  (erro.message || "Erro desconhecido");
+
   } finally {
     botao.disabled = false;
     botao.textContent = "Salvar publicidade";
