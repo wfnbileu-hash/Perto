@@ -2342,16 +2342,38 @@ Você será direcionado ao Mercado Pago para concluir o pagamento. O destaque se
   </div>
 </div>
 
+<
 <!-- MODAL DE ESCOLHA DE VEÍCULO PARA O FRETEGO -->
 <div id="storeVehicleModal" class="modal" style="display:none;z-index:10060;">
   <div class="modalContent" style="max-width:460px;width:calc(100% - 28px);padding:20px;border-radius:20px;">
-    <div class="modalHeader"><h2>🚚 Escolher veículo</h2><button type="button" id="closeStoreVehicleModal" class="closeModal" aria-label="Fechar">×</button></div>
-    <p style="font-size:13px;color:#64748b;line-height:1.5;margin-bottom:14px;">Escolha o veículo mais adequado para este pedido. A entrega só será enviada ao FreteGo depois da confirmação.</p>
-    <div class="formGroup"><label for="storeVehicleSelect">Veículo para a entrega *</label><select id="storeVehicleSelect" required><option value="">Selecione um veículo</option><option value="Moto">🏍️ Moto</option><option value="Carro">🚗 Carro</option><option value="Utilitário/Fiorino">🚐 Utilitário / Fiorino</option><option value="Van">🚚 Van</option><option value="Caminhão">🚛 Caminhão</option></select></div>
+    <div class="modalHeader">
+      <h2>🚚 Escolher veículo</h2>
+      <button type="button" id="closeStoreVehicleModal" class="closeModal" aria-label="Fechar">×</button>
+    </div>
+
+    <p style="font-size:13px;color:#64748b;line-height:1.5;margin-bottom:14px;">
+      Escolha o veículo mais adequado para este pedido. A entrega só será enviada ao FreteGo depois da confirmação.
+    </p>
+
+    <div class="formGroup">
+      <label for="storeVehicleSelect">Veículo para a entrega *</label>
+      <select id="storeVehicleSelect" required>
+        <option value="">Selecione um veículo</option>
+        <option value="Moto">🏍️ Moto</option>
+        <option value="Carro">🚗 Carro</option>
+        <option value="Utilitário/Fiorino">🚐 Utilitário / Fiorino</option>
+      </select>
+    </div>
+
     <div id="storeVehicleError" style="display:none;color:#b91c1c;font-size:12px;margin-top:8px;"></div>
-    <div class="modalActions"><button type="button" id="cancelStoreVehicleBtn" class="btn" style="background:#e5e7eb;">Cancelar</button><button type="button" id="confirmStoreVehicleBtn" class="btn btnPrimary">Continuar</button></div>
+
+    <div class="modalActions">
+      <button type="button" id="cancelStoreVehicleBtn" class="btn" style="background:#e5e7eb;">Cancelar</button>
+      <button type="button" id="confirmStoreVehicleBtn" class="btn btnPrimary">Continuar</button>
+    </div>
   </div>
 </div>
+  
 
 <!-- AVISOS TEMPORÁRIOS -->
 <div id="toast"></div>
@@ -5248,7 +5270,7 @@ function escolherVeiculoEntregaMarketplace(veiculoAtual = "") {
   const select = $("storeVehicleSelect");
   const erro = $("storeVehicleError");
   if (!modal || !select) return Promise.resolve(null);
-  select.value = ["Moto","Carro","Utilitário/Fiorino","Van","Caminhão"].includes(veiculoAtual) ? veiculoAtual : "";
+  select.value = ["Moto", "Carro", "Utilitário/Fiorino"].includes(veiculoAtual) ? veiculoAtual : "";
   erro.style.display = "none";
   modal.style.display = "flex";
   return new Promise(resolve => { resolverEscolhaVeiculoFreteGo = resolve; });
