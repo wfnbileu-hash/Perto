@@ -212,6 +212,7 @@ if (
 )
   ? 'canceled'
   : String(assinaturaAtual.status || 'authorized'),
+        ultimaCobrancaId: String(cobranca.id || recursoId),
         ultimoPagamentoStatus: 'approved',
         ultimoPagamentoValor: valorPago,
         ultimoPagamentoAprovadoEm:
