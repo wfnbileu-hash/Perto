@@ -172,14 +172,41 @@ if (
       const valorEsperado = Number(registro.valorAtual);
 
       if (statusCobranca !== 'approved') {
-        await docMensalidade.ref.set({
-          ultimoPagamentoStatus: statusCobranca || 'unknown',
-          ultimaCobrancaId: String(cobranca.id || recursoId),
-          ultimoPagamentoAtualizadoEm:
-            admin.firestore.FieldValue.serverTimestamp(),
-          atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
-        }, { merge: true });
-        return res.status(200).send('Cobrança ainda não aprovada');
+        const registroAtualizado = await db.runTransaction(
+          async (transacao) => {
+            const mensalidadeSnap = await transacao.get(
+              docMensalidade.ref
+            );
+
+            if (!mensalidadeSnap.exists) return false;
+
+            const mensalidadeAtual = mensalidadeSnap.data();
+
+            if (
+              String(mensalidadeAtual.assinaturaId || '') !==
+              assinaturaId
+            ) {
+              return false;
+            }
+
+            transacao.set(docMensalidade.ref, {
+              ultimoPagamentoStatus: statusCobranca || 'unknown',
+              ultimaCobrancaId: idCobrancaAtual,
+              ultimoPagamentoAtualizadoEm:
+                admin.firestore.FieldValue.serverTimestamp(),
+              atualizadoEm:
+                admin.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+
+            return true;
+          }
+        );
+
+        return res.status(200).send(
+          registroAtualizado
+            ? 'Cobrança ainda não aprovada'
+            : 'Notificação de assinatura antiga ignorada'
+        );
       }
 
       if (!Number.isFinite(valorPago) ||
