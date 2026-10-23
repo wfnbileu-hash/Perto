@@ -227,14 +227,24 @@ module.exports = async (req, res) => {
       const lojaRef = db.collection('lojas').doc(docMensalidade.id);
       const lojaSnap = await lojaRef.get();
 
-      if (lojaSnap.exists &&
-          String(lojaSnap.data().statusAdmin || '').toLowerCase() !== 'suspensa') {
-        await lojaRef.set({
-          ativo: true,
-          mensalidadeAtualizadaEm:
-            admin.firestore.FieldValue.serverTimestamp()
-        }, { merge: true });
-      }
+      const mensalidadeAtualSnap = await docMensalidade.ref.get();
+const mensalidadeAtual = mensalidadeAtualSnap.data() || {};
+
+const assinaturaCancelada =
+  mensalidadeAtual.cancelamentoOrigem === 'solicitacao_loja' ||
+  Boolean(mensalidadeAtual.canceladaEm);
+
+if (
+  lojaSnap.exists &&
+  !assinaturaCancelada &&
+  String(lojaSnap.data().statusAdmin || '').toLowerCase() !== 'suspensa'
+) {
+  await lojaRef.set({
+    ativo: true,
+    mensalidadeAtualizadaEm:
+      admin.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+}
 
       return res.status(200).send('Cobrança aprovada e mensalidade atualizada');
     }
