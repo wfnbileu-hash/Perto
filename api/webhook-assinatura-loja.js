@@ -204,9 +204,7 @@ if (
 
       const vencimentoValido = proximoVencimento &&
         !Number.isNaN(proximoVencimento.getTime());
-
-      const atualizacao = {
-       
+      
       const lojaRef = db.collection('lojas').doc(docMensalidade.id);
 
       const resultado = await db.runTransaction(async (transacao) => {
