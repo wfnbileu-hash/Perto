@@ -138,6 +138,8 @@ module.exports = async (req, res) => {
       moeda: 'BRL',
       status: String(dados.status || 'pending'),
       checkoutUrl: dados.init_point,
+      canceladaEm: admin.firestore.FieldValue.delete(),
+      cancelamentoOrigem: admin.firestore.FieldValue.delete(),
       criadoEm: admin.firestore.FieldValue.serverTimestamp(),
       atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
