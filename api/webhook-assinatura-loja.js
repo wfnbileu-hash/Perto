@@ -206,8 +206,12 @@ if (
         !Number.isNaN(proximoVencimento.getTime());
 
       const atualizacao = {
-        status: String(assinaturaAtual.status || 'authorized'),
-        ultimaCobrancaId: String(cobranca.id || recursoId),
+        status: (
+  registro.cancelamentoOrigem === 'solicitacao_loja' ||
+  Boolean(registro.canceladaEm)
+)
+  ? 'canceled'
+  : String(assinaturaAtual.status || 'authorized'),
         ultimoPagamentoStatus: 'approved',
         ultimoPagamentoValor: valorPago,
         ultimoPagamentoAprovadoEm:
