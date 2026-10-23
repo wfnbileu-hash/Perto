@@ -75,6 +75,7 @@ module.exports = async (req, res) => {
 
     const db = iniciarFirebase();
 
+    
     if (tipo === 'subscription_preapproval') {
       const assinatura = await consultarMP(
         `https://api.mercadopago.com/preapproval/${encodeURIComponent(recursoId)}`,
@@ -82,28 +83,13 @@ module.exports = async (req, res) => {
       );
 
       const uid = String(assinatura.external_reference || '');
-      if (!uid || !assinatura.id) {
+      const assinaturaId = String(assinatura.id || '');
+
+      if (!uid || !assinaturaId) {
         return res.status(200).send('Assinatura ignorada');
       }
 
       const ref = db.collection('mensalidadesLojas').doc(uid);
-      const snap = await ref.get();
-
-      if (!snap.exists ||
-          String(snap.data().assinaturaId) !== String(assinatura.id)) {
-        return res.status(200).send('Assinatura não vinculada ao Perto');
-      }
-
-      const registroAtual = snap.data();
-
-if (
-  registroAtual.cancelamentoOrigem === 'solicitacao_loja' ||
-  Boolean(registroAtual.canceladaEm)
-) {
-  return res.status(200).send(
-    'Assinatura já cancelada no Perto; notificação ignorada'
-  );
-}
 
       const atualizacao = {
         status: String(assinatura.status || 'unknown'),
@@ -114,8 +100,10 @@ if (
         ? new Date(assinatura.next_payment_date)
         : null;
 
-      if (proximoVencimento &&
-          !Number.isNaN(proximoVencimento.getTime())) {
+      if (
+        proximoVencimento &&
+        !Number.isNaN(proximoVencimento.getTime())
+      ) {
         const carenciaAte = new Date(proximoVencimento);
         carenciaAte.setDate(carenciaAte.getDate() + 5);
 
@@ -126,9 +114,30 @@ if (
         atualizacao.vencimentoPendente = false;
       }
 
-      await ref.set(atualizacao, { merge: true });
+      const resultado = await db.runTransaction(async (tx) => {
+        const snap = await tx.get(ref);
 
-      return res.status(200).send('Assinatura atualizada');
+        if (
+          !snap.exists ||
+          String(snap.data().assinaturaId || '') !== assinaturaId
+        ) {
+          return 'Assinatura não vinculada ao Perto';
+        }
+
+        const registroAtual = snap.data();
+
+        if (
+          registroAtual.cancelamentoOrigem === 'solicitacao_loja' ||
+          Boolean(registroAtual.canceladaEm)
+        ) {
+          return 'Assinatura já cancelada no Perto; notificação ignorada';
+        }
+
+        tx.set(ref, atualizacao, { merge: true });
+        return 'Assinatura atualizada';
+      });
+
+      return res.status(200).send(resultado);
     }
 
     if (tipo === 'subscription_authorized_payment') {
