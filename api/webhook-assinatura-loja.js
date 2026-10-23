@@ -94,6 +94,17 @@ module.exports = async (req, res) => {
         return res.status(200).send('Assinatura não vinculada ao Perto');
       }
 
+      const registroAtual = snap.data();
+
+if (
+  registroAtual.cancelamentoOrigem === 'solicitacao_loja' ||
+  Boolean(registroAtual.canceladaEm)
+) {
+  return res.status(200).send(
+    'Assinatura já cancelada no Perto; notificação ignorada'
+  );
+}
+
       const atualizacao = {
         status: String(assinatura.status || 'unknown'),
         atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
