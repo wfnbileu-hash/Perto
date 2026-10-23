@@ -262,7 +262,112 @@ if (
   }, { merge: true });
 }
 
-      return res.status(200).send('Cobrança aprovada e mensalidade atualizada');
+      
+      const lojaRef = db.collection('lojas').doc(docMensalidade.id);
+
+      const resultado = await db.runTransaction(async (transacao) => {
+        const mensalidadeSnap = await transacao.get(docMensalidade.ref);
+        const lojaSnap = await transacao.get(lojaRef);
+
+        if (!mensalidadeSnap.exists) {
+          return 'mensalidade_nao_encontrada';
+        }
+
+        const mensalidadeAtual = mensalidadeSnap.data();
+
+        // Ignora notificações de uma assinatura antiga.
+        if (String(mensalidadeAtual.assinaturaId || '') !== assinaturaId) {
+          return 'assinatura_alterada';
+        }
+
+        // Impede o processamento duplicado da mesma cobrança.
+        if (
+          mensalidadeAtual.ultimaCobrancaId === idCobrancaAtual &&
+          mensalidadeAtual.ultimoPagamentoStatus === 'approved'
+        ) {
+          return 'ja_processada';
+        }
+
+        const assinaturaCancelada =
+          mensalidadeAtual.cancelamentoOrigem === 'solicitacao_loja' ||
+          Boolean(mensalidadeAtual.canceladaEm);
+
+        const atualizacao = {
+          status: assinaturaCancelada
+            ? 'canceled'
+            : String(assinaturaAtual.status || 'authorized'),
+          ultimaCobrancaId: idCobrancaAtual,
+          ultimoPagamentoStatus: 'approved',
+          ultimoPagamentoValor: valorPago,
+          ultimoPagamentoAprovadoEm:
+            admin.firestore.FieldValue.serverTimestamp(),
+          vencimentoPendente: !vencimentoValido,
+          atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
+        };
+
+        if (vencimentoValido && !assinaturaCancelada) {
+          const carenciaAte = new Date(proximoVencimento);
+          carenciaAte.setDate(carenciaAte.getDate() + 5);
+
+          atualizacao.mensalidadeVenceEm =
+            admin.firestore.Timestamp.fromDate(proximoVencimento);
+          atualizacao.mensalidadeCarenciaAte =
+            admin.firestore.Timestamp.fromDate(carenciaAte);
+        }
+
+        transacao.set(docMensalidade.ref, atualizacao, { merge: true });
+
+        // Só reativa a loja se a assinatura continuar válida.
+        if (
+          vencimentoValido &&
+          !assinaturaCancelada &&
+          lojaSnap.exists &&
+          String(lojaSnap.data().statusAdmin || '').toLowerCase() !== 'suspensa'
+        ) {
+          transacao.set(lojaRef, {
+            ativo: true,
+            mensalidadeAtualizadaEm:
+              admin.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+        }
+
+        if (assinaturaCancelada) return 'assinatura_cancelada';
+        if (!vencimentoValido) return 'vencimento_pendente';
+
+        return 'atualizada';
+      });
+
+      if (
+        resultado === 'assinatura_alterada' ||
+        resultado === 'ja_processada' ||
+        resultado === 'mensalidade_nao_encontrada'
+      ) {
+        return res.status(200).send(
+          resultado === 'assinatura_alterada'
+            ? 'Assinatura antiga ignorada'
+            : resultado === 'ja_processada'
+              ? 'Cobrança já processada'
+              : 'Mensalidade não encontrada'
+        );
+      }
+
+      if (resultado === 'assinatura_cancelada') {
+        return res.status(200).send(
+          'Pagamento registrado; assinatura continua cancelada'
+        );
+      }
+
+      if (resultado === 'vencimento_pendente') {
+        console.error('Pagamento aprovado; vencimento pendente:', assinaturaId);
+        return res.status(200).send(
+          'Pagamento aprovado e registrado; vencimento pendente de confirmação'
+        );
+      }
+
+      return res.status(200).send(
+        'Cobrança aprovada e mensalidade atualizada'
+      );
+
     }
 
     if (tipo === 'payment') {
