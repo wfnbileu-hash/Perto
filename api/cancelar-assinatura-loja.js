@@ -144,7 +144,7 @@ module.exports = async (req, res) => {
 
     // Preserva o registro financeiro e o histórico da assinatura.
     await mensalidadeRef.set({
-      status: 'cancelled',
+      status: 'canceled',
       canceladaEm: admin.firestore.FieldValue.serverTimestamp(),
       cancelamentoOrigem: 'solicitacao_loja',
       atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
