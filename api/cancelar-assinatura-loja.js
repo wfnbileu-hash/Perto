@@ -128,7 +128,7 @@ module.exports = async (req, res) => {
         url,
         tokenMP,
         'PUT',
-        { status: 'cancelled' }
+        { status: 'canceled' }
       );
     }
 
