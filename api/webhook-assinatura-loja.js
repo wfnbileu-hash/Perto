@@ -206,63 +206,7 @@ if (
         !Number.isNaN(proximoVencimento.getTime());
 
       const atualizacao = {
-        status: (
-  registro.cancelamentoOrigem === 'solicitacao_loja' ||
-  Boolean(registro.canceladaEm)
-)
-  ? 'canceled'
-  : String(assinaturaAtual.status || 'authorized'),
-        ultimaCobrancaId: String(cobranca.id || recursoId),
-        ultimoPagamentoStatus: 'approved',
-        ultimoPagamentoValor: valorPago,
-        ultimoPagamentoAprovadoEm:
-          admin.firestore.FieldValue.serverTimestamp(),
-        vencimentoPendente: !vencimentoValido,
-        atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
-      };
-
-      if (vencimentoValido) {
-        const carenciaAte = new Date(proximoVencimento);
-        carenciaAte.setDate(carenciaAte.getDate() + 5);
-
-        atualizacao.mensalidadeVenceEm =
-          admin.firestore.Timestamp.fromDate(proximoVencimento);
-        atualizacao.mensalidadeCarenciaAte =
-          admin.firestore.Timestamp.fromDate(carenciaAte);
-      }
-
-      await docMensalidade.ref.set(atualizacao, { merge: true });
-
-      if (!vencimentoValido) {
-        console.error('Pagamento aprovado; vencimento pendente:', assinaturaId);
-        return res.status(200).send(
-          'Pagamento aprovado e registrado; vencimento pendente de confirmação'
-        );
-      }
-
-      const lojaRef = db.collection('lojas').doc(docMensalidade.id);
-      const lojaSnap = await lojaRef.get();
-
-      const mensalidadeAtualSnap = await docMensalidade.ref.get();
-const mensalidadeAtual = mensalidadeAtualSnap.data() || {};
-
-const assinaturaCancelada =
-  mensalidadeAtual.cancelamentoOrigem === 'solicitacao_loja' ||
-  Boolean(mensalidadeAtual.canceladaEm);
-
-if (
-  lojaSnap.exists &&
-  !assinaturaCancelada &&
-  String(lojaSnap.data().statusAdmin || '').toLowerCase() !== 'suspensa'
-) {
-  await lojaRef.set({
-    ativo: true,
-    mensalidadeAtualizadaEm:
-      admin.firestore.FieldValue.serverTimestamp()
-  }, { merge: true });
-}
-
-      
+       
       const lojaRef = db.collection('lojas').doc(docMensalidade.id);
 
       const resultado = await db.runTransaction(async (transacao) => {
