@@ -4690,6 +4690,7 @@ $("boostModal").classList.add("open")}
 // ==================================================
 // INTEGRAÇÃO DE PAGAMENTO / CHECKOUT
 // ==================================================
+
 document.querySelectorAll("#boostOptions [data-plan]").forEach(b => {
   b.onclick = async () => {
     const plano = b.dataset.plan;
@@ -4703,40 +4704,21 @@ document.querySelectorAll("#boostOptions [data-plan]").forEach(b => {
     b.disabled = true;
 
     try {
-      const idToken = await currentUser.getIdToken();
-
-      const resposta = await fetch("/api/criar-pagamento", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + idToken
-        },
-        body: JSON.stringify({
+      await chamarEndpointPagamento(
+        "/api/criar-pagamento",
+        {
           produtoId: produto.id,
           plano: plano
-        })
-      });
-
-      const resultado = await resposta.json();
-
-      if (!resposta.ok || !resultado.checkout_url) {
-        throw new Error(
-          resultado.erro || "Não foi possível iniciar o pagamento."
-        );
-      }
-
-      window.location.href = resultado.checkout_url;
-    } catch (erro) {
-      console.error("Erro ao iniciar pagamento:", erro);
-      toast(erro.message || "Erro ao iniciar o pagamento.");
+        },
+        "Não foi possível iniciar o pagamento Pix."
+      );
+    } finally {
       b.disabled = false;
     }
   };
 });
   
-
-
-
+  
 // ==================================================
 // ABERTURA E FECHAMENTO DE MODAIS
 // ==================================================
