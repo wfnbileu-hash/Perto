@@ -78,6 +78,12 @@ module.exports = async (req, res) => {
     iniciarFirebase();
 
     const usuario = await admin.auth().verifyIdToken(idToken);
+    const conta = await admin.auth().getUser(usuario.uid);
+if (!conta.email) {
+  return res.status(400).json({
+    erro: 'Cadastre um e-mail válido na sua conta para gerar o Pix.'
+  });
+}
     const db = admin.firestore();
 
     const produtoRef = db.collection('produtos').doc(produtoId);
