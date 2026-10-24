@@ -239,17 +239,139 @@ module.exports = async (req, res) => {
       return res.status(200).send('Cobrança aprovada e mensalidade atualizada');
     }
 
+    
     if (tipo === 'payment') {
       const pagamento = await consultarMP(
         `https://api.mercadopago.com/v1/payments/${encodeURIComponent(recursoId)}`,
         token
       );
 
-      const uid = String(pagamento.external_reference || '');
-      if (!uid) return res.status(200).send('Pagamento ignorado');
+      const referencia = String(pagamento.external_reference || '');
+      if (!referencia) {
+        return res.status(200).send('Pagamento ignorado');
+      }
 
+      // Primeiro: identificar o novo Pix da mensalidade.
+      const pagamentoRef = db
+        .collection('pagamentosMensalidade')
+        .doc(referencia);
+      const pagamentoSnap = await pagamentoRef.get();
+
+      if (pagamentoSnap.exists) {
+        const registroPagamento = pagamentoSnap.data();
+        const lojaId = String(registroPagamento.lojaId || '');
+        const valorPago = Number(pagamento.transaction_amount);
+        const valorEsperado = Number(registroPagamento.valor);
+        const statusMP = String(pagamento.status || '').toLowerCase();
+        const moeda = String(pagamento.currency_id || '');
+
+        if (
+          !lojaId ||
+          String(registroPagamento.pagamentoId) !== String(pagamento.id) ||
+          !Number.isFinite(valorPago) ||
+          !Number.isFinite(valorEsperado) ||
+          Math.abs(valorPago - valorEsperado) >= 0.01 ||
+          moeda !== 'BRL'
+        ) {
+          console.error('Dados do Pix da mensalidade não conferem.');
+          return res.status(200).send('Pagamento não validado');
+        }
+
+        const mensalidadeRef = db
+          .collection('mensalidadesLojas')
+          .doc(lojaId);
+        const lojaRef = db.collection('lojas').doc(lojaId);
+
+        if (statusMP !== 'approved') {
+          await pagamentoRef.set({
+            status: statusMP || 'unknown',
+            atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+
+          return res.status(200).send('Pagamento ainda não aprovado');
+        }
+
+        await db.runTransaction(async (transacao) => {
+          const pagamentoAtual = await transacao.get(pagamentoRef);
+          const mensalidadeSnap = await transacao.get(mensalidadeRef);
+          const lojaSnap = await transacao.get(lojaRef);
+
+          if (!pagamentoAtual.exists || !mensalidadeSnap.exists) {
+            throw new Error('Registro da mensalidade não encontrado');
+          }
+
+          const dadosPagamento = pagamentoAtual.data();
+
+          // Evita estender a mensalidade duas vezes pelo mesmo Pix.
+          if (dadosPagamento.status === 'approved' &&
+              dadosPagamento.processado === true) {
+            return;
+          }
+
+          const agora = new Date();
+          const dadosMensalidade = mensalidadeSnap.data();
+          const vencimentoAtual = dadosMensalidade.mensalidadeVenceEm;
+          const dataAtual = vencimentoAtual?.toDate
+            ? vencimentoAtual.toDate()
+            : null;
+
+          // Renovação antecipada soma 30 dias ao vencimento existente.
+          const inicio = dataAtual && dataAtual > agora
+            ? dataAtual
+            : agora;
+
+          const vencimento = new Date(inicio);
+          vencimento.setDate(vencimento.getDate() + 30);
+
+          const carencia = new Date(vencimento);
+          carencia.setDate(carencia.getDate() + 5);
+
+          const servidorAgora =
+            admin.firestore.FieldValue.serverTimestamp();
+
+          transacao.set(pagamentoRef, {
+            status: 'approved',
+            processado: true,
+            aprovadoEm: servidorAgora,
+            atualizadoEm: servidorAgora
+          }, { merge: true });
+
+          transacao.set(mensalidadeRef, {
+            lojaId,
+            status: 'authorized',
+            tipoCobranca: 'pix',
+            ultimoPagamentoStatus: 'approved',
+            ultimoPagamentoId: String(pagamento.id),
+            ultimoPagamentoValor: valorPago,
+            ultimoPagamentoAprovadoEm: servidorAgora,
+            mensalidadeVenceEm:
+              admin.firestore.Timestamp.fromDate(vencimento),
+            mensalidadeCarenciaAte:
+              admin.firestore.Timestamp.fromDate(carencia),
+            vencimentoPendente: false,
+            atualizadoEm: servidorAgora
+          }, { merge: true });
+
+          if (
+            lojaSnap.exists &&
+            String(lojaSnap.data().statusAdmin || '').toLowerCase()
+              !== 'suspensa'
+          ) {
+            transacao.set(lojaRef, {
+              ativo: true,
+              mensalidadeAtualizadaEm: servidorAgora
+            }, { merge: true });
+          }
+        });
+
+        return res.status(200).send('Pix aprovado e mensalidade atualizada');
+      }
+
+      // Compatibilidade com pagamentos antigos vinculados diretamente ao UID.
+      const uid = referencia;
       const ref = db.collection('mensalidadesLojas').doc(uid);
       const snap = await ref.get();
+
       if (!snap.exists) {
         return res.status(200).send('Pagamento não vinculado ao Perto');
       }
@@ -257,9 +379,12 @@ module.exports = async (req, res) => {
       const registro = snap.data();
       const valorPago = Number(pagamento.transaction_amount);
 
-      if (String(pagamento.status).toLowerCase() === 'approved' &&
-          Number.isFinite(valorPago) &&
-          Math.abs(valorPago - Number(registro.valorAtual)) < 0.01) {
+      if (
+        String(pagamento.status).toLowerCase() === 'approved' &&
+        String(pagamento.currency_id || '') === 'BRL' &&
+        Number.isFinite(valorPago) &&
+        Math.abs(valorPago - Number(registro.valorAtual)) < 0.01
+      ) {
         await ref.set({
           ultimoPagamentoStatus: 'approved',
           ultimoPagamentoId: String(pagamento.id || recursoId),
@@ -272,6 +397,7 @@ module.exports = async (req, res) => {
 
       return res.status(200).send('Notificação de pagamento processada');
     }
+
 
     return res.status(200).send('Evento ignorado');
   } catch (erro) {
