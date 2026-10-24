@@ -2459,7 +2459,7 @@ Você será direcionado ao Mercado Pago para concluir o pagamento. O destaque se
 <!-- ================================================== -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js"; import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, addDoc, collection, query, orderBy, getDocs, where, serverTimestamp, deleteDoc, updateDoc, onSnapshot, limit } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-functions.js";
 
@@ -3372,6 +3372,70 @@ if(error.code==="auth/email-already-in-use")m="Esse e-mail já possui uma conta.
 if(error.code==="auth/invalid-email")m="Digite um e-mail válido.";
 if(error.code==="auth/weak-password")m="A senha escolhida é muito fraca.";
 authMessage(m)}}
+  
+const googleProvider = new GoogleAuthProvider();
+
+$("btnGoogleLogin").onclick = async () => {
+  clearAuth();
+
+  try {
+    const resultado = await signInWithPopup(auth, googleProvider);
+    const usuario = resultado.user;
+    const perfilRef = doc(db, "usuarios", usuario.uid);
+    const perfil = await getDoc(perfilRef);
+
+    if (!perfil.exists()) {
+      const cidade = prompt("Qual é a sua cidade?");
+
+      if (!cidade || !cidade.trim()) {
+        await signOut(auth);
+        return;
+      }
+
+      const aceitouTermos = confirm(
+        "Você aceita os Termos de Uso, Responsabilidade, Segurança e Privacidade do Perto?"
+      );
+
+      if (!aceitouTermos) {
+        await signOut(auth);
+        return;
+      }
+
+      const maiorDeIdade = confirm(
+        "Você confirma que tem 18 anos ou mais?"
+      );
+
+      if (!maiorDeIdade) {
+        await signOut(auth);
+        return;
+      }
+
+      await setDoc(perfilRef, {
+        uid: usuario.uid,
+        nome: usuario.displayName || "Usuário",
+        telefone: "",
+        cidade: cidade.trim(),
+        email: usuario.email || "",
+        termosAceitos: true,
+        termosVersao: TERMOS_VERSAO,
+        termosAceitosEm: serverTimestamp(),
+        maiorDeIdadeConfirmado: true,
+        criadoEm: serverTimestamp(),
+        atualizadoEm: serverTimestamp()
+      });
+    }
+
+    await enterApp(usuario);
+    toast("Login com Google realizado!");
+  } catch (error) {
+    console.error("Erro no login com Google:", error);
+    authMessage(
+      "Não foi possível entrar com Google. Código: " +
+      (error.code || "desconhecido")
+    );
+  }
+};
+  
 $("loginForm").onsubmit=loginUser;
 $("signupForm").onsubmit=signupUser;
 
