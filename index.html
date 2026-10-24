@@ -2478,7 +2478,7 @@ const calcularFreteMarketplaceFn=httpsCallable(functions, "calcularFreteMarketpl
 const consultarEntregaMarketplaceFn=httpsCallable(functions, "consultarEntregaMarketplace");
 let storage=null,storageRef=null,uploadBytes=null,getDownloadURL=null;
 let currentUser=null,currentUserData=null,allProducts=[],favorites=new Set(),currentSlide=0,slideTimer=null,selectedImages=[],selectedProfessionalPhoto=null,currentConversationId=null,currentChatUnsub=null,currentChatData=null,currentChatProduct=null,currentOfferProduct=null,editingProductId=null,editingProductImages=[],currentProfessionalActive=true;
-  
+let homeProductsVisible=20,homeProductsObserver=null;
 let notificationsUnsub = null;
 let notificationsCache = [];
 let chatUnreadUnsub = null;
@@ -3855,24 +3855,76 @@ function sortProducts(a,b){let ab=isBoosted(a),bb=isBoosted(b);
 if(ab!==bb)return bb-ab;
 return (b.criadoEm?.toMillis?.()||0)-(a.criadoEm?.toMillis?.()||0)}
 async function loadProducts(){try{let s=await getDocs(query(collection(db,"produtos"),orderBy("criadoEm","desc")));
+
 allProducts=s.docs.map(d=>({id:d.id,...d.data()})).sort(sortProducts)}catch(e){console.error(e);
-allProducts=[]}renderHomeProducts();
+allProducts=[]}
+homeProductsVisible=20;
+renderHomeProducts();
 renderSearchProducts($("globalSearch").value);
 renderFavorites()}
+
 function createProductCard(p){let card=document.createElement("div");
 card.className="productCard";
 let imgs=p.imagens?.length?p.imagens:(p.imagem?[p.imagem]:[]),src=imgs[0];
-card.innerHTML=`<div class="productVisual">${src?`<img src="${esc(src)}" alt="" style="width:100%;height:100%;object-fit:contain;background:#eef2f7;" onerror="this.style.display='none'">`:productEmoji(p.categoria)}${isBoosted(p)?'<span style="position:absolute;left:8px;top:8px;background:#f59e0b;color:#111827;border-radius:8px;padding:5px 7px;font-size:10px;font-weight:900">⚡ TURBINADO</span>':''}<button class="favoriteBtn" data-favorite="${esc(p.id)}">${favorites.has(p.id)?"❤️":"♡"}</button></div><div class="productInfo"><div class="productTitle">${esc(p.nome)}</div><div class="productPrice">${money(p.preco)}</div><div class="productLocation">📍 ${esc(p.localizacao||"Região não informada")}</div>${p.aceitaTroca?'<span class="tradeBadge">ACEITA TROCA</span>':''}</div>`;
+card.innerHTML=`<div class="productVisual">${src?`<img src="${esc(src)}" alt="" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:contain;background:#eef2f7;" onerror="this.style.display='none'">`:productEmoji(p.categoria)}${isBoosted(p)?'<span style="position:absolute;left:8px;top:8px;background:#f59e0b;color:#111827;border-radius:8px;padding:5px 7px;font-size:10px;font-weight:900">⚡ TURBINADO</span>':''}<button class="favoriteBtn" data-favorite="${esc(p.id)}">${favorites.has(p.id)?"❤️":"♡"}</button></div><div class="productInfo"><div class="productTitle">${esc(p.nome)}</div><div class="productPrice">${money(p.preco)}</div><div class="productLocation">📍 ${esc(p.localizacao||"Região não informada")}</div>${p.aceitaTroca?'<span class="tradeBadge">ACEITA TROCA</span>':''}</div>`;
 card.onclick=e=>{if(!e.target.closest(".favoriteBtn"))openProduct(p)};
 card.querySelector(".favoriteBtn").onclick=e=>{e.stopPropagation();
 toggleFavorite(p.id)};
 return card}
 function isPublicProduct(p){return p.ativo!==false && p.status!=="vendido"}
-function renderHomeProducts(){let c=$("homeProducts");
-c.innerHTML="";
-let list=allProducts.filter(isPublicProduct).sort(sortProducts).slice(0,10);
-if(!list.length){c.innerHTML='<div class="emptyState" style="grid-column:1/-1"><div class="emptyIcon">📦</div><strong>Ainda não há anúncios.</strong><div style="margin-top:5px">Seja o primeiro a vender no Perto.</div></div>';
-return}list.forEach(p=>c.appendChild(createProductCard(p)))}
+
+function renderHomeProducts(){
+  let c=$("homeProducts");
+  if(!c)return;
+
+  if(homeProductsObserver){
+    homeProductsObserver.disconnect();
+    homeProductsObserver=null;
+  }
+
+  c.innerHTML="";
+  let list=allProducts.filter(isPublicProduct).sort(sortProducts);
+
+  if(!list.length){
+    c.innerHTML='<div class="emptyState" style="grid-column:1/-1"><div class="emptyIcon">📦</div><strong>Ainda não há anúncios.</strong><div style="margin-top:5px">Seja o primeiro a vender no Perto.</div></div>';
+    return;
+  }
+
+  list.slice(0,homeProductsVisible).forEach(p=>{
+    c.appendChild(createProductCard(p));
+  });
+
+  if(list.length>homeProductsVisible){
+    let sentinel=document.createElement("div");
+    sentinel.style.cssText="grid-column:1/-1;height:24px";
+    sentinel.setAttribute("aria-label","Carregar mais anúncios");
+    c.appendChild(sentinel);
+
+    if("IntersectionObserver" in window){
+      homeProductsObserver=new IntersectionObserver(entries=>{
+        if(entries.some(entry=>entry.isIntersecting)){
+          homeProductsObserver.disconnect();
+          homeProductsObserver=null;
+          homeProductsVisible+=10;
+          renderHomeProducts();
+        }
+      },{rootMargin:"300px"});
+
+      homeProductsObserver.observe(sentinel);
+    }else{
+      let btn=document.createElement("button");
+      btn.className="btn";
+      btn.textContent="Carregar mais anúncios";
+      btn.style.cssText="grid-column:1/-1;background:#f3f4f6";
+      btn.onclick=()=>{
+        homeProductsVisible+=10;
+        renderHomeProducts();
+      };
+      c.appendChild(btn);
+    }
+  }
+}
+
 function normalizeText(v=""){return String(v??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim()}
 function renderSearchProducts(term="") {let c=$("searchProducts");
 if(!c)return;
