@@ -3454,7 +3454,9 @@ const aceitouTermos = confirm(
     authMessage(
       "Não foi possível entrar com Google. Código: " +
       (error.code || "desconhecido")
-    );
+    );finally {
+  googleLoginEmAndamento = false;
+  }
   }
 };
   
@@ -3794,6 +3796,7 @@ toast("Você saiu da conta.")}catch(e){toast("Não foi possível sair.")}}
 onAuthStateChanged(auth,async u=>{
   try{
     if(u){
+      if (googleLoginEmAndamento) return;
       await enterApp(u);
       // Chat só é consultado quando o usuário abre a aba.
     }else{
