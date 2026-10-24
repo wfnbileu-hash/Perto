@@ -1,4 +1,4 @@
-
+const crypto = require('crypto');
 const admin = require('firebase-admin');
 
 function iniciarFirebase() {
