@@ -6289,6 +6289,8 @@ $("addStoreProductBtn").onclick = async () => {
 
     editingStoreProductId = null;
 $("storeProductForm").reset();
+    $("storeProductImages").value = "";
+$("storeProductImagePreview").replaceChildren();
 $("storeProductForm").querySelector(
   'button[type="submit"]'
 ).textContent = "Cadastrar produto";
@@ -6445,6 +6447,8 @@ await addDoc(collection(db, "produtosLoja"), {
     }
 
     $("storeProductForm").reset();
+    $("storeProductImages").value = "";
+$("storeProductImagePreview").replaceChildren();
     closeModal("storeProductModal");
 
 
