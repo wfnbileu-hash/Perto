@@ -3373,10 +3373,12 @@ if(error.code==="auth/invalid-email")m="Digite um e-mail válido.";
 if(error.code==="auth/weak-password")m="A senha escolhida é muito fraca.";
 authMessage(m)}}
   
+let googleLoginEmAndamento = false;
 const googleProvider = new GoogleAuthProvider();
 
 $("btnGoogleLogin").onclick = async () => {
   clearAuth();
+  googleLoginEmAndamento = true;
 
   try {
     const resultado = await signInWithPopup(auth, googleProvider);
