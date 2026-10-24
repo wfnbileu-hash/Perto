@@ -90,10 +90,25 @@ module.exports = async (req, res) => {
       ? mensalidadeSnap.data()
       : {};
 
+    
     if (mensalidade.status === 'authorized') {
-      return res.status(409).json({
-        erro: 'Esta loja já possui uma assinatura ativa'
-      });
+      const vencimento = mensalidade.mensalidadeVenceEm;
+      const dataVencimento = vencimento?.toDate
+        ? vencimento.toDate()
+        : vencimento
+          ? new Date(vencimento)
+          : null;
+
+      // Sem vencimento registrado, não libera outra cobrança por segurança.
+      if (
+        !dataVencimento ||
+        Number.isNaN(dataVencimento.getTime()) ||
+        dataVencimento.getTime() > Date.now()
+      ) {
+        return res.status(409).json({
+          erro: 'A mensalidade ainda está dentro do prazo de validade'
+        });
+      }
     }
 
     const referencia =
