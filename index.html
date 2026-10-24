@@ -3073,6 +3073,7 @@ async function chamarEndpointPagamento(caminho, corpo, mensagemFalha) {
     showAuth("login");
     return;
   }
+
   try {
     const token = await currentUser.getIdToken();
     const resposta = await fetch(caminho, {
@@ -3083,11 +3084,81 @@ async function chamarEndpointPagamento(caminho, corpo, mensagemFalha) {
       },
       body: JSON.stringify(corpo)
     });
+
     const resultado = await resposta.json().catch(() => ({}));
-    if (!resposta.ok || !resultado.checkout_url) {
+
+    if (!resposta.ok) {
       throw new Error(resultado.erro || mensagemFalha);
     }
-    window.location.href = resultado.checkout_url;
+
+    // Pix dentro do Perto
+    if (resultado.qr_code && resultado.qr_code_base64) {
+      let modal = document.getElementById("pertoPixModal");
+
+      if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "pertoPixModal";
+        modal.style.cssText =
+          "position:fixed;inset:0;background:#0009;z-index:99999;" +
+          "display:flex;align-items:center;justify-content:center;padding:16px";
+
+        modal.innerHTML = `
+          <div style="background:white;color:#222;padding:22px;border-radius:16px;
+            width:100%;max-width:380px;text-align:center;max-height:90vh;overflow:auto">
+            <h2 style="margin-top:0">Pague com Pix</h2>
+            <p>Escaneie o QR Code ou copie o código Pix.</p>
+            <img id="pertoPixQR" alt="QR Code Pix"
+              style="width:220px;max-width:100%;height:auto">
+            <textarea id="pertoPixCodigo" readonly
+              style="width:100%;height:90px;box-sizing:border-box;margin-top:12px"></textarea>
+            <button id="pertoPixCopiar" type="button"
+              style="width:100%;padding:12px;margin-top:8px">
+              Copiar código Pix
+            </button>
+            <button id="pertoPixFechar" type="button"
+              style="width:100%;padding:12px;margin-top:8px">
+              Fechar
+            </button>
+            <p style="font-size:12px;color:#666">
+              A confirmação depende do processamento do pagamento.
+            </p>
+          </div>`;
+
+        document.body.appendChild(modal);
+
+        document.getElementById("pertoPixCopiar").onclick = async () => {
+          const campo = document.getElementById("pertoPixCodigo");
+
+          try {
+            await navigator.clipboard.writeText(campo.value);
+            toast("Código Pix copiado!");
+          } catch {
+            campo.select();
+            const copiado = document.execCommand("copy");
+            toast(copiado ? "Código Pix copiado!" :
+              "Selecione e copie o código Pix.");
+          }
+        };
+
+        document.getElementById("pertoPixFechar").onclick = () => {
+          modal.style.display = "none";
+        };
+      }
+
+      document.getElementById("pertoPixQR").src =
+        "data:image/png;base64," + resultado.qr_code_base64;
+      document.getElementById("pertoPixCodigo").value = resultado.qr_code;
+      modal.style.display = "flex";
+      return;
+    }
+
+    // Mantém compatibilidade com o checkout atual
+    if (resultado.checkout_url) {
+      window.location.href = resultado.checkout_url;
+      return;
+    }
+
+    throw new Error(resultado.erro || mensagemFalha);
   } catch (erro) {
     console.error("Erro ao iniciar pagamento:", erro);
     toast(erro.message || mensagemFalha);
