@@ -3454,8 +3454,11 @@ const aceitouTermos = confirm(
     authMessage(
       "Não foi possível entrar com Google. Código: " +
       (error.code || "desconhecido")
-    );finally {
-  googleLoginEmAndamento = false; }};
+    );
+  } finally {
+    googleLoginEmAndamento = false;
+  }
+};
   
 $("loginForm").onsubmit=loginUser;
 $("signupForm").onsubmit=signupUser;
