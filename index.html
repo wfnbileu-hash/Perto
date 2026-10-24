@@ -1319,6 +1319,9 @@ display:none!important;
     <div class="authTabs"><button class="authTab active" id="tabLogin">Entrar</button><button class="authTab" id="tabSignup">Criar conta</button></div>
     <div id="authMessage" class="authMessage"></div>
     <form id="loginForm"><div class="formGroup"><label for="loginEmail">E-mail</label><input id="loginEmail" type="email" autocomplete="email" required></div><div class="formGroup"><label for="loginPassword">Senha</label><input id="loginPassword" type="password" autocomplete="current-password" required></div><button class="btn btnPrimary" style="width:100%" type="submit">Entrar</button></form>
+   <button id="btnGoogleLogin" type="button" class="btn" style="width:100%;margin-top:12px;background:#fff;color:#111827;border:1px solid #d1d5db">
+  Continuar com Google
+   </button>
     <form id="signupForm" class="hidden"><div class="formGroup"><label for="signupName">Nome *</label><input id="signupName" required></div><div class="formGroup"><label for="signupPhone">Telefone</label><input id="signupPhone" type="tel"></div><div class="formGroup"><label for="signupCity">Cidade *</label><input id="signupCity" required></div><div class="formGroup"><label for="signupEmail">E-mail *</label><input id="signupEmail" type="email" required></div><div class="formGroup"><label for="signupPassword">Senha *</label><input id="signupPassword" type="password" minlength="6" required></div><label class="checkboxLine"><input id="termsCheck" type="checkbox" required><span>Li e aceito os Termos de Uso, Responsabilidade, Segurança e Privacidade do Perto.</span></label><label class="checkboxLine"><input id="signupAdultCheck" type="checkbox" required><span>Confirmo que tenho 18 anos ou mais e que as informações fornecidas são verdadeiras.</span></label><button class="legalLink" type="button" id="openTermsFromSignup">Ler os termos completos, regras de segurança e privacidade</button><button class="btn btnPrimary" style="width:100%" type="submit">Criar minha conta</button></form>
     <div class="authBack"><button id="backToWelcome">← Voltar</button><br><button class="legalLink" type="button" id="openTermsFromAuth">Termos de uso, responsabilidade, segurança e privacidade</button></div>
   </div>
@@ -2456,7 +2459,7 @@ Você será direcionado ao Mercado Pago para concluir o pagamento. O destaque se
 <!-- ================================================== -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js"; import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, addDoc, collection, query, orderBy, getDocs, where, serverTimestamp, deleteDoc, updateDoc, onSnapshot, limit } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-functions.js";
 
