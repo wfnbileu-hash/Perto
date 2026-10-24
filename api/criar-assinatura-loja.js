@@ -1,7 +1,9 @@
+
+const crypto = require('crypto');
 const admin = require('firebase-admin');
 
 function iniciarFirebase() {
-  if (admin.apps.length) return;
+  if (admin.apps.length) return admin.firestore();
 
   const credencial = process.env.FIREBASE_SERVICE_ACCOUNT;
   if (!credencial) {
@@ -11,6 +13,8 @@ function iniciarFirebase() {
   admin.initializeApp({
     credential: admin.credential.cert(JSON.parse(credencial))
   });
+
+  return admin.firestore();
 }
 
 module.exports = async (req, res) => {
@@ -34,11 +38,12 @@ module.exports = async (req, res) => {
       : '';
 
     if (!idToken) {
-      return res.status(401).json({ erro: 'Faça login para continuar' });
+      return res.status(401).json({
+        erro: 'Faça login para continuar'
+      });
     }
 
-    iniciarFirebase();
-
+    const db = iniciarFirebase();
     const usuario = await admin.auth().verifyIdToken(idToken);
     const conta = await admin.auth().getUser(usuario.uid);
 
@@ -48,8 +53,8 @@ module.exports = async (req, res) => {
       });
     }
 
-    const db = admin.firestore();
-    const lojaSnap = await db.collection('lojas').doc(usuario.uid).get();
+    const lojaRef = db.collection('lojas').doc(usuario.uid);
+    const lojaSnap = await lojaRef.get();
 
     if (!lojaSnap.exists) {
       return res.status(404).json({
@@ -62,18 +67,24 @@ module.exports = async (req, res) => {
       .doc('plataforma')
       .get();
 
-    const configurado = configSnap.exists
+    const valorConfigurado = configSnap.exists
       ? Number(configSnap.data().mensalidadeLoja)
       : 49.90;
 
-    if (!Number.isFinite(configurado) || configurado <= 0) {
+    if (
+      !Number.isFinite(valorConfigurado) ||
+      valorConfigurado <= 0
+    ) {
       return res.status(400).json({
         erro: 'O administrador precisa configurar uma mensalidade válida'
       });
     }
 
-    const valor = Math.round(configurado * 100) / 100;
-    const mensalidadeRef = db.collection('mensalidadesLojas').doc(usuario.uid);
+    const valor = Math.round(valorConfigurado * 100) / 100;
+    const mensalidadeRef = db
+      .collection('mensalidadesLojas')
+      .doc(usuario.uid);
+
     const mensalidadeSnap = await mensalidadeRef.get();
     const mensalidade = mensalidadeSnap.exists
       ? mensalidadeSnap.data()
@@ -85,68 +96,88 @@ module.exports = async (req, res) => {
       });
     }
 
-    if (
-      mensalidade.status === 'pending' &&
-      mensalidade.checkoutUrl &&
-      Number(mensalidade.valorAtual) === valor
-    ) {
-      return res.status(200).json({
-        checkout_url: mensalidade.checkoutUrl
-      });
-    }
+    const referencia =
+      `mensalidade_${usuario.uid}_${crypto.randomUUID()}`;
 
     const resposta = await fetch(
-      'https://api.mercadopago.com/preapproval',
+      'https://api.mercadopago.com/v1/payments',
       {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${tokenMP}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-Idempotency-Key': crypto.randomUUID()
         },
         body: JSON.stringify({
-          reason: 'Mensalidade da loja Perto',
-          external_reference: usuario.uid,
-          payer_email: conta.email,
-          auto_recurring: {
-            frequency: 1,
-            frequency_type: 'months',
-            transaction_amount: valor,
-            currency_id: 'BRL'
+          transaction_amount: valor,
+          description: 'Mensalidade da loja Perto',
+          payment_method_id: 'pix',
+          payer: {
+            email: conta.email
           },
-          back_url: site.replace(/\/$/, ''),
+          external_reference: referencia,
           notification_url:
             `${site.replace(/\/$/, '')}/api/webhook-assinatura-loja`,
-          status: 'pending'
+          metadata: {
+            tipo: 'mensalidade_loja',
+            lojaId: usuario.uid
+          }
         })
       }
     );
 
-    const dados = await resposta.json();
+    const dados = await resposta.json().catch(() => ({}));
+    const transacao = dados.point_of_interaction?.transaction_data;
+    const qrCode = transacao?.qr_code;
+    const qrBase64 = transacao?.qr_code_base64;
 
-    if (!resposta.ok || !dados.id || !dados.init_point) {
-      console.error('Erro ao criar assinatura:', dados);
+    if (!resposta.ok || !dados.id || !qrCode || !qrBase64) {
+      console.error('Erro ao criar Pix da mensalidade:', {
+        status: resposta.status,
+        mensagem: dados.message,
+        erro: dados.error,
+        causa: dados.cause
+      });
+
       return res.status(502).json({
-        erro: 'O Mercado Pago não conseguiu criar a assinatura'
+        erro: 'Não foi possível gerar o Pix da mensalidade'
       });
     }
+
+    const agora = admin.firestore.FieldValue.serverTimestamp();
+
+    await db.collection('pagamentosMensalidade').doc(referencia).set({
+      lojaId: usuario.uid,
+      referencia,
+      pagamentoId: String(dados.id),
+      valor,
+      moeda: 'BRL',
+      status: String(dados.status || 'pending'),
+      criadoEm: agora,
+      atualizadoEm: agora
+    });
 
     await mensalidadeRef.set({
       lojaId: usuario.uid,
       emailPagador: conta.email,
-      assinaturaId: String(dados.id),
       valorAtual: valor,
       moeda: 'BRL',
-      status: String(dados.status || 'pending'),
-      checkoutUrl: dados.init_point,
-      criadoEm: admin.firestore.FieldValue.serverTimestamp(),
-      atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
+      status: 'pending',
+      tipoCobranca: 'pix',
+      referenciaPagamento: referencia,
+      pagamentoId: String(dados.id),
+      checkoutUrl: admin.firestore.FieldValue.delete(),
+      atualizadoEm: agora
     }, { merge: true });
 
     return res.status(200).json({
-      checkout_url: dados.init_point
+      payment_id: String(dados.id),
+      qr_code: qrCode,
+      qr_code_base64: qrBase64,
+      status: String(dados.status || 'pending')
     });
   } catch (erro) {
-    console.error('Erro ao criar assinatura:', erro);
+    console.error('Erro ao criar Pix da mensalidade:', erro);
 
     if (
       erro.code === 'auth/id-token-expired' ||
@@ -159,7 +190,7 @@ module.exports = async (req, res) => {
     }
 
     return res.status(500).json({
-      erro: 'Erro ao preparar a assinatura mensal'
+      erro: 'Erro ao preparar o pagamento da mensalidade'
     });
   }
 };
