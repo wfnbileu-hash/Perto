@@ -3392,9 +3392,29 @@ $("btnGoogleLogin").onclick = async () => {
         return;
       }
 
-      const aceitouTermos = confirm(
-        "Você aceita os Termos de Uso, Responsabilidade, Segurança e Privacidade do Perto?"
-      );
+      
+abrirTermos();
+
+await new Promise(resolve => {
+  const modal = $("termsModal");
+
+  function concluirLeitura(evento) {
+    if (
+      evento.target.closest('[data-close="termsModal"]') ||
+      evento.target === modal
+    ) {
+      modal.removeEventListener("click", concluirLeitura);
+      resolve();
+    }
+  }
+
+  modal.addEventListener("click", concluirLeitura);
+});
+
+const aceitouTermos = confirm(
+  "Após ler os termos completos do Perto, você confirma que leu e aceita as condições?"
+);
+  
 
       if (!aceitouTermos) {
         await signOut(auth);
