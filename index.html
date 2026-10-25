@@ -3596,11 +3596,33 @@ function watchNotifications(uid) {
     where("destinatarioId", "==", uid),
     limit(30)
   );
+  
 
+  let primeiraLeituraNotificacoes = true;
+  
   notificationsUnsub = onSnapshot(
     consulta,
     (snapshot) => {
       notificationsCache = snapshot.docs.map((item) => ({
+       
+      const novasNotificacoes = primeiraLeituraNotificacoes
+        ? []
+        : snapshot.docChanges()
+            .filter((mudanca) => mudanca.type === "added")
+            .map((mudanca) => mudanca.doc.data());
+
+      primeiraLeituraNotificacoes = false;
+
+      if (novasNotificacoes.length > 0) {
+        tocarSomNotificacao();
+
+        const nova = novasNotificacoes[0];
+        toast(
+          (nova.titulo || "Nova notificação") +
+          (nova.mensagem ? ": " + nova.mensagem : "")
+        );
+  }
+  
         id: item.id,
         ...item.data()
       }));
@@ -3718,9 +3740,25 @@ function watchUnreadMessages(uid) {
         collection(db, "conversas", id, "mensagens"),
         limit(100)
       );
-
+    
+      let primeiraLeituraMensagens = true;
       chatMessageUnsubs[id] = onSnapshot(mensagens, resultado => {
         contagens[id] = resultado.docs.filter(d => {
+          
+  const chegaramMensagensNovas = primeiraLeituraMensagens
+    ? false
+    : resultado.docChanges().some(mudanca =>
+        mudanca.type === "added" &&
+        mudanca.doc.data().remetenteId !== uid
+      );
+
+  primeiraLeituraMensagens = false;
+
+  if (chegaramMensagensNovas) {
+    tocarSomNotificacao();
+    toast("Você recebeu uma nova mensagem no chat.");
+  }
+  
           const mensagem = d.data();
           return mensagem.remetenteId !== uid && mensagem.lida !== true;
         }).length;
