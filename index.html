@@ -3764,11 +3764,6 @@ function watchUnreadMessages(uid) {
           return mensagem.remetenteId !== uid && mensagem.lida !== true;
         }).length;
 
-  
-          const mensagem = d.data();
-          return mensagem.remetenteId !== uid && mensagem.lida !== true;
-        }).length;
-
         carregadas.add(id);
         atualizarContador();
       }, erro => {
