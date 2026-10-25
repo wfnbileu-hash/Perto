@@ -5042,6 +5042,18 @@ let lojasVitrineCacheCidade = "";
 let lojasVitrineCarregada = false;
 let lojasExibidas = 6;
 
+function normalizarCidadeVitrine(valor) {
+  return String(valor || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s*[-,/]\s*|\s+/g, " ")
+    .replace(/\s+(ac|al|ap|am|ba|ce|df|es|go|ma|mt|ms|mg|pa|pb|pr|pe|pi|rj|rn|rs|ro|rr|sc|sp|se|to)\s*$/i, "")
+    .trim();
+}
+  
+
 async function carregarVitrineLojas() {
   const resultados = $("storesResults");
 
@@ -5066,13 +5078,25 @@ async function carregarVitrineLojas() {
     }
     // Consulta somente lojas públicas ativas.
 
+
 const consulta = await getDocs(
   query(
     collection(db, "lojas"),
-    where("ativo", "==", true),
-    where("cidade", "==", cidadeUsuario)
+    where("ativo", "==", true)
   )
 );
+
+const cidadeNormalizada = normalizarCidadeVitrine(cidadeUsuario);
+
+lojasVitrine = consulta.docs
+  .map(item => ({
+    id: item.id,
+    ...item.data()
+  }))
+  .filter(loja =>
+    normalizarCidadeVitrine(loja.cidade) === cidadeNormalizada
+  );
+
 
 
     lojasVitrine = consulta.docs.map(item => ({
