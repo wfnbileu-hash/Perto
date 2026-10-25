@@ -3603,8 +3603,7 @@ function watchNotifications(uid) {
   notificationsUnsub = onSnapshot(
     consulta,
     (snapshot) => {
-      notificationsCache = snapshot.docs.map((item) => ({
-       
+ 
       const novasNotificacoes = primeiraLeituraNotificacoes
         ? []
         : snapshot.docChanges()
@@ -3621,11 +3620,13 @@ function watchNotifications(uid) {
           (nova.titulo || "Nova notificação") +
           (nova.mensagem ? ": " + nova.mensagem : "")
         );
-  }
-  
+      }
+
+      notificationsCache = snapshot.docs.map((item) => ({
         id: item.id,
         ...item.data()
       }));
+
 
       notificationsCache.sort((a, b) => {
         const dataA = a.criadoEm?.toMillis?.() || 0;
