@@ -3555,6 +3555,33 @@ btn.textContent="Salvar dados";
 // ==================================================
 
   
+function tocarSomNotificacao() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+
+    const audio = new AudioCtx();
+    const oscilador = audio.createOscillator();
+    const volume = audio.createGain();
+
+    oscilador.type = "sine";
+    oscilador.frequency.setValueAtTime(880, audio.currentTime);
+    oscilador.frequency.setValueAtTime(660, audio.currentTime + 0.12);
+
+    volume.gain.setValueAtTime(0.0001, audio.currentTime);
+    volume.gain.exponentialRampToValueAtTime(0.12, audio.currentTime + 0.02);
+    volume.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + 0.3);
+
+    oscilador.connect(volume);
+    volume.connect(audio.destination);
+
+    oscilador.start();
+    oscilador.stop(audio.currentTime + 0.32);
+    oscilador.onended = () => audio.close();
+  } catch (erro) {
+    console.warn("Som de notificação indisponível:", erro);
+  }
+}
 function watchNotifications(uid) {
   if (notificationsUnsub) {
     notificationsUnsub();
