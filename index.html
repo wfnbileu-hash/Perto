@@ -6060,6 +6060,58 @@ async function autorizarEntregaMarketplacePedido(pedido, usuario, veiculoSelecio
   }
   }
       
+let modoHistoricoPedidosLoja = false;
+
+function chaveDataPedidoBrasilia(valor) {
+  if (!valor) return "";
+
+  let data;
+
+  if (typeof valor.toDate === "function") {
+    data = valor.toDate();
+  } else if (valor instanceof Date) {
+    data = valor;
+  } else {
+    data = new Date(valor);
+  }
+
+  if (Number.isNaN(data.getTime())) return "";
+
+  const partes = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).formatToParts(data);
+
+  const obter = tipo =>
+    partes.find(parte => parte.type === tipo)?.value || "";
+
+  return `${obter("year")}-${obter("month")}-${obter("day")}`;
+}
+
+function atualizarAbasPedidosLoja() {
+  const hojeBtn = document.getElementById("todayStoreOrdersBtn");
+  const historicoBtn = document.getElementById("historyStoreOrdersBtn");
+
+  if (hojeBtn) {
+    hojeBtn.style.background = modoHistoricoPedidosLoja ? "#fff" : "#0f172a";
+    hojeBtn.style.color = modoHistoricoPedidosLoja ? "#0f172a" : "#fff";
+    hojeBtn.style.border = modoHistoricoPedidosLoja
+      ? "1px solid #d1d5db"
+      : "1px solid #0f172a";
+  }
+
+  if (historicoBtn) {
+    historicoBtn.style.background = modoHistoricoPedidosLoja ? "#0f172a" : "#fff";
+    historicoBtn.style.color = modoHistoricoPedidosLoja ? "#fff" : "#0f172a";
+    historicoBtn.style.border = historicoBtn.style.border =
+      modoHistoricoPedidosLoja
+        ? "1px solid #0f172a"
+        : "1px solid #d1d5db";
+  }
+}
+  
  async function carregarPedidosRecebidosLoja() {
   const usuario = auth.currentUser || currentUser;
   const painel = $("storeOrdersPanel");
@@ -6074,12 +6126,28 @@ async function autorizarEntregaMarketplacePedido(pedido, usuario, veiculoSelecio
       collection(db, "pedidos"),
       where("lojaId", "==", usuario.uid)
     ));
-    const pedidos = resultado.docs
-      .map(d => ({ id: d.id, ...d.data() }))
-      .sort((a, b) => (b.criadoEm?.toMillis?.() || 0) - (a.criadoEm?.toMillis?.() || 0));
+    
+const todosPedidos = resultado.docs
+  .map(d => ({ id: d.id, ...d.data() }))
+  .sort((a, b) => (b.criadoEm?.toMillis?.() || 0) - (a.criadoEm?.toMillis?.() || 0));
+
+const hoje = chaveDataPedidoBrasilia(new Date());
+
+const pedidos = todosPedidos.filter(pedido => {
+  const dataPedido = chaveDataPedidoBrasilia(pedido.criadoEm);
+
+  if (!dataPedido) return modoHistoricoPedidosLoja;
+
+  return modoHistoricoPedidosLoja
+    ? dataPedido < hoje
+    : dataPedido === hoje;
+});
+
     painel.replaceChildren();
     if (!pedidos.length) {
-      painel.textContent = "Você ainda não recebeu pedidos pelo Perto.";
+      painel.textContent = modoHistoricoPedidosLoja
+  ? "Você ainda não tem pedidos anteriores para consultar."
+  : "Você ainda não recebeu pedidos hoje pelo Perto.";
       return;
     }
     pedidos.forEach(pedido => {
@@ -6230,6 +6298,18 @@ async function autorizarEntregaMarketplacePedido(pedido, usuario, veiculoSelecio
 }
 $("refreshStoreOrdersBtn")?.addEventListener("click", carregarPedidosRecebidosLoja);
 
+$("todayStoreOrdersBtn")?.addEventListener("click", () => {
+  modoHistoricoPedidosLoja = false;
+  atualizarAbasPedidosLoja();
+  carregarPedidosRecebidosLoja();
+});
+  $("historyStoreOrdersBtn")?.addEventListener("click", () => {
+  modoHistoricoPedidosLoja = true;
+  atualizarAbasPedidosLoja();
+  carregarPedidosRecebidosLoja();
+});
+atualizarAbasPedidosLoja();
+  
 let freteGoAtivoNaMinhaLoja = true;
 function atualizarVisualBotaoFreteGo(ativo) {
   freteGoAtivoNaMinhaLoja = ativo !== false;
