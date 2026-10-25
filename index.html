@@ -3742,23 +3742,28 @@ function watchUnreadMessages(uid) {
         limit(100)
       );
     
+      
       let primeiraLeituraMensagens = true;
+
       chatMessageUnsubs[id] = onSnapshot(mensagens, resultado => {
+        const chegaramMensagensNovas = !primeiraLeituraMensagens &&
+          resultado.docChanges().some(mudanca =>
+            mudanca.type === "added" &&
+            mudanca.doc.data().remetenteId !== uid
+          );
+
+        primeiraLeituraMensagens = false;
+
+        if (chegaramMensagensNovas) {
+          tocarSomNotificacao();
+          toast("Você recebeu uma nova mensagem no chat.");
+        }
+
         contagens[id] = resultado.docs.filter(d => {
-          
-  const chegaramMensagensNovas = primeiraLeituraMensagens
-    ? false
-    : resultado.docChanges().some(mudanca =>
-        mudanca.type === "added" &&
-        mudanca.doc.data().remetenteId !== uid
-      );
+          const mensagem = d.data();
+          return mensagem.remetenteId !== uid && mensagem.lida !== true;
+        }).length;
 
-  primeiraLeituraMensagens = false;
-
-  if (chegaramMensagensNovas) {
-    tocarSomNotificacao();
-    toast("Você recebeu uma nova mensagem no chat.");
-  }
   
           const mensagem = d.data();
           return mensagem.remetenteId !== uid && mensagem.lida !== true;
