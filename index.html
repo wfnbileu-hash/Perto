@@ -5086,6 +5086,7 @@ const consulta = await getDocs(
   )
 );
 
+
 const cidadeNormalizada = normalizarCidadeVitrine(cidadeUsuario);
 
 lojasVitrine = consulta.docs
@@ -5097,14 +5098,9 @@ lojasVitrine = consulta.docs
     normalizarCidadeVitrine(loja.cidade) === cidadeNormalizada
   );
 
+lojasVitrineCacheCidade = cidadeUsuario;
+lojasVitrineCarregada = true;
 
-
-    lojasVitrine = consulta.docs.map(item => ({
-      id: item.id,
-      ...item.data()
-    }));
-        lojasVitrineCacheCidade = cidadeUsuario;
-    lojasVitrineCarregada = true;
 
     // Permite que a proprietária veja sua loja
     // mesmo enquanto ela aguarda ativação.
