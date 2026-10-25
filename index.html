@@ -760,6 +760,17 @@ display:none!important;
   line-height: 1.5;
 }
 
+/* BARRA FIXA DA VITRINE DE LOJAS */
+.storesFilterSticky {
+  position: sticky;
+  top: 110px;
+  z-index: 40;
+  background: #f8fafc;
+  padding: 10px 0 2px;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .05);
+  }
+  
 .storesSearch {
   width: 100%;
   padding: 14px;
@@ -5036,12 +5047,22 @@ async function carregarVitrineLojas() {
 
   try {
     // Consulta somente lojas públicas ativas.
-    const consulta = await getDocs(
-      query(
-        collection(db, "lojas"),
-        where("ativo", "==", true)
-      )
-    );
+    
+const cidadeUsuario = currentUserData?.cidade?.trim();
+
+if (!cidadeUsuario) {
+  openProfileEditor();
+  return;
+}
+
+const consulta = await getDocs(
+  query(
+    collection(db, "lojas"),
+    where("ativo", "==", true),
+    where("cidade", "==", cidadeUsuario)
+  )
+);
+
 
     lojasVitrine = consulta.docs.map(item => ({
       id: item.id,
@@ -6884,7 +6905,23 @@ $("homeServices").onclick=()=>showInternalPage("servicesPage");
 $("homeDelivery").onclick=async()=>{if(!currentUser){showAuth("login");return;}showInternalPage("myStorePage");await carregarPainelMinhaLoja();};
 
 $("homeIncome").onclick=()=>showMyAds();
-$("homeStores").onclick=()=>showInternalPage("storesPage");
+
+$("homeStores").onclick=()=>{
+  if(!currentUser){
+    showAuth("login");
+    return;
+  }
+
+  if(!currentUserData?.cidade?.trim()){
+    openProfileEditor();
+    toast("Cadastre sua cidade no perfil para ver as lojas próximas.");
+    return;
+  }
+
+  $("storeCity").value=currentUserData.cidade.trim();
+  $("storeCity").readOnly=true;
+  showInternalPage("storesPage");
+};
 
 
 $("serviceProfessionalBtn").onclick=async()=>{
