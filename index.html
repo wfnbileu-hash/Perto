@@ -5065,13 +5065,6 @@ async function carregarVitrineLojas() {
       return;
     }
     // Consulta somente lojas públicas ativas.
-    
-const cidadeUsuario = currentUserData?.cidade?.trim();
-
-if (!cidadeUsuario) {
-  openProfileEditor();
-  return;
-}
 
 const consulta = await getDocs(
   query(
