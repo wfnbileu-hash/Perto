@@ -5834,7 +5834,7 @@ function renderizarVitrineLojas() {
 
   
   const lojasParaMostrar = filtradas.slice(0, lojasExibidas);
-
+const totalLojasFiltradas = filtradas.length;
 $("storesResults").innerHTML = lojasParaMostrar.map(loja => {
     const aguardando = loja.ativo !== true;
     const suspensa = loja.statusAdmin === "suspensa";
@@ -5873,6 +5873,22 @@ $("storesResults").innerHTML = lojasParaMostrar.map(loja => {
       </article>
     `;
   }).join("");
+
+    if (totalLojasFiltradas > lojasExibidas) {
+    const gatilhoRolagem = document.createElement("div");
+    gatilhoRolagem.style.cssText = "height:24px;width:100%";
+    $("storesResults").appendChild(gatilhoRolagem);
+
+    const observador = new IntersectionObserver((entradas) => {
+      if (entradas.some(entrada => entrada.isIntersecting)) {
+        observador.disconnect();
+        lojasExibidas += 6;
+        renderizarVitrineLojas();
+      }
+    }, { rootMargin: "300px" });
+
+    observador.observe(gatilhoRolagem);
+    }
 
   document.querySelectorAll("#storesResults [data-store-id]")
     .forEach(cartao => {
