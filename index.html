@@ -5910,10 +5910,10 @@ renderizarVitrineLojas();
 });
 
 // Busca por nome, categoria ou descrição.
-$("storeSearch").addEventListener(
-  "input",
-  renderizarVitrineLojas
-);
+$("storeSearch").addEventListener("input", () => {
+  lojasExibidas = 6;
+  renderizarVitrineLojas();
+});
 
 // Filtro por cidade.
 $("storeCity").addEventListener(
