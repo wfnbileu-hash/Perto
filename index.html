@@ -5049,6 +5049,21 @@ async function carregarVitrineLojas() {
     '<div class="storeEmpty">Carregando lojas...</div>';
 
   try {
+
+        const cidadeUsuario = currentUserData?.cidade?.trim();
+
+    if (!cidadeUsuario) {
+      openProfileEditor();
+      return;
+    }
+
+    if (
+      lojasVitrineCarregada &&
+      lojasVitrineCacheCidade === cidadeUsuario
+    ) {
+      renderizarVitrineLojas();
+      return;
+    }
     // Consulta somente lojas públicas ativas.
     
 const cidadeUsuario = currentUserData?.cidade?.trim();
@@ -5071,6 +5086,8 @@ const consulta = await getDocs(
       id: item.id,
       ...item.data()
     }));
+        lojasVitrineCacheCidade = cidadeUsuario;
+    lojasVitrineCarregada = true;
 
     // Permite que a proprietária veja sua loja
     // mesmo enquanto ela aguarda ativação.
@@ -5816,7 +5833,9 @@ function renderizarVitrineLojas() {
   }
 
   
-  $("storesResults").innerHTML = filtradas.map(loja => {
+  const lojasParaMostrar = filtradas.slice(0, lojasExibidas);
+
+$("storesResults").innerHTML = lojasParaMostrar.map(loja => {
     const aguardando = loja.ativo !== true;
     const suspensa = loja.statusAdmin === "suspensa";
     const propria = (auth.currentUser || currentUser)?.uid === loja.usuarioId;
