@@ -5916,10 +5916,10 @@ $("storeSearch").addEventListener("input", () => {
 });
 
 // Filtro por cidade.
-$("storeCity").addEventListener(
-  "input",
-  renderizarVitrineLojas
-);
+$("storeCity").addEventListener("input", () => {
+  lojasExibidas = 6;
+  renderizarVitrineLojas();
+});
   
  // ==================================================
  // CARREGAR DADOS DO GERENCIAMENTO DA LOJA
