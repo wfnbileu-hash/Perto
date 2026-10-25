@@ -5038,6 +5038,9 @@ await carregarVitrineLojas();
 
 let lojasVitrine = [];
 let categoriaLojaSelecionada = "";
+let lojasVitrineCacheCidade = "";
+let lojasVitrineCarregada = false;
+let lojasExibidas = 6;
 
 async function carregarVitrineLojas() {
   const resultados = $("storesResults");
