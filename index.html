@@ -3394,9 +3394,12 @@ $("btnForgotPassword").addEventListener("click", async () => {
       "Se o e-mail estiver cadastrado, você receberá o link para redefinir sua senha.",
       "success"
     );
+  
   } catch (error) {
     console.error("Erro ao recuperar senha:", error);
-    authMessage("Não foi possível enviar o e-mail. Confira o endereço e tente novamente.");
+    authMessage(
+      "Erro: " + (error.code || error.message || "desconhecido")
+    );
   }
 });
   
