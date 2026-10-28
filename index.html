@@ -1330,6 +1330,10 @@ display:none!important;
     <div class="authTabs"><button class="authTab active" id="tabLogin">Entrar</button><button class="authTab" id="tabSignup">Criar conta</button></div>
     <div id="authMessage" class="authMessage"></div>
     <form id="loginForm"><div class="formGroup"><label for="loginEmail">E-mail</label><input id="loginEmail" type="email" autocomplete="email" required></div><div class="formGroup"><label for="loginPassword">Senha</label><input id="loginPassword" type="password" autocomplete="current-password" required></div><button class="btn btnPrimary" style="width:100%" type="submit">Entrar</button></form>
+    <button type="button" id="btnForgotPassword"
+  style="background:none;color:#2563eb;margin-top:12px;padding:8px 0">
+  Esqueci minha senha
+    </button>
    <button id="btnGoogleLogin" type="button" class="btn" style="width:100%;margin-top:12px;background:#fff;color:#111827;border:1px solid #d1d5db">
   Continuar com Google
    </button>
@@ -3376,6 +3380,26 @@ let m="Não foi possível entrar.";
 if(["auth/invalid-credential","auth/user-not-found","auth/wrong-password"].includes(error.code))m="E-mail ou senha incorretos.";
 if(error.code==="auth/too-many-requests")m="Muitas tentativas. Aguarde um pouco.";
 authMessage(m+" Código: "+(error.code||"desconhecido"))}}
+  
+$("btnForgotPassword").addEventListener("click", async () => {
+  const email = $("loginEmail").value.trim();
+
+  if (!email) {
+    return authMessage("Digite seu e-mail no campo acima.");
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    authMessage(
+      "Se o e-mail estiver cadastrado, você receberá o link para redefinir sua senha.",
+      "success"
+    );
+  } catch (error) {
+    console.error("Erro ao recuperar senha:", error);
+    authMessage("Não foi possível enviar o e-mail. Confira o endereço e tente novamente.");
+  }
+});
+  
 async function signupUser(e){e.preventDefault();
 clearAuth();
 let name=$("signupName").value.trim(),phone=$("signupPhone").value.trim(),city=$("signupCity").value.trim(),email=$("signupEmail").value.trim(),password=$("signupPassword").value,terms=$("termsCheck").checked,adult=$("signupAdultCheck").checked;
