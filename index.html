@@ -4019,26 +4019,30 @@ function watchNotifications(uid) {
     }
   );
 }
-  
+
 function watchUnreadMessages(uid) {
-  if (chatUnreadUnsub) chatUnreadUnsub();
+  if (chatUnreadUnsub) {
+    try { chatUnreadUnsub(); } catch (e) {}
+    chatUnreadUnsub = null;
+  }
 
   Object.values(chatMessageUnsubs).forEach(unsub => {
-    try { unsub(); } catch (e) { console.warn(e); }
+    try { unsub(); } catch (e) {}
   });
   chatMessageUnsubs = {};
 
   const badge = $("chatUnreadBadge");
+  if (!badge) return;
+
   const contagens = {};
-  const carregadas = new Set();
   const conversasComprador = new Map();
   const conversasVendedor = new Map();
+  const conversasParticipante = new Map();
   const listenersConversas = [];
 
   function atualizarContador() {
     const total = Object.values(contagens).reduce(
-      (soma, quantidade) => soma + quantidade,
-      0
+      (soma, quantidade) => soma + quantidade, 0
     );
 
     badge.textContent = total > 99 ? "99+" : String(total);
@@ -4048,59 +4052,46 @@ function watchUnreadMessages(uid) {
   function sincronizarConversas() {
     const conversas = new Map([
       ...conversasComprador,
-      ...conversasVendedor
+      ...conversasVendedor,
+      ...conversasParticipante
     ]);
+
     const idsAtuais = new Set(conversas.keys());
 
     Object.keys(chatMessageUnsubs).forEach(id => {
       if (!idsAtuais.has(id)) {
-        try { chatMessageUnsubs[id](); } catch (e) { console.warn(e); }
+        try { chatMessageUnsubs[id](); } catch (e) {}
         delete chatMessageUnsubs[id];
         delete contagens[id];
-        carregadas.delete(id);
       }
     });
 
     conversas.forEach((conversa, id) => {
       if (chatMessageUnsubs[id]) return;
 
-      const mensagens = query(
+      const mensagensNaoLidas = query(
         collection(db, "conversas", id, "mensagens"),
-        limit(100)
+        where("lida", "==", false)
       );
-    
-      
-      let primeiraLeituraMensagens = true;
 
-      chatMessageUnsubs[id] = onSnapshot(mensagens, resultado => {
-        const chegaramMensagensNovas = !primeiraLeituraMensagens &&
-          resultado.docChanges().some(mudanca =>
-            mudanca.type === "added" &&
-            mudanca.doc.data().remetenteId !== uid
+      chatMessageUnsubs[id] = onSnapshot(
+        mensagensNaoLidas,
+        resultado => {
+          contagens[id] = resultado.docs.filter(d =>
+            d.data().remetenteId !== uid
+          ).length;
+
+          atualizarContador();
+        },
+        erro => {
+          console.error(
+            "Erro na contagem de mensagens:",
+            id,
+            erro.code,
+            erro.message
           );
-
-        primeiraLeituraMensagens = false;
-
-        if (chegaramMensagensNovas) {
-          tocarSomNotificacao();
-          toast("Você recebeu uma nova mensagem no chat.");
         }
-
-        contagens[id] = resultado.docs.filter(d => {
-          const mensagem = d.data();
-          return mensagem.remetenteId !== uid && mensagem.lida !== true;
-        }).length;
-
-        carregadas.add(id);
-        atualizarContador();
-      }, erro => {
-        console.error(
-          "Erro ao contar mensagens da conversa:",
-          id,
-          erro.code,
-          erro.message
-        );
-      });
+      );
     });
 
     atualizarContador();
@@ -4108,62 +4099,71 @@ function watchUnreadMessages(uid) {
 
   function acompanharConsultas(mapa, snapshot) {
     mapa.clear();
+
     snapshot.docs.forEach(documento => {
       mapa.set(documento.id, {
         id: documento.id,
         ...documento.data()
       });
     });
+
     sincronizarConversas();
   }
 
-  badge.classList.add("hidden");
+  function registrarConsulta(mapa, consulta, descricao) {
+    const unsub = onSnapshot(
+      consulta,
+      snapshot => acompanharConsultas(mapa, snapshot),
+      erro => console.error(
+        "Erro ao consultar conversas (" + descricao + "):",
+        erro.code,
+        erro.message
+      )
+    );
+
+    listenersConversas.push(unsub);
+  }
+
   badge.textContent = "0";
+  badge.classList.add("hidden");
 
-  // Consultas separadas para que cada uma corresponda diretamente
-  // às permissões de compradorId e vendedorId do Firestore.
-  const consultaComprador = query(
-    collection(db, "conversas"),
-    where("compradorId", "==", uid),
-    limit(50)
+  registrarConsulta(
+    conversasComprador,
+    query(
+      collection(db, "conversas"),
+      where("compradorId", "==", uid)
+    ),
+    "compradorId"
   );
 
-  const consultaVendedor = query(
-    collection(db, "conversas"),
-    where("vendedorId", "==", uid),
-    limit(50)
+  registrarConsulta(
+    conversasVendedor,
+    query(
+      collection(db, "conversas"),
+      where("vendedorId", "==", uid)
+    ),
+    "vendedorId"
   );
 
-  listenersConversas.push(
-    onSnapshot(consultaComprador, snapshot => {
-      acompanharConsultas(conversasComprador, snapshot);
-    }, erro => {
-      console.error(
-        "Erro ao consultar conversas como comprador:",
-        erro.code,
-        erro.message
-      );
-      toast("Erro ao consultar conversas: " + erro.code);
-    })
-  );
-
-  listenersConversas.push(
-    onSnapshot(consultaVendedor, snapshot => {
-      acompanharConsultas(conversasVendedor, snapshot);
-    }, erro => {
-      console.error(
-        "Erro ao consultar conversas como vendedor:",
-        erro.code,
-        erro.message
-      );
-      toast("Erro ao consultar conversas: " + erro.code);
-    })
+  registrarConsulta(
+    conversasParticipante,
+    query(
+      collection(db, "conversas"),
+      where("participantes", "array-contains", uid)
+    ),
+    "participantes"
   );
 
   chatUnreadUnsub = () => {
     listenersConversas.forEach(unsub => {
-      try { unsub(); } catch (e) { console.warn(e); }
+      try { unsub(); } catch (e) {}
     });
+
+    Object.values(chatMessageUnsubs).forEach(unsub => {
+      try { unsub(); } catch (e) {}
+    });
+
+    chatMessageUnsubs = {};
   };
 }
 
