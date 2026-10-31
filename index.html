@@ -1709,76 +1709,133 @@ display:none!important;
     <!-- MEUS ANÚNCIOS -->
 <section id="myAdsPage" class="page"><div class="sectionTitle">Meus anúncios</div><div class="sectionSubtitle">Edite, pause ou marque como vendido.</div><div id="myAdsProducts" class="productGrid"></div></section>
     
-<!-- MINHA LOJA: GERENCIAMENTO DO PROPRIETÁRIO -->
+
+<!-- MINHA LOJA: PAINEL DO PROPRIETÁRIO -->
 <section id="myStorePage" class="page">
-  <div class="sectionTitle">Painel da Loja</div>
-  <div class="sectionSubtitle">Gerencie pedidos, entregas, produtos, configurações e mensalidade da sua loja.</div>
 
-  <div class="sectionTitle" style="font-size:18px;margin-top:8px">Configurações e produtos</div>
-
-  <div class="serviceCard" style="margin-bottom:18px">
-    <div class="serviceIcon">🏪</div>
-    <h3 id="myStoreManagerTitle">Gerenciar minha loja</h3>
-    <p id="myStoreManagerStatus" style="margin:8px 0 14px">
-      Carregando informações da sua loja...
-    </p>
-
-    <button
-      type="button"
-      id="editMyStoreBtn"
-      class="btn btnPrimary"
-      style="width:100%;margin-bottom:8px">
-      ✏️ Configurar / editar loja
-    </button>
-
-    <button
-  type="button"
-  id="toggleStoreOpenBtn"
-  class="btn"
-  style="width:100%;margin-bottom:8px;background:#dcfce7;color:#166534;display:block">
-  🟢 Abrir loja
-    </button>
-
-    <button
-      type="button"
-      id="addStoreProductBtn"
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px">
+    <div>
+      <div class="sectionTitle">Minha loja</div>
+      <div id="myStoreManagerStatus" style="font-size:13px;color:#64748b;margin-top:4px">
+        Carregando informações da sua loja...
+      </div>
+    </div>
+    <button type="button" id="toggleStoreOpenBtn"
       class="btn"
-      style="width:100%;background:#e5e7eb;margin-bottom:8px">
-      ➕ Adicionar produto
+      style="background:#dcfce7;color:#166534;padding:9px 12px;font-size:13px">
+      🟢 Abrir loja
     </button>
+  </div>
 
-    <button
-      type="button"
-      id="toggleStoreProductsBtn"
-      class="btn"
-      style="width:100%;background:#e5e7eb;margin-bottom:8px">
-      📦 Ver / editar meus produtos
-    </button>
+  <div class="serviceCard" style="margin-bottom:16px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px">
+      <h3 style="margin:0">🧾 Pedidos recebidos</h3>
+      <button type="button" id="refreshStoreOrdersBtn"
+        class="btn btnPrimary"
+        style="padding:8px 12px;font-size:13px">
+        🔄 Atualizar
+      </button>
+    </div>
 
-    <button type="button" id="payStoreSubscriptionBtn" class="btn" style="width:100%;background:#dcfce7;color:#166534;margin-bottom:8px">
-      💳 Pagar / regularizar mensalidade
-    </button>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button id="todayStoreOrdersBtn" type="button"
+        style="flex:1;padding:11px 8px;border:1px solid #0f172a;border-radius:10px;background:#0f172a;color:#fff;font-weight:700">
+        📅 Hoje
+      </button>
+      <button id="historyStoreOrdersBtn" type="button"
+        style="flex:1;padding:11px 8px;border:1px solid #d1d5db;border-radius:10px;background:#fff;color:#0f172a;font-weight:700">
+        🗂️ Histórico
+      </button>
+    </div>
 
-    <button type="button" id="deleteMyStoreBtn" class="btn btnDanger" style="width:100%;display:none">
-      🗑️ Excluir minha loja
-    </button>
-
-    <div id="myStoreProductsPanel" style="display:none;margin-top:16px">
-      <h3 style="margin-bottom:10px">Produtos da minha loja</h3>
-      <div id="myStoreProductsList"></div>
+    <div id="storeOrdersPanel"
+      style="border:1px solid #e5e7eb;border-radius:12px;padding:12px;background:#f8fafc;color:#64748b">
+      Os pedidos recebidos aparecerão aqui.
     </div>
   </div>
 
-  <div class="serviceCard" style="margin-bottom:18px"><div class="serviceIcon">🧾</div><h3>Pedidos recebidos</h3><p style="margin:8px 0 12px">A loja poderá conferir os pedidos, confirmar ou recusar. Para pedidos com FreteGo, a loja escolhe o veículo e somente depois a entrega é liberada.</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><button type="button" id="refreshStoreOrdersBtn" class="btn btnPrimary">Atualizar pedidos</button><button type="button" id="toggleStoreFreteGoBtn" class="btn" style="background:#dcfce7;color:#166534;">🚚 FreteGo: ativado</button></div><p id="storeFreteGoStatus" style="font-size:12px;color:#64748b;margin:0 0 10px;">Quando desativado, os clientes não poderão escolher entrega pelo FreteGo nesta loja.</p>
-<div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap">
-  <button id="todayStoreOrdersBtn" type="button" style="padding:10px 14px;border:0;border-radius:10px;background:#0f172a;color:#fff;font-weight:700">📅 Pedidos de hoje</button>
-  <button id="historyStoreOrdersBtn" type="button" style="padding:10px 14px;border:1px solid #d1d5db;border-radius:10px;background:#fff;color:#0f172a;font-weight:700">🗂️ Histórico</button>
-</div>
-<div id="storeOrdersPanel" style="border:1px solid #e5e7eb;border-radius:14px;padding:14px;background:#f8fafc;color:#64748b">Os pedidos recebidos aparecerão aqui. A confirmação da loja será necessária antes de liberar uma entrega pelo FreteGo.</div>
-  </div>
+  <details id="storeManagementMenu"
+    style="background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:0;margin-bottom:18px">
+
+    <summary style="padding:15px;cursor:pointer;font-weight:700;color:#0f172a;list-style:none;display:flex;align-items:center;justify-content:space-between">
+      <span>☰ Menu da loja</span>
+      <span style="font-size:12px;color:#64748b">Opções ▾</span>
+    </summary>
+
+    <div style="padding:0 14px 14px">
+
+      <div style="font-weight:700;font-size:13px;color:#64748b;margin:8px 0">
+        DADOS DA LOJA
+      </div>
+
+      <h3 id="myStoreManagerTitle" style="font-size:16px;margin:8px 0">
+        Gerenciar minha loja
+      </h3>
+
+      <button type="button" id="editMyStoreBtn"
+        class="btn btnPrimary"
+        style="width:100%;margin-bottom:8px">
+        ✏️ Configurar / editar loja
+      </button>
+
+      <div style="font-weight:700;font-size:13px;color:#64748b;margin:16px 0 8px">
+        PRODUTOS
+      </div>
+
+      <button type="button" id="addStoreProductBtn"
+        class="btn"
+        style="width:100%;background:#e5e7eb;margin-bottom:8px">
+        ➕ Adicionar produto
+      </button>
+
+      <button type="button" id="toggleStoreProductsBtn"
+        class="btn"
+        style="width:100%;background:#e5e7eb;margin-bottom:8px">
+        📦 Ver / editar meus produtos
+      </button>
+
+      <div id="myStoreProductsPanel" style="display:none;margin-top:16px">
+        <h3 style="margin-bottom:10px">Produtos da minha loja</h3>
+        <div id="myStoreProductsList"></div>
+      </div>
+
+      <div style="font-weight:700;font-size:13px;color:#64748b;margin:16px 0 8px">
+        ENTREGAS E PAGAMENTOS
+      </div>
+
+      <button type="button" id="toggleStoreFreteGoBtn"
+        class="btn"
+        style="width:100%;background:#dcfce7;color:#166534;margin-bottom:8px">
+        🚚 FreteGo: ativado
+      </button>
+
+      <p id="storeFreteGoStatus"
+        style="font-size:12px;color:#64748b;margin:0 0 10px">
+        Configure a disponibilidade do FreteGo para sua loja.
+      </p>
+
+      <button type="button" id="payStoreSubscriptionBtn"
+        class="btn"
+        style="width:100%;background:#dcfce7;color:#166534;margin-bottom:8px">
+        💳 Pagar / regularizar mensalidade
+      </button>
+
+      <div style="font-weight:700;font-size:13px;color:#64748b;margin:16px 0 8px">
+        OUTRAS OPÇÕES
+      </div>
+
+      <button type="button" id="deleteMyStoreBtn"
+        class="btn btnDanger"
+        style="width:100%;display:none">
+        🗑️ Excluir minha loja
+      </button>
+
+    </div>
+  </details>
+
 </section>
 <!-- FIM DE MINHA LOJA -->
-    
+
     <!-- FAVORITOS -->
 <section id="favoritesPage" class="page"><div class="sectionTitle">Favoritos</div><div class="sectionSubtitle">Seus anúncios salvos.</div><div id="favoriteProducts" class="productGrid"></div></section>
     <!-- VITRINE DE LOJAS -->
