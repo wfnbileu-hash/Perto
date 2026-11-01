@@ -1727,9 +1727,27 @@ display:none!important;
     </button>
   </div>
 
-  <div class="serviceCard" style="margin-bottom:16px">
+  
+<div class="serviceCard" style="margin-bottom:16px">
+
+  <div style="display:flex;gap:8px;margin-bottom:14px">
+    <button id="storeOrdersTab" type="button"
+      class="btn btnPrimary"
+      style="flex:1">
+      🧾 Pedidos
+    </button>
+
+    <button id="storeReviewsTab" type="button"
+      class="btn"
+      style="flex:1;background:#f1f5f9;color:#0f172a">
+      ⭐ Avaliações
+    </button>
+  </div>
+
+  <div id="storeOrdersTabContent">
+
     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px">
-      <h3 style="margin:0">🧾 Pedidos recebidos</h3>
+      <h3 style="margin:0">Pedidos recebidos</h3>
       <button type="button" id="refreshStoreOrdersBtn"
         class="btn btnPrimary"
         style="padding:8px 12px;font-size:13px">
@@ -1742,6 +1760,7 @@ display:none!important;
         style="flex:1;padding:11px 8px;border:1px solid #0f172a;border-radius:10px;background:#0f172a;color:#fff;font-weight:700">
         📅 Hoje
       </button>
+
       <button id="historyStoreOrdersBtn" type="button"
         style="flex:1;padding:11px 8px;border:1px solid #d1d5db;border-radius:10px;background:#fff;color:#0f172a;font-weight:700">
         🗂️ Histórico
@@ -1752,8 +1771,30 @@ display:none!important;
       style="border:1px solid #e5e7eb;border-radius:12px;padding:12px;background:#f8fafc;color:#64748b">
       Os pedidos recebidos aparecerão aqui.
     </div>
+
   </div>
 
+  <div id="storeReviewsTabContent" style="display:none">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px">
+      <h3 style="margin:0">⭐ Avaliações dos clientes</h3>
+
+      <button id="refreshStoreReviewsBtn" type="button"
+        class="btn"
+        style="padding:8px 12px;background:#f1f5f9;color:#0f172a">
+        🔄 Atualizar
+      </button>
+    </div>
+
+    <div id="storeReviewsPanel"
+      style="border:1px solid #e5e7eb;border-radius:12px;padding:12px;background:#f8fafc;color:#64748b">
+      As avaliações recebidas aparecerão aqui.
+    </div>
+
+  </div>
+
+</div>
+  
   <details id="storeManagementMenu"
     style="background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:0;margin-bottom:18px">
 
@@ -6867,6 +6908,124 @@ $("toggleStoreOpenBtn")?.addEventListener("click", async () => {
     if (botao) botao.disabled = false;
   }
 });
+
+
+function abrirAbaPainelLoja(aba) {
+  const pedidos = $("storeOrdersTabContent");
+  const avaliacoes = $("storeReviewsTabContent");
+  const botaoPedidos = $("storeOrdersTab");
+  const botaoAvaliacoes = $("storeReviewsTab");
+
+  const mostrarPedidos = aba === "pedidos";
+
+  pedidos.style.display = mostrarPedidos ? "block" : "none";
+  avaliacoes.style.display = mostrarPedidos ? "none" : "block";
+
+  botaoPedidos.className = mostrarPedidos ? "btn btnPrimary" : "btn";
+  botaoAvaliacoes.className = mostrarPedidos ? "btn" : "btn btnPrimary";
+
+  botaoPedidos.style.background = mostrarPedidos ? "#0f172a" : "#f1f5f9";
+  botaoPedidos.style.color = mostrarPedidos ? "#fff" : "#0f172a";
+
+  botaoAvaliacoes.style.background = mostrarPedidos ? "#f1f5f9" : "#0f172a";
+  botaoAvaliacoes.style.color = mostrarPedidos ? "#0f172a" : "#fff";
+
+  if (!mostrarPedidos) {
+    carregarAvaliacoesPainelLoja();
+  }
+}
+
+$("storeOrdersTab").onclick = () => abrirAbaPainelLoja("pedidos");
+$("storeReviewsTab").onclick = () => abrirAbaPainelLoja("avaliacoes");
+$("refreshStoreReviewsBtn").onclick = carregarAvaliacoesPainelLoja;
+
+async function carregarAvaliacoesPainelLoja() {
+  const painel = $("storeReviewsPanel");
+  const usuario = auth.currentUser || currentUser;
+
+  if (!painel || !usuario) return;
+
+  painel.textContent = "Carregando avaliações...";
+
+  try {
+    const consulta = query(
+      collection(db, "avaliacoesPedidos"),
+      where("lojaId", "==", usuario.uid)
+    );
+
+    const resultado = await getDocs(consulta);
+
+    const avaliacoes = resultado.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) =>
+        (b.criadoEm?.toMillis?.() || 0) -
+        (a.criadoEm?.toMillis?.() || 0)
+      );
+
+    painel.replaceChildren();
+
+    if (!avaliacoes.length) {
+      painel.textContent = "Sua loja ainda não recebeu avaliações.";
+      return;
+    }
+
+    const media = avaliacoes.reduce(
+      (soma, item) => soma + Number(item.nota || 0), 0
+    ) / avaliacoes.length;
+
+    const resumo = document.createElement("div");
+    resumo.style.cssText =
+      "background:#fff;border-radius:12px;padding:16px;margin-bottom:12px;text-align:center";
+
+    const nota = document.createElement("div");
+    nota.style.cssText = "font-size:30px;font-weight:900;color:#0f172a";
+    nota.textContent = media.toFixed(1).replace(".", ",") + " ⭐";
+
+    const quantidade = document.createElement("p");
+    quantidade.style.cssText = "font-size:13px;color:#64748b;margin-top:5px";
+    quantidade.textContent =
+      avaliacoes.length + (avaliacoes.length === 1
+        ? " avaliação recebida"
+        : " avaliações recebidas");
+
+    resumo.append(nota, quantidade);
+    painel.appendChild(resumo);
+
+    avaliacoes.forEach(avaliacao => {
+      const card = document.createElement("article");
+      card.style.cssText =
+        "background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:13px;margin-bottom:10px";
+
+      const estrelas = document.createElement("strong");
+      estrelas.style.color = "#d97706";
+      estrelas.textContent =
+        "★".repeat(Math.max(0, Math.min(5, Number(avaliacao.nota) || 0))) +
+        "☆".repeat(5 - Math.max(0, Math.min(5, Number(avaliacao.nota) || 0)));
+
+      const comentario = document.createElement("p");
+      comentario.style.cssText =
+        "font-size:14px;color:#334155;margin:8px 0;white-space:pre-wrap";
+      comentario.textContent =
+        avaliacao.comentario || "Cliente não deixou comentário.";
+
+      const data = document.createElement("small");
+      data.style.color = "#94a3b8";
+      data.textContent = avaliacao.criadoEm?.toDate
+        ? avaliacao.criadoEm.toDate().toLocaleDateString("pt-BR")
+        : "Data não informada";
+
+      card.append(estrelas, comentario, data);
+      painel.appendChild(card);
+    });
+
+  } catch (erro) {
+    console.error("Erro ao carregar avaliações da loja:", erro);
+    painel.textContent =
+      erro?.code === "permission-denied"
+        ? "O Firebase bloqueou a leitura das avaliações. Precisamos conferir as regras."
+        : "Não foi possível carregar as avaliações.";
+  }
+  }
   
 async function carregarPainelMinhaLoja() {
     const usuario = auth.currentUser || currentUser;
