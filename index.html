@@ -2913,6 +2913,16 @@ const firebaseConfig={apiKey:"AIzaSyCchIeHvUILX9fiv99C6q_OQ2AiMIzVkwI",authDomai
 const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
 const db=getFirestore(app);
+  // Acesso da vitrine pública ao Firebase
+window.__pertoHomeFirebase = {
+  db,
+  collection,
+  getDocs
+};
+
+// Funções usadas pelos cards da vitrine
+window.openProduct = openProduct;
+window.abrirLojaPublica = abrirLojaPublica;
 const functions=getFunctions(app, "southamerica-east1");
 const solicitarEntregaMarketplaceFn=httpsCallable(functions, "solicitarEntregaMarketplace");
 const calcularFreteMarketplaceFn=httpsCallable(functions, "calcularFreteMarketplace");
