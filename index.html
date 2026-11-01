@@ -7600,7 +7600,7 @@ async function carregarMinhasCompras(silencioso = false) {
       area.appendChild(vazio);
       return;
     }
-    pedidos.forEach(pedido => {
+    for (const pedido of pedidos) {
       const card = document.createElement("article");
       card.style.cssText = "background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:15px;margin-bottom:12px;box-shadow:0 3px 12px rgba(0,0,0,.04)";
       const titulo = document.createElement("h3");
@@ -7737,7 +7737,7 @@ async function carregarMinhasCompras(silencioso = false) {
         card.appendChild(data);
       }
       area.appendChild(card);
-    });
+    }
   } catch (erro) {
     console.error("Erro ao carregar compras do cliente:", erro);
     area.replaceChildren();
