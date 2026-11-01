@@ -6784,6 +6784,43 @@ const pedidos = todosPedidos.filter(pedido => {
         acoes.appendChild(liberar);
         card.appendChild(acoes);
       }
+    
+      if (
+        ["confirmado", "entrega_solicitada", "em_preparacao", "pronto"].includes(pedido.status)
+      ) {
+        const concluir = document.createElement("button");
+        concluir.type = "button";
+        concluir.className = "btn btnPrimary";
+        concluir.style.cssText = "width:100%;margin-top:12px;background:#16a34a";
+        concluir.textContent = "✅ Marcar pedido como concluído";
+
+        concluir.onclick = async () => {
+          if (!confirm("Confirma que este pedido foi concluído?")) return;
+
+          concluir.disabled = true;
+          concluir.textContent = "Concluindo...";
+
+          try {
+            await updateDoc(doc(db, "pedidos", pedido.id), {
+              status: "concluido",
+              concluidoEm: serverTimestamp(),
+              concluidoPor: usuario.uid,
+              atualizadoEm: serverTimestamp()
+            });
+
+            toast("Pedido concluído! O cliente poderá avaliar após 15 minutos.");
+            await carregarPedidosRecebidosLoja();
+          } catch (erro) {
+            console.error("Erro ao concluir pedido:", erro);
+            toast("Não foi possível concluir. Confira as regras do Firestore.");
+            concluir.disabled = false;
+            concluir.textContent = "✅ Marcar pedido como concluído";
+          }
+        };
+
+        card.appendChild(concluir);
+          }
+      
       painel.appendChild(card);
     });
   } catch (erro) {
@@ -7585,6 +7622,95 @@ async function carregarMinhasCompras(silencioso = false) {
       tipo.style.cssText = "font-size:13px;color:#475569;margin:6px 0";
       tipo.textContent = pedido.tipoEntrega === "fretego" ? "🚚 Entrega pelo FreteGo" : "📲 Entrega/retirada combinada diretamente com a loja";
       card.append(titulo, status, itens, total, tipo);
+      
+      // AVALIAÇÃO DO PEDIDO — LIBERADA APÓS 15 MINUTOS
+      if (pedido.status === "concluido" && pedido.concluidoEm) {
+        const concluidoEm = pedido.concluidoEm.toDate
+          ? pedido.concluidoEm.toDate()
+          : new Date(pedido.concluidoEm);
+
+        const liberacao = concluidoEm.getTime() + 15 * 60 * 1000;
+        const agora = Date.now();
+
+        const avaliacaoInfo = document.createElement("p");
+        avaliacaoInfo.style.cssText =
+          "font-size:13px;margin:12px 0;color:#64748b";
+
+        if (agora < liberacao) {
+          const minutos = Math.ceil((liberacao - agora) / 60000);
+          avaliacaoInfo.textContent =
+            `⭐ Você poderá avaliar esta compra em aproximadamente ${minutos} minuto(s).`;
+          card.appendChild(avaliacaoInfo);
+        } else {
+          try {
+            const avaliacaoRef = doc(db, "avaliacoesPedidos", pedido.id);
+            const avaliacaoExistente = await getDoc(avaliacaoRef);
+
+            if (avaliacaoExistente.exists()) {
+              avaliacaoInfo.textContent = "⭐ Você já avaliou esta compra. Obrigado!";
+              card.appendChild(avaliacaoInfo);
+            } else {
+              const botaoAvaliar = document.createElement("button");
+              botaoAvaliar.type = "button";
+              botaoAvaliar.className = "btn btnPrimary";
+              botaoAvaliar.style.cssText =
+                "width:100%;margin-top:12px;background:#f59e0b;color:#111827";
+              botaoAvaliar.textContent = "⭐ Avaliar esta compra";
+
+              botaoAvaliar.onclick = async () => {
+                const notaTexto = prompt(
+                  "Dê uma nota de 1 a 5 estrelas:"
+                );
+
+                if (notaTexto === null) return;
+
+                const nota = Number(notaTexto);
+
+                if (!Number.isInteger(nota) || nota < 1 || nota > 5) {
+                  toast("Informe uma nota entre 1 e 5.");
+                  return;
+                }
+
+                const comentario = prompt(
+                  "Deixe um comentário (opcional):"
+                );
+
+                if (comentario === null) return;
+
+                botaoAvaliar.disabled = true;
+                botaoAvaliar.textContent = "Enviando avaliação...";
+
+                try {
+                  await setDoc(avaliacaoRef, {
+                    pedidoId: pedido.id,
+                    clienteUid: usuario.uid,
+                    lojaId: pedido.lojaId,
+                    nota,
+                    comentario: comentario.trim(),
+                    criadoEm: serverTimestamp()
+                  });
+
+                  toast("Obrigado! Sua avaliação foi enviada.");
+                  await carregarMinhasCompras(true);
+                } catch (erro) {
+                  console.error("Erro ao enviar avaliação:", erro);
+                  toast("Não foi possível enviar. Confira as regras do Firestore.");
+                  botaoAvaliar.disabled = false;
+                  botaoAvaliar.textContent = "⭐ Avaliar esta compra";
+                }
+              };
+
+              card.appendChild(botaoAvaliar);
+            }
+          } catch (erro) {
+            console.error("Erro ao consultar avaliação:", erro);
+            avaliacaoInfo.textContent =
+              "Não foi possível verificar sua avaliação agora.";
+            card.appendChild(avaliacaoInfo);
+          }
+        }
+      }
+      
       if (pedido.tipoEntrega === "fretego") {
         const destino = document.createElement("p");
         destino.style.cssText = "font-size:12px;color:#64748b;margin:5px 0";
