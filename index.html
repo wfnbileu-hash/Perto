@@ -8480,7 +8480,9 @@ renderFavorites();
  window.carregarLojasParceirasHome=async function(){
   const t=document.getElementById("homePartnerTrack");if(!t)return;
   try{
-   if(!window.db||!window.getDocs||!window.collection){t.innerHTML='<p class="homeShowcaseEmpty">Lojas parceiras em breve.</p>';return;}
+   const fb=window.__pertoHomeFirebase;
+if(!fb){t.innerHTML='<p class="homeShowcaseEmpty">Lojas parceiras em breve.</p>';return;}
+const s=await fb.getDocs(fb.collection(fb.db,"lojas"));
    const s=await window.getDocs(window.collection(window.db,"lojas"));
    const ls=s.docs.map(d=>({id:d.id,...d.data()})).filter(l=>l.ativo===true&&l.statusAdmin!=="suspensa").slice(0,30);
    if(!ls.length){t.innerHTML='<p class="homeShowcaseEmpty">Seja uma das primeiras lojas parceiras!</p>';return;}
