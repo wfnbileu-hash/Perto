@@ -3047,6 +3047,44 @@ let chatMessageUnsubs = {};
 
 let categoriasVitrineLoja = [];
 let bannerVitrineLoja = "";
+  function carregarConfiguracaoVitrineLoja(loja) {
+  const config = loja.configVitrine || {};
+
+  bannerVitrineLoja = config.banner || "";
+  categoriasVitrineLoja = Array.isArray(loja.categorias)
+    ? loja.categorias.slice(0, 30)
+    : [];
+
+  $("storeLayout").value =
+    config.layout === "lista" ? "lista" : "grade";
+
+  $("storeColumns").value =
+    [2, 3, 4].includes(Number(config.colunas))
+      ? String(config.colunas)
+      : "2";
+
+  $("storeListImages").checked =
+    config.mostrarImagemLista !== false;
+
+  $("storeColumnsGroup").style.display =
+    config.layout === "lista" ? "none" : "block";
+
+  renderizarCategoriasVitrine();
+
+  const preview = $("storeBannerPreview");
+  preview.replaceChildren();
+
+  if (bannerVitrineLoja) {
+    const imagem = document.createElement("img");
+    imagem.src = bannerVitrineLoja;
+    imagem.alt = "Banner da loja";
+    imagem.style.cssText =
+      "width:100%;max-height:160px;object-fit:cover;border-radius:10px";
+    preview.appendChild(imagem);
+  }
+
+  $("storeAppearanceMessage").textContent = "";
+  }
 
 function renderizarCategoriasVitrine() {
   const painel = $("storeCategoriesEditor");
@@ -7469,6 +7507,7 @@ async function carregarPainelMinhaLoja() {
         return;
       }
       const loja = resultado.data();
+      carregarConfiguracaoVitrineLoja(loja);
       atualizarVisualBotaoFreteGo(loja.freteGoAtivo !== false);
       $("myStoreManagerTitle").textContent = "Gerenciar " + (loja.nome || "minha loja");
       if (loja.statusAdmin === "suspensa") {
