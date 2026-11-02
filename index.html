@@ -6800,6 +6800,7 @@ if (resultado.empty) {
 }
 
 painelProdutos.innerHTML = "";
+  toast("Montando " + resultado.size + " produtos");
 
 resultado.forEach((documento) => {
   const produto = documento.data();
