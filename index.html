@@ -6747,7 +6747,12 @@ resultado.forEach((documento) => {
   card.className = "storeCard";
   card.dataset.categoria =
   String(produto.categoria || "Outros").trim();
-  card.style.padding = "16px";
+  card.style.padding = "12px";
+card.style.display = layoutLista ? "flex" : "block";
+card.style.alignItems = layoutLista ? "center" : "";
+card.style.gap = layoutLista ? "12px" : "";
+card.style.width = "100%";
+card.style.boxSizing = "border-box";
   card.style.cursor = "pointer";
   card.addEventListener("click", () => openProduct(produtoParaAbrir));
   
@@ -6808,6 +6813,10 @@ resultado.forEach((documento) => {
     card.appendChild(galeria);
   }
 
+  const conteudo = document.createElement("div");
+conteudo.style.flex = "1";
+conteudo.style.minWidth = "0";
+  
   const nome = document.createElement("h3");
   nome.textContent = produto.nome || "Produto";
   nome.style.margin = "0 0 8px";
@@ -6836,8 +6845,8 @@ resultado.forEach((documento) => {
     evento.stopPropagation();
     adicionarAoCarrinhoLoja(lojaId, produtoParaAbrir);
   };
-  card.append(nome, preco, categoria, descricao, adicionar);
-  painelProdutos.appendChild(card);
+  conteudo.append(nome, preco, categoria, descricao, adicionar);
+card.appendChild(conteudo);
 });
 
 } catch (erro) {
