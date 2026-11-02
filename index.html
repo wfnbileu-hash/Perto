@@ -8664,7 +8664,7 @@ window.carregarLojasParceirasHome=async function(){
  
   const load=()=>{window.carregarDestaquesHome();window.carregarLojasParceirasHome()};
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",load,{once:true});else load();
- document.addEventListener("click",e=>{if(e.target.closest("#homePartnerSeeAll")){const b=document.getElementById("homeStores");if(b)b.click();else if(typeof window.showInternalPage==="function")window.showInternalPage("storesPage")}});
+ document.addEventListener("click",e=>{if(e.target.closest("#homePartnerSeeAll,#clientPartnerSeeAll")){const b=document.getElementById("homeStores");if(b)b.click();else if(typeof window.showInternalPage==="function")window.showInternalPage("storesPage")}});
 })();
 </script>
 
