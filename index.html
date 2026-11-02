@@ -3070,7 +3070,7 @@ let bannerVitrineLoja = "";
     config.layout === "lista" ? "none" : "block";
 
   renderizarCategoriasVitrine();
-
+  atualizarCategoriasProduto();
   const preview = $("storeBannerPreview");
   preview.replaceChildren();
 
@@ -3085,7 +3085,53 @@ let bannerVitrineLoja = "";
 
   $("storeAppearanceMessage").textContent = "";
   }
+function atualizarCategoriasProduto(categoriaAtual = "") {
+  const select = $("storeProductCategory");
+  if (!select) return;
 
+  const categoriasAntigas = [
+    "Alimentos",
+    "Bebidas",
+    "Eletrônicos",
+    "Casa",
+    "Roupas",
+    "Beleza",
+    "Ferramentas",
+    "Outros"
+  ];
+
+  const categorias = [
+    ...categoriasVitrineLoja,
+    ...categoriasAntigas,
+    categoriaAtual
+  ]
+    .map(c => String(c || "").trim())
+    .filter(Boolean);
+
+  const categoriasUnicas = [
+    ...new Map(
+      categorias.map(c => [c.toLowerCase(), c])
+    ).values()
+  ];
+
+  select.replaceChildren();
+
+  const opcaoInicial = document.createElement("option");
+  opcaoInicial.value = "";
+  opcaoInicial.textContent = "Selecione";
+  select.appendChild(opcaoInicial);
+
+  categoriasUnicas.forEach(categoria => {
+    const opcao = document.createElement("option");
+    opcao.value = categoria;
+    opcao.textContent = categoria;
+    select.appendChild(opcao);
+  });
+
+  if (categoriaAtual) {
+    select.value = categoriaAtual;
+  }
+    }
 function renderizarCategoriasVitrine() {
   const painel = $("storeCategoriesEditor");
   if (!painel) return;
@@ -7864,7 +7910,7 @@ async function carregarProdutosMinhaLoja() {
         editingStoreProductId = produto.id;
         $("storeProductName").value = produto.nome || "";
         $("storeProductPrice").value = produto.preco ?? "";
-        $("storeProductCategory").value = produto.categoria || "";
+        atualizarCategoriasProduto(produto.categoria || "");
         $("storeProductDescription").value = produto.descricao || "";
         $("storeProductImages").value = "";
         $("storeProductImagePreview").replaceChildren();
