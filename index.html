@@ -1732,7 +1732,23 @@ display:none!important;
 .clientPartnerCardInfo{padding:11px}
 .clientPartnerCardInfo strong{display:block;font-size:14px;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .clientPartnerCardInfo span{display:block;font-size:12px;color:#64748b;margin-top:5px}
-  </style>
+ .clientPartnerHeading{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
+  gap:10px;
+}
+.clientPartnerHeading > div{
+  min-width:0;
+  flex:1;
+}
+#clientPartnerSeeAll{
+  flex-shrink:0;
+  margin-left:auto;
+  white-space:nowrap;
+  }
+</style>
     
 <div id="homeProducts" class="productGrid"></div>
 
