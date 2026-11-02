@@ -8578,19 +8578,91 @@ const s=await fb.getDocs(fb.collection(fb.db,"produtosLoja"));
    if(t.dataset.autoScroll!=="1"){t.dataset.autoScroll="1";let d=1;setInterval(()=>{if(!t.isConnected||t.scrollWidth<=t.clientWidth+4)return;const max=t.scrollWidth-t.clientWidth;if(t.scrollLeft>=max-3)d=-1;if(t.scrollLeft<=3)d=1;t.scrollBy({left:d*210,behavior:"smooth"})},4500)}
   }catch(e){console.error(e);t.innerHTML='<p class="homeShowcaseEmpty">Não foi possível carregar os destaques agora.</p>'}
  };
- window.carregarLojasParceirasHome=async function(){
-  const t=document.getElementById("homePartnerTrack");if(!t)return;
-  try{
-   const fb=window.__pertoHomeFirebase;
-if(!fb){t.innerHTML='<p class="homeShowcaseEmpty">Lojas parceiras em breve.</p>';return;}
-const s=await fb.getDocs(fb.collection(fb.db,"lojas"));
-   const ls=s.docs.map(d=>({id:d.id,...d.data()})).filter(l=>l.ativo===true&&l.statusAdmin!=="suspensa").slice(0,30);
-   if(!ls.length){t.innerHTML='<p class="homeShowcaseEmpty">Seja uma das primeiras lojas parceiras!</p>';return;}
-   t.innerHTML=ls.map(l=>`<button class="homePartnerLogo" type="button" data-loja-home="${esc(l.id)}">${l.logoURL?`<img src="${esc(l.logoURL)}" alt="${esc(l.nome||l.nomeLoja||"Loja")}" loading="lazy">`:'<span class="homePartnerPlaceholder">🏪</span>'}<span>${esc(l.nome||l.nomeLoja||"Loja parceira")}</span></button>`).join("");
-   t.querySelectorAll("[data-loja-home]").forEach(b=>b.addEventListener("click",()=>{if(typeof window.abrirLojaPublica==="function")window.abrirLojaPublica(b.dataset.lojaHome);else if(typeof window.showInternalPage==="function")window.showInternalPage("storesPage")}));
-  }catch(e){console.error(e);t.innerHTML='<p class="homeShowcaseEmpty">Não foi possível carregar as lojas agora.</p>'}
- };
- const load=()=>{window.carregarDestaquesHome();window.carregarLojasParceirasHome()};
+ 
+window.carregarLojasParceirasHome=async function(){
+ const t=document.getElementById("homePartnerTrack");
+ const clienteTrack=document.getElementById("clientPartnerTrack");
+ if(!t&&!clienteTrack)return;
+
+ const mensagem=(texto)=>`<p class="homeShowcaseEmpty">${texto}</p>`;
+
+ try{
+  const fb=window.__pertoHomeFirebase;
+
+  if(!fb){
+   if(t)t.innerHTML=mensagem("Lojas parceiras em breve.");
+   if(clienteTrack)clienteTrack.innerHTML=mensagem("Lojas parceiras em breve.");
+   return;
+  }
+
+  const s=await fb.getDocs(fb.collection(fb.db,"lojas"));
+  const ls=s.docs
+   .map(d=>({id:d.id,...d.data()}))
+   .filter(l=>l.ativo===true&&l.statusAdmin!=="suspensa")
+   .slice(0,30);
+
+  if(!ls.length){
+   if(t)t.innerHTML=mensagem("Seja uma das primeiras lojas parceiras!");
+   if(clienteTrack)clienteTrack.innerHTML=mensagem("Ainda não há lojas parceiras disponíveis.");
+   return;
+  }
+
+  // VITRINE PÚBLICA ORIGINAL
+  if(t){
+   t.innerHTML=ls.map(l=>`
+    <button class="homePartnerLogo" type="button"
+     data-loja-home="${esc(l.id)}">
+     ${l.logoURL
+      ?`<img src="${esc(l.logoURL)}" alt="${esc(l.nome||l.nomeLoja||"Loja")}" loading="lazy">`
+      :'<span class="homePartnerPlaceholder">🏪</span>'}
+     <span>${esc(l.nome||l.nomeLoja||"Loja parceira")}</span>
+    </button>
+   `).join("");
+
+   t.querySelectorAll("[data-loja-home]").forEach(b=>{
+    b.addEventListener("click",()=>{
+     if(typeof window.abrirLojaPublica==="function")
+      window.abrirLojaPublica(b.dataset.lojaHome);
+     else if(typeof window.showInternalPage==="function")
+      window.showInternalPage("storesPage");
+    });
+   });
+  }
+
+  // VITRINE NOVA DA ÁREA DO CLIENTE
+  if(clienteTrack){
+   clienteTrack.innerHTML=ls.slice(0,10).map(l=>`
+    <button class="clientPartnerCard" type="button"
+     data-client-store="${esc(l.id)}">
+     ${l.logoURL
+      ?`<img src="${esc(l.logoURL)}" alt="${esc(l.nome||l.nomeLoja||"Loja")}" loading="lazy">`
+      :'<div class="clientPartnerPlaceholder">🏪</div>'}
+     <div class="clientPartnerCardInfo">
+      <strong>${esc(l.nome||l.nomeLoja||"Loja parceira")}</strong>
+      <span>${esc(l.categoria||"Loja parceira")}</span>
+      <span>📍 ${esc(l.cidade||"Sua região")}</span>
+     </div>
+    </button>
+   `).join("");
+
+   clienteTrack.querySelectorAll("[data-client-store]").forEach(b=>{
+    b.addEventListener("click",()=>{
+     if(typeof window.abrirLojaPublica==="function")
+      window.abrirLojaPublica(b.dataset.clientStore);
+     else if(typeof window.showInternalPage==="function")
+      window.showInternalPage("storesPage");
+    });
+   });
+  }
+
+ }catch(e){
+  console.error(e);
+  if(t)t.innerHTML=mensagem("Não foi possível carregar as lojas agora.");
+  if(clienteTrack)clienteTrack.innerHTML=mensagem("Não foi possível carregar as lojas agora.");
+ }
+};
+ 
+  const load=()=>{window.carregarDestaquesHome();window.carregarLojasParceirasHome()};
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",load,{once:true});else load();
  document.addEventListener("click",e=>{if(e.target.closest("#homePartnerSeeAll")){const b=document.getElementById("homeStores");if(b)b.click();else if(typeof window.showInternalPage==="function")window.showInternalPage("storesPage")}});
 })();
