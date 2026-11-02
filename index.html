@@ -3012,6 +3012,76 @@ Você será direcionado ao Mercado Pago para concluir o pagamento. O destaque se
 <!-- ================================================== -->
 <!-- JAVASCRIPT: FUNCIONALIDADES E INTEGRAÇÕES -->
 <!-- ================================================== -->
+
+  
+<script>
+(function () {
+  function exibirErro(tipo, mensagem, arquivo, linha) {
+    var tela = document.getElementById("loadingScreen");
+    if (!tela) return;
+
+    tela.style.display = "flex";
+    tela.innerHTML = "";
+
+    var painel = document.createElement("div");
+    painel.style.cssText =
+      "padding:24px;max-width:600px;color:white;font-family:Arial;overflow-wrap:anywhere";
+
+    var titulo = document.createElement("h2");
+    titulo.style.color = "#f59e0b";
+    titulo.textContent = "Diagnóstico Perto";
+
+    var dados = document.createElement("pre");
+    dados.style.cssText =
+      "white-space:pre-wrap;font-size:13px;line-height:1.6";
+
+    dados.textContent =
+      "TIPO: " + tipo +
+      "\nERRO: " + String(mensagem || "Não identificado") +
+      "\nARQUIVO: " + String(arquivo || "Não informado") +
+      "\nLINHA: " + String(linha || "Não informada");
+
+    painel.appendChild(titulo);
+    painel.appendChild(dados);
+    tela.appendChild(painel);
+  }
+
+  window.addEventListener("error", function (e) {
+    var alvo = e.target;
+
+    if (alvo && alvo !== window) {
+      exibirErro(
+        "Falha ao carregar recurso",
+        alvo.src || alvo.href || "Recurso não identificado",
+        "",
+        ""
+      );
+      return;
+    }
+
+    exibirErro(
+      "Erro JavaScript",
+      e.message,
+      e.filename,
+      e.lineno
+    );
+  }, true);
+
+  window.addEventListener("unhandledrejection", function (e) {
+    var motivo = e.reason;
+    exibirErro(
+      "Falha de Promise",
+      motivo && motivo.stack
+        ? motivo.stack
+        : String(motivo),
+      "",
+      ""
+    );
+  });
+})();
+</script>
+  
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup , sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
