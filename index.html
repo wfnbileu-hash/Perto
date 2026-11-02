@@ -6665,10 +6665,20 @@ async function abrirLojaPublica(lojaId) {
 lojaSelecionadaId = lojaId;
 $("storeCartFloatingBar")?.classList.remove("visible");
 
-const loja = lojasVitrine.find(item => item.id === lojaId);
+let loja = lojasVitrine.find(item => item.id === lojaId);
+
 if (!loja) {
-toast("Não foi possível encontrar esta loja.");
-return;
+  const lojaDoc = await getDoc(doc(db, "lojas", lojaId));
+
+  if (lojaDoc.exists()) {
+    loja = { id: lojaDoc.id, ...lojaDoc.data() };
+    lojasVitrine.push(loja);
+  }
+}
+
+if (!loja) {
+  toast("Não foi possível encontrar esta loja.");
+  return;
 }
 configurarCabecalhoVitrinePublica(loja);
 $("storeDetailName").textContent = loja.nome || "Loja";
