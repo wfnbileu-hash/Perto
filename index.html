@@ -6789,6 +6789,7 @@ where("ativo", "==", true)
 );
 
 const resultado = await getDocs(consulta);
+  toast("Produtos encontrados: " + resultado.size);
 
 if (lojaSelecionadaId !== lojaId) return;
 
