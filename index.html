@@ -6668,7 +6668,7 @@ lojaSelecionadaId = lojaId;
 $("storeCartFloatingBar")?.classList.remove("visible");
 
 const loja = lojasVitrine.find(item => item.id === lojaId);
-
+configurarCabecalhoVitrinePublica(loja);
 if (!loja) {
 toast("Não foi possível encontrar esta loja.");
 return;
