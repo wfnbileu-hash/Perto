@@ -6842,7 +6842,9 @@ resultado.forEach((documento) => {
   };
 
   const card = document.createElement("article");
-  card.className = "storeCard";
+  card.className = "storeCard storeProductCard";
+card.dataset.columns = String(colunasGrade);
+card.dataset.layout = layoutLista ? "lista" : "grade";
   card.dataset.categoria =
   String(produto.categoria || "Outros").trim();
   card.style.padding = "12px";
@@ -6916,10 +6918,12 @@ conteudo.style.flex = "1";
 conteudo.style.minWidth = "0";
   
   const nome = document.createElement("h3");
+  nome.className = "storeProductName";
   nome.textContent = produto.nome || "Produto";
   nome.style.margin = "0 0 8px";
 
   const preco = document.createElement("p");
+  preco.className = "storeProductPrice";
   preco.textContent = money(produto.preco);
   preco.style.fontSize = "20px";
   preco.style.fontWeight = "700";
@@ -6927,10 +6931,12 @@ conteudo.style.minWidth = "0";
   preco.style.color = "#166534";
 
   const categoria = document.createElement("p");
+  categoria.className = "storeProductCategory";
   categoria.textContent =
     "Categoria: " + (produto.categoria || "Outros");
 
   const descricao = document.createElement("p");
+  descricao.className = "storeProductDescription";
   descricao.textContent =
     produto.descricao || "Sem descrição.";
 
