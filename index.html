@@ -3040,6 +3040,249 @@ let notificationsCache = [];
 let chatUnreadUnsub = null;
 let chatMessageUnsubs = {};
 
+  
+// ================================================
+// PERSONALIZAÇÃO DA VITRINE - PAINEL DO LOJISTA
+// ================================================
+
+let categoriasVitrineLoja = [];
+let bannerVitrineLoja = "";
+
+function renderizarCategoriasVitrine() {
+  const painel = $("storeCategoriesEditor");
+  if (!painel) return;
+
+  painel.replaceChildren();
+
+  if (!categoriasVitrineLoja.length) {
+    painel.textContent = "Nenhuma categoria cadastrada.";
+    return;
+  }
+
+  categoriasVitrineLoja.forEach((categoria, indice) => {
+    const linha = document.createElement("div");
+    linha.style.cssText =
+      "display:flex;gap:8px;align-items:center;margin:8px 0;padding:10px;background:#f8fafc;border-radius:8px";
+
+    const nome = document.createElement("span");
+    nome.textContent = categoria;
+    nome.style.flex = "1";
+
+    const editar = document.createElement("button");
+    editar.type = "button";
+    editar.className = "btnSmallNeutral";
+    editar.textContent = "✏️";
+    editar.onclick = () => {
+      const novoNome = prompt("Novo nome da categoria:", categoria);
+      if (novoNome === null) return;
+
+      const nomeLimpo = novoNome.trim().slice(0, 40);
+
+      if (!nomeLimpo) {
+        toast("Digite um nome para a categoria.");
+        return;
+      }
+
+      if (categoriasVitrineLoja.some(
+        (item, i) => i !== indice &&
+        item.toLowerCase() === nomeLimpo.toLowerCase()
+      )) {
+        toast("Essa categoria já existe.");
+        return;
+      }
+
+      categoriasVitrineLoja[indice] = nomeLimpo;
+      renderizarCategoriasVitrine();
+    };
+
+    const excluir = document.createElement("button");
+    excluir.type = "button";
+    excluir.className = "btnSmallNeutral";
+    excluir.textContent = "🗑️";
+    excluir.onclick = () => {
+      if (!confirm("Excluir a categoria " + categoria + "?")) return;
+      categoriasVitrineLoja.splice(indice, 1);
+      renderizarCategoriasVitrine();
+    };
+
+    linha.append(nome, editar, excluir);
+    painel.appendChild(linha);
+  });
+}
+
+$("addStoreCategoryBtn")?.addEventListener("click", () => {
+  const campo = $("storeNewCategory");
+  const nome = campo.value.trim().slice(0, 40);
+
+  if (!nome) {
+    toast("Digite o nome da categoria.");
+    return;
+  }
+
+  if (categoriasVitrineLoja.length >= 30) {
+    toast("Limite de 30 categorias por loja.");
+    return;
+  }
+
+  if (categoriasVitrineLoja.some(
+    item => item.toLowerCase() === nome.toLowerCase()
+  )) {
+    toast("Essa categoria já existe.");
+    return;
+  }
+
+  categoriasVitrineLoja.push(nome);
+  campo.value = "";
+  renderizarCategoriasVitrine();
+});
+
+$("storeBannerFile")?.addEventListener("change", () => {
+  const arquivo = $("storeBannerFile").files?.[0];
+  const painel = $("storeBannerPreview");
+
+  painel.replaceChildren();
+
+  if (!arquivo) return;
+
+  if (!arquivo.type.startsWith("image/")) {
+    toast("Selecione um arquivo de imagem.");
+    $("storeBannerFile").value = "";
+    return;
+  }
+
+  if (arquivo.size >= 5 * 1024 * 1024) {
+    toast("O banner deve ter menos de 5 MB.");
+    $("storeBannerFile").value = "";
+    return;
+  }
+
+  const imagem = document.createElement("img");
+  imagem.src = URL.createObjectURL(arquivo);
+  imagem.alt = "Prévia do banner";
+  imagem.style.cssText =
+    "width:100%;max-height:180px;object-fit:cover;border-radius:10px";
+
+  painel.appendChild(imagem);
+});
+
+$("storeLayout")?.addEventListener("change", () => {
+  $("storeColumnsGroup").style.display =
+    $("storeLayout").value === "grade" ? "block" : "none";
+});
+
+$("previewStoreAppearanceBtn")?.addEventListener("click", () => {
+  const painel = $("storeAppearancePreview");
+  painel.replaceChildren();
+
+  const titulo = document.createElement("h3");
+  titulo.textContent = "Prévia da sua vitrine";
+  painel.appendChild(titulo);
+
+  const arquivo = $("storeBannerFile").files?.[0];
+
+  if (arquivo) {
+    const imagem = document.createElement("img");
+    imagem.src = URL.createObjectURL(arquivo);
+    imagem.style.cssText =
+      "width:100%;max-height:150px;object-fit:cover;border-radius:10px";
+    painel.appendChild(imagem);
+  } else if (bannerVitrineLoja) {
+    const imagem = document.createElement("img");
+    imagem.src = bannerVitrineLoja;
+    imagem.style.cssText =
+      "width:100%;max-height:150px;object-fit:cover;border-radius:10px";
+    painel.appendChild(imagem);
+  }
+
+  const formato = document.createElement("p");
+  formato.textContent =
+    $("storeLayout").value === "grade"
+      ? "Produtos em grade: " + $("storeColumns").value + " por linha"
+      : "Produtos em lista" +
+        ($("storeListImages").checked ? " com fotos" : " sem fotos");
+
+  painel.appendChild(formato);
+
+  const lista = document.createElement("p");
+  lista.textContent = "Categorias: " +
+    (categoriasVitrineLoja.join(", ") || "Nenhuma");
+
+  painel.appendChild(lista);
+
+  painel.style.display = "block";
+});
+
+$("saveStoreAppearanceBtn")?.addEventListener("click", async () => {
+  const usuario = auth.currentUser || currentUser;
+  const mensagem = $("storeAppearanceMessage");
+  const botao = $("saveStoreAppearanceBtn");
+
+  if (!usuario) {
+    toast("Entre na sua conta para salvar.");
+    return;
+  }
+
+  botao.disabled = true;
+  mensagem.textContent = "Salvando personalização...";
+
+  try {
+    const arquivo = $("storeBannerFile").files?.[0];
+
+    if (arquivo) {
+      if (!arquivo.type.startsWith("image/") ||
+          arquivo.size >= 5 * 1024 * 1024) {
+        throw new Error("O banner precisa ser uma imagem com menos de 5 MB.");
+      }
+
+      if (!storage) {
+        const mod = await import(
+          "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js"
+        );
+        storage = mod.getStorage(app);
+        storageRef = mod.ref;
+        uploadBytes = mod.uploadBytes;
+        getDownloadURL = mod.getDownloadURL;
+      }
+
+      const caminho = storageRef(
+        storage,
+        `bannersLojas/${usuario.uid}/${crypto.randomUUID()}`
+      );
+
+      await uploadBytes(caminho, arquivo, {
+        contentType: arquivo.type
+      });
+
+      bannerVitrineLoja = await getDownloadURL(caminho);
+    }
+
+    const configVitrine = {
+      layout: $("storeLayout").value,
+      colunas: Number($("storeColumns").value),
+      mostrarImagemLista: $("storeListImages").checked,
+      banner: bannerVitrineLoja || ""
+    };
+
+    await updateDoc(doc(db, "lojas", usuario.uid), {
+      configVitrine,
+      categorias: categoriasVitrineLoja,
+      atualizadoEm: serverTimestamp()
+    });
+
+    mensagem.textContent = "Personalização salva com sucesso!";
+    mensagem.style.color = "#15803d";
+    toast("Vitrine personalizada salva!");
+
+  } catch (erro) {
+    console.error("Erro ao salvar personalização:", erro);
+    mensagem.textContent =
+      erro.message || "Não foi possível salvar a personalização.";
+    mensagem.style.color = "#b91c1c";
+  } finally {
+    botao.disabled = false;
+  }
+});
+
 async function salvarNovasTarifasAdmin() {
   const painel = document.getElementById("painelConfigTarifas");
   const status = document.getElementById("statusSalvarTarifas");
