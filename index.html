@@ -6732,6 +6732,8 @@ resultado.forEach((documento) => {
 
   const card = document.createElement("article");
   card.className = "storeCard";
+  card.dataset.categoria =
+  String(produto.categoria || "Outros").trim();
   card.style.padding = "16px";
   card.style.cursor = "pointer";
   card.addEventListener("click", () => openProduct(produtoParaAbrir));
