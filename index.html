@@ -3087,8 +3087,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/fireba
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup , sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, addDoc, collection, query, orderBy, getDocs, where, serverTimestamp, deleteDoc, updateDoc, onSnapshot, limit } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-functions.js";
-
-
+const $ = id => document.getElementById(id);
 
 // ==================================================
 // CONFIGURAÇÃO DO FIREBASE
@@ -3513,7 +3512,6 @@ async function carregarTarifasAdmin() {
 // ==================================================
 // UTILITÁRIOS GERAIS E MENSAGENS
 // ==================================================
-const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
 const money=v=>Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 const initials=n=>{let p=String(n||"?").trim().split(/\s+/);
