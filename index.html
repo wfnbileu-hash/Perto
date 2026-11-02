@@ -6693,6 +6693,19 @@ $("storeDetailPhone").textContent =
 loja.telefone ? "☎️ " + loja.telefone : "";
 
 const painelProdutos = $("storeDetailProducts");
+const configVitrine = loja.configVitrine || {};
+const layoutLista = configVitrine.layout === "lista";
+const colunasGrade = [2, 3, 4].includes(Number(configVitrine.colunas))
+  ? Number(configVitrine.colunas)
+  : 2;
+
+painelProdutos.style.display = layoutLista ? "flex" : "grid";
+painelProdutos.style.flexDirection = layoutLista ? "column" : "";
+painelProdutos.style.gridTemplateColumns = layoutLista
+  ? ""
+  : `repeat(${colunasGrade}, minmax(0, 1fr))`;
+
+painelProdutos.style.gap = "12px";
 renderCarrinhoLoja(lojaId);
 
 painelProdutos.innerHTML =
