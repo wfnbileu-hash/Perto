@@ -6789,7 +6789,6 @@ where("ativo", "==", true)
 );
 
 const resultado = await getDocs(consulta);
-  toast("Produtos encontrados: " + resultado.size);
 
 if (lojaSelecionadaId !== lojaId) return;
 
@@ -6800,7 +6799,6 @@ if (resultado.empty) {
 }
 
 painelProdutos.innerHTML = "";
-  toast("Montando " + resultado.size + " produtos");
 
 resultado.forEach((documento) => {
   const produto = documento.data();
