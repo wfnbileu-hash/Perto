@@ -6590,6 +6590,79 @@ const modalidade = String(
 
 $("storeCartCheckoutBtn")?.remove();
 
+  function configurarCabecalhoVitrinePublica(loja) {
+  const banner = $("storePublicBanner");
+  const categorias = $("storePublicCategories");
+
+  if (!banner || !categorias) return;
+
+  // BANNER DA LOJA
+  banner.replaceChildren();
+
+  const urlBanner = loja.configVitrine?.banner || "";
+
+  if (urlBanner) {
+    const imagem = document.createElement("img");
+    imagem.src = urlBanner;
+    imagem.alt = "Banner promocional da loja";
+    imagem.loading = "lazy";
+    imagem.style.cssText =
+      "display:block;width:100%;max-height:220px;object-fit:cover;border-radius:14px;";
+
+    banner.appendChild(imagem);
+    banner.style.display = "block";
+  } else {
+    banner.style.display = "none";
+  }
+
+  // CATEGORIAS DA LOJA
+  categorias.replaceChildren();
+
+  const listaCategorias = Array.isArray(loja.categorias)
+    ? loja.categorias
+    : [];
+
+  if (!listaCategorias.length) {
+    categorias.style.display = "none";
+    return;
+  }
+
+  categorias.style.display = "flex";
+
+  listaCategorias.forEach(nomeCategoria => {
+    const botao = document.createElement("button");
+
+    botao.type = "button";
+    botao.textContent = nomeCategoria;
+    botao.className = "btn";
+    botao.style.cssText =
+      "flex:0 0 auto;border-radius:20px;padding:9px 16px;";
+
+    botao.addEventListener("click", () => {
+      document.querySelectorAll("#storePublicCategories button")
+        .forEach(item => {
+          item.classList.remove("btnPrimary");
+        });
+
+      botao.classList.add("btnPrimary");
+
+      const produtos = $("storeDetailProducts");
+
+      produtos.querySelectorAll(".storeCard").forEach(card => {
+        const categoriaProduto =
+          (card.dataset.categoria || "").toLowerCase();
+
+        card.style.display =
+          categoriaProduto === nomeCategoria.toLowerCase()
+            ? ""
+            : "none";
+      });
+    });
+
+    categorias.appendChild(botao);
+  });
+  }
+
 async function abrirLojaPublica(lojaId) {
 lojaSelecionadaId = lojaId;
 $("storeCartFloatingBar")?.classList.remove("visible");
