@@ -6770,21 +6770,31 @@ resultado.forEach((documento) => {
     fotosProduto = [produto.imagem];
   }
 
-  if (fotosProduto.length > 0) {
+    if (
+    fotosProduto.length > 0 &&
+    (!layoutLista || configVitrine.mostrarImagemLista !== false)
+  ) {
     const galeria = document.createElement("div");
+    const usarMiniatura = layoutLista;
 
-    galeria.style.cssText =
-      "display:flex;gap:8px;overflow-x:auto;margin-bottom:12px;width:100%;";
+    galeria.style.cssText = usarMiniatura
+      ? "display:flex;gap:8px;margin:0 12px 8px 0;flex:0 0 90px;width:90px;"
+      : "display:flex;gap:8px;overflow-x:auto;margin-bottom:12px;width:100%;";
 
-    fotosProduto.forEach((url) => {
+    const fotosExibidas = usarMiniatura
+      ? fotosProduto.slice(0, 1)
+      : fotosProduto;
+
+    fotosExibidas.forEach((url) => {
       const foto = document.createElement("img");
 
       foto.src = url;
       foto.alt = produto.nome || "Foto do produto";
       foto.loading = "lazy";
 
-      foto.style.cssText =
-        "display:block;flex:0 0 100%;width:100%;height:210px;object-fit:contain;background:#f8fafc;border-radius:12px;";
+      foto.style.cssText = usarMiniatura
+        ? "display:block;width:90px;height:90px;object-fit:cover;background:#f8fafc;border-radius:10px;"
+        : "display:block;flex:0 0 100%;width:100%;height:210px;object-fit:contain;background:#f8fafc;border-radius:12px;";
 
       foto.onerror = () => {
         foto.alt = "Não foi possível carregar esta foto";
@@ -6797,7 +6807,6 @@ resultado.forEach((documento) => {
 
     card.appendChild(galeria);
   }
-  
 
   const nome = document.createElement("h3");
   nome.textContent = produto.nome || "Produto";
