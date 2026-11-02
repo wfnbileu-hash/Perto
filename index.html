@@ -6678,7 +6678,8 @@ const modalidade = String(
 
 $("storeCartCheckoutBtn")?.remove();
 
-  function configurarCabecalhoVitrinePublica(loja) {
+  
+function configurarCabecalhoVitrinePublica(loja) {
   const banner = $("storePublicBanner");
   const categorias = $("storePublicCategories");
 
@@ -6703,7 +6704,7 @@ $("storeCartCheckoutBtn")?.remove();
     banner.style.display = "none";
   }
 
-  // CATEGORIAS DA LOJA
+  // CATEGORIAS PERSONALIZADAS DA LOJA
   categorias.replaceChildren();
 
   const listaCategorias = Array.isArray(loja.categorias)
@@ -6716,40 +6717,54 @@ $("storeCartCheckoutBtn")?.remove();
   }
 
   categorias.style.display = "flex";
+  categorias.className = "storeCategories";
 
-  listaCategorias.forEach(nomeCategoria => {
+  const botoes = [];
+
+  function filtrarProdutos(nomeCategoria, botaoAtivo) {
+    botoes.forEach(botao => botao.classList.remove("active"));
+    botaoAtivo.classList.add("active");
+
+    const painelProdutos = $("storeDetailProducts");
+    if (!painelProdutos) return;
+
+    painelProdutos.querySelectorAll(".storeProductCard").forEach(card => {
+      const categoriaProduto = String(
+        card.dataset.categoria || ""
+      ).trim().toLowerCase();
+
+      const filtro = String(nomeCategoria || "")
+        .trim().toLowerCase();
+
+      card.style.display =
+        !filtro || categoriaProduto === filtro ? "" : "none";
+    });
+  }
+
+  function criarBotao(nome, texto) {
     const botao = document.createElement("button");
-
     botao.type = "button";
-    botao.textContent = nomeCategoria;
-    botao.className = "btn";
-    botao.style.cssText =
-      "flex:0 0 auto;border-radius:20px;padding:9px 16px;";
+    botao.className = "storeCategory";
+    botao.textContent = texto;
 
     botao.addEventListener("click", () => {
-      document.querySelectorAll("#storePublicCategories button")
-        .forEach(item => {
-          item.classList.remove("btnPrimary");
-        });
-
-      botao.classList.add("btnPrimary");
-
-      const produtos = $("storeDetailProducts");
-
-      produtos.querySelectorAll(".storeCard").forEach(card => {
-        const categoriaProduto =
-          (card.dataset.categoria || "").toLowerCase();
-
-        card.style.display =
-          categoriaProduto === nomeCategoria.toLowerCase()
-            ? ""
-            : "none";
-      });
+      filtrarProdutos(nome, botao);
     });
 
+    botoes.push(botao);
     categorias.appendChild(botao);
-  });
+
+    return botao;
   }
+
+  const todos = criarBotao("", "✨ Todos");
+
+  listaCategorias.forEach(nomeCategoria => {
+    criarBotao(nomeCategoria, nomeCategoria);
+  });
+
+  filtrarProdutos("", todos);
+}
 
 async function abrirLojaPublica(lojaId) {
 lojaSelecionadaId = lojaId;
