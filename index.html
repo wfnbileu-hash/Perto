@@ -8468,8 +8468,9 @@ renderFavorites();
  window.carregarDestaquesHome=async function(){
   const t=document.getElementById("homeFeaturedTrack");if(!t)return;
   try{
-   if(!window.db||!window.getDocs||!window.collection){t.innerHTML='<p class="homeShowcaseEmpty">Destaques das lojas em breve.</p>';return;}
-   const s=await window.getDocs(window.collection(window.db,"produtosLoja"));
+   const fb=window.__pertoHomeFirebase;
+if(!fb){t.innerHTML='<p class="homeShowcaseEmpty">Destaques das lojas em breve.</p>';return;}
+const s=await fb.getDocs(fb.collection(fb.db,"produtosLoja"));
    const ps=s.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.ativo!==false&&(p.destaque===true||p.promocao===true)).slice(0,30);
    if(!ps.length){t.innerHTML='<p class="homeShowcaseEmpty">Em breve, novidades e ofertas das lojas parceiras.</p>';return;}
    t.innerHTML=ps.map(p=>{const im=imgOf(p);return `<article class="homeFeaturedCard" data-produto-home="${esc(p.id)}">${im?`<img src="${esc(im)}" alt="${esc(p.nome||"Produto")}" loading="lazy">`:'<div style="height:132px;background:#f1f5f9"></div>'}<div class="homeFeaturedInfo"><span class="homeFeaturedTag">${p.promocao?"OFERTA":"EM DESTAQUE"}</span><strong>${esc(p.nome||"Produto")}</strong><span class="homePrice">${money(p.preco)}</span></div></article>`}).join("");
@@ -8483,7 +8484,6 @@ renderFavorites();
    const fb=window.__pertoHomeFirebase;
 if(!fb){t.innerHTML='<p class="homeShowcaseEmpty">Lojas parceiras em breve.</p>';return;}
 const s=await fb.getDocs(fb.collection(fb.db,"lojas"));
-   const s=await window.getDocs(window.collection(window.db,"lojas"));
    const ls=s.docs.map(d=>({id:d.id,...d.data()})).filter(l=>l.ativo===true&&l.statusAdmin!=="suspensa").slice(0,30);
    if(!ls.length){t.innerHTML='<p class="homeShowcaseEmpty">Seja uma das primeiras lojas parceiras!</p>';return;}
    t.innerHTML=ls.map(l=>`<button class="homePartnerLogo" type="button" data-loja-home="${esc(l.id)}">${l.logoURL?`<img src="${esc(l.logoURL)}" alt="${esc(l.nome||l.nomeLoja||"Loja")}" loading="lazy">`:'<span class="homePartnerPlaceholder">🏪</span>'}<span>${esc(l.nome||l.nomeLoja||"Loja parceira")}</span></button>`).join("");
