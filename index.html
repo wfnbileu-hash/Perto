@@ -1907,6 +1907,66 @@ display:none!important;
         ENTREGAS E PAGAMENTOS
       </div>
 
+      
+<div id="storeAppearancePanel" class="serviceCard" style="margin-top:16px">
+  <h3>🎨 Personalizar minha vitrine</h3>
+  <p style="font-size:13px;color:#64748b">
+    Escolha como seus clientes verão sua loja no Perto.
+  </p>
+
+  <label for="storeBannerFile">Banner da loja</label>
+  <input id="storeBannerFile" type="file" accept="image/*">
+  <div id="storeBannerPreview" style="margin:10px 0"></div>
+
+  <label for="storeLayout">Formato dos produtos</label>
+  <select id="storeLayout" style="width:100%;padding:12px;margin:8px 0">
+    <option value="grade">Grade</option>
+    <option value="lista">Lista</option>
+  </select>
+
+  <div id="storeColumnsGroup">
+    <label for="storeColumns">Produtos por linha</label>
+    <select id="storeColumns" style="width:100%;padding:12px;margin:8px 0">
+      <option value="2">2 produtos</option>
+      <option value="3">3 produtos</option>
+      <option value="4">4 produtos</option>
+    </select>
+  </div>
+
+  <label style="display:flex;gap:8px;align-items:center;margin:12px 0">
+    <input id="storeListImages" type="checkbox" checked>
+    Mostrar fotos na visualização em lista
+  </label>
+
+  <hr style="margin:16px 0">
+
+  <h3>📂 Categorias da loja</h3>
+  <div style="display:flex;gap:8px">
+    <input id="storeNewCategory" placeholder="Nova categoria"
+      maxlength="40" style="flex:1;min-width:0">
+    <button id="addStoreCategoryBtn" type="button" class="btn btnPrimary">
+      Adicionar
+    </button>
+  </div>
+  <div id="storeCategoriesEditor" style="margin-top:12px"></div>
+
+  <button id="previewStoreAppearanceBtn" type="button"
+    class="btn" style="width:100%;margin-top:14px;background:#e2e8f0;color:#0f172a">
+    👁️ Pré-visualizar
+  </button>
+
+  <div id="storeAppearancePreview"
+    style="display:none;margin-top:14px;padding:12px;border:1px solid #e5e7eb;border-radius:12px">
+  </div>
+
+  <button id="saveStoreAppearanceBtn" type="button"
+    class="btn btnPrimary" style="width:100%;margin-top:14px">
+    💾 Salvar personalização
+  </button>
+  <p id="storeAppearanceMessage"
+    style="font-size:12px;color:#64748b;margin-top:8px"></p>
+</div>
+      
       <button type="button" id="toggleStoreFreteGoBtn"
         class="btn"
         style="width:100%;background:#dcfce7;color:#166534;margin-bottom:8px">
