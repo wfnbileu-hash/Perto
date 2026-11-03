@@ -7055,22 +7055,23 @@ conteudo.style.minWidth = "0";
   descricao.textContent =
     produto.descricao || "Sem descrição.";
 
-  const adicionar = document.createElement("button");
-adicionar.type = "button";
-adicionar.className = "btn btnPrimary";
+    const adicionar = document.createElement("button");
+  adicionar.type = "button";
+  adicionar.className = "btn btnPrimary storeAddButton";
 
-adicionar.style.cssText =
-  "width:100%;min-height:42px;margin-top:10px;padding:8px 4px;font-size:12px;white-space:nowrap;";
+  const textoBotao = layoutLista
+    ? "+"
+    : colunasGrade >= 4
+      ? "🛒"
+      : colunasGrade === 3
+        ? "🛒 Adicionar"
+        : "🛒 Adicionar ao carrinho";
 
-const textoBotao = layoutLista
-  ? "🛒 Adicionar ao carrinho"
-  : colunasGrade >= 4
-    ? "🛒"
-    : colunasGrade === 3
-      ? "🛒 Adicionar"
-      : "🛒 Adicionar ao carrinho";
+  adicionar.style.cssText = layoutLista
+    ? "width:36px;min-width:36px;height:36px;min-height:36px;margin:5px 0 0 auto;padding:0;border-radius:50%;font-size:23px;line-height:1;"
+    : "width:100%;min-height:42px;margin-top:10px;padding:8px 4px;font-size:12px;white-space:nowrap;";
 
-adicionar.textContent = textoBotao;
+  adicionar.textContent = textoBotao;
 adicionar.title = "Adicionar ao carrinho";
 adicionar.setAttribute("aria-label", "Adicionar " + (produto.nome || "produto") + " ao carrinho");
   adicionar.onclick = (evento) => {
