@@ -747,6 +747,75 @@ display:none!important;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   }
+  /* VITRINE EM LISTA - ESTILO IFOOD */
+#storeDetailProducts .storeProductCard[data-layout="lista"] {
+  display: flex !important;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 10px !important;
+  min-height: 110px;
+  border: 0;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: none;
+  background: #fff;
+}
+
+#storeDetailProducts .storeProductCard[data-layout="lista"] .storeProductGallery {
+  flex: 0 0 88px;
+  width: 88px;
+  margin: 0;
+}
+
+#storeDetailProducts .storeProductCard[data-layout="lista"] .storeProductGallery img {
+  width: 88px !important;
+  height: 88px !important;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+#storeDetailProducts .storeProductCard[data-layout="lista"] .storeProductContent {
+  flex: 1;
+  min-width: 0;
+}
+
+#storeDetailProducts .storeProductCard[data-layout="lista"] .storeProductName {
+  font-size: 14px;
+  line-height: 1.3;
+  min-height: 0;
+  margin: 0 0 5px !important;
+}
+
+#storeDetailProducts .storeProductCard[data-layout="lista"] .storeProductPrice {
+  font-size: 17px !important;
+  margin: 4px 0 !important;
+}
+
+#storeDetailProducts .storeProductCard[data-layout="lista"] .storeProductCategory {
+  display: none;
+}
+
+#storeDetailProducts .storeProductCard[data-layout="lista"] .storeProductDescription {
+  font-size: 11px;
+  line-height: 1.3;
+  min-height: 0;
+  margin: 3px 0;
+  -webkit-line-clamp: 2;
+}
+
+#storeDetailProducts .storeProductCard[data-layout="lista"] .storeAddButton {
+  display: block;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  min-height: 36px;
+  margin: 5px 0 0 auto;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 23px;
+  line-height: 1;
+}
 
 .productCard{
   background:#fff;
