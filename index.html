@@ -6994,8 +6994,8 @@ card.style.boxSizing = "border-box";
     (!layoutLista || configVitrine.mostrarImagemLista !== false)
   ) {
     const galeria = document.createElement("div");
-    const usarMiniatura = layoutLista;
-
+galeria.className = "storeProductGallery";
+const usarMiniatura = layoutLista;
     galeria.style.cssText = usarMiniatura
       ? "display:flex;gap:8px;margin:0 12px 8px 0;flex:0 0 90px;width:90px;"
       : "display:flex;gap:8px;overflow-x:auto;margin-bottom:12px;width:100%;";
