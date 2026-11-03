@@ -1741,21 +1741,25 @@ display:none!important;
   </div>
 
     <!-- VITRINE DE LOJAS NA ÁREA DO CLIENTE -->
+
 <section class="clientPartnerSection">
   <div class="clientPartnerHeading">
-  <div>
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-      <span>COMÉRCIO LOCAL</span>
-      <button type="button" id="clientPartnerSeeAll">Ver todas →</button>
+    <div class="clientPartnerTitle">
+      <span class="clientPartnerEyebrow">COMÉRCIO LOCAL</span>
+      <h2>🏪 Descubra lojas parceiras</h2>
+      <p>Conheça negócios e produtos da sua região.</p>
     </div>
-    <h2>🏪 Descubra lojas parceiras</h2>
-    <p>Conheça negócios e produtos da sua região.</p>
+
+    <button type="button" id="clientPartnerSeeAll">
+      Ver todas →
+    </button>
   </div>
-  </div>
+
   <div id="clientPartnerTrack" class="clientPartnerTrack">
     <p class="homeShowcaseEmpty">Carregando lojas parceiras...</p>
   </div>
 </section>
+
 
   <!-- ATALHOS EXISTENTES: IDs e ações originais preservados -->
   
@@ -1824,32 +1828,58 @@ display:none!important;
 .clientPartnerCardInfo{padding:11px}
 .clientPartnerCardInfo strong{display:block;font-size:14px;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .clientPartnerCardInfo span{display:block;font-size:12px;color:#64748b;margin-top:5px}
- .clientPartnerHeading{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  width:100%;
-  gap:10px;
+
+.clientPartnerHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+  margin-bottom: 14px;
 }
-.clientPartnerHeading > div{
-  min-width:0;
-  flex:1;
+
+.clientPartnerTitle {
+  flex: 1;
+  min-width: 0;
 }
-#clientPartnerSeeAll{
-  flex-shrink:0;
-  margin-left:auto;
-  white-space:nowrap;
-  }
-  .clientPartnerHeading #clientPartnerSeeAll,
-#clientPartnerSeeAll:link,
-#clientPartnerSeeAll:visited,
-#clientPartnerSeeAll:hover,
-#clientPartnerSeeAll:active{
-  color:#dc2626 !important;
-  -webkit-text-fill-color:#dc2626 !important;
-  font-weight:800 !important;
-  background:transparent !important;
+
+.clientPartnerEyebrow {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #64748b;
+  margin-bottom: 5px;
 }
+
+.clientPartnerTitle h2 {
+  font-size: 23px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.clientPartnerTitle p {
+  font-size: 13px;
+  line-height: 1.4;
+  color: #64748b;
+  margin: 6px 0 0;
+}
+
+#clientPartnerSeeAll {
+  flex-shrink: 0;
+  white-space: nowrap;
+  border: 0;
+  padding: 6px 0;
+  margin: 0;
+  background: transparent !important;
+  color: #dc2626 !important;
+  -webkit-text-fill-color: #dc2626 !important;
+  font-size: 14px;
+  font-weight: 800;
+}
+
 </style>
     
 <div id="homeProducts" class="productGrid"></div>
