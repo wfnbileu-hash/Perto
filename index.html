@@ -1685,23 +1685,33 @@ display:none!important;
   background: transparent;
   overflow: visible;
 }
+
 #storeDetailProducts .storeProductCard[data-layout="grade"] .storeProductGallery {
-  display: block;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  height: auto;
-  margin: 0 0 9px;
-  overflow: hidden;
-  border-radius: 15px;
-  background: #f1f5f9;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  height: auto !important;
+  margin: 0 0 9px !important;
+  padding: 4px !important;
+  overflow: hidden !important;
+  border-radius: 15px !important;
+  background: #f8fafc !important;
+  box-sizing: border-box !important;
 }
+
 #storeDetailProducts .storeProductCard[data-layout="grade"] .storeProductGallery img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 15px;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  border-radius: 12px !important;
+  background: #f8fafc !important;
 }
+
 #storeDetailProducts .storeProductCard[data-layout="grade"] .storeProductContent {
   display: flex;
   flex-direction: column;
