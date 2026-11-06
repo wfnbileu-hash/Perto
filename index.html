@@ -1669,7 +1669,7 @@ display:none!important;
 #storeDetailProducts {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px 12px;
+  gap: 16px 8px;
   align-items: start;
 }
 #storeDetailProducts .storeProductCard[data-layout="grade"] {
@@ -7070,7 +7070,7 @@ card.dataset.columns = String(colunasGrade);
 card.dataset.layout = layoutLista ? "lista" : "grade";
   card.dataset.categoria =
   String(produto.categoria || "Outros").trim();
-  card.style.padding = "12px";
+  card.style.padding = "5px";
 card.style.display = layoutLista ? "flex" : "block";
 card.style.alignItems = layoutLista ? "center" : "";
 card.style.gap = layoutLista ? "12px" : "";
@@ -7109,9 +7109,7 @@ const usarMiniatura = layoutLista;
       ? "display:flex;gap:8px;margin:0 12px 8px 0;flex:0 0 90px;width:90px;"
       : "display:flex;gap:8px;overflow-x:auto;margin-bottom:12px;width:100%;";
 
-    const fotosExibidas = usarMiniatura
-      ? fotosProduto.slice(0, 1)
-      : fotosProduto;
+    const fotosExibidas = fotosProduto.slice(0, 1);
 
     fotosExibidas.forEach((url) => {
       const foto = document.createElement("img");
@@ -7149,7 +7147,7 @@ conteudo.style.minWidth = "0";
   const preco = document.createElement("p");
   preco.className = "storeProductPrice";
   preco.textContent = money(produto.preco);
-  preco.style.fontSize = "20px";
+  preco.style.fontSize = layoutLista ? "20px" : "15px";
   preco.style.fontWeight = "700";
   preco.style.margin = "0 0 8px";
   preco.style.color = "#166534";
@@ -7176,11 +7174,13 @@ conteudo.style.minWidth = "0";
         ? "🛒 Adicionar"
         : "🛒 Adicionar ao carrinho";
 
-  adicionar.style.cssText = layoutLista
-    ? "width:36px;min-width:36px;height:36px;min-height:36px;margin:5px 0 0 auto;padding:0;border-radius:50%;font-size:23px;line-height:1;"
-    : "width:100%;min-height:42px;margin-top:10px;padding:8px 4px;font-size:12px;white-space:nowrap;";
+  adicionar.textContent = "+";
 
-  adicionar.textContent = textoBotao;
+adicionar.style.cssText =
+  "display:flex;align-items:center;justify-content:center;" +
+  "width:36px;min-width:36px;height:36px;min-height:36px;" +
+  "margin:5px 0 0 auto;padding:0;border-radius:50%;" +
+  "font-size:26px;font-weight:600;line-height:1;";
 adicionar.title = "Adicionar ao carrinho";
 adicionar.setAttribute("aria-label", "Adicionar " + (produto.nome || "produto") + " ao carrinho");
   adicionar.onclick = (evento) => {
