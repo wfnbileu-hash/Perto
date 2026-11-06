@@ -1669,7 +1669,7 @@ display:none!important;
 #storeDetailProducts {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px 4px;
+  gap: 12px 2px;
   align-items: start;
 }
 #storeDetailProducts .storeProductCard[data-layout="grade"] {
@@ -1758,7 +1758,7 @@ display:none!important;
   line-height: 1;
 }
 @media (max-width: 380px) {
-  #storeDetailProducts { gap: 14px 4px; }
+  #storeDetailProducts { gap: 12px 2px; }
   #storeDetailProducts .storeProductCard[data-layout="grade"] .storeProductName {
     font-size: 13px;
   }
@@ -7070,7 +7070,7 @@ card.dataset.columns = String(colunasGrade);
 card.dataset.layout = layoutLista ? "lista" : "grade";
   card.dataset.categoria =
   String(produto.categoria || "Outros").trim();
-  card.style.padding = "5px";
+  card.style.padding = layoutLista ? "5px" : "0";
 card.style.display = layoutLista ? "flex" : "block";
 card.style.alignItems = layoutLista ? "center" : "";
 card.style.gap = layoutLista ? "12px" : "";
