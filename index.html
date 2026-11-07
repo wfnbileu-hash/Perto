@@ -7779,7 +7779,7 @@ const pedidos = todosPedidos.filter(pedido => {
           confirmarPagamento.style.cssText = "width:100%;background:#dcfce7;color:#166534";
           confirmarPagamento.textContent = "💰 Confirmar recebimento do valor total";
           confirmarPagamento.onclick = async () => {
-            if (!confirm("Confirma que o pagamento dos produtos foi recebido diretamente pela loja? O FreteGo só será liberado depois desta confirmação.")) return;
+            if (!confirm("Confirma que recebeu o valor total do pedido (produtos + frete) diretamente do cliente? O FreteGo só será liberado depois desta confirmação.")) return;
             confirmarPagamento.disabled = true;
             confirmarPagamento.textContent = "Registrando confirmação...";
             try {
@@ -7797,7 +7797,7 @@ const pedidos = todosPedidos.filter(pedido => {
                 ? "O Firebase bloqueou a confirmação do pagamento. Será necessário ajustar as regras do Firestore."
                 : "Não foi possível registrar a confirmação do pagamento.");
               confirmarPagamento.disabled = false;
-              if (!confirm("Confirma que recebeu o valor total do pedido (produtos + frete) diretamente do cliente? O FreteGo só será liberado depois desta confirmação.")) return;
+              confirmarPagamento.textContent = "💰 Confirmar recebimento do valor total";
             }
           };
           acoes.appendChild(confirmarPagamento);
@@ -7812,25 +7812,37 @@ const pedidos = todosPedidos.filter(pedido => {
           liberar.style.background = "#e2e8f0";
           liberar.style.color = "#64748b";
         }
-        liberar.onclick = async () => {
-        toast("Pagamento total confirmado. Agora você pode liberar a entrega.");
-            toast("Confirme primeiro o recebimento do pagamento dos produtos.");
-            return;
-          }
-          const veiculo = await obterModalidadeEntregaLoja(usuario, pedido.veiculo || "");
-          if (!veiculo) return;
-          liberar.disabled = true;
-          liberar.textContent = "Enviando ao FreteGo...";
-          try {
-            await updateDoc(doc(db, "pedidos", pedido.id), { veiculo, atualizadoEm: serverTimestamp() });
-            await autorizarEntregaMarketplacePedido({ ...pedido, veiculo }, usuario, veiculo);
-          } catch (erro) {
-            console.error("Falha ao preparar nova tentativa de entrega:", erro);
-            toast(erro?.message || "Não foi possível preparar a solicitação ao FreteGo.");
-            liberar.disabled = false;
-            liberar.textContent = "Tentar liberar entrega no FreteGo";
-          }
-        };
+        
+liberar.onclick = async () => {
+  if (pedido.pagamentoProdutoStatus !== "confirmado") {
+    toast("Confirme primeiro o recebimento do pagamento total.");
+    return;
+  }
+
+  const veiculo = await obterModalidadeEntregaLoja(usuario, pedido.veiculo || "");
+  if (!veiculo) return;
+
+  liberar.disabled = true;
+  liberar.textContent = "Enviando ao FreteGo...";
+
+  try {
+    await updateDoc(doc(db, "pedidos", pedido.id), {
+      veiculo,
+      atualizadoEm: serverTimestamp()
+    });
+
+    await autorizarEntregaMarketplacePedido(
+      { ...pedido, veiculo },
+      usuario,
+      veiculo
+    );
+  } catch (erro) {
+    console.error("Falha ao preparar nova tentativa de entrega:", erro);
+    toast(erro?.message || "Não foi possível preparar a solicitação ao FreteGo.");
+    liberar.disabled = false;
+    liberar.textContent = "Tentar liberar entrega no FreteGo";
+  }
+};
         acoes.appendChild(liberar);
         card.appendChild(acoes);
       }
