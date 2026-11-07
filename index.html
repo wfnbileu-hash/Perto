@@ -6846,8 +6846,27 @@ const modalidade = String(
     imagem:String(item.imagem||item.imagens?.[0]||"")
   }));
   const total=itensPedido.reduce((soma,item)=>soma+item.preco*item.quantidade,0);
+  
   const btn=$("submitStoreDelivery");
-  btn.disabled=true;btn.textContent="Enviando pedido à loja...";
+  const valorFrete=Number(cotacaoFreteAtual.valorFrete)||0;
+  const totalPedido=total+valorFrete;
+  const telefoneLoja=String(loja.telefone||"").replace(/\D/g,"");
+  
+  if(!telefoneLoja){
+    toast("Esta loja ainda não informou um WhatsApp para contato.");
+    return;
+  }
+
+  const telefoneWhatsApp=telefoneLoja.startsWith("55")
+    ? telefoneLoja
+    : "55"+telefoneLoja;
+
+  // Abre a janela durante o clique para evitar bloqueio do navegador.
+  const janelaWhatsApp=window.open("about:blank","_blank");
+
+  btn.disabled=true;
+  btn.textContent="Registrando pedido...";
+
   try{
     const pedidoRef=await addDoc(collection(db,"pedidos"),{
       clienteUid:usuario.uid,
@@ -6856,14 +6875,14 @@ const modalidade = String(
       clienteTelefone:String(currentUserData?.telefone||currentUserData?.celular||contactPhone),
       lojaId,
       lojaNome:String(loja.nome||""),
-      lojaTelefone:String(loja.telefone||"").replace(/\D/g,""),
+      lojaTelefone:telefoneLoja,
       itens:itensPedido,
       totalProdutos:total,
-      valorFreteEstimado:cotacaoFreteAtual.valorFrete,
+      valorFreteEstimado:valorFrete,
       distanciaFreteKm:cotacaoFreteAtual.distanciaKm,
       tempoEstimadoFreteMinutos:cotacaoFreteAtual.tempoMinutos,
       tipoEntrega:"fretego",
-      veiculo: modalidade,
+      veiculo:modalidade,
       pickupAddress,
       pickupCity,
       dropoffAddress,
@@ -6876,20 +6895,71 @@ const modalidade = String(
       criadoEm:serverTimestamp(),
       atualizadoEm:serverTimestamp()
     });
-    $("storeDeliveryResult").innerHTML=`<b>Pedido #${esc(pedidoRef.id)} registrado.</b><br>Produtos: ${money(total)}<br>Frete estimado: ${money(cotacaoFreteAtual.valorFrete)}<br><b>Total estimado: ${money(total+cotacaoFreteAtual.valorFrete)}</b><br><small>A loja confirmará o pedido e combinará o pagamento dos produtos diretamente com você. Após confirmar o recebimento, a loja poderá liberar o FreteGo. O entregador não recebe o pagamento dos produtos. O frete será recalculado ao autorizar a entrega.</small>`;
+
+    const mensagem=[
+      `Olá! Enviei o pedido #${pedidoRef.id} pelo Perto.`,
+      "",
+      "**PRODUTOS:**",
+      ...itensPedido.map(item=>
+        `• ${item.nome} — ${item.quantidade} × ${money(item.preco)} = ${money(item.preco*item.quantidade)}`
+      ),
+      "",
+      `Produtos: ${money(total)}`,
+      `Frete pelo FreteGo: ${money(valorFrete)}`,
+      `TOTAL PARA PAGAMENTO À LOJA: ${money(totalPedido)}`,
+      "",
+      `Endereço de coleta: ${pickupAddress}, ${pickupCity}`,
+      `Endereço de entrega: ${dropoffAddress}, ${dropoffCity}`,
+      `Telefone para contato: ${contactPhone}`,
+      notes ? `Observações: ${notes}` : "",
+      "",
+      "Gostaria de confirmar a disponibilidade e combinar a forma de pagamento.",
+      "Após realizar o pagamento, enviarei o comprovante por aqui.",
+      "",
+      "Obrigado!"
+    ].filter(Boolean).join("\n");
+
+    const linkWhatsApp=`https://wa.me/${telefoneWhatsApp}?text=${encodeURIComponent(mensagem)}`;
+
+    if(janelaWhatsApp){
+      janelaWhatsApp.opener=null;
+      janelaWhatsApp.location.href=linkWhatsApp;
+    }
+
+    $("storeDeliveryResult").innerHTML=`
+      <b>Pedido #${esc(pedidoRef.id)} registrado!</b><br>
+      Produtos: ${money(total)}<br>
+      Frete: ${money(valorFrete)}<br>
+      <b>Total para pagamento à loja: ${money(totalPedido)}</b><br><br>
+      <small>
+        Combine o pagamento diretamente com a loja pelo WhatsApp e envie o comprovante.
+        Após confirmar o recebimento do valor total, a loja poderá liberar a entrega pelo FreteGo.
+        A loja repassará o valor integral do frete ao entregador.
+      </small>
+      ${!janelaWhatsApp ? `<br><br><a href="${esc(linkWhatsApp)}" target="_blank" rel="noopener" style="display:inline-block;padding:10px 14px;background:#16a34a;color:white;border-radius:8px;text-decoration:none;font-weight:700">Abrir WhatsApp da loja</a>` : ""}
+    `;
+
     $("storeDeliveryResult").style.display="block";
     $("refreshStoreDeliveryStatus").style.display="none";
-    btn.textContent="Pedido enviado à loja";
+    btn.textContent="Pedido registrado";
     btn.disabled=true;
     $("calculateDeliveryQuote").disabled=true;
-    toast("Pedido registrado. A loja confirmará o pedido e combinará o pagamento antes de solicitar o entregador.");
+
+    toast(janelaWhatsApp
+      ? "Pedido registrado! Continue pelo WhatsApp da loja."
+      : "Pedido registrado! Abra o WhatsApp pelo botão exibido.");
+
   }catch(err){
+    if(janelaWhatsApp&&!janelaWhatsApp.closed) janelaWhatsApp.close();
+
     console.error("Falha ao registrar pedido com entrega:",err);
     $("storeDeliveryResult").textContent=err?.code==="permission-denied"
       ?"O Firebase bloqueou o registro do pedido. Confira as regras da coleção pedidos."
       :(err?.message||"Não foi possível registrar o pedido. Tente novamente.");
+
     $("storeDeliveryResult").style.display="block";
-    btn.disabled=false;btn.textContent="Enviar pedido para confirmação da loja";
+    btn.disabled=false;
+    btn.textContent="Enviar pedido para confirmação da loja";
   }
 });
 
