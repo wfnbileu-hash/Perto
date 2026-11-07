@@ -1856,66 +1856,7 @@ display:none!important;
     <h1>Como você quer<br>usar o Perto?</h1>
     <p>Escolha sua experiência para continuar.</p>
 
-    <div class="profileChoiceCards">
-      <button id="enterClient" class="profileChoiceCard profileChoiceClient" type="button">
-        <span class="profileChoiceIcon">🛍️</span>
-        <span class="profileChoiceTitle">CLIENTE</span>
-        <span class="profileChoiceDescription">Quero descobrir lojas, produtos, serviços e oportunidades perto de mim.</span>
-        <span class="profileChoiceAction">Explorar o Perto <b>→</b></span>
-      </button>
-
-      <button id="enterStore" class="profileChoiceCard profileChoiceStore" type="button">
-        <span class="profileChoiceIcon">🏪</span>
-        <span class="profileChoiceTitle">LOJA</span>
-        <span class="profileChoiceDescription">Quero acessar minha loja, cadastrar produtos e acompanhar pedidos.</span>
-        <span class="profileChoiceAction">Acessar minha loja <b>→</b></span>
-      </button>
-    </div>
-        <div class="profileChoiceFooter">📍 Valorize o comércio da sua região</div>
-
-    <!-- VITRINE PÚBLICA DO PERTO -->
-    <section class="homeShowcaseSection">
-      <div class="homeShowcaseHeading">
-        <div>
-          <h2>Lojas Parceiras</h2>
-          <p>Conheça quem já vende no Perto</p>
-        </div>
-        <button id="homePartnerSeeAll" type="button" class="homePartnerSeeAll">
-          <strong>Ver todas →</strong>
-        </button>
-      </div>
-      <div id="homePartnerTrack" class="homePartnerTrack">
-        <p class="homeShowcaseEmpty">Carregando lojas...</p>
-      </div>
-    </section>
-
-    <section class="homeShowcaseSection">
-      <div class="homeShowcaseHeading">
-        <div>
-          <h2>Produtos em destaque</h2>
-          <p>Veja alguns produtos disponíveis nas lojas</p>
-        </div>
-      </div>
-      <div id="homeFeaturedTrack" class="homeFeaturedTrack">
-        <p class="homeShowcaseEmpty">Carregando produtos...</p>
-      </div>
-    </section>
-  </div>
-
-  <div id="clientExperience" class="hidden">
-    <button id="backToProfiles" class="backToProfiles" type="button">← Voltar à escolha</button>
-  <!-- DESTAQUE PRINCIPAL: mantém os IDs usados pelo sistema de publicidade -->
-  <div class="heroCard homeHeroPremium" id="homeHeroCard">
-    <div class="homeHeroGlow" aria-hidden="true"></div>
-    <div id="homeSloganContent">
-      <span class="homeEyebrow">O COMÉRCIO DA SUA REGIÃO</span>
-      <h1>Tem muita coisa boa<br>mais perto do que você imagina.</h1>
-      <p>Descubra produtos, lojas e oportunidades da sua cidade. Compre perto. Venda fácil.</p>
-      <div class="homeHeroTag">📍 Valorize quem está perto</div>
-    </div>
-    <div id="homeAdContent" class="hidden"></div>
-  </div>
-
+    
 <div id="profileChoice" class="profileChoice hidden"></div>
 
 <div id="clientExperience">
@@ -1933,6 +1874,39 @@ display:none!important;
 
     <div id="homeAdContent" class="hidden"></div>
   </div>
+
+  <!-- LOJAS PARCEIRAS -->
+  <section class="homeShowcaseSection">
+    <div class="homeShowcaseHeading">
+      <div>
+        <h2>Lojas Parceiras</h2>
+        <p>Conheça quem já vende no Perto</p>
+      </div>
+
+      <button id="homePartnerSeeAll" type="button" class="homePartnerSeeAll">
+        <strong>Ver todas →</strong>
+      </button>
+    </div>
+
+    <div id="homePartnerTrack" class="homePartnerTrack">
+      <p class="homeShowcaseEmpty">Carregando lojas...</p>
+    </div>
+  </section>
+
+  <!-- PRODUTOS EM DESTAQUE -->
+  <section class="homeShowcaseSection">
+    <div class="homeShowcaseHeading">
+      <div>
+        <h2>Produtos em destaque</h2>
+        <p>Ofertas e novidades das lojas parceiras</p>
+      </div>
+    </div>
+
+    <div id="homeFeaturedTrack" class="homeFeaturedTrack">
+      <p class="homeShowcaseEmpty">Carregando produtos...</p>
+    </div>
+  </section>
+</div>
 
   <!-- LOJAS PARCEIRAS -->
   <section class="homeShowcaseSection">
