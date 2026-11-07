@@ -3333,7 +3333,9 @@ const db=getFirestore(app);
 window.__pertoHomeFirebase = {
   db,
   collection,
-  getDocs
+  getDocs,
+  query,
+  where
 };
 
 // Funções usadas pelos cards da vitrine
@@ -9478,7 +9480,12 @@ renderFavorites();
   try{
    const fb=window.__pertoHomeFirebase;
 if(!fb){t.innerHTML='<p class="homeShowcaseEmpty">Destaques das lojas em breve.</p>';return;}
-const s=await fb.getDocs(fb.collection(fb.db,"produtosLoja"));
+const s=await fb.getDocs(
+  fb.query(
+    fb.collection(fb.db,"produtosLoja"),
+    fb.where("ativo","==",true)
+  )
+);
    const ps=s.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.ativo!==false&&(p.destaque===true||p.promocao===true)).slice(0,30);
    if(!ps.length){t.innerHTML='<p class="homeShowcaseEmpty">Em breve, novidades e ofertas das lojas parceiras.</p>';return;}
    t.innerHTML=ps.map(p=>{const im=imgOf(p);return `<article class="homeFeaturedCard" data-produto-home="${esc(p.id)}">${im?`<img src="${esc(im)}" alt="${esc(p.nome||"Produto")}" loading="lazy">`:'<div style="height:180px;background:#fff"></div>'}<div class="homeFeaturedInfo"><span class="homeFeaturedTag">${p.promocao?"OFERTA":"EM DESTAQUE"}</span><strong>${esc(p.nome||"Produto")}</strong><span class="homePrice">${money(p.preco)}</span></div></article>`}).join("");
@@ -9503,7 +9510,12 @@ window.carregarLojasParceirasHome=async function(){
    return;
   }
 
-  const s=await fb.getDocs(fb.collection(fb.db,"lojas"));
+  const s=await fb.getDocs(
+  fb.query(
+    fb.collection(fb.db,"lojas"),
+    fb.where("ativo","==",true)
+  )
+);
   const ls=s.docs
    .map(d=>({id:d.id,...d.data()}))
    .filter(l=>l.ativo===true&&l.statusAdmin!=="suspensa")
