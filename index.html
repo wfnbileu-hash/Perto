@@ -7679,8 +7679,8 @@ const pedidos = todosPedidos.filter(pedido => {
         const pagamentoInfo = document.createElement("p");
         pagamentoInfo.style.cssText = "margin:8px 0;padding:9px;border-radius:8px;background:#fff7ed;color:#9a3412;font-size:13px";
         pagamentoInfo.textContent = pedido.pagamentoProdutoStatus === "confirmado"
-          ? "Pagamento dos produtos: confirmado pela loja."
-          : "Pagamento dos produtos: aguardando confirmação. O cliente deve pagar diretamente à loja (Pix ou link de cartão combinado com o lojista). O entregador não recebe pagamentos.";
+          ? "Pagamento do pedido completo: confirmado pela loja."
+          : "Pagamento total aguardando confirmação. O cliente deve pagar diretamente à loja e enviar o comprovante pelo WhatsApp. O valor inclui produtos e frete."
         card.appendChild(pagamentoInfo);
         const entregaInfo = document.createElement("p");
         entregaInfo.style.cssText = "margin:8px 0;white-space:pre-line;font-size:13px;color:#334155";
@@ -7727,7 +7727,7 @@ const pedidos = todosPedidos.filter(pedido => {
               atualizadoEm: serverTimestamp()
             });
             if (pedido.tipoEntrega === "fretego") {
-              toast("Pedido confirmado. Combine o pagamento dos produtos diretamente com o cliente e confirme o recebimento aqui antes de liberar o FreteGo.");
+              toast("Pedido confirmado. Combine o pagamento total pelo WhatsApp e confirme o recebimento aqui antes de liberar o FreteGo.");
               await carregarPedidosRecebidosLoja();
             } else {
               toast("Pedido confirmado. Combine os detalhes diretamente com o cliente.");
@@ -7777,7 +7777,7 @@ const pedidos = todosPedidos.filter(pedido => {
           confirmarPagamento.type = "button";
           confirmarPagamento.className = "btn";
           confirmarPagamento.style.cssText = "width:100%;background:#dcfce7;color:#166534";
-          confirmarPagamento.textContent = "💰 Confirmar que recebi o pagamento dos produtos";
+          confirmarPagamento.textContent = "💰 Confirmar recebimento do valor total";
           confirmarPagamento.onclick = async () => {
             if (!confirm("Confirma que o pagamento dos produtos foi recebido diretamente pela loja? O FreteGo só será liberado depois desta confirmação.")) return;
             confirmarPagamento.disabled = true;
@@ -7789,7 +7789,7 @@ const pedidos = todosPedidos.filter(pedido => {
                 pagamentoProdutoConfirmadoPor: usuario.uid,
                 atualizadoEm: serverTimestamp()
               });
-              toast("Pagamento dos produtos confirmado. Agora você pode liberar a entrega.");
+              toast("Pagamento total confirmado. Agora você pode liberar a entrega.");
               await carregarPedidosRecebidosLoja();
             } catch (erro) {
               console.error("Erro ao confirmar pagamento dos produtos:", erro);
@@ -7797,7 +7797,7 @@ const pedidos = todosPedidos.filter(pedido => {
                 ? "O Firebase bloqueou a confirmação do pagamento. Será necessário ajustar as regras do Firestore."
                 : "Não foi possível registrar a confirmação do pagamento.");
               confirmarPagamento.disabled = false;
-              confirmarPagamento.textContent = "💰 Confirmar que recebi o pagamento dos produtos";
+              if (!confirm("Confirma que recebeu o valor total do pedido (produtos + frete) diretamente do cliente? O FreteGo só será liberado depois desta confirmação.")) return;
             }
           };
           acoes.appendChild(confirmarPagamento);
@@ -7813,7 +7813,7 @@ const pedidos = todosPedidos.filter(pedido => {
           liberar.style.color = "#64748b";
         }
         liberar.onclick = async () => {
-          if (pedido.pagamentoProdutoStatus !== "confirmado") {
+        toast("Pagamento total confirmado. Agora você pode liberar a entrega.");
             toast("Confirme primeiro o recebimento do pagamento dos produtos.");
             return;
           }
