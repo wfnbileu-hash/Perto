@@ -8474,7 +8474,65 @@ async function carregarProdutosMinhaLoja() {
           excluir.disabled = false;
         }
       };
-      acoes.append(editar, pausar, excluir);
+      // BOTÃO: DESTAQUE NA PÁGINA INICIAL
+const destaque = document.createElement("button");
+destaque.type = "button";
+destaque.className = "btnSmallNeutral";
+destaque.textContent = produto.destaque === true
+  ? "⭐ Remover destaque"
+  : "⭐ Colocar em destaque";
+
+destaque.onclick = async () => {
+  destaque.disabled = true;
+  try {
+    await updateDoc(doc(db, "produtosLoja", produto.id), {
+      destaque: produto.destaque !== true,
+      atualizadoEm: serverTimestamp()
+    });
+    toast(produto.destaque === true
+      ? "Destaque removido."
+      : "Produto colocado em destaque!");
+    await carregarProdutosMinhaLoja();
+    if (typeof window.carregarDestaquesHome === "function") {
+      await window.carregarDestaquesHome();
+    }
+  } catch (erro) {
+    console.error(erro);
+    toast("Não foi possível alterar o destaque.");
+    destaque.disabled = false;
+  }
+};
+
+// BOTÃO: OFERTA
+const oferta = document.createElement("button");
+oferta.type = "button";
+oferta.className = "btnSmallNeutral";
+oferta.textContent = produto.promocao === true
+  ? "🏷️ Remover oferta"
+  : "🏷️ Marcar como oferta";
+
+oferta.onclick = async () => {
+  oferta.disabled = true;
+  try {
+    await updateDoc(doc(db, "produtosLoja", produto.id), {
+      promocao: produto.promocao !== true,
+      atualizadoEm: serverTimestamp()
+    });
+    toast(produto.promocao === true
+      ? "Oferta removida."
+      : "Produto marcado como oferta!");
+    await carregarProdutosMinhaLoja();
+    if (typeof window.carregarDestaquesHome === "function") {
+      await window.carregarDestaquesHome();
+    }
+  } catch (erro) {
+    console.error(erro);
+    toast("Não foi possível alterar a oferta.");
+    oferta.disabled = false;
+  }
+};
+
+acoes.append(editar, pausar, destaque, oferta, excluir);
       item.append(nome, preco, status, acoes);
       lista.appendChild(item);
     });
