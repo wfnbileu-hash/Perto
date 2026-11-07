@@ -1916,26 +1916,56 @@ display:none!important;
     <div id="homeAdContent" class="hidden"></div>
   </div>
 
-    <!-- VITRINE DE LOJAS NA ÁREA DO CLIENTE -->
+<div id="profileChoice" class="profileChoice hidden"></div>
 
-<section class="clientPartnerSection">
-  <div class="clientPartnerHeading">
-    <div class="clientPartnerTitle">
-      <span class="clientPartnerEyebrow">COMÉRCIO LOCAL</span>
-      <h2>🏪 Descubra lojas parceiras</h2>
-      <p>Conheça negócios e produtos da sua região.</p>
+<div id="clientExperience">
+
+  <!-- DESTAQUE PRINCIPAL -->
+  <div class="heroCard homeHeroPremium" id="homeHeroCard">
+    <div class="homeHeroGlow" aria-hidden="true"></div>
+
+    <div id="homeSloganContent">
+      <span class="homeEyebrow">O COMÉRCIO DA SUA REGIÃO</span>
+      <h1>Tem muita coisa boa<br>mais perto do que você imagina.</h1>
+      <p>Descubra produtos, lojas e oportunidades da sua cidade. Compre perto. Venda fácil.</p>
+      <div class="homeHeroTag">📍 Valorize quem está perto</div>
     </div>
 
-    <button type="button" id="clientPartnerSeeAll">
-      Ver todas →
-    </button>
+    <div id="homeAdContent" class="hidden"></div>
   </div>
 
-  <div id="clientPartnerTrack" class="clientPartnerTrack">
-    <p class="homeShowcaseEmpty">Carregando lojas parceiras...</p>
-  </div>
-</section>
+  <!-- LOJAS PARCEIRAS -->
+  <section class="homeShowcaseSection">
+    <div class="homeShowcaseHeading">
+      <div>
+        <h2>Lojas Parceiras</h2>
+        <p>Conheça quem já vende no Perto</p>
+      </div>
 
+      <button id="homePartnerSeeAll" type="button" class="homePartnerSeeAll">
+        <strong>Ver todas →</strong>
+      </button>
+    </div>
+
+    <div id="homePartnerTrack" class="homePartnerTrack">
+      <p class="homeShowcaseEmpty">Carregando lojas...</p>
+    </div>
+  </section>
+
+  <!-- PRODUTOS EM DESTAQUE -->
+  <section class="homeShowcaseSection">
+    <div class="homeShowcaseHeading">
+      <div>
+        <h2>Produtos em destaque</h2>
+        <p>Ofertas e novidades das lojas parceiras</p>
+      </div>
+    </div>
+
+    <div id="homeFeaturedTrack" class="homeFeaturedTrack">
+      <p class="homeShowcaseEmpty">Carregando produtos...</p>
+    </div>
+  </section>
+</div>
 
   <!-- ATALHOS EXISTENTES: IDs e ações originais preservados -->
   
