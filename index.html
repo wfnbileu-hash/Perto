@@ -1946,11 +1946,55 @@ display:none!important;
 .homeShowcaseHeading h2{font-size:18px;margin:0 0 3px;color:var(--text,#0f172a)}.homeShowcaseHeading p{font-size:12px;margin:0;color:var(--muted,#64748b)}
 .homeFeaturedTrack,.homePartnerTrack{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:2px 1px 8px}
 .homeFeaturedTrack::-webkit-scrollbar,.homePartnerTrack::-webkit-scrollbar{display:none}
-.homeFeaturedCard{flex:0 0 72%;max-width:250px;min-width:190px;border:1px solid #e2e8f0;border-radius:15px;overflow:hidden;background:#fff;scroll-snap-align:start;cursor:pointer}
-.homeFeaturedCard img{width:100%;height:132px;object-fit:cover;display:block;background:#f1f5f9}.homeFeaturedInfo{padding:10px}
-.homeFeaturedInfo strong{display:block;font-size:14px;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.homeFeaturedInfo .homePrice{display:block;font-size:13px;font-weight:700;color:#0f766e;margin-top:5px}
-.homeFeaturedTag{display:inline-block;font-size:10px;padding:3px 7px;border-radius:20px;background:#fef3c7;color:#92400e;margin-bottom:6px}
+.homeFeaturedCard{
+  flex:0 0 78%;
+  max-width:290px;
+  min-width:220px;
+  border:1px solid #e2e8f0;
+  border-radius:16px;
+  overflow:hidden;
+  background:#fff;
+  scroll-snap-align:start;
+  cursor:pointer;
+  box-shadow:0 3px 12px rgba(15,23,42,.06);
+}
+.homeFeaturedCard img{
+  width:100%;
+  height:180px;
+  object-fit:contain;
+  display:block;
+  background:#fff;
+  padding:8px;
+  box-sizing:border-box;
+}
+.homeFeaturedInfo{padding:12px}
+.homeFeaturedInfo strong{
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  font-size:14px;
+  line-height:1.35;
+  min-height:38px;
+  color:#0f172a;
+}
+.homeFeaturedInfo .homePrice{
+  display:block;
+  font-size:16px;
+  font-weight:800;
+  color:#0f766e;
+  margin-top:7px;
+}
+.homeFeaturedTag{
+  display:inline-block;
+  font-size:10px;
+  font-weight:800;
+  padding:4px 8px;
+  border-radius:20px;
+  background:#fef3c7;
+  color:#92400e;
+  margin-bottom:7px;
+}
 .homePartnerSeeAll{border:0;background:transparent;padding:0;text-align:left;cursor:pointer;color:inherit}.homePartnerSeeAll small,.homePartnerSeeAll strong{display:block}
 .homePartnerSeeAll small{font-size:12px;color:#64748b}.homePartnerSeeAll strong{font-size:16px;color:var(--text,#0f172a)}
 .homePartnerLogo{flex:0 0 76px;width:76px;text-align:center;border:0;background:transparent;cursor:pointer;scroll-snap-align:start;padding:0}
@@ -1959,7 +2003,7 @@ display:none!important;
 .ownerFeatureActions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.ownerFeatureActions button{font-size:11px;padding:7px 9px;border-radius:9px;border:1px solid #cbd5e1;background:#fff;color:#334155}
 .ownerFeatureActions button.active{background:#fef3c7;border-color:#f59e0b;color:#92400e}
 @media(max-width:559px){.profileChoiceCards{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}.profileChoiceCards>*{min-width:0;padding:14px 8px!important}}
-@media(min-width:700px){.homeFeaturedCard{flex-basis:220px}}
+@media(min-width:700px){.homeFeaturedCard{flex-basis:250px}}
     
 /* VITRINE DE LOJAS NA ÁREA DO CLIENTE */
 .clientPartnerCard{flex:0 0 170px;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;background:white;text-align:left;padding:0;cursor:pointer}
@@ -9379,7 +9423,7 @@ if(!fb){t.innerHTML='<p class="homeShowcaseEmpty">Destaques das lojas em breve.<
 const s=await fb.getDocs(fb.collection(fb.db,"produtosLoja"));
    const ps=s.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.ativo!==false&&(p.destaque===true||p.promocao===true)).slice(0,30);
    if(!ps.length){t.innerHTML='<p class="homeShowcaseEmpty">Em breve, novidades e ofertas das lojas parceiras.</p>';return;}
-   t.innerHTML=ps.map(p=>{const im=imgOf(p);return `<article class="homeFeaturedCard" data-produto-home="${esc(p.id)}">${im?`<img src="${esc(im)}" alt="${esc(p.nome||"Produto")}" loading="lazy">`:'<div style="height:132px;background:#f1f5f9"></div>'}<div class="homeFeaturedInfo"><span class="homeFeaturedTag">${p.promocao?"OFERTA":"EM DESTAQUE"}</span><strong>${esc(p.nome||"Produto")}</strong><span class="homePrice">${money(p.preco)}</span></div></article>`}).join("");
+   t.innerHTML=ps.map(p=>{const im=imgOf(p);return `<article class="homeFeaturedCard" data-produto-home="${esc(p.id)}">${im?`<img src="${esc(im)}" alt="${esc(p.nome||"Produto")}" loading="lazy">`:'<div style="height:180px;background:#fff"></div>'}<div class="homeFeaturedInfo"><span class="homeFeaturedTag">${p.promocao?"OFERTA":"EM DESTAQUE"}</span><strong>${esc(p.nome||"Produto")}</strong><span class="homePrice">${money(p.preco)}</span></div></article>`}).join("");
    t.querySelectorAll("[data-produto-home]").forEach(c=>c.addEventListener("click",()=>{const p=ps.find(x=>x.id===c.dataset.produtoHome);if(!p)return;if(typeof window.openProduct==="function")window.openProduct({...p,vendedorId:p.vendedorId||p.lojaId});else if(p.lojaId&&typeof window.abrirLojaPublica==="function")window.abrirLojaPublica(p.lojaId)}));
    if(t.dataset.autoScroll!=="1"){t.dataset.autoScroll="1";let d=1;setInterval(()=>{if(!t.isConnected||t.scrollWidth<=t.clientWidth+4)return;const max=t.scrollWidth-t.clientWidth;if(t.scrollLeft>=max-3)d=-1;if(t.scrollLeft<=3)d=1;t.scrollBy({left:d*210,behavior:"smooth"})},4500)}
   }catch(e){console.error(e);t.innerHTML='<p class="homeShowcaseEmpty">Não foi possível carregar os destaques agora.</p>'}
