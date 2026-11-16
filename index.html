@@ -9549,7 +9549,53 @@ window.__pertoProfissionais = Object.freeze({
 });
 
 
-// Carrega o módulo independente com tentativas de inicialização.
+
+// ==================================================
+// DIAGNÓSTICO VISUAL — PERTO PROFISSIONAIS
+// ==================================================
+
+function mostrarDiagnosticoProfissionais(etapa, detalhe) {
+  let painel = document.getElementById(
+    "pertoProfissionaisDiagnostic"
+  );
+
+  if (!painel) {
+    painel = document.createElement("div");
+    painel.id = "pertoProfissionaisDiagnostic";
+
+    painel.style.cssText = `
+      margin:16px 0;
+      padding:16px;
+      border:2px solid #f59e0b;
+      border-radius:14px;
+      background:#fffbeb;
+      color:#78350f;
+      font-size:13px;
+      line-height:1.6;
+      overflow-wrap:anywhere;
+    `;
+
+    const destino =
+      document.getElementById("servicesPage") ||
+      document.body;
+
+    destino.appendChild(painel);
+  }
+
+  painel.innerHTML = `
+    <strong style="font-size:15px">
+      🔎 Diagnóstico Perto Profissionais
+    </strong>
+    <p style="margin-top:10px">
+      <strong>Etapa:</strong> ${etapa}
+    </p>
+    <p style="margin-top:6px">
+      <strong>Detalhes:</strong> ${detalhe}
+    </p>
+  `;
+}
+
+// Carrega o módulo independente.
 import("./js/profissionais/index.js")
   .then(({ initPertoProfissionais }) => {
     let tentativas = 0;
@@ -9557,17 +9603,64 @@ import("./js/profissionais/index.js")
     const iniciar = () => {
       tentativas++;
 
-      const sucesso = initPertoProfissionais(
-        window.__pertoProfissionais
-      );
+      const bridge = window.__pertoProfissionais;
+      const pagina = document.getElementById("servicesPage");
+      const menu = document.getElementById("servicesMenu");
 
-      if (!sucesso && tentativas < 20) {
-        setTimeout(iniciar, 500);
-      }
+      try {
+        if (!bridge) {
+          throw new Error("Ponte do Perto não encontrada.");
+        }
 
-      if (!sucesso && tentativas === 20) {
+        if (!bridge.db || !bridge.auth) {
+          throw new Error("Firebase ou autenticação indisponível.");
+        }
+
+        if (!pagina) {
+          throw new Error("servicesPage não encontrada.");
+        }
+
+        if (!menu) {
+          throw new Error("servicesMenu ainda não foi criado.");
+        }
+
+        const resultado = initPertoProfissionais(bridge);
+
+        const cartao = document.getElementById(
+          "pertoProfissionaisCard"
+        );
+
+        if (resultado && cartao) {
+          document.getElementById(
+            "pertoProfissionaisDiagnostic"
+          )?.remove();
+
+          console.info(
+            "[Perto Profissionais] Inicialização concluída."
+          );
+
+          return;
+        }
+
+        throw new Error(
+          "A função foi executada, mas o cartão não foi encontrado."
+        );
+
+      } catch (erro) {
         console.error(
-          "[Perto Profissionais] Não foi possível localizar a área de Serviços."
+          "[Perto Profissionais] Diagnóstico:",
+          erro
+        );
+
+        if (tentativas < 20) {
+          setTimeout(iniciar, 500);
+          return;
+        }
+
+        mostrarDiagnosticoProfissionais(
+          "Inicialização não concluída",
+          erro.message +
+          " | Tentativas realizadas: " + tentativas
         );
       }
     };
@@ -9576,10 +9669,16 @@ import("./js/profissionais/index.js")
   })
   .catch(error => {
     console.error(
-      "[Perto Profissionais] Erro ao carregar o módulo:",
+      "[Perto Profissionais] Falha ao importar módulo:",
       error
     );
+
+    mostrarDiagnosticoProfissionais(
+      "Falha ao importar o JavaScript",
+      error.message || String(error)
+    );
   });
+
 
   
 renderFavorites();
