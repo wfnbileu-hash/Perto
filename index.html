@@ -9512,6 +9512,54 @@ if (servicesPage && ! $("servicesMenu")) {
   }
 }
 
+/* ==================================================
+   INTEGRAÇÃO — PERTO PROFISSIONAIS
+   Reutiliza a sessão e o Firebase existentes.
+================================================== */
+
+window.__pertoProfissionais = Object.freeze({
+  auth,
+  db,
+
+  getCurrentUser: () => currentUser,
+  getCurrentUserData: () => currentUserData,
+
+  firestore: Object.freeze({
+    doc,
+    setDoc,
+    getDoc,
+    addDoc,
+    collection,
+    query,
+    orderBy,
+    getDocs,
+    where,
+    serverTimestamp,
+    deleteDoc,
+    updateDoc,
+    onSnapshot,
+    limit
+  }),
+
+  ui: Object.freeze({
+    toast,
+    navigate: (pageId, scroll = true) =>
+      showInternalPage(pageId, scroll)
+  })
+});
+
+// Carrega o módulo independente.
+import("./js/profissionais/index.js")
+  .then(({ initPertoProfissionais }) => {
+    initPertoProfissionais(window.__pertoProfissionais);
+  })
+  .catch(error => {
+    console.error(
+      "[Perto Profissionais] Erro ao carregar o módulo:",
+      error
+    );
+  });
+  
 renderFavorites();
     
 </script>
