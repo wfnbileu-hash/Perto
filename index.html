@@ -9691,6 +9691,20 @@ renderFavorites();
 ================================================== */
 
 (function () {
+    window.__ppErros = [];
+
+  window.addEventListener("error", function (evento) {
+    window.__ppErros.push(
+      "ERRO: " + evento.message +
+      " | Linha: " + evento.lineno
+    );
+  });
+
+  window.addEventListener("unhandledrejection", function (evento) {
+    window.__ppErros.push(
+      "PROMISE: " + String(evento.reason)
+    );
+  });
   setTimeout(async function () {
     const dados = [];
 
@@ -9742,7 +9756,12 @@ renderFavorites();
     } catch (erro) {
       dados.push("Erro ao consultar arquivo: " + erro.message);
     }
-
+    dados.push(
+      "Erros JavaScript: " +
+      (window.__ppErros.length
+        ? window.__ppErros.join(" || ")
+        : "NENHUM CAPTURADO")
+    );
     const painel = document.createElement("div");
 
     painel.id = "pertoDiagnosticoIndependente";
