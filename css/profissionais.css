@@ -1,0 +1,204 @@
+
+/* =========================================================
+   PERTO PROFISSIONAIS — IDENTIDADE VISUAL
+========================================================= */
+
+.pp-root {
+  width: 100%;
+  margin-top: 18px;
+  color: #111827;
+}
+
+.pp-root[hidden] {
+  display: none !important;
+}
+
+.pp-back-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 11px 15px;
+  margin-bottom: 18px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #111827;
+  font-weight: 700;
+}
+
+.pp-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 22px;
+  border-radius: 20px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #111827, #263449);
+}
+
+.pp-brand-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 17px;
+  background: rgba(245, 158, 11, .18);
+  font-size: 29px;
+}
+
+.pp-eyebrow {
+  display: block;
+  margin-bottom: 5px;
+  color: #fbbf24;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+.pp-header h2 {
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.pp-header p {
+  margin-top: 5px;
+  color: #d1d5db;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.pp-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 9px 12px;
+  border: 1px solid #fde68a;
+  border-radius: 30px;
+  background: #fffbeb;
+  color: #92400e;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.pp-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f59e0b;
+}
+
+.pp-welcome {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 17px;
+  background: #ffffff;
+}
+
+.pp-welcome h3 {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.pp-welcome p {
+  margin-top: 8px;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.pp-section-title {
+  margin: 24px 0 13px;
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.pp-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.pp-module-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.pp-module-icon {
+  margin-bottom: 12px;
+  font-size: 27px;
+}
+
+.pp-module-card strong {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.pp-module-card p {
+  margin-top: 7px;
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.pp-module-status {
+  margin-top: 13px;
+  color: #9a6700;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.pp-next-step {
+  margin-top: 18px;
+  padding: 18px;
+  border-left: 4px solid #f59e0b;
+  border-radius: 12px;
+  background: #fff7e6;
+}
+
+.pp-next-step strong {
+  font-size: 14px;
+}
+
+.pp-next-step p {
+  margin-top: 7px;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.pp-entry-card {
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+}
+
+.pp-entry-link {
+  display: block;
+  margin-top: 12px;
+  font-weight: 800;
+  color: #b77905;
+}
+
+@media (max-width: 360px) {
+  .pp-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pp-header {
+    padding: 17px;
+  }
+
+  .pp-header h2 {
+    font-size: 19px;
+  }
+}
