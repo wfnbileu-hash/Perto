@@ -9548,10 +9548,31 @@ window.__pertoProfissionais = Object.freeze({
   })
 });
 
-// Carrega o módulo independente.
+
+// Carrega o módulo independente com tentativas de inicialização.
 import("./js/profissionais/index.js")
   .then(({ initPertoProfissionais }) => {
-    initPertoProfissionais(window.__pertoProfissionais);
+    let tentativas = 0;
+
+    const iniciar = () => {
+      tentativas++;
+
+      const sucesso = initPertoProfissionais(
+        window.__pertoProfissionais
+      );
+
+      if (!sucesso && tentativas < 20) {
+        setTimeout(iniciar, 500);
+      }
+
+      if (!sucesso && tentativas === 20) {
+        console.error(
+          "[Perto Profissionais] Não foi possível localizar a área de Serviços."
+        );
+      }
+    };
+
+    iniciar();
   })
   .catch(error => {
     console.error(
@@ -9559,6 +9580,7 @@ import("./js/profissionais/index.js")
       error
     );
   });
+
   
 renderFavorites();
     
