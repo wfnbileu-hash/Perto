@@ -9686,6 +9686,120 @@ renderFavorites();
 </script>
 
 <script>
+/* ==================================================
+   DIAGNÓSTICO INDEPENDENTE — PERTO PROFISSIONAIS
+================================================== */
+
+(function () {
+  setTimeout(async function () {
+    const dados = [];
+
+    const bridge = window.__pertoProfissionais;
+    const pagina = document.getElementById("servicesPage");
+    const menu = document.getElementById("servicesMenu");
+    const cartao = document.getElementById("pertoProfissionaisCard");
+
+    dados.push(
+      "Ponte Firebase: " + (bridge ? "ENCONTRADA" : "NÃO ENCONTRADA")
+    );
+
+    dados.push(
+      "Firebase DB: " + (bridge?.db ? "DISPONÍVEL" : "INDISPONÍVEL")
+    );
+
+    dados.push(
+      "Página Serviços: " + (pagina ? "ENCONTRADA" : "NÃO ENCONTRADA")
+    );
+
+    dados.push(
+      "Menu Serviços: " + (menu ? "ENCONTRADO" : "NÃO ENCONTRADO")
+    );
+
+    dados.push(
+      "Cartão Profissionais: " + (cartao ? "ENCONTRADO" : "NÃO ENCONTRADO")
+    );
+
+    try {
+      const resposta = await fetch(
+        "./js/profissionais/index.js?diagnostico=" + Date.now(),
+        { cache: "no-store" }
+      );
+
+      dados.push(
+        "Arquivo JavaScript: HTTP " + resposta.status
+      );
+
+      if (resposta.ok) {
+        const codigo = await resposta.text();
+
+        dados.push(
+          "Função de inicialização: " +
+          (codigo.includes("initPertoProfissionais")
+            ? "ENCONTRADA NO ARQUIVO"
+            : "NÃO IDENTIFICADA")
+        );
+      }
+    } catch (erro) {
+      dados.push("Erro ao consultar arquivo: " + erro.message);
+    }
+
+    const painel = document.createElement("div");
+
+    painel.id = "pertoDiagnosticoIndependente";
+
+    painel.style.cssText = `
+      position:fixed;
+      z-index:999999;
+      left:12px;
+      right:12px;
+      bottom:90px;
+      padding:18px;
+      border:2px solid #f59e0b;
+      border-radius:16px;
+      background:#fffbeb;
+      color:#78350f;
+      box-shadow:0 5px 25px rgba(0,0,0,.25);
+      font:13px Arial,sans-serif;
+      line-height:1.7;
+      max-height:65vh;
+      overflow:auto;
+    `;
+
+    const titulo = document.createElement("strong");
+    titulo.textContent = "🔎 Diagnóstico Perto Profissionais";
+    titulo.style.fontSize = "16px";
+
+    const resultado = document.createElement("pre");
+    resultado.textContent = dados.join("\n");
+    resultado.style.cssText = `
+      white-space:pre-wrap;
+      overflow-wrap:anywhere;
+      margin-top:12px;
+      font:13px Arial,sans-serif;
+    `;
+
+    const fechar = document.createElement("button");
+    fechar.textContent = "Fechar diagnóstico";
+    fechar.style.cssText = `
+      margin-top:12px;
+      padding:10px 14px;
+      border-radius:10px;
+      background:#111827;
+      color:white;
+      font-weight:bold;
+    `;
+
+    fechar.onclick = () => painel.remove();
+
+    painel.append(titulo, resultado, fechar);
+    document.body.appendChild(painel);
+
+    console.log("[Perto Diagnóstico]", dados);
+  }, 2000);
+})();
+             </script>
+  
+<script>
 /* Entrada Cliente/Loja — reutiliza o fluxo original do painel da loja. */
 (function(){
   const escolha = document.getElementById("profileChoice");
