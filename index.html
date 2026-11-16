@@ -9259,10 +9259,13 @@ if (servicesPage && ! $("servicesMenu")) {
       painelMeusPedidos
     );
 
-    $("serviceRequestBtn").onclick = () => {
-      abrirPainel(painelProfissionais);
-    };
+    const botaoSolicitarServico = $("serviceRequestBtn");
 
+if (botaoSolicitarServico) {
+  botaoSolicitarServico.onclick = () => {
+    abrirPainel(painelProfissionais);
+  };
+}
     $("searchProfessionalBtn").onclick = searchProfessionals;
     $("searchOpenRequestsBtn").onclick = searchOpenServiceRequests;
 
