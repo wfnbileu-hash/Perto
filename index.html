@@ -4287,6 +4287,142 @@ async function carregarLojasAdmin() {
   }
 }
 
+  
+async function carregarProfissionaisAdmin() {
+  if (!currentUser || currentUser.uid !== ADMIN_UID) {
+    toast("Acesso restrito ao administrador.");
+    return;
+  }
+
+  const lista = $("adminProfessionalsList");
+  const botao = $("refreshAdminProfessionalsBtn");
+
+  lista.textContent = "Carregando estabelecimentos...";
+  botao.disabled = true;
+
+  try {
+    const resultado = await getDocs(
+      collection(db, "estabelecimentosProfissionais")
+    );
+
+    lista.replaceChildren();
+
+    if (resultado.empty) {
+      lista.textContent = "Nenhum estabelecimento cadastrado.";
+      return;
+    }
+
+    const estabelecimentos = resultado.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) =>
+        String(a.nome || "").localeCompare(String(b.nome || ""), "pt-BR")
+      );
+
+    estabelecimentos.forEach(estabelecimento => {
+      const card = document.createElement("div");
+      card.className = "adminStoreRow";
+
+      const nome = document.createElement("strong");
+      nome.textContent = estabelecimento.nome || "Estabelecimento sem nome";
+
+      const detalhe = document.createElement("p");
+      detalhe.style.cssText =
+        "font-size:12px;color:#64748b;margin-top:5px;line-height:1.5";
+
+      detalhe.textContent =
+        `${estabelecimento.categoria || "Categoria não informada"} · ` +
+        `${estabelecimento.cidade || "Cidade não informada"} · ` +
+        `${estabelecimento.ativo === true ? "Ativo" : "Inativo"} · ` +
+        `${estabelecimento.statusAdmin || "Sem status"}`;
+
+      const acoes = document.createElement("div");
+      acoes.className = "adminStoreActions";
+
+      const status = document.createElement("button");
+      status.type = "button";
+      status.className =
+        estabelecimento.ativo === true
+          ? "btnSmallNeutral"
+          : "btnSmallGreen";
+
+      status.textContent =
+        estabelecimento.ativo === true
+          ? "⏸ Suspender"
+          : "✓ Aprovar";
+
+      status.onclick = async () => {
+        status.disabled = true;
+
+        try {
+          const ativar = estabelecimento.ativo !== true;
+
+          await updateDoc(
+            doc(db, "estabelecimentosProfissionais", estabelecimento.id),
+            {
+              ativo: ativar,
+              statusAdmin: ativar ? "aprovada" : "suspensa",
+              atualizadoEm: serverTimestamp()
+            }
+          );
+
+          toast(
+            ativar
+              ? "Estabelecimento aprovado!"
+              : "Estabelecimento suspenso."
+          );
+
+          await carregarProfissionaisAdmin();
+        } catch (erro) {
+          console.error("Erro ao alterar estabelecimento:", erro);
+          toast("Não foi possível alterar. Confira as regras do Firestore.");
+          status.disabled = false;
+        }
+      };
+
+      const excluir = document.createElement("button");
+      excluir.type = "button";
+      excluir.className = "btnSmallDanger";
+      excluir.textContent = "🗑 Excluir";
+
+      excluir.onclick = async () => {
+        if (!confirm(
+          `Excluir definitivamente "${estabelecimento.nome || "este estabelecimento"}"?`
+        )) return;
+
+        excluir.disabled = true;
+
+        try {
+          await deleteDoc(
+            doc(db, "estabelecimentosProfissionais", estabelecimento.id)
+          );
+
+          toast("Estabelecimento excluído.");
+          await carregarProfissionaisAdmin();
+        } catch (erro) {
+          console.error("Erro ao excluir estabelecimento:", erro);
+          toast("Não foi possível excluir. Confira as regras do Firestore.");
+          excluir.disabled = false;
+        }
+      };
+
+      acoes.append(status, excluir);
+      card.append(nome, detalhe, acoes);
+      lista.appendChild(card);
+    });
+
+  } catch (erro) {
+    console.error("Erro ao carregar profissionais:", erro);
+
+    lista.textContent =
+      erro.code === "permission-denied"
+        ? "O Firebase bloqueou a leitura. Confira as regras administrativas."
+        : "Não foi possível carregar os estabelecimentos.";
+
+  } finally {
+    botao.disabled = false;
+  }
+  }
+  
 async function chamarEndpointPagamento(caminho, corpo, mensagemFalha) {
   if (!currentUser) {
     showAuth("login");
@@ -4385,6 +4521,7 @@ async function chamarEndpointPagamento(caminho, corpo, mensagemFalha) {
 }
 
 $("refreshAdminStoresBtn").onclick = carregarLojasAdmin;
+  $("refreshAdminProfessionalsBtn").onclick = carregarProfissionaisAdmin;
 $("saveAdminAdBtn").onclick = salvarPublicidadeAdmin;
   
 let adminAdSlides = [];
