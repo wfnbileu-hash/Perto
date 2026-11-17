@@ -612,7 +612,6 @@ export function initGestaoProfissionais(bridge) {
       behavior: "smooth",
       block: "start"
     });
-     await carregarServicos();
   });
 
   $("ppCancelForm").addEventListener("click", limparFormulario);
