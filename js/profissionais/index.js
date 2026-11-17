@@ -303,6 +303,85 @@ export function initPertoProfissionais(bridge) {
   detalhesEstabelecimento.hidden = true;
   painel.appendChild(detalhesEstabelecimento);
 
+   
+  // Carrega os serviços na página pública do estabelecimento.
+  async function carregarServicosPublicos(estabelecimentoId) {
+    const lista = detalhesEstabelecimento.querySelector(
+      "#ppPublicServicesList"
+    );
+
+    if (!lista) return;
+
+    lista.innerHTML = `
+      <p>⏳ Carregando serviços e preços...</p>
+    `;
+
+    try {
+      const referencia = collection(
+        db,
+        "estabelecimentosProfissionais",
+        estabelecimentoId,
+        "servicos"
+      );
+
+      const resultado = await getDocs(referencia);
+
+      const servicos = resultado.docs
+        .map(documento => ({
+          id: documento.id,
+          ...documento.data()
+        }))
+        .filter(servico => servico.ativo === true)
+        .sort((a, b) =>
+          String(a.nome || "").localeCompare(
+            String(b.nome || ""),
+            "pt-BR"
+          )
+        );
+
+      if (!servicos.length) {
+        lista.innerHTML = `
+          <p>Nenhum serviço cadastrado no momento.</p>
+        `;
+        return;
+      }
+
+      lista.innerHTML = servicos.map(servico => `
+        <div style="
+          padding:14px;
+          margin-top:10px;
+          border:1px solid #e2e8f0;
+          border-radius:12px;
+          background:#fff;
+        ">
+          <strong>${escapar(servico.nome)}</strong>
+
+          <p style="font-size:13px;color:#64748b;margin:6px 0">
+            ${escapar(servico.descricao || "Sem descrição")}
+          </p>
+
+          <strong style="color:#047857">
+            R$ ${Number(servico.preco || 0).toFixed(2).replace(".", ",")}
+          </strong>
+
+          <span style="font-size:12px;color:#64748b">
+            · ${escapar(servico.duracao)} minutos
+          </span>
+        </div>
+      `).join("");
+
+    } catch (erro) {
+      console.error(
+        "[Perto Profissionais] Erro ao carregar serviços:",
+        erro
+      );
+
+      lista.innerHTML = `
+        <p>Não foi possível carregar os serviços.</p>
+      `;
+    }
+  }
+   
   function abrirDetalhesEstabelecimento(estabelecimento) {
     painel.querySelectorAll(
       ".pp-hero, .pp-search-box, .pp-section, .pp-footer"
