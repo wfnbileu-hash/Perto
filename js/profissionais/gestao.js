@@ -179,6 +179,23 @@ export function initGestaoProfissionais(bridge) {
       </div>
     </form>
 
+    <section id="ppInvitesPanel"
+      style="margin-top:20px;padding:14px;border:1px solid #fde68a;border-radius:14px;background:#fffbeb">
+
+      <h3 style="font-size:17px;margin-bottom:8px">
+        ✉️ Convites para minha equipe
+      </h3>
+
+      <p style="font-size:13px;color:#64748b;margin-bottom:12px">
+        Veja os convites recebidos para trabalhar em estabelecimentos parceiros.
+      </p>
+
+      <div id="ppInvitesList">
+        Carregando convites...
+      </div>
+
+    </section>
+    
     <div id="ppMyEstablishments" style="margin-top:20px">
       Carregando seus estabelecimentos...
     </div>
