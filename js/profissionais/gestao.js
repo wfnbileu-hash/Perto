@@ -22,16 +22,18 @@ export function initGestaoProfissionais(bridge) {
   const db = bridge.db;
   const usuarioAtual = () => bridge.getCurrentUser?.();
 
-  const {
+    const {
     doc,
     addDoc,
     collection,
+    collectionGroup,
     query,
     where,
     getDocs,
     updateDoc,
     deleteDoc,
-    serverTimestamp
+    serverTimestamp,
+    runTransaction
   } = bridge.firestore;
 
   const avisar = mensagem => {
