@@ -812,8 +812,9 @@ let estabelecimentoEquipeAtual = null;
         erro
       );
 
-      lista.textContent =
-        "Não foi possível carregar os convites. Verifique as regras do Firebase.";
+            lista.textContent =
+        "Erro ao carregar convites: " +
+        (erro.code || erro.message || "erro desconhecido");
     }
   }
    
