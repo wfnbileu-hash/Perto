@@ -395,7 +395,6 @@ export function initGestaoProfissionais(bridge) {
       telefone: $("ppPhone").value.trim(),
       logoURL,
       modalidadeAtendimento,
-      atendeDomicilio: modalidadeAtendimento !== "local",
       atualizadoEm: serverTimestamp()
     };
 
@@ -418,6 +417,7 @@ export function initGestaoProfissionais(bridge) {
           {
             proprietarioId: usuario.uid,
             ...dados,
+             atendeDomicilio: modalidadeAtendimento !== "local",
             ativo: false,
             statusAdmin: "aguardando_aprovacao",
             criadoEm: serverTimestamp()
