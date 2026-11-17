@@ -182,6 +182,47 @@ export function initGestaoProfissionais(bridge) {
     <div id="ppMyEstablishments" style="margin-top:20px">
       Carregando seus estabelecimentos...
     </div>
+    <section id="ppServicesPanel" style="display:none;margin-top:20px">
+  <button type="button" id="ppServicesBack"
+    style="padding:10px 14px;border-radius:10px;background:#f1f5f9;margin-bottom:15px">
+    ← Voltar aos estabelecimentos
+  </button>
+
+  <h3 id="ppServicesTitle" style="font-size:20px;margin-bottom:6px">
+    Serviços e preços
+  </h3>
+
+  <p style="font-size:13px;color:#64748b;margin-bottom:16px">
+    Cadastre os serviços oferecidos pelo seu estabelecimento.
+  </p>
+
+  <form id="ppServiceForm" style="display:grid;gap:12px">
+    <input id="ppServiceName" required maxlength="100"
+      placeholder="Nome do serviço (ex.: Corte masculino)"
+      style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px">
+
+    <textarea id="ppServiceDescription" maxlength="300"
+      placeholder="Descrição do serviço (opcional)"
+      style="width:100%;min-height:70px;padding:12px;border:1px solid #cbd5e1;border-radius:10px"></textarea>
+
+    <input id="ppServicePrice" type="number" min="0.01" step="0.01" required
+      placeholder="Preço (R$)"
+      style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px">
+
+    <input id="ppServiceDuration" type="number" min="5" step="5" required
+      placeholder="Duração em minutos (ex.: 30)"
+      style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px">
+
+    <button type="submit" id="ppSaveService"
+      style="padding:13px;border-radius:10px;background:#f59e0b;font-weight:800">
+      + Salvar serviço
+    </button>
+  </form>
+
+  <div id="ppServicesList" style="margin-top:20px">
+    Nenhum serviço carregado.
+  </div>
+</section>
   `;
 
   perfil.appendChild(painel);
