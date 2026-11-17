@@ -229,6 +229,7 @@ export function initGestaoProfissionais(bridge) {
 
   const $ = id => painel.querySelector("#" + id);
   let editandoId = null;
+   let estabelecimentoServicosAtual = null;
 
   function limparFormulario() {
     $("ppEstablishmentForm").reset();
@@ -334,7 +335,23 @@ export function initGestaoProfissionais(bridge) {
   ✂️ Gerenciar serviços e preços
 </button>
         `;
+         
+card.querySelector("[data-services]").addEventListener("click", () => {
+  estabelecimentoServicosAtual = item;
 
+  $("ppServicesTitle").textContent =
+    "Serviços e preços — " + (item.nome || "Estabelecimento");
+
+  $("ppNewEstablishment").style.display = "none";
+  $("ppEstablishmentForm").style.display = "none";
+  $("ppMyEstablishments").style.display = "none";
+  $("ppServicesPanel").style.display = "block";
+
+  $("ppServicesPanel").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+});
         card.querySelector("[data-edit]").addEventListener("click", () => {
           preencherFormulario(item);
         });
@@ -394,6 +411,13 @@ export function initGestaoProfissionais(bridge) {
     limparFormulario();
   });
 
+   $("ppServicesBack").addEventListener("click", () => {
+  $("ppServicesPanel").style.display = "none";
+  $("ppNewEstablishment").style.display = "";
+  $("ppMyEstablishments").style.display = "block";
+
+  estabelecimentoServicosAtual = null;
+});
   $("ppNewEstablishment").addEventListener("click", () => {
     limparFormulario();
 
