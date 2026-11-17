@@ -653,6 +653,7 @@ let estabelecimentoEquipeAtual = null;
   }
 
    
+  
   async function carregarConvitesRecebidos() {
     const usuario = usuarioAtual();
     const lista = $("ppInvitesList");
@@ -689,21 +690,128 @@ let estabelecimentoEquipeAtual = null;
         card.style.cssText =
           "padding:13px;margin-bottom:10px;border:1px solid #e2e8f0;border-radius:12px;background:#fff";
 
-        card.innerHTML = `
-          <strong>${escapar(convite.estabelecimentoNome || "Estabelecimento")}</strong>
-          <p style="font-size:13px;color:#64748b;margin-top:6px">
-            Convite para trabalhar como profissional.
-          </p>
-          <span style="font-size:12px;color:#92400e">
-            🕒 Aguardando sua aceitação
-          </span>
-        `;
+        const titulo = document.createElement("strong");
+        titulo.textContent =
+          convite.estabelecimentoNome || "Estabelecimento";
+
+        const descricao = document.createElement("p");
+        descricao.style.cssText =
+          "font-size:13px;color:#64748b;margin-top:6px";
+        descricao.textContent =
+          "Convite para trabalhar como profissional.";
+
+        const status = document.createElement("p");
+        status.style.cssText =
+          "font-size:12px;color:#92400e;margin:8px 0";
+        status.textContent = "🕒 Aguardando sua aceitação";
+
+        const aceitar = document.createElement("button");
+        aceitar.type = "button";
+        aceitar.textContent = "Aceitar convite";
+        aceitar.style.cssText =
+          "padding:10px 16px;border:0;border-radius:9px;background:#0f172a;color:white;font-weight:600;cursor:pointer";
+
+        aceitar.addEventListener("click", async () => {
+          aceitar.disabled = true;
+          aceitar.textContent = "Aceitando...";
+
+          try {
+            const estabelecimentoId = convite.estabelecimentoId;
+
+            if (!estabelecimentoId) {
+              throw new Error("Estabelecimento inválido.");
+            }
+
+            if (convite.email !== usuario.email.toLowerCase()) {
+              throw new Error("Este convite não pertence a esta conta.");
+            }
+
+            const membroRef = doc(
+              db,
+              "estabelecimentosProfissionais",
+              estabelecimentoId,
+              "equipe",
+              usuario.uid
+            );
+
+            await runTransaction(db, async transaction => {
+              const conviteAtual = await transaction.get(documento.ref);
+              const membroAtual = await transaction.get(membroRef);
+
+              if (!conviteAtual.exists()) {
+                throw new Error("Convite não encontrado.");
+              }
+
+              if (conviteAtual.data().status !== "pendente") {
+                throw new Error("Este convite não está mais pendente.");
+              }
+
+              if (membroAtual.exists()) {
+                throw new Error("Você já faz parte desta equipe.");
+              }
+
+              const dadosConvite = conviteAtual.data();
+
+              if (
+                dadosConvite.email !== usuario.email.toLowerCase()
+                || dadosConvite.estabelecimentoId !== estabelecimentoId
+              ) {
+                throw new Error("Convite inválido para esta conta.");
+              }
+
+              transaction.update(documento.ref, {
+                status: "aceito",
+                profissionalId: usuario.uid,
+                aceitoEm: serverTimestamp()
+              });
+
+              transaction.set(membroRef, {
+                uid: usuario.uid,
+                nome: usuario.displayName || dadosConvite.nome,
+                email: usuario.email,
+                estabelecimentoId,
+                estabelecimentoNome: dadosConvite.estabelecimentoNome,
+                conviteId: documento.id,
+                funcao: "profissional",
+                ativo: true,
+                criadoEm: serverTimestamp()
+              });
+            });
+
+            avisar("Convite aceito! Você agora faz parte da equipe.");
+            await carregarConvitesRecebidos();
+
+          } catch (erro) {
+            console.error(
+              "[Perto Profissionais] Erro ao aceitar convite:",
+              erro
+            );
+
+            avisar(
+              erro.message || "Não foi possível aceitar o convite."
+            );
+
+            aceitar.disabled = false;
+            aceitar.textContent = "Aceitar convite";
+          }
+        });
+
+        card.append(
+          titulo,
+          descricao,
+          status,
+          aceitar
+        );
 
         lista.appendChild(card);
       });
 
     } catch (erro) {
-      console.error("[Perto Profissionais] Erro ao buscar convites:", erro);
+      console.error(
+        "[Perto Profissionais] Erro ao buscar convites:",
+        erro
+      );
+
       lista.textContent =
         "Não foi possível carregar os convites. Verifique as regras do Firebase.";
     }
