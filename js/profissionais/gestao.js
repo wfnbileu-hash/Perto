@@ -515,23 +515,27 @@ export function initGestaoProfissionais(bridge) {
 </button>
         `;
          
-card.querySelector("[data-services]").addEventListener("click", () => {
-  estabelecimentoServicosAtual = item;
 
-  $("ppServicesTitle").textContent =
-    "Serviços e preços — " + (item.nome || "Estabelecimento");
-
-  $("ppNewEstablishment").style.display = "none";
-  $("ppEstablishmentForm").style.display = "none";
-  $("ppMyEstablishments").style.display = "none";
-  $("ppServicesPanel").style.display = "block";
-
-  $("ppServicesPanel").scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
-});
         card.querySelector("[data-services]").addEventListener("click", async () => {
+          estabelecimentoServicosAtual = item;
+
+          $("ppServicesTitle").textContent =
+            "Serviços e preços — " + (item.nome || "Estabelecimento");
+
+          $("ppNewEstablishment").style.display = "none";
+          $("ppEstablishmentForm").style.display = "none";
+          $("ppMyEstablishments").style.display = "none";
+          $("ppServicesPanel").style.display = "block";
+
+          $("ppServicesPanel").scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+
+          await carregarServicos();
+        });
+
+        card.querySelector("[data-edit]").addEventListener("click", () => {
           preencherFormulario(item);
         });
 
