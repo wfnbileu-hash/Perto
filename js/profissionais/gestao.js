@@ -223,8 +223,52 @@ export function initGestaoProfissionais(bridge) {
     Nenhum serviço carregado.
   </div>
 </section>
-  `;
 
+    <section id="ppTeamPanel" style="display:none;margin-top:20px">
+
+      <button type="button" id="ppTeamBack"
+        style="padding:10px 14px;border-radius:10px;background:#f1f5f9;margin-bottom:15px">
+        ← Voltar aos estabelecimentos
+      </button>
+
+      <h3 id="ppTeamTitle" style="font-size:20px;margin-bottom:6px">
+        Minha equipe
+      </h3>
+
+      <p style="font-size:13px;color:#64748b;margin-bottom:16px">
+        Cadastre os profissionais que trabalham neste estabelecimento.
+      </p>
+
+      <form id="ppTeamForm" style="display:grid;gap:12px">
+
+        <input id="ppTeamName" required maxlength="100"
+          placeholder="Nome do profissional"
+          style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px">
+
+        <input id="ppTeamEmail" type="email" required maxlength="150"
+          placeholder="E-mail da conta do Perto"
+          style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px">
+
+        <select id="ppTeamRole" required
+          style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px">
+          <option value="profissional">Profissional</option>
+          <option value="gerente">Gerente</option>
+        </select>
+
+        <button type="submit" id="ppTeamSave"
+          style="padding:13px;border-radius:10px;background:#f59e0b;font-weight:800">
+          + Adicionar à equipe
+        </button>
+
+      </form>
+
+      <div id="ppTeamList" style="margin-top:20px">
+        Nenhum profissional carregado.
+      </div>
+
+    </section>
+    `;
+           
   perfil.appendChild(painel);
 
   const $ = id => painel.querySelector("#" + id);
