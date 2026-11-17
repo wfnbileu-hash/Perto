@@ -652,13 +652,73 @@ let estabelecimentoEquipeAtual = null;
     limparFormulario();
   });
 
-     $("ppTeamBack").addEventListener("click", () => {
+    $("ppTeamBack").addEventListener("click", () => {
     $("ppTeamPanel").style.display = "none";
     $("ppNewEstablishment").style.display = "";
     $("ppMyEstablishments").style.display = "block";
 
     estabelecimentoEquipeAtual = null;
   });
+   
+  $("ppTeamForm").addEventListener("submit", async evento => {
+    evento.preventDefault();
+
+    const usuario = usuarioAtual();
+    const estabelecimento = estabelecimentoEquipeAtual;
+
+    if (!usuario || !estabelecimento) {
+      return avisar("Selecione um estabelecimento válido.");
+    }
+
+    if (estabelecimento.proprietarioId !== usuario.uid) {
+      return avisar("Somente o proprietário pode convidar profissionais.");
+    }
+
+    const nome = $("ppTeamName").value.trim();
+    const email = $("ppTeamEmail").value.trim().toLowerCase();
+
+    if (!nome || !email) {
+      return avisar("Preencha o nome e o e-mail.");
+    }
+
+    const botaoSalvar = $("ppTeamSave");
+    botaoSalvar.disabled = true;
+    botaoSalvar.textContent = "Enviando convite...";
+
+    try {
+      await addDoc(
+        collection(
+          db,
+          "estabelecimentosProfissionais",
+          estabelecimento.id,
+          "convites"
+        ),
+        {
+          nome,
+          email,
+          estabelecimentoId: estabelecimento.id,
+          estabelecimentoNome: estabelecimento.nome || "",
+          proprietarioId: usuario.uid,
+          funcao: "profissional",
+          status: "pendente",
+          criadoEm: serverTimestamp()
+        }
+      );
+
+      $("ppTeamName").value = "";
+      $("ppTeamEmail").value = "";
+
+      avisar("Convite registrado com sucesso!");
+
+    } catch (erro) {
+      console.error("[Perto Profissionais] Erro ao convidar:", erro);
+      avisar("Não foi possível enviar o convite. Verifique as regras do Firebase.");
+    } finally {
+      botaoSalvar.disabled = false;
+      botaoSalvar.textContent = "+ Adicionar à equipe";
+    }
+  });
+   
    $("ppServicesBack").addEventListener("click", () => {
   $("ppServicesPanel").style.display = "none";
   $("ppNewEstablishment").style.display = "";
