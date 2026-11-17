@@ -274,7 +274,7 @@ export function initGestaoProfissionais(bridge) {
   const $ = id => painel.querySelector("#" + id);
   let editandoId = null;
    let estabelecimentoServicosAtual = null;
-
+let estabelecimentoEquipeAtual = null;
    
   let servicoEditandoId = null;
 
@@ -582,7 +582,23 @@ export function initGestaoProfissionais(bridge) {
 
           await carregarServicos();
         });
+               card.querySelector("[data-team]").addEventListener("click", () => {
+          estabelecimentoEquipeAtual = item;
 
+          $("ppTeamTitle").textContent =
+            "Minha equipe — " + (item.nome || "Estabelecimento");
+
+          $("ppNewEstablishment").style.display = "none";
+          $("ppEstablishmentForm").style.display = "none";
+          $("ppMyEstablishments").style.display = "none";
+          $("ppServicesPanel").style.display = "none";
+          $("ppTeamPanel").style.display = "block";
+
+          $("ppTeamPanel").scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+        });
         card.querySelector("[data-edit]").addEventListener("click", () => {
           preencherFormulario(item);
         });
@@ -642,6 +658,13 @@ export function initGestaoProfissionais(bridge) {
     limparFormulario();
   });
 
+     $("ppTeamBack").addEventListener("click", () => {
+    $("ppTeamPanel").style.display = "none";
+    $("ppNewEstablishment").style.display = "";
+    $("ppMyEstablishments").style.display = "block";
+
+    estabelecimentoEquipeAtual = null;
+  });
    $("ppServicesBack").addEventListener("click", () => {
   $("ppServicesPanel").style.display = "none";
   $("ppNewEstablishment").style.display = "";
