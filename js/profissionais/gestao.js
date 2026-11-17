@@ -231,6 +231,185 @@ export function initGestaoProfissionais(bridge) {
   let editandoId = null;
    let estabelecimentoServicosAtual = null;
 
+   
+  let servicoEditandoId = null;
+
+  async function carregarServicos() {
+    const lista = $("ppServicesList");
+
+    if (!estabelecimentoServicosAtual) {
+      lista.textContent = "Selecione um estabelecimento.";
+      return;
+    }
+
+    lista.textContent = "Carregando serviços...";
+
+    try {
+      const referencia = collection(
+        db,
+        "estabelecimentosProfissionais",
+        estabelecimentoServicosAtual.id,
+        "servicos"
+      );
+
+      const resultado = await getDocs(referencia);
+      lista.replaceChildren();
+
+      if (resultado.empty) {
+        lista.textContent = "Nenhum serviço cadastrado ainda.";
+        return;
+      }
+
+      resultado.forEach(documento => {
+        const servico = {
+          id: documento.id,
+          ...documento.data()
+        };
+
+        const card = document.createElement("div");
+        card.style.cssText =
+          "padding:13px;margin-bottom:10px;border:1px solid #e2e8f0;border-radius:12px;background:#fff";
+
+        card.innerHTML = `
+          <strong>${escapar(servico.nome)}</strong>
+          <p style="font-size:13px;color:#64748b;margin:6px 0">
+            ${escapar(servico.descricao || "Sem descrição")}
+          </p>
+          <p style="font-size:13px;margin-bottom:10px">
+            <strong>R$ ${Number(servico.preco || 0).toFixed(2).replace(".", ",")}</strong>
+            · ${escapar(servico.duracao)} minutos
+          </p>
+          <div style="display:flex;gap:8px">
+            <button type="button" data-edit-service
+              style="flex:1;padding:9px;border-radius:8px;background:#e2e8f0">
+              ✏️ Editar
+            </button>
+            <button type="button" data-delete-service
+              style="flex:1;padding:9px;border-radius:8px;background:#fee2e2;color:#991b1b">
+              🗑️ Excluir
+            </button>
+          </div>
+        `;
+
+        card.querySelector("[data-edit-service]").addEventListener("click", () => {
+          servicoEditandoId = servico.id;
+          $("ppServiceName").value = servico.nome || "";
+          $("ppServiceDescription").value = servico.descricao || "";
+          $("ppServicePrice").value = servico.preco || "";
+          $("ppServiceDuration").value = servico.duracao || "";
+          $("ppSaveService").textContent = "Salvar alterações";
+          $("ppServiceForm").scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+        });
+
+        card.querySelector("[data-delete-service]").addEventListener("click", async () => {
+          if (!confirm("Deseja excluir este serviço?")) return;
+
+          try {
+            await deleteDoc(doc(
+              db,
+              "estabelecimentosProfissionais",
+              estabelecimentoServicosAtual.id,
+              "servicos",
+              servico.id
+            ));
+
+            avisar("Serviço excluído!");
+            await carregarServicos();
+          } catch (erro) {
+            console.error(erro);
+            avisar("Não foi possível excluir o serviço.");
+          }
+        });
+
+        lista.appendChild(card);
+      });
+
+    } catch (erro) {
+      console.error("[Perto Profissionais] Erro ao carregar serviços:", erro);
+      lista.textContent = "Não foi possível carregar os serviços.";
+    }
+  }
+
+  $("ppServiceForm").addEventListener("submit", async evento => {
+    evento.preventDefault();
+
+    if (!estabelecimentoServicosAtual) {
+      return avisar("Selecione um estabelecimento.");
+    }
+
+    const nome = $("ppServiceName").value.trim();
+    const descricao = $("ppServiceDescription").value.trim();
+    const preco = Number($("ppServicePrice").value);
+    const duracao = Number($("ppServiceDuration").value);
+
+    if (!nome || !Number.isFinite(preco) || preco <= 0 ||
+        !Number.isInteger(duracao) || duracao < 5) {
+      return avisar("Confira o nome, preço e duração do serviço.");
+    }
+
+    const salvar = $("ppSaveService");
+    salvar.disabled = true;
+    salvar.textContent = "Salvando...";
+
+    try {
+      const referencia = collection(
+        db,
+        "estabelecimentosProfissionais",
+        estabelecimentoServicosAtual.id,
+        "servicos"
+      );
+
+      const dados = {
+        nome,
+        descricao,
+        preco: Number(preco.toFixed(2)),
+        duracao,
+        atualizadoEm: serverTimestamp()
+      };
+
+      if (servicoEditandoId) {
+        await updateDoc(
+          doc(
+            db,
+            "estabelecimentosProfissionais",
+            estabelecimentoServicosAtual.id,
+            "servicos",
+            servicoEditandoId
+          ),
+          dados
+        );
+
+        avisar("Serviço atualizado!");
+      } else {
+        await addDoc(referencia, {
+          ...dados,
+          ativo: true,
+          criadoEm: serverTimestamp()
+        });
+
+        avisar("Serviço cadastrado!");
+      }
+
+      $("ppServiceForm").reset();
+      servicoEditandoId = null;
+      salvar.textContent = "+ Salvar serviço";
+
+      await carregarServicos();
+
+    } catch (erro) {
+      console.error("[Perto Profissionais] Erro ao salvar serviço:", erro);
+      avisar("Não foi possível salvar. Verifique as regras do Firestore.");
+    } finally {
+      salvar.disabled = false;
+      if (!servicoEditandoId) {
+        salvar.textContent = "+ Salvar serviço";
+      }
+    }
+  });
+
   function limparFormulario() {
     $("ppEstablishmentForm").reset();
     editandoId = null;
@@ -352,7 +531,7 @@ card.querySelector("[data-services]").addEventListener("click", () => {
     block: "start"
   });
 });
-        card.querySelector("[data-edit]").addEventListener("click", () => {
+        card.querySelector("[data-services]").addEventListener("click", async () => {
           preencherFormulario(item);
         });
 
@@ -429,6 +608,7 @@ card.querySelector("[data-services]").addEventListener("click", () => {
       behavior: "smooth",
       block: "start"
     });
+     await carregarServicos();
   });
 
   $("ppCancelForm").addEventListener("click", limparFormulario);
