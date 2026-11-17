@@ -4,6 +4,7 @@
    Marketplace público de beleza e cuidados pessoais
 ========================================================= */
 
+import { initGestaoProfissionais } from "./gestao.js";
 export function initPertoProfissionais(bridge) {
   if (!bridge || !bridge.db || !bridge.auth) {
     console.error("[Perto Profissionais] Ponte Firebase indisponível.");
@@ -546,6 +547,10 @@ export function initPertoProfissionais(bridge) {
   });
 
   console.info("[Perto Profissionais] Marketplace carregado.");
+
+   // Inicializa a gestão no perfil do usuário.
+  initGestaoProfissionais(bridge);
+   
 
   return true;
 }
