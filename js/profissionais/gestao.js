@@ -557,6 +557,10 @@ export function initGestaoProfissionais(bridge) {
   style="width:100%;padding:11px;margin-top:9px;border-radius:9px;background:#fef3c7;color:#92400e;font-weight:800">
   ✂️ Gerenciar serviços e preços
 </button>
+<button type="button" data-team
+  style="width:100%;padding:11px;margin-top:9px;border-radius:9px;background:#dbeafe;color:#1e40af;font-weight:800">
+  👥 Gerenciar equipe
+</button>
         `;
          
 
