@@ -249,12 +249,6 @@ export function initGestaoProfissionais(bridge) {
           placeholder="E-mail da conta do Perto"
           style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px">
 
-        <select id="ppTeamRole" required
-          style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px">
-          <option value="profissional">Profissional</option>
-          <option value="gerente">Gerente</option>
-        </select>
-
         <button type="submit" id="ppTeamSave"
           style="padding:13px;border-radius:10px;background:#f59e0b;font-weight:800">
           + Adicionar à equipe
