@@ -668,7 +668,7 @@ let estabelecimentoEquipeAtual = null;
     try {
       const consulta = query(
         collectionGroup(db, "convites"),
-        where("email", "==", usuario.email)
+        where("email", "==", usuario.email.toLowerCase())
       );
 
       const resultado = await getDocs(consulta);
@@ -722,7 +722,7 @@ let estabelecimentoEquipeAtual = null;
               throw new Error("Estabelecimento inválido.");
             }
 
-          if (convite.email !== usuario.email) {
+          if (convite.email !== usuario.email.toLowerCase()) {
               throw new Error("Este convite não pertence a esta conta.");
             }
 
@@ -753,7 +753,7 @@ let estabelecimentoEquipeAtual = null;
               const dadosConvite = conviteAtual.data();
 
               if (
-                dadosConvite.email !== usuario.email
+                dadosConvite.email !== usuario.email.toLowerCase()
                 || dadosConvite.estabelecimentoId !== estabelecimentoId
               ) {
                 throw new Error("Convite inválido para esta conta.");
@@ -768,7 +768,7 @@ let estabelecimentoEquipeAtual = null;
               transaction.set(membroRef, {
                 uid: usuario.uid,
                 nome: usuario.displayName || dadosConvite.nome,
-                email: usuario.email,
+                email: usuario.email.toLowerCase(),
                 estabelecimentoId,
                 estabelecimentoNome: dadosConvite.estabelecimentoNome,
                 conviteId: documento.id,
@@ -860,7 +860,7 @@ let estabelecimentoEquipeAtual = null;
     }
 
     const nome = $("ppTeamName").value.trim();
-    const email = $("ppTeamEmail").value.trim();
+    const email = $("ppTeamEmail").value.trim().toLowerCase();
 
     if (!nome || !email) {
       return avisar("Preencha o nome e o e-mail.");
