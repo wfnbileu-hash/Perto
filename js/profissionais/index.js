@@ -450,6 +450,8 @@ export function initPertoProfissionais(bridge) {
         <p>Em breve você poderá agendar seu atendimento por aqui.</p>
       </div>
     `;
+         // Busca os serviços cadastrados pelo estabelecimento.
+    carregarServicosPublicos(estabelecimento.id);
 
     detalhesEstabelecimento.querySelector(
       "#ppBackToEstablishments"
