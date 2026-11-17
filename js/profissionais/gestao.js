@@ -288,6 +288,10 @@ export function initGestaoProfissionais(bridge) {
               </button>
             ` : ""}
           </div>
+          <button type="button" data-services
+  style="width:100%;padding:11px;margin-top:9px;border-radius:9px;background:#fef3c7;color:#92400e;font-weight:800">
+  ✂️ Gerenciar serviços e preços
+</button>
         `;
 
         card.querySelector("[data-edit]").addEventListener("click", () => {
