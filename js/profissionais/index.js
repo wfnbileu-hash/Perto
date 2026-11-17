@@ -438,10 +438,12 @@ export function initPertoProfissionais(bridge) {
         <p>🏠 ${modalidade}</p>
       </div>
 
-      <div class="pp-empty-state" style="margin-top:15px">
-        <h3>Serviços e preços</h3>
-        <p>Estamos preparando esta área.</p>
-      </div>
+      <div class="pp-empty-state" style="margin-top:15px;text-align:left">
+  <h3>Serviços e preços</h3>
+  <div id="ppPublicServicesList">
+    <p>Carregando serviços...</p>
+  </div>
+</div>
 
       <div class="pp-empty-state" style="margin-top:15px">
         <h3>Agendamento</h3>
