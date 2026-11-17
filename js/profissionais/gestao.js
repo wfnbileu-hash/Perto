@@ -652,6 +652,63 @@ let estabelecimentoEquipeAtual = null;
     }
   }
 
+   
+  async function carregarConvitesRecebidos() {
+    const usuario = usuarioAtual();
+    const lista = $("ppInvitesList");
+
+    if (!usuario || !usuario.email) {
+      lista.textContent = "Entre na sua conta para consultar convites.";
+      return;
+    }
+
+    lista.textContent = "Buscando convites...";
+
+    try {
+      const consulta = query(
+        collectionGroup(db, "convites"),
+        where("email", "==", usuario.email.toLowerCase())
+      );
+
+      const resultado = await getDocs(consulta);
+      lista.replaceChildren();
+
+      const convites = resultado.docs.filter(
+        documento => documento.data().status === "pendente"
+      );
+
+      if (convites.length === 0) {
+        lista.textContent = "Você não tem convites pendentes.";
+        return;
+      }
+
+      convites.forEach(documento => {
+        const convite = documento.data();
+
+        const card = document.createElement("article");
+        card.style.cssText =
+          "padding:13px;margin-bottom:10px;border:1px solid #e2e8f0;border-radius:12px;background:#fff";
+
+        card.innerHTML = `
+          <strong>${escapar(convite.estabelecimentoNome || "Estabelecimento")}</strong>
+          <p style="font-size:13px;color:#64748b;margin-top:6px">
+            Convite para trabalhar como profissional.
+          </p>
+          <span style="font-size:12px;color:#92400e">
+            🕒 Aguardando sua aceitação
+          </span>
+        `;
+
+        lista.appendChild(card);
+      });
+
+    } catch (erro) {
+      console.error("[Perto Profissionais] Erro ao buscar convites:", erro);
+      lista.textContent =
+        "Não foi possível carregar os convites. Verifique as regras do Firebase.";
+    }
+  }
+   
   botao.addEventListener("click", async () => {
     const usuario = usuarioAtual();
 
@@ -660,7 +717,8 @@ let estabelecimentoEquipeAtual = null;
       return;
     }
 
-    painel.style.display = "block";
+        painel.style.display = "block";
+    await carregarConvitesRecebidos();
     await carregarMeusEstabelecimentos();
 
     painel.scrollIntoView({ behavior: "smooth", block: "start" });
