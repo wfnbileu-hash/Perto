@@ -394,7 +394,11 @@ export function initPertoProfissionais(bridge) {
         : "💇";
 
       return `
-        <article class="pp-establishment-card">
+        <button
+  type="button"
+  class="pp-establishment-card"
+  data-establishment-id="${escapar(estabelecimento.id)}"
+>
           <div class="pp-establishment-logo">
             ${logo}
           </div>
@@ -417,7 +421,7 @@ export function initPertoProfissionais(bridge) {
               </span>
             ` : ""}
           </div>
-        </article>
+        </button>
       `;
     }).join("");
   }
