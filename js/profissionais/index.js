@@ -296,6 +296,114 @@ export function initPertoProfissionais(bridge) {
       .trim();
   };
 
+   
+  // Área de detalhes do estabelecimento.
+  const detalhesEstabelecimento = document.createElement("section");
+  detalhesEstabelecimento.className = "pp-section";
+  detalhesEstabelecimento.hidden = true;
+  painel.appendChild(detalhesEstabelecimento);
+
+  function abrirDetalhesEstabelecimento(estabelecimento) {
+    painel.querySelectorAll(
+      ".pp-hero, .pp-search-box, .pp-section, .pp-footer"
+    ).forEach(elemento => {
+      if (elemento !== detalhesEstabelecimento) {
+        elemento.style.display = "none";
+      }
+    });
+
+    const nome = escapar(estabelecimento.nome || "Estabelecimento");
+    const categoria = escapar(estabelecimento.categoria || "Beleza e cuidados");
+    const descricao = escapar(estabelecimento.descricao || "Nenhuma descrição cadastrada.");
+    const endereco = escapar(estabelecimento.endereco || "Endereço não informado");
+    const bairro = escapar(estabelecimento.bairro || "");
+    const cidade = escapar(estabelecimento.cidade || "");
+    const telefone = escapar(estabelecimento.telefone || "Não informado");
+
+    const logo = estabelecimento.logoURL &&
+      /^https?:\/\//i.test(estabelecimento.logoURL)
+      ? `<img src="${escapar(estabelecimento.logoURL)}" alt="Logo de ${nome}" style="width:100%;height:100%;object-fit:cover;border-radius:16px">`
+      : "💇";
+
+    const modalidade = estabelecimento.modalidadeAtendimento === "local"
+      ? "Atendimento no estabelecimento"
+      : estabelecimento.modalidadeAtendimento === "domicilio"
+        ? "Atendimento a domicílio"
+        : estabelecimento.modalidadeAtendimento === "ambos"
+          ? "No estabelecimento e a domicílio"
+          : "Modalidade não informada";
+
+    detalhesEstabelecimento.hidden = false;
+
+    detalhesEstabelecimento.innerHTML = `
+      <button type="button" id="ppBackToEstablishments"
+        style="padding:10px 14px;border:0;border-radius:10px;background:#f1f5f9;font-weight:700;margin-bottom:16px">
+        ← Voltar aos estabelecimentos
+      </button>
+
+      <div style="text-align:center;padding:20px 10px">
+        <div style="width:110px;height:110px;margin:auto;border-radius:18px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:42px;overflow:hidden">
+          ${logo}
+        </div>
+
+        <h2 style="margin:14px 0 5px">${nome}</h2>
+        <strong style="color:#92400e">${categoria}</strong>
+      </div>
+
+      <div class="pp-empty-state" style="text-align:left">
+        <h3>Sobre o estabelecimento</h3>
+        <p>${descricao}</p>
+        <p>📍 ${endereco}</p>
+        <p>${bairro}${bairro && cidade ? " • " : ""}${cidade}</p>
+        <p>📞 ${telefone}</p>
+        <p>🏠 ${modalidade}</p>
+      </div>
+
+      <div class="pp-empty-state" style="margin-top:15px">
+        <h3>Serviços e preços</h3>
+        <p>Estamos preparando esta área.</p>
+      </div>
+
+      <div class="pp-empty-state" style="margin-top:15px">
+        <h3>Agendamento</h3>
+        <p>Em breve você poderá agendar seu atendimento por aqui.</p>
+      </div>
+    `;
+
+    detalhesEstabelecimento.querySelector(
+      "#ppBackToEstablishments"
+    ).addEventListener("click", () => {
+      detalhesEstabelecimento.hidden = true;
+
+      painel.querySelectorAll(
+        ".pp-hero, .pp-search-box, .pp-section, .pp-footer"
+      ).forEach(elemento => {
+        if (elemento !== detalhesEstabelecimento) {
+          elemento.style.display = "";
+        }
+      });
+    });
+
+    detalhesEstabelecimento.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+
+  // Abre os detalhes ao tocar em um estabelecimento.
+  listaEstabelecimentos.addEventListener("click", evento => {
+    const cartao = evento.target.closest("[data-establishment-id]");
+    if (!cartao) return;
+
+    const estabelecimento = estabelecimentos.find(item =>
+      item.id === cartao.dataset.establishmentId
+    );
+
+    if (estabelecimento) {
+      abrirDetalhesEstabelecimento(estabelecimento);
+    }
+  });
+   
   // Verifica se a categoria corresponde ao filtro.
   function correspondeCategoria(estabelecimento) {
     if (categoriaAtual === "todos") return true;
