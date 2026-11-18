@@ -326,6 +326,44 @@ export function initGestaoProfissionais(bridge) {
       </button>
 
     </section>
+    
+    <section id="ppAgendaPanel" style="display:none;margin-top:20px">
+
+      <button type="button" id="ppAgendaBack"
+        style="padding:10px 14px;border-radius:10px;background:#f1f5f9;margin-bottom:15px">
+        ← Voltar
+      </button>
+
+      <h3 id="ppAgendaTitle" style="font-size:20px;margin-bottom:6px">
+        Minha agenda
+      </h3>
+
+      <p style="font-size:13px;color:#64748b;margin-bottom:16px">
+        Consulte seus horários de atendimento nos próximos 14 dias.
+      </p>
+
+      <label id="ppAgendaProfessionalLabel"
+        style="display:none;font-size:13px;font-weight:700">
+        Profissional
+        <select id="ppAgendaProfessional"
+          style="display:block;width:100%;padding:12px;margin-top:6px;border:1px solid #cbd5e1;border-radius:10px">
+          <option value="">Selecione um profissional</option>
+        </select>
+      </label>
+
+      <label style="display:block;margin-top:14px;font-size:13px;font-weight:700">
+        Data da consulta
+        <input id="ppAgendaDate" type="date"
+          style="display:block;width:100%;padding:12px;margin-top:6px;border:1px solid #cbd5e1;border-radius:10px">
+      </label>
+
+      <div id="ppAgendaContent"
+        style="margin-top:18px;padding:14px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc">
+        Selecione uma data para consultar os horários.
+      </div>
+
+    </section>
+    
     `;
            
   perfil.appendChild(painel);
