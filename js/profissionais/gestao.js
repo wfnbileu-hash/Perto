@@ -369,11 +369,15 @@ export function initGestaoProfissionais(bridge) {
   perfil.appendChild(painel);
 
   const $ = id => painel.querySelector("#" + id);
-  let editandoId = null;
-   let estabelecimentoServicosAtual = null;
+  let estabelecimentoServicosAtual = null;
 let estabelecimentoEquipeAtual = null;
- let estabelecimentoDisponibilidadeAtual = null;  
-  let servicoEditandoId = null;
+let estabelecimentoDisponibilidadeAtual = null;
+
+let estabelecimentoAgendaAtual = null;
+let profissionalAgendaAtual = null;
+let modoAgendaAtual = "profissional";
+
+let servicoEditandoId = null;
 
   async function carregarServicos() {
     const lista = $("ppServicesList");
