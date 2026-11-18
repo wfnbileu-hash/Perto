@@ -514,7 +514,7 @@ let servicoEditandoId = null;
         card.style.cssText =
           "padding:13px;margin-bottom:10px;border:1px solid #e2e8f0;border-radius:12px;background:#fff";
 
-        card.innerHTML = `
+                card.innerHTML = `
           <strong>${escapar(profissional.nome || "Profissional")}</strong>
           <p style="font-size:13px;color:#64748b;margin-top:6px">
             ${escapar(profissional.email || "")}
@@ -524,6 +524,25 @@ let servicoEditandoId = null;
           </p>
         `;
 
+        const botaoAgenda = document.createElement("button");
+        botaoAgenda.type = "button";
+        botaoAgenda.textContent = "Ver agenda";
+
+        botaoAgenda.style.cssText =
+          "width:100%;padding:12px;margin-top:12px;border:0;border-radius:9px;background:#0f172a;color:white;font-weight:800";
+
+        botaoAgenda.addEventListener("click", () => {
+          abrirAgenda(
+            estabelecimentoEquipeAtual,
+            {
+              uid: documento.id,
+              nome: profissional.nome || "Profissional"
+            },
+            "proprietario"
+          );
+        });
+
+        card.appendChild(botaoAgenda);
         lista.appendChild(card);
       });
 
