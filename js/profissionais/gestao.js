@@ -1480,9 +1480,7 @@ await runTransaction(db, async transaction => {
 
     estabelecimentoDisponibilidadeAtual = null;
   });
-   
-  botao.addEventListener("click", async () => {
-       $("ppAgendaBack").addEventListener("click", () => {
+     $("ppAgendaBack").addEventListener("click", () => {
     $("ppAgendaPanel").style.display = "none";
 
     if (modoAgendaAtual === "proprietario") {
@@ -1513,7 +1511,8 @@ await runTransaction(db, async transaction => {
     painel.style.display = "none";
     limparFormulario();
   });
-
+  botao.addEventListener("click", async () => {
+   
     $("ppTeamBack").addEventListener("click", () => {
     $("ppTeamPanel").style.display = "none";
     $("ppNewEstablishment").style.display = "";
