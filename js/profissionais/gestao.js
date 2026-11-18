@@ -1217,24 +1217,26 @@ carregarEquipe();
     botaoSalvar.textContent = "Salvando...";
 
     try {
-      for (const horario of horarios) {
-        await setDoc(
-          doc(
-            db,
-            "estabelecimentosProfissionais",
-            estabelecimento.id,
-            "equipe",
-            usuario.uid,
-            "disponibilidade",
-            String(horario.diaSemana)
-          ),
-          {
-            ...horario,
-            atualizadoEm: serverTimestamp()
-          }
-        );
-      }
+      
+await runTransaction(db, async transaction => {
+  for (const horario of horarios) {
+    const referencia = doc(
+      db,
+      "estabelecimentosProfissionais",
+      estabelecimento.id,
+      "equipe",
+      usuario.uid,
+      "disponibilidade",
+      String(horario.diaSemana)
+    );
 
+    transaction.set(referencia, {
+      ...horario,
+      atualizadoEm: serverTimestamp()
+    });
+  }
+});
+       
       avisar("Disponibilidade salva com sucesso!");
 
     } catch (erro) {
