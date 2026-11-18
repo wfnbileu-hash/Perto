@@ -1065,6 +1065,139 @@ carregarEquipe();
     "Domingo"
   ];
 
+     // ==========================================
+  // CONSULTA DA AGENDA DIÁRIA
+  // ==========================================
+
+  async function abrirAgenda(estabelecimento, profissional, modo = "profissional") {
+    const usuario = usuarioAtual();
+
+    if (!usuario || !estabelecimento?.id || !profissional?.uid) {
+      avisar("Não foi possível identificar a agenda.");
+      return;
+    }
+
+    estabelecimentoAgendaAtual = estabelecimento;
+    profissionalAgendaAtual = profissional;
+    modoAgendaAtual = modo;
+
+    $("ppAgendaTitle").textContent =
+      modo === "proprietario"
+        ? "Agenda — " + (profissional.nome || "Profissional")
+        : "Minha agenda";
+
+    $("ppAgendaProfessionalLabel").style.display = "none";
+
+    $("ppNewEstablishment").style.display = "none";
+    $("ppMyTeamEstablishments").style.display = "none";
+    $("ppInvitesPanel").style.display = "none";
+    $("ppEstablishmentForm").style.display = "none";
+    $("ppMyEstablishments").style.display = "none";
+    $("ppServicesPanel").style.display = "none";
+    $("ppTeamPanel").style.display = "none";
+    $("ppAvailabilityPanel").style.display = "none";
+    $("ppAgendaPanel").style.display = "block";
+
+    const hoje = new Date();
+    const limite = new Date(hoje);
+    limite.setDate(limite.getDate() + 13);
+
+    const formatarData = data =>
+      [
+        data.getFullYear(),
+        String(data.getMonth() + 1).padStart(2, "0"),
+        String(data.getDate()).padStart(2, "0")
+      ].join("-");
+
+    const campoData = $("ppAgendaDate");
+
+    campoData.min = formatarData(hoje);
+    campoData.max = formatarData(limite);
+    campoData.value = campoData.min;
+
+    async function carregarDia() {
+      const conteudo = $("ppAgendaContent");
+      conteudo.textContent = "Consultando horários...";
+
+      try {
+        const partes = campoData.value.split("-").map(Number);
+        const data = new Date(partes[0], partes[1] - 1, partes[2]);
+
+        const diaSemana = data.getDay() === 0 ? 7 : data.getDay();
+
+        const referencia = doc(
+          db,
+          "estabelecimentosProfissionais",
+          estabelecimentoAgendaAtual.id,
+          "equipe",
+          profissionalAgendaAtual.uid,
+          "disponibilidade",
+          String(diaSemana)
+        );
+
+        const resultado = await getDoc(referencia);
+
+        const dataFormatada = data.toLocaleDateString("pt-BR");
+
+        if (!resultado.exists() || resultado.data().ativo !== true) {
+          conteudo.innerHTML = `
+            <strong>${dataFormatada}</strong>
+            <p style="margin-top:12px;color:#64748b">
+              Não há expediente configurado para este dia.
+            </p>
+          `;
+          return;
+        }
+
+        const horario = resultado.data();
+
+        conteudo.innerHTML = `
+          <strong>${dataFormatada}</strong>
+
+          <p style="margin-top:12px">
+            <strong>Atendimento:</strong>
+            ${escapar(horario.inicio)} às ${escapar(horario.fim)}
+          </p>
+
+          ${
+            horario.pausaInicio && horario.pausaFim
+              ? `<p style="margin-top:8px">
+                  <strong>Pausa:</strong>
+                  ${escapar(horario.pausaInicio)} às ${escapar(horario.pausaFim)}
+                </p>`
+              : ""
+          }
+
+          <p style="margin-top:14px;font-size:12px;color:#64748b">
+            Esta consulta mostra os horários de trabalho configurados.
+            A exibição de agendamentos será implementada em outra etapa.
+          </p>
+        `;
+
+      } catch (erro) {
+        console.error("[Perto Profissionais] Erro ao consultar agenda:", erro);
+
+        conteudo.textContent =
+          "Não foi possível consultar os horários: " +
+          (erro.code || erro.message || "erro desconhecido");
+      }
+    }
+
+    campoData.onchange = () => {
+      if (
+        campoData.value >= campoData.min &&
+        campoData.value <= campoData.max
+      ) {
+        carregarDia();
+      } else {
+        $("ppAgendaContent").textContent =
+          "Escolha uma data dentro dos próximos 14 dias.";
+      }
+    };
+
+    await carregarDia();
+  }
+
   async function abrirDisponibilidade(estabelecimento) {
     const usuario = usuarioAtual();
 
