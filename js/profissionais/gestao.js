@@ -24,6 +24,7 @@ export function initGestaoProfissionais(bridge) {
 
     const {
     doc,
+    setDoc,
     addDoc,
     collection,
     collectionGroup,
@@ -333,7 +334,7 @@ export function initGestaoProfissionais(bridge) {
   let editandoId = null;
    let estabelecimentoServicosAtual = null;
 let estabelecimentoEquipeAtual = null;
-   
+ let estabelecimentoDisponibilidadeAtual = null;  
   let servicoEditandoId = null;
 
   async function carregarServicos() {
@@ -992,6 +993,257 @@ carregarEquipe();
         (erro.code || erro.message || "erro desconhecido");
     }
      }
+     // ==========================================
+  // DISPONIBILIDADE DO PROFISSIONAL
+  // ==========================================
+
+  const diasDaSemana = [
+    "Segunda-feira",
+    "Terça-feira",
+    "Quarta-feira",
+    "Quinta-feira",
+    "Sexta-feira",
+    "Sábado",
+    "Domingo"
+  ];
+
+  async function abrirDisponibilidade(estabelecimento) {
+    const usuario = usuarioAtual();
+
+    if (!usuario || !estabelecimento?.id) {
+      avisar("Não foi possível identificar seu estabelecimento.");
+      return;
+    }
+
+    estabelecimentoDisponibilidadeAtual = estabelecimento;
+
+    $("ppAvailabilityTitle").textContent =
+      "Minha disponibilidade — " +
+      (estabelecimento.nome || "Estabelecimento");
+
+    $("ppNewEstablishment").style.display = "none";
+    $("ppEstablishmentForm").style.display = "none";
+    $("ppMyEstablishments").style.display = "none";
+    $("ppServicesPanel").style.display = "none";
+    $("ppTeamPanel").style.display = "none";
+    $("ppAvailabilityPanel").style.display = "block";
+
+    const lista = $("ppAvailabilityDays");
+
+    lista.textContent = "Carregando horários...";
+
+    try {
+      const referencia = collection(
+        db,
+        "estabelecimentosProfissionais",
+        estabelecimento.id,
+        "equipe",
+        usuario.uid,
+        "disponibilidade"
+      );
+
+      const resultado = await getDocs(referencia);
+
+      const horariosSalvos = {};
+
+      resultado.forEach(documento => {
+        horariosSalvos[documento.id] = documento.data();
+      });
+
+      lista.replaceChildren();
+
+      diasDaSemana.forEach((nome, indice) => {
+        const numero = indice + 1;
+        const dados = horariosSalvos[String(numero)] || {};
+
+        const card = document.createElement("div");
+
+        card.style.cssText =
+          "padding:13px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc";
+
+        card.innerHTML = `
+          <label style="display:flex;align-items:center;gap:9px;font-weight:800">
+            <input type="checkbox"
+              data-ativo
+              ${dados.ativo === true ? "checked" : ""}
+              style="width:18px;height:18px">
+            ${nome}
+          </label>
+
+          <div data-horarios
+            style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px">
+
+            <label style="font-size:12px">
+              Início
+              <input type="time" data-inicio
+                value="${escapar(dados.inicio || "09:00")}"
+                style="width:100%;padding:9px;margin-top:5px;border:1px solid #cbd5e1;border-radius:8px">
+            </label>
+
+            <label style="font-size:12px">
+              Término
+              <input type="time" data-fim
+                value="${escapar(dados.fim || "18:00")}"
+                style="width:100%;padding:9px;margin-top:5px;border:1px solid #cbd5e1;border-radius:8px">
+            </label>
+
+            <label style="font-size:12px">
+              Início da pausa
+              <input type="time" data-pausa-inicio
+                value="${escapar(dados.pausaInicio || "")}"
+                style="width:100%;padding:9px;margin-top:5px;border:1px solid #cbd5e1;border-radius:8px">
+            </label>
+
+            <label style="font-size:12px">
+              Fim da pausa
+              <input type="time" data-pausa-fim
+                value="${escapar(dados.pausaFim || "")}"
+                style="width:100%;padding:9px;margin-top:5px;border:1px solid #cbd5e1;border-radius:8px">
+            </label>
+
+          </div>
+        `;
+
+        const ativo = card.querySelector("[data-ativo]");
+        const campos = card.querySelectorAll("[data-horarios] input");
+
+        function atualizarCampos() {
+          campos.forEach(campo => {
+            campo.disabled = !ativo.checked;
+          });
+        }
+
+        ativo.addEventListener("change", atualizarCampos);
+        atualizarCampos();
+
+        card.dataset.dia = String(numero);
+        lista.appendChild(card);
+      });
+
+      $("ppAvailabilityPanel").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+    } catch (erro) {
+      console.error(
+        "[Perto Profissionais] Erro ao carregar disponibilidade:",
+        erro
+      );
+
+      lista.textContent =
+        "Erro ao carregar horários: " +
+        (erro.code || erro.message || "erro desconhecido");
+    }
+  }
+
+  $("ppSaveAvailability").addEventListener("click", async () => {
+    const usuario = usuarioAtual();
+    const estabelecimento = estabelecimentoDisponibilidadeAtual;
+
+    if (!usuario || !estabelecimento) {
+      return avisar("Selecione um estabelecimento.");
+    }
+
+    const botaoSalvar = $("ppSaveAvailability");
+    const cards = [
+      ...$("ppAvailabilityDays").querySelectorAll("[data-dia]")
+    ];
+
+    const horarios = [];
+
+    for (const card of cards) {
+      const ativo = card.querySelector("[data-ativo]").checked;
+
+      const inicio = card.querySelector("[data-inicio]").value;
+      const fim = card.querySelector("[data-fim]").value;
+      const pausaInicio = card.querySelector("[data-pausa-inicio]").value;
+      const pausaFim = card.querySelector("[data-pausa-fim]").value;
+
+      if (ativo) {
+        if (!inicio || !fim || inicio >= fim) {
+          return avisar(
+            "Confira os horários de início e término do expediente."
+          );
+        }
+
+        if (
+          (pausaInicio && !pausaFim) ||
+          (!pausaInicio && pausaFim)
+        ) {
+          return avisar("Preencha os dois horários da pausa.");
+        }
+
+        if (
+          pausaInicio &&
+          (
+            pausaInicio >= pausaFim ||
+            pausaInicio < inicio ||
+            pausaFim > fim
+          )
+        ) {
+          return avisar("Confira os horários da pausa.");
+        }
+      }
+
+      horarios.push({
+        diaSemana: Number(card.dataset.dia),
+        ativo,
+        inicio: ativo ? inicio : "",
+        fim: ativo ? fim : "",
+        pausaInicio: ativo ? pausaInicio : "",
+        pausaFim: ativo ? pausaFim : ""
+      });
+    }
+
+    botaoSalvar.disabled = true;
+    botaoSalvar.textContent = "Salvando...";
+
+    try {
+      for (const horario of horarios) {
+        await setDoc(
+          doc(
+            db,
+            "estabelecimentosProfissionais",
+            estabelecimento.id,
+            "equipe",
+            usuario.uid,
+            "disponibilidade",
+            String(horario.diaSemana)
+          ),
+          {
+            ...horario,
+            atualizadoEm: serverTimestamp()
+          }
+        );
+      }
+
+      avisar("Disponibilidade salva com sucesso!");
+
+    } catch (erro) {
+      console.error(
+        "[Perto Profissionais] Erro ao salvar disponibilidade:",
+        erro
+      );
+
+      avisar(
+        "Não foi possível salvar: " +
+        (erro.code || erro.message || "erro desconhecido")
+      );
+
+    } finally {
+      botaoSalvar.disabled = false;
+      botaoSalvar.textContent = "Salvar disponibilidade";
+    }
+  });
+
+  $("ppAvailabilityBack").addEventListener("click", () => {
+    $("ppAvailabilityPanel").style.display = "none";
+    $("ppNewEstablishment").style.display = "";
+    $("ppMyEstablishments").style.display = "block";
+
+    estabelecimentoDisponibilidadeAtual = null;
+  });
    
   botao.addEventListener("click", async () => {
     const usuario = usuarioAtual();
