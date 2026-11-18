@@ -668,10 +668,12 @@ let estabelecimentoEquipeAtual = null;
           $("ppTeamPanel").style.display = "block";
 
           $("ppTeamPanel").scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
-        });
+  behavior: "smooth",
+  block: "start"
+});
+
+carregarEquipe();
+});
         card.querySelector("[data-edit]").addEventListener("click", () => {
           preencherFormulario(item);
         });
