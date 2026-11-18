@@ -1055,7 +1055,30 @@ carregarEquipe();
           });
         });
 
-        card.appendChild(botaoDisponibilidade);
+                card.appendChild(botaoDisponibilidade);
+
+        const botaoMinhaAgenda = document.createElement("button");
+        botaoMinhaAgenda.type = "button";
+        botaoMinhaAgenda.textContent = "Minha agenda";
+
+        botaoMinhaAgenda.style.cssText =
+          "width:100%;padding:12px;margin-top:8px;border:0;border-radius:9px;background:#0f172a;color:white;font-weight:800";
+
+        botaoMinhaAgenda.addEventListener("click", () => {
+          abrirAgenda(
+            {
+              id: convite.estabelecimentoId,
+              nome: convite.estabelecimentoNome || "Estabelecimento"
+            },
+            {
+              uid: usuario.uid,
+              nome: usuario.displayName || usuario.email || "Profissional"
+            },
+            "profissional"
+          );
+        });
+
+        card.appendChild(botaoMinhaAgenda);
         lista.appendChild(card);
       });
 
