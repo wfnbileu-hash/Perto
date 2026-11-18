@@ -264,7 +264,7 @@ export function initPertoProfissionais(bridge) {
     </footer>
   `;
 
-  servicesMenu.appendChild(card);
+  servicesMenu.prepend(card);
   servicesPage.appendChild(painel);
 
   const listaEstabelecimentos = painel.querySelector("#ppEstablishments");
