@@ -896,6 +896,74 @@ carregarEquipe();
         (erro.code || erro.message || "erro desconhecido");
     }
   }
+     async function carregarMeusEstabelecimentosEquipe() {
+    const usuario = usuarioAtual();
+    const lista = $("ppMyTeamEstablishmentsList");
+
+    if (!usuario || !usuario.email) {
+      lista.textContent = "Entre na sua conta para continuar.";
+      return;
+    }
+
+    lista.textContent = "Carregando estabelecimentos...";
+
+    try {
+      const consulta = query(
+        collectionGroup(db, "convites"),
+        where("email", "==", usuario.email.toLowerCase())
+      );
+
+      const resultado = await getDocs(consulta);
+
+      const aceitos = resultado.docs.filter(documento => {
+        const convite = documento.data();
+
+        return convite.status === "aceito"
+          && convite.profissionalId === usuario.uid;
+      });
+
+      lista.replaceChildren();
+
+      if (aceitos.length === 0) {
+        lista.textContent =
+          "Você ainda não faz parte de uma equipe.";
+        return;
+      }
+
+      aceitos.forEach(documento => {
+        const convite = documento.data();
+
+        const card = document.createElement("div");
+
+        card.style.cssText =
+          "padding:13px;margin-bottom:10px;border:1px solid #bfdbfe;border-radius:12px;background:#fff";
+
+        card.innerHTML = `
+          <strong>${escapar(
+            convite.estabelecimentoNome || "Estabelecimento"
+          )}</strong>
+          <p style="font-size:13px;color:#64748b;margin-top:6px">
+            💈 Profissional da equipe
+          </p>
+          <p style="font-size:12px;color:#15803d;margin-top:6px">
+            ✓ Vínculo confirmado
+          </p>
+        `;
+
+        lista.appendChild(card);
+      });
+
+    } catch (erro) {
+      console.error(
+        "[Perto Profissionais] Erro ao carregar estabelecimentos da equipe:",
+        erro
+      );
+
+      lista.textContent =
+        "Erro ao carregar: " +
+        (erro.code || erro.message || "erro desconhecido");
+    }
+     }
    
   botao.addEventListener("click", async () => {
     const usuario = usuarioAtual();
@@ -907,6 +975,7 @@ carregarEquipe();
 
         painel.style.display = "block";
     await carregarConvitesRecebidos();
+    await carregarMeusEstabelecimentosEquipe();
     await carregarMeusEstabelecimentos();
 
     painel.scrollIntoView({ behavior: "smooth", block: "start" });
