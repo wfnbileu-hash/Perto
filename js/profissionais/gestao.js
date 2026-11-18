@@ -1492,6 +1492,7 @@ await runTransaction(db, async transaction => {
     estabelecimentoAgendaAtual = null;
     profissionalAgendaAtual = null;
   });
+     botao.addEventListener("click", async () => {
     const usuario = usuarioAtual();
 
     if (!usuario) {
@@ -1511,7 +1512,6 @@ await runTransaction(db, async transaction => {
     painel.style.display = "none";
     limparFormulario();
   });
-  botao.addEventListener("click", async () => {
    
     $("ppTeamBack").addEventListener("click", () => {
     $("ppTeamPanel").style.display = "none";
