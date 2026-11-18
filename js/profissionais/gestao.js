@@ -31,6 +31,7 @@ export function initGestaoProfissionais(bridge) {
     query,
     where,
     getDocs,
+    getDoc,
     updateDoc,
     deleteDoc,
     serverTimestamp,
