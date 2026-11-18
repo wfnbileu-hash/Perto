@@ -978,7 +978,22 @@ carregarEquipe();
             ✓ Vínculo confirmado
           </p>
         `;
+             const botaoDisponibilidade = document.createElement("button");
 
+        botaoDisponibilidade.type = "button";
+        botaoDisponibilidade.textContent = "Configurar minha disponibilidade";
+
+        botaoDisponibilidade.style.cssText =
+          "width:100%;padding:12px;margin-top:12px;border:0;border-radius:9px;background:#f59e0b;font-weight:800";
+
+        botaoDisponibilidade.addEventListener("click", () => {
+          abrirDisponibilidade({
+            id: convite.estabelecimentoId,
+            nome: convite.estabelecimentoNome || "Estabelecimento"
+          });
+        });
+
+        card.appendChild(botaoDisponibilidade);
         lista.appendChild(card);
       });
 
@@ -1022,6 +1037,8 @@ carregarEquipe();
       (estabelecimento.nome || "Estabelecimento");
 
     $("ppNewEstablishment").style.display = "none";
+    $("ppMyTeamEstablishments").style.display = "none";
+    $("ppInvitesPanel").style.display = "none";
     $("ppEstablishmentForm").style.display = "none";
     $("ppMyEstablishments").style.display = "none";
     $("ppServicesPanel").style.display = "none";
@@ -1237,10 +1254,9 @@ carregarEquipe();
     }
   });
 
-  $("ppAvailabilityBack").addEventListener("click", () => {
+    $("ppAvailabilityBack").addEventListener("click", () => {
     $("ppAvailabilityPanel").style.display = "none";
-    $("ppNewEstablishment").style.display = "";
-    $("ppMyEstablishments").style.display = "block";
+    $("ppMyTeamEstablishments").style.display = "block";
 
     estabelecimentoDisponibilidadeAtual = null;
   });
