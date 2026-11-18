@@ -1057,6 +1057,127 @@ carregarEquipe();
 
                 card.appendChild(botaoDisponibilidade);
 
+         
+        // Configuração individual de confirmação de agendamentos.
+        const areaConfirmacao = document.createElement("div");
+
+        areaConfirmacao.style.cssText =
+          "margin-top:12px;padding:12px;border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc";
+
+        areaConfirmacao.innerHTML = `
+          <strong style="font-size:14px">
+            Confirmação de agendamentos
+          </strong>
+
+          <p style="font-size:12px;color:#64748b;margin:6px 0 10px">
+            Escolha como deseja receber os novos pedidos.
+          </p>
+
+          <select data-modo-confirmacao
+            style="width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px;background:white">
+            <option value="automatico">Automática</option>
+            <option value="manual">Manual (preciso aceitar)</option>
+          </select>
+
+          <button type="button" data-salvar-confirmacao
+            style="width:100%;padding:11px;margin-top:9px;border:0;border-radius:8px;background:#0f172a;color:white;font-weight:800">
+            Salvar configuração
+          </button>
+
+          <small data-status-confirmacao
+            style="display:block;margin-top:8px;color:#64748b">
+            Carregando configuração...
+          </small>
+        `;
+
+        const campoModo = areaConfirmacao.querySelector(
+          "[data-modo-confirmacao]"
+        );
+
+        const botaoSalvarConfirmacao = areaConfirmacao.querySelector(
+          "[data-salvar-confirmacao]"
+        );
+
+        const statusConfirmacao = areaConfirmacao.querySelector(
+          "[data-status-confirmacao]"
+        );
+
+        const referenciaConfirmacao = doc(
+          db,
+          "estabelecimentosProfissionais",
+          convite.estabelecimentoId,
+          "equipe",
+          usuario.uid,
+          "configuracoes",
+          "agendamento"
+        );
+
+        getDoc(referenciaConfirmacao)
+          .then(documento => {
+            const dados = documento.exists()
+              ? documento.data()
+              : {};
+
+            campoModo.value =
+              dados.modoConfirmacao === "manual"
+                ? "manual"
+                : "automatico";
+
+            statusConfirmacao.textContent =
+              "Modo atual: " +
+              (campoModo.value === "manual"
+                ? "Manual"
+                : "Automático (padrão)");
+          })
+          .catch(erro => {
+            console.error(
+              "[Perto Profissionais] Erro ao carregar confirmação:",
+              erro
+            );
+
+            statusConfirmacao.textContent =
+              "Não foi possível carregar. Verifique as permissões.";
+          });
+
+        botaoSalvarConfirmacao.addEventListener("click", async () => {
+          botaoSalvarConfirmacao.disabled = true;
+          botaoSalvarConfirmacao.textContent = "Salvando...";
+          statusConfirmacao.textContent = "Salvando configuração...";
+
+          try {
+            await setDoc(referenciaConfirmacao, {
+              modoConfirmacao: campoModo.value,
+              atualizadoEm: serverTimestamp()
+            });
+
+            statusConfirmacao.textContent =
+              "Configuração salva com sucesso.";
+
+            avisar("Preferência de confirmação salva!");
+
+          } catch (erro) {
+            console.error(
+              "[Perto Profissionais] Erro ao salvar confirmação:",
+              erro
+            );
+
+            statusConfirmacao.textContent =
+              "Não foi possível salvar. Verifique as permissões.";
+
+            avisar(
+              "Erro ao salvar configuração: " +
+              (erro.code || erro.message || "erro desconhecido")
+            );
+
+          } finally {
+            botaoSalvarConfirmacao.disabled = false;
+            botaoSalvarConfirmacao.textContent =
+              "Salvar configuração";
+          }
+        });
+
+        card.appendChild(areaConfirmacao);
+         
         const botaoMinhaAgenda = document.createElement("button");
         botaoMinhaAgenda.type = "button";
         botaoMinhaAgenda.textContent = "Minha agenda";
