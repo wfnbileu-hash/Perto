@@ -197,6 +197,23 @@ export function initGestaoProfissionais(bridge) {
       </div>
 
     </section>
+
+    <section id="ppMyTeamEstablishments"
+  style="margin-top:20px;padding:14px;border:1px solid #bfdbfe;border-radius:14px;background:#eff6ff">
+
+  <h3 style="font-size:17px;margin-bottom:8px">
+    💈 Meus estabelecimentos
+  </h3>
+
+  <p style="font-size:13px;color:#64748b;margin-bottom:12px">
+    Estabelecimentos em que você faz parte da equipe.
+  </p>
+
+  <div id="ppMyTeamEstablishmentsList">
+    Carregando estabelecimentos...
+  </div>
+
+</section>
     
     <div id="ppMyEstablishments" style="margin-top:20px">
       Carregando seus estabelecimentos...
