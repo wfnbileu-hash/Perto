@@ -297,6 +297,34 @@ export function initGestaoProfissionais(bridge) {
       </div>
 
     </section>
+        <section id="ppAvailabilityPanel"
+      style="display:none;margin-top:20px">
+
+      <button type="button" id="ppAvailabilityBack"
+        style="padding:10px 14px;border-radius:10px;background:#f1f5f9;margin-bottom:15px">
+        ← Voltar aos estabelecimentos
+      </button>
+
+      <h3 id="ppAvailabilityTitle"
+        style="font-size:20px;margin-bottom:6px">
+        Minha disponibilidade
+      </h3>
+
+      <p style="font-size:13px;color:#64748b;margin-bottom:16px">
+        Configure seus dias e horários de atendimento.
+        Essa configuração será usada para disponibilizar sua agenda nos próximos 14 dias.
+      </p>
+
+      <div id="ppAvailabilityDays" style="display:grid;gap:12px">
+        Carregando dias da semana...
+      </div>
+
+      <button type="button" id="ppSaveAvailability"
+        style="width:100%;padding:14px;margin-top:18px;border-radius:10px;background:#f59e0b;font-weight:800">
+        Salvar disponibilidade
+      </button>
+
+    </section>
     `;
            
   perfil.appendChild(painel);
