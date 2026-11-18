@@ -390,6 +390,66 @@ let estabelecimentoEquipeAtual = null;
     }
   }
 
+  async function carregarEquipe() {
+    const lista = $("ppTeamList");
+
+    if (!estabelecimentoEquipeAtual) {
+      lista.textContent = "Selecione um estabelecimento.";
+      return;
+    }
+
+    lista.textContent = "Carregando equipe...";
+
+    try {
+      const referencia = collection(
+        db,
+        "estabelecimentosProfissionais",
+        estabelecimentoEquipeAtual.id,
+        "equipe"
+      );
+
+      const resultado = await getDocs(referencia);
+
+      lista.replaceChildren();
+
+      if (resultado.empty) {
+        lista.textContent = "Nenhum profissional na equipe ainda.";
+        return;
+      }
+
+      resultado.forEach(documento => {
+        const profissional = documento.data();
+
+        const card = document.createElement("div");
+
+        card.style.cssText =
+          "padding:13px;margin-bottom:10px;border:1px solid #e2e8f0;border-radius:12px;background:#fff";
+
+        card.innerHTML = `
+          <strong>${escapar(profissional.nome || "Profissional")}</strong>
+          <p style="font-size:13px;color:#64748b;margin-top:6px">
+            ${escapar(profissional.email || "")}
+          </p>
+          <p style="font-size:13px;margin-top:6px">
+            ${profissional.ativo ? "Ativo" : "Inativo"}
+          </p>
+        `;
+
+        lista.appendChild(card);
+      });
+
+    } catch (erro) {
+      console.error(
+        "[Perto Profissionais] Erro ao carregar equipe:",
+        erro
+      );
+
+      lista.textContent =
+        "Não foi possível carregar a equipe: " +
+        (erro.code || erro.message || "erro desconhecido");
+    }
+  }
+   
   $("ppServiceForm").addEventListener("submit", async evento => {
     evento.preventDefault();
 
