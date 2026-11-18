@@ -9324,21 +9324,6 @@ if (servicesPage && ! $("servicesMenu")) {
   const painelMeusPedidos = document.createElement("div");
   painelMeusPedidos.id = "myServiceRequestsPanel";
   painelMeusPedidos.style.display = "none";
-    const painelPertoProfissionais = document.createElement("div");
-  painelPertoProfissionais.id = "pertoProfissionaisPanel";
-  painelPertoProfissionais.style.display = "none";
-
-  const tituloPerto = document.createElement("h2");
-  tituloPerto.textContent = "Perto Profissionais";
-
-  const descricaoPerto = document.createElement("p");
-  descricaoPerto.textContent =
-    "Gerencie seu estabelecimento, equipe, serviços e agendamentos.";
-
-  painelPertoProfissionais.append(
-    tituloPerto,
-    descricaoPerto
-  );
 
   const voltar = (painel) => {
     const btn = document.createElement("button");
