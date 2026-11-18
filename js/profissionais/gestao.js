@@ -1482,6 +1482,18 @@ await runTransaction(db, async transaction => {
   });
    
   botao.addEventListener("click", async () => {
+       $("ppAgendaBack").addEventListener("click", () => {
+    $("ppAgendaPanel").style.display = "none";
+
+    if (modoAgendaAtual === "proprietario") {
+      $("ppTeamPanel").style.display = "block";
+    } else {
+      $("ppMyTeamEstablishments").style.display = "block";
+    }
+
+    estabelecimentoAgendaAtual = null;
+    profissionalAgendaAtual = null;
+  });
     const usuario = usuarioAtual();
 
     if (!usuario) {
