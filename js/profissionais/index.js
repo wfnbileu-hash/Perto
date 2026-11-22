@@ -1,10 +1,11 @@
-
 /* =========================================================
    PERTO PROFISSIONAIS
    Marketplace público de beleza e cuidados pessoais
 ========================================================= */
 
 import { initGestaoProfissionais } from "./gestao.js";
+import { montarAgendamentoCliente } from "./agendamentos.js";
+
 export function initPertoProfissionais(bridge) {
   if (!bridge || !bridge.db || !bridge.auth) {
     console.error("[Perto Profissionais] Ponte Firebase indisponível.");
@@ -31,7 +32,6 @@ export function initPertoProfissionais(bridge) {
     return false;
   }
 
-  // Carrega o CSS independente.
   if (!document.querySelector("[data-perto-profissionais-css]")) {
     const css = document.createElement("link");
     css.rel = "stylesheet";
@@ -40,7 +40,6 @@ export function initPertoProfissionais(bridge) {
     document.head.appendChild(css);
   }
 
-  // Estilos dos estabelecimentos reais.
   if (!document.getElementById("ppDataStyles")) {
     const style = document.createElement("style");
     style.id = "ppDataStyles";
@@ -140,9 +139,7 @@ export function initPertoProfissionais(bridge) {
 
     document.head.appendChild(style);
   }
-
-  // Cartão de entrada.
-  const card = document.createElement("button");
+     const card = document.createElement("button");
   card.type = "button";
   card.id = "pertoProfissionaisCard";
   card.className = "serviceCard pp-entry-card";
@@ -154,7 +151,6 @@ export function initPertoProfissionais(bridge) {
     <span class="pp-entry-link">Explorar serviços →</span>
   `;
 
-  // Vitrine pública.
   const painel = document.createElement("section");
   painel.id = "pertoProfissionaisRoot";
   painel.className = "pp-root";
@@ -276,7 +272,6 @@ export function initPertoProfissionais(bridge) {
   let categoriaAtual = "todos";
   let termoBusca = "";
 
-  // Protege os textos exibidos no HTML.
   const escapar = valor => {
     return String(valor ?? "").replace(/[&<>"']/g, caractere => ({
       "&": "&amp;",
@@ -287,7 +282,6 @@ export function initPertoProfissionais(bridge) {
     })[caractere]);
   };
 
-  // Normaliza textos para pesquisa.
   const normalizar = valor => {
     return String(valor ?? "")
       .normalize("NFD")
@@ -295,16 +289,11 @@ export function initPertoProfissionais(bridge) {
       .toLowerCase()
       .trim();
   };
-
-   
-  // Área de detalhes do estabelecimento.
-  const detalhesEstabelecimento = document.createElement("section");
+     const detalhesEstabelecimento = document.createElement("section");
   detalhesEstabelecimento.className = "pp-section";
   detalhesEstabelecimento.hidden = true;
   painel.appendChild(detalhesEstabelecimento);
 
-   
-  // Carrega os serviços na página pública do estabelecimento.
   async function carregarServicosPublicos(estabelecimentoId) {
     const lista = detalhesEstabelecimento.querySelector(
       "#ppPublicServicesList"
@@ -312,9 +301,7 @@ export function initPertoProfissionais(bridge) {
 
     if (!lista) return;
 
-    lista.innerHTML = `
-      <p>⏳ Carregando serviços e preços...</p>
-    `;
+    lista.innerHTML = `<p>⏳ Carregando serviços e preços...</p>`;
 
     try {
       const referencia = collection(
@@ -340,9 +327,7 @@ export function initPertoProfissionais(bridge) {
         );
 
       if (!servicos.length) {
-        lista.innerHTML = `
-          <p>Nenhum serviço cadastrado no momento.</p>
-        `;
+        lista.innerHTML = `<p>Nenhum serviço cadastrado no momento.</p>`;
         return;
       }
 
@@ -371,17 +356,11 @@ export function initPertoProfissionais(bridge) {
       `).join("");
 
     } catch (erro) {
-      console.error(
-        "[Perto Profissionais] Erro ao carregar serviços:",
-        erro
-      );
-
-      lista.innerHTML = `
-        <p>Não foi possível carregar os serviços.</p>
-      `;
+      console.error("[Perto Profissionais] Erro ao carregar serviços:", erro);
+      lista.innerHTML = `<p>Não foi possível carregar os serviços.</p>`;
     }
   }
-   
+
   function abrirDetalhesEstabelecimento(estabelecimento) {
     painel.querySelectorAll(
       ".pp-hero, .pp-search-box, .pp-section, .pp-footer"
@@ -439,19 +418,21 @@ export function initPertoProfissionais(bridge) {
       </div>
 
       <div class="pp-empty-state" style="margin-top:15px;text-align:left">
-  <h3>Serviços e preços</h3>
-  <div id="ppPublicServicesList">
-    <p>Carregando serviços...</p>
-  </div>
-</div>
-
-      <div class="pp-empty-state" style="margin-top:15px">
-        <h3>Agendamento</h3>
-        <p>Em breve você poderá agendar seu atendimento por aqui.</p>
+        <h3>Serviços e preços</h3>
+        <div id="ppPublicServicesList">
+          <p>Carregando serviços...</p>
+        </div>
       </div>
+
+      <div id="ppBookingContainer" style="margin-top:15px"></div>
     `;
-         // Busca os serviços cadastrados pelo estabelecimento.
+
     carregarServicosPublicos(estabelecimento.id);
+
+    const containerAgendamento = detalhesEstabelecimento.querySelector("#ppBookingContainer");
+    if (containerAgendamento && typeof montarAgendamentoCliente === "function") {
+      montarAgendamentoCliente(containerAgendamento, estabelecimento, bridge);
+    }
 
     detalhesEstabelecimento.querySelector(
       "#ppBackToEstablishments"
@@ -472,9 +453,7 @@ export function initPertoProfissionais(bridge) {
       block: "start"
     });
   }
-
-  // Abre os detalhes ao tocar em um estabelecimento.
-  listaEstabelecimentos.addEventListener("click", evento => {
+     listaEstabelecimentos.addEventListener("click", evento => {
     const cartao = evento.target.closest("[data-establishment-id]");
     if (!cartao) return;
 
@@ -486,8 +465,7 @@ export function initPertoProfissionais(bridge) {
       abrirDetalhesEstabelecimento(estabelecimento);
     }
   });
-   
-  // Verifica se a categoria corresponde ao filtro.
+
   function correspondeCategoria(estabelecimento) {
     if (categoriaAtual === "todos") return true;
 
@@ -526,7 +504,6 @@ export function initPertoProfissionais(bridge) {
     return termos.some(termo => categoria.includes(termo));
   }
 
-  // Verifica se corresponde à busca.
   function correspondeBusca(estabelecimento) {
     if (!termoBusca) return true;
 
@@ -542,7 +519,6 @@ export function initPertoProfissionais(bridge) {
     return conteudo.includes(normalizar(termoBusca));
   }
 
-  // Exibe os estabelecimentos encontrados.
   function renderizarEstabelecimentos() {
     const filtrados = estabelecimentos.filter(estabelecimento =>
       correspondeCategoria(estabelecimento) &&
@@ -586,10 +562,10 @@ export function initPertoProfissionais(bridge) {
 
       return `
         <button
-  type="button"
-  class="pp-establishment-card"
-  data-establishment-id="${escapar(estabelecimento.id)}"
->
+          type="button"
+          class="pp-establishment-card"
+          data-establishment-id="${escapar(estabelecimento.id)}"
+        >
           <div class="pp-establishment-logo">
             ${logo}
           </div>
@@ -617,7 +593,6 @@ export function initPertoProfissionais(bridge) {
     }).join("");
   }
 
-  // Busca estabelecimentos aprovados no Firebase.
   async function carregarEstabelecimentos(forcarAtualizacao = false) {
     if (estabelecimentosCarregados && !forcarAtualizacao) {
       renderizarEstabelecimentos();
@@ -658,7 +633,6 @@ export function initPertoProfissionais(bridge) {
       );
 
       estabelecimentosCarregados = true;
-
       renderizarEstabelecimentos();
 
       console.info(
@@ -699,7 +673,6 @@ export function initPertoProfissionais(bridge) {
     }
   }
 
-  // Abre a vitrine.
   card.addEventListener("click", () => {
     servicesMenu.style.display = "none";
     painel.hidden = false;
@@ -712,7 +685,6 @@ export function initPertoProfissionais(bridge) {
     });
   });
 
-  // Volta ao menu anterior.
   painel.querySelector("#ppBackButton").addEventListener("click", () => {
     painel.hidden = true;
     servicesMenu.style.display = "";
@@ -723,7 +695,6 @@ export function initPertoProfissionais(bridge) {
     });
   });
 
-  // Seleção e funcionamento das categorias.
   categorias.forEach(botao => {
     botao.addEventListener("click", () => {
       categorias.forEach(item => item.classList.remove("active"));
@@ -735,7 +706,6 @@ export function initPertoProfissionais(bridge) {
     });
   });
 
-  // Busca por nome, categoria, cidade, bairro e descrição.
   busca.addEventListener("input", () => {
     termoBusca = busca.value.trim();
     renderizarEstabelecimentos();
@@ -743,9 +713,7 @@ export function initPertoProfissionais(bridge) {
 
   console.info("[Perto Profissionais] Marketplace carregado.");
 
-   // Inicializa a gestão no perfil do usuário.
   initGestaoProfissionais(bridge);
-   
 
   return true;
 }
