@@ -120,7 +120,7 @@ export async function montarAgendamentoCliente(container, estabelecimento, bridg
   let servicos = [];
   let equipe = [];
   let horarios = [];
-  let carregandoHorarios = false;
+  let carregandoHorarios = 0;
 
   const feedback = (mensagem, erro = false) => {
     $("ppBookFeedback").textContent = mensagem;
@@ -160,6 +160,7 @@ export async function montarAgendamentoCliente(container, estabelecimento, bridg
   }
 
   async function carregarHorarios() {
+    const requisicaoAtual = ++requisicaoHorarios;
     $("ppBookSubmit").disabled = true;
     horarios = [];
     const servicoId = $("ppBookService").value;
@@ -176,8 +177,6 @@ export async function montarAgendamentoCliente(container, estabelecimento, bridg
       return;
     }
 
-    if (carregandoHorarios) return;
-    carregandoHorarios = true;
     $("ppBookTimes").textContent = "Consultando horários disponíveis...";
 
     try {
@@ -188,7 +187,8 @@ export async function montarAgendamentoCliente(container, estabelecimento, bridg
         profissionalId,
         data
       });
-
+      
+     if (requisicaoAtual !== requisicaoHorarios) return;
       horarios = Array.isArray(resposta.data?.horarios) ? resposta.data.horarios : [];
 
       if (!horarios.length) {
@@ -214,13 +214,11 @@ export async function montarAgendamentoCliente(container, estabelecimento, bridg
           $("ppBookSubmit").textContent = "Confirmar agendamento";
         });
       });
+      if (requisicaoAtual !== requisicaoHorarios) return;
     } catch (erro) {
       console.error("[Perto Profissionais] Erro ao consultar horários:", erro);
       $("ppBookTimes").textContent = erroAmigavel(erro);
       feedback(erroAmigavel(erro), true);
-    } finally {
-      carregandoHorarios = false;
-    }
   }
 
   $("ppBookService").addEventListener("change", carregarHorarios);
@@ -346,9 +344,13 @@ export async function montarAgendamentoCliente(container, estabelecimento, bridg
 
   $("ppShowMyBookings").addEventListener("click", carregarMeusAgendamentos);
 }
-
+const requisicoesAgendaGestao = new WeakMap();
 export async function renderizarAgendaGestao(container, dados, bridge) {
   if (!container || !dados?.estabelecimentoId || !dados?.profissionalId || !dados?.data) return;
+  const requisicaoAtual =
+  (requisicoesAgendaGestao.get(container) || 0) + 1;
+
+requisicoesAgendaGestao.set(container, requisicaoAtual);
 
   const { collection, getDocs, query, where } = bridge.firestore || {};
   if (!collection || !getDocs || !query || !where) {
@@ -365,6 +367,7 @@ export async function renderizarAgendaGestao(container, dados, bridge) {
       where("profissionalId", "==", dados.profissionalId)
     );
     const snapshot = await getDocs(consulta);
+    if (requisicoesAgendaGestao.get(container) !== requisicaoAtual) return;
     const itens = snapshot.docs
       .map(d => ({ id: d.id, ref: d.ref, ...d.data() }))
       .sort((a, b) => String(a.inicio || "").localeCompare(String(b.inicio || "")));
@@ -438,6 +441,7 @@ export async function renderizarAgendaGestao(container, dados, bridge) {
       container.appendChild(card);
     }
   } catch (erro) {
+    if (requisicoesAgendaGestao.get(container) !== requisicaoAtual) return;
     console.error("[Perto Profissionais] Erro ao carregar agenda:", erro);
     container.textContent = erroAmigavel(erro);
   }
