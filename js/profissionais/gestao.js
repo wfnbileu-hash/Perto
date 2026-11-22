@@ -243,7 +243,7 @@ export function initGestaoProfissionais(bridge) {
       placeholder="Descrição do serviço (opcional)"
       style="width:100%;min-height:70px;padding:12px;border:1px solid #cbd5e1;border-radius:10px"></textarea>
 
-    <input id="ppServicePrice" type="number" min="0" step="0" required
+    <input id="ppServicePrice" type="number" min="0" step="0.01" required
       placeholder="Preço (R$)"
       style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px">
 
