@@ -569,11 +569,11 @@ let servicoEditandoId = null;
     const descricao = $("ppServiceDescription").value.trim();
     const preco = Number($("ppServicePrice").value);
     const duracao = Number($("ppServiceDuration").value);
-if (!nome || !Number.isFinite(preco) || preco < 0 ||
-    !Number.isInteger(duracao) ||
-    duracao < 5 || duracao > 480 || duracao % 5 !== 0) {
-  return avisar("Informe um nome, preço válido e duração entre 5 e 480 minutos, em intervalos de 5 minutos.");
-}
+      if (!nome || !Number.isFinite(preco) || preco <= 0 ||
+          !Number.isInteger(duracao) ||
+          duracao < 5 || duracao > 480 || duracao % 5 !== 0) {
+        return avisar("Informe um nome, preço válido e duração entre 5 e 480 minutos, em intervalos de 5 minutos.");
+      }
 
     const salvar = $("ppSaveService");
     salvar.disabled = true;
