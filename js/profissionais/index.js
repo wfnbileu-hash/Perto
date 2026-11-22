@@ -135,6 +135,172 @@ export function initPertoProfissionais(bridge) {
         color: #fff;
         font-weight: 800;
       }
+
+            .pp-booking-card {
+        margin-top: 16px;
+        padding: 18px;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        background: #ffffff;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+      }
+
+      .pp-booking-card h3 {
+        margin: 0 0 6px;
+        color: #0f172a;
+        font-size: 18px;
+        font-weight: 800;
+      }
+
+      .pp-booking-help {
+        margin: 0 0 16px;
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .pp-booking-card label {
+        display: block;
+        margin-bottom: 14px;
+        color: #1e293b;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .pp-booking-card select,
+      .pp-booking-card input[type="date"] {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 6px;
+        padding: 12px 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 12px;
+        background: #f8fafc;
+        color: #0f172a;
+        font-size: 14px;
+        font-family: inherit;
+      }
+
+      .pp-booking-card select:focus,
+      .pp-booking-card input[type="date"]:focus {
+        outline: none;
+        border-color: #f59e0b;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18);
+      }
+
+      .pp-booking-times {
+        margin-top: 6px;
+        padding: 14px;
+        border: 1px dashed #cbd5e1;
+        border-radius: 14px;
+        background: #f8fafc;
+        color: #475569;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .pp-booking-times strong {
+        display: block;
+        margin-bottom: 10px;
+        color: #0f172a;
+        font-size: 13px;
+      }
+
+      .pp-time-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .pp-booking-card .pp-time-option {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: 10px 6px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        background: #ffffff;
+        color: #0f172a;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .pp-time-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .pp-time-option:has(input[type="radio"]:checked) {
+        border-color: #0f172a;
+        background: #0f172a;
+        color: #ffffff;
+      }
+
+      .pp-booking-submit {
+        display: block;
+        width: 100%;
+        margin-top: 16px;
+        padding: 14px 16px;
+        border: 0;
+        border-radius: 12px;
+        background: #f59e0b;
+        color: #111827;
+        font-size: 14px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .pp-booking-submit:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .pp-booking-feedback {
+        min-height: 18px;
+        margin: 10px 0 0;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.4;
+      }
+
+      .pp-booking-secondary {
+        display: block;
+        width: 100%;
+        margin-top: 10px;
+        padding: 12px 16px;
+        border: 1px solid #cbd5e1;
+        border-radius: 12px;
+        background: #f1f5f9;
+        color: #0f172a;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .pp-my-bookings {
+        margin-top: 14px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .pp-booking-item {
+        padding: 13px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background: #f8fafc;
+        font-size: 13px;
+      }
+
+      .pp-booking-item p {
+        margin: 6px 0 0;
+        color: #475569;
+      }
     `;
 
     document.head.appendChild(style);
