@@ -1278,17 +1278,23 @@ carregarEquipe();
     campoData.max = formatarData(limite);
     campoData.value = campoData.min;
 
+    
+    let solicitacaoAgenda = 0;
+
     async function carregarDia() {
       const conteudo = $("ppAgendaContent");
-      conteudo.textContent = "Consultando horários...";
+      const solicitacaoAtual = ++solicitacaoAgenda;
+      const dataSelecionada = campoData.value;
+
+      conteudo.textContent = "Consultando agenda e agendamentos...";
 
       try {
-        const partes = campoData.value.split("-").map(Number);
+        const partes = dataSelecionada.split("-").map(Number);
         const data = new Date(partes[0], partes[1] - 1, partes[2]);
-
         const diaSemana = data.getDay() === 0 ? 7 : data.getDay();
+        const dataFormatada = data.toLocaleDateString("pt-BR");
 
-        const referencia = doc(
+        const disponibilidadeRef = doc(
           db,
           "estabelecimentosProfissionais",
           estabelecimentoAgendaAtual.id,
@@ -1298,53 +1304,148 @@ carregarEquipe();
           String(diaSemana)
         );
 
-        const resultado = await getDoc(referencia);
+        const agendamentosRef = collection(
+          db,
+          "estabelecimentosProfissionais",
+          estabelecimentoAgendaAtual.id,
+          "agendamentos"
+        );
 
-        const dataFormatada = data.toLocaleDateString("pt-BR");
+        const [disponibilidadeSnap, agendamentosSnap] =
+          await Promise.all([
+            getDoc(disponibilidadeRef),
+            getDocs(query(
+              agendamentosRef,
+              where("data", "==", dataSelecionada),
+              where("profissionalId", "==", profissionalAgendaAtual.uid)
+            ))
+          ]);
 
-        if (!resultado.exists() || resultado.data().ativo !== true) {
-          conteudo.innerHTML = `
-            <strong>${dataFormatada}</strong>
-            <p style="margin-top:12px;color:#64748b">
-              Não há expediente configurado para este dia.
-            </p>
-          `;
-          return;
-        }
+        if (solicitacaoAtual !== solicitacaoAgenda) return;
 
-        const horario = resultado.data();
+        const agendamentos = [];
+
+        agendamentosSnap.forEach(documento => {
+          agendamentos.push({
+            id: documento.id,
+            ...documento.data()
+          });
+        });
+
+        agendamentos.sort((a, b) =>
+          String(a.inicio || "").localeCompare(String(b.inicio || ""))
+        );
+
+        const horario = disponibilidadeSnap.exists()
+          ? disponibilidadeSnap.data()
+          : null;
+
+        const expedienteAtivo = horario?.ativo === true;
+
+        const statusTexto = {
+          pendente: "Aguardando confirmação",
+          confirmado: "Confirmado",
+          recusado: "Recusado",
+          concluido: "Concluído",
+          cancelado: "Cancelado"
+        };
+
+        const agendamentosHtml = agendamentos.length
+          ? agendamentos.map(item => {
+              const status = String(item.status || "pendente");
+              const preco = Number(item.preco || 0);
+
+              return `
+                <article style="
+                  padding:13px;
+                  margin-top:10px;
+                  border:1px solid #e2e8f0;
+                  border-radius:12px;
+                  background:#fff;
+                ">
+                  <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+                    <strong>${escapar(item.inicio || "--:--")} às ${escapar(item.fim || "--:--")}</strong>
+                    <strong style="font-size:12px">${escapar(statusTexto[status] || status)}</strong>
+                  </div>
+
+                  <p style="margin-top:10px">
+                    <strong>Cliente:</strong>
+                    ${escapar(item.clienteNome || "Cliente")}
+                  </p>
+
+                  <p style="margin-top:5px">
+                    <strong>Serviço:</strong>
+                    ${escapar(item.servicoNome || "Serviço")}
+                  </p>
+
+                  <p style="margin-top:5px">
+                    <strong>Valor:</strong>
+                    R$ ${preco.toFixed(2).replace(".", ",")}
+                  </p>
+
+                  <p style="margin-top:5px;font-size:13px;color:#64748b">
+                    ${escapar(item.modalidadeAtendimento || "local") === "domicilio"
+                      ? "Atendimento a domicílio"
+                      : "Atendimento no estabelecimento"}
+                  </p>
+                </article>
+              `;
+            }).join("")
+          : `
+              <p style="margin-top:12px;padding:12px;background:#fff;border-radius:10px;color:#64748b">
+                Nenhum agendamento encontrado para esta data.
+              </p>
+            `;
 
         conteudo.innerHTML = `
           <strong>${dataFormatada}</strong>
 
-          <p style="margin-top:12px">
-            <strong>Atendimento:</strong>
-            ${escapar(horario.inicio)} às ${escapar(horario.fim)}
-          </p>
-
           ${
-            horario.pausaInicio && horario.pausaFim
-              ? `<p style="margin-top:8px">
-                  <strong>Pausa:</strong>
-                  ${escapar(horario.pausaInicio)} às ${escapar(horario.pausaFim)}
-                </p>`
-              : ""
+            expedienteAtivo
+              ? `
+                <p style="margin-top:12px">
+                  <strong>Atendimento:</strong>
+                  ${escapar(horario.inicio)} às ${escapar(horario.fim)}
+                </p>
+
+                ${
+                  horario.pausaInicio && horario.pausaFim
+                    ? `
+                      <p style="margin-top:8px">
+                        <strong>Pausa:</strong>
+                        ${escapar(horario.pausaInicio)} às ${escapar(horario.pausaFim)}
+                      </p>
+                    `
+                    : ""
+                }
+              `
+              : `
+                <p style="margin-top:12px;color:#64748b">
+                  Não há expediente configurado para este dia.
+                </p>
+              `
           }
 
-          <p style="margin-top:14px;font-size:12px;color:#64748b">
-            Esta consulta mostra os horários de trabalho configurados.
-            A exibição de agendamentos será implementada em outra etapa.
-          </p>
+          <h3 style="margin-top:20px;font-size:16px">
+            Agendamentos (${agendamentos.length})
+          </h3>
+
+          ${agendamentosHtml}
         `;
 
       } catch (erro) {
-        console.error("[Perto Profissionais] Erro ao consultar agenda:", erro);
+        if (solicitacaoAtual !== solicitacaoAgenda) return;
+
+        console.error(
+          "[Perto Profissionais] Erro ao consultar agenda:",
+          erro
+        );
 
         conteudo.textContent =
-          "Não foi possível consultar os horários: " +
+          "Não foi possível consultar a agenda: " +
           (erro.code || erro.message || "erro desconhecido");
       }
-    }
+        }
 
     campoData.onchange = () => {
       if (
