@@ -1,4 +1,3 @@
-
 /* =========================================================
    PERTO PROFISSIONAIS — GESTÃO DE ESTABELECIMENTOS
    Cadastro e gerenciamento pelo perfil do usuário
@@ -22,7 +21,7 @@ export function initGestaoProfissionais(bridge) {
   const db = bridge.db;
   const usuarioAtual = () => bridge.getCurrentUser?.();
 
-    const {
+  const {
     doc,
     setDoc,
     addDoc,
@@ -201,66 +200,67 @@ export function initGestaoProfissionais(bridge) {
     </section>
 
     <section id="ppMyTeamEstablishments"
-  style="margin-top:20px;padding:14px;border:1px solid #bfdbfe;border-radius:14px;background:#eff6ff">
+      style="margin-top:20px;padding:14px;border:1px solid #bfdbfe;border-radius:14px;background:#eff6ff">
 
-  <h3 style="font-size:17px;margin-bottom:8px">
-    💈 Meus estabelecimentos
-  </h3>
+      <h3 style="font-size:17px;margin-bottom:8px">
+        💈 Meus estabelecimentos
+      </h3>
 
-  <p style="font-size:13px;color:#64748b;margin-bottom:12px">
-    Estabelecimentos em que você faz parte da equipe.
-  </p>
+      <p style="font-size:13px;color:#64748b;margin-bottom:12px">
+        Estabelecimentos em que você faz parte da equipe.
+      </p>
 
-  <div id="ppMyTeamEstablishmentsList">
-    Carregando estabelecimentos...
-  </div>
+      <div id="ppMyTeamEstablishmentsList">
+        Carregando estabelecimentos...
+      </div>
 
-</section>
-    
+    </section>
+
     <div id="ppMyEstablishments" style="margin-top:20px">
       Carregando seus estabelecimentos...
     </div>
+
     <section id="ppServicesPanel" style="display:none;margin-top:20px">
-  <button type="button" id="ppServicesBack"
-    style="padding:10px 14px;border-radius:10px;background:#f1f5f9;margin-bottom:15px">
-    ← Voltar aos estabelecimentos
-  </button>
+      <button type="button" id="ppServicesBack"
+        style="padding:10px 14px;border-radius:10px;background:#f1f5f9;margin-bottom:15px">
+        ← Voltar aos estabelecimentos
+      </button>
 
-  <h3 id="ppServicesTitle" style="font-size:20px;margin-bottom:6px">
-    Serviços e preços
-  </h3>
+      <h3 id="ppServicesTitle" style="font-size:20px;margin-bottom:6px">
+        Serviços e preços
+      </h3>
 
-  <p style="font-size:13px;color:#64748b;margin-bottom:16px">
-    Cadastre os serviços oferecidos pelo seu estabelecimento.
-  </p>
+      <p style="font-size:13px;color:#64748b;margin-bottom:16px">
+        Cadastre os serviços oferecidos pelo seu estabelecimento.
+      </p>
 
-  <form id="ppServiceForm" style="display:grid;gap:12px">
-    <input id="ppServiceName" required maxlength="100"
-      placeholder="Nome do serviço (ex.: Corte masculino)"
-      style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px">
+      <form id="ppServiceForm" style="display:grid;gap:12px">
+        <input id="ppServiceName" required maxlength="100"
+          placeholder="Nome do serviço (ex.: Corte masculino)"
+          style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px">
 
-    <textarea id="ppServiceDescription" maxlength="300"
-      placeholder="Descrição do serviço (opcional)"
-      style="width:100%;min-height:70px;padding:12px;border:1px solid #cbd5e1;border-radius:10px"></textarea>
+        <textarea id="ppServiceDescription" maxlength="300"
+          placeholder="Descrição do serviço (opcional)"
+          style="width:100%;min-height:70px;padding:12px;border:1px solid #cbd5e1;border-radius:10px"></textarea>
 
-    <input id="ppServicePrice" type="number" min="0" step="0.01" required
-      placeholder="Preço (R$)"
-      style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px">
+        <input id="ppServicePrice" type="number" min="0" step="0.01" required
+          placeholder="Preço (R$)"
+          style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px">
 
-    <input id="ppServiceDuration" type="number" min="5" step="5" required
-      placeholder="Duração em minutos (ex.: 30)"
-      style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px">
+        <input id="ppServiceDuration" type="number" min="5" step="5" required
+          placeholder="Duração em minutos (ex.: 30)"
+          style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px">
 
-    <button type="submit" id="ppSaveService"
-      style="padding:13px;border-radius:10px;background:#f59e0b;font-weight:800">
-      + Salvar serviço
-    </button>
-  </form>
+        <button type="submit" id="ppSaveService"
+          style="padding:13px;border-radius:10px;background:#f59e0b;font-weight:800">
+          + Salvar serviço
+        </button>
+      </form>
 
-  <div id="ppServicesList" style="margin-top:20px">
-    Nenhum serviço carregado.
-  </div>
-</section>
+      <div id="ppServicesList" style="margin-top:20px">
+        Nenhum serviço carregado.
+      </div>
+    </section>
 
     <section id="ppTeamPanel" style="display:none;margin-top:20px">
 
@@ -299,16 +299,15 @@ export function initGestaoProfissionais(bridge) {
       </div>
 
     </section>
-        <section id="ppAvailabilityPanel"
-      style="display:none;margin-top:20px">
+
+    <section id="ppAvailabilityPanel" style="display:none;margin-top:20px">
 
       <button type="button" id="ppAvailabilityBack"
         style="padding:10px 14px;border-radius:10px;background:#f1f5f9;margin-bottom:15px">
         ← Voltar aos estabelecimentos
       </button>
 
-      <h3 id="ppAvailabilityTitle"
-        style="font-size:20px;margin-bottom:6px">
+      <h3 id="ppAvailabilityTitle" style="font-size:20px;margin-bottom:6px">
         Minha disponibilidade
       </h3>
 
@@ -327,7 +326,7 @@ export function initGestaoProfissionais(bridge) {
       </button>
 
     </section>
-    
+
     <section id="ppAgendaPanel" style="display:none;margin-top:20px">
 
       <button type="button" id="ppAgendaBack"
@@ -364,23 +363,47 @@ export function initGestaoProfissionais(bridge) {
       </div>
 
     </section>
-    
-    `;
-           
+  `;
+
   perfil.appendChild(painel);
 
   const $ = id => painel.querySelector("#" + id);
+
+  let editandoId = null;
+  let servicoEditandoId = null;
+
   let estabelecimentoServicosAtual = null;
-let estabelecimentoEquipeAtual = null;
-let estabelecimentoDisponibilidadeAtual = null;
+  let estabelecimentoEquipeAtual = null;
+  let estabelecimentoDisponibilidadeAtual = null;
 
-let estabelecimentoAgendaAtual = null;
-let profissionalAgendaAtual = null;
-let modoAgendaAtual = "profissional";
+  let estabelecimentoAgendaAtual = null;
+  let profissionalAgendaAtual = null;
+  let modoAgendaAtual = "profissional";
 
-let servicoEditandoId = null;
+  function mostrarVisaoPrincipal() {
+    $("ppNewEstablishment").style.display = "";
+    $("ppEstablishmentForm").style.display = "none";
+    $("ppInvitesPanel").style.display = "";
+    $("ppMyTeamEstablishments").style.display = "";
+    $("ppMyEstablishments").style.display = "";
+    $("ppServicesPanel").style.display = "none";
+    $("ppTeamPanel").style.display = "none";
+    $("ppAvailabilityPanel").style.display = "none";
+    $("ppAgendaPanel").style.display = "none";
+  }
 
-  async function carregarServicos() {
+  function ocultarVisaoPrincipalParaSubtela() {
+    $("ppNewEstablishment").style.display = "none";
+    $("ppEstablishmentForm").style.display = "none";
+    $("ppInvitesPanel").style.display = "none";
+    $("ppMyTeamEstablishments").style.display = "none";
+    $("ppMyEstablishments").style.display = "none";
+    $("ppServicesPanel").style.display = "none";
+    $("ppTeamPanel").style.display = "none";
+    $("ppAvailabilityPanel").style.display = "none";
+    $("ppAgendaPanel").style.display = "none";
+     }
+     async function carregarServicos() {
     const lista = $("ppServicesList");
 
     if (!estabelecimentoServicosAtual) {
@@ -462,6 +485,12 @@ let servicoEditandoId = null;
               servico.id
             ));
 
+            if (servicoEditandoId === servico.id) {
+              servicoEditandoId = null;
+              $("ppServiceForm").reset();
+              $("ppSaveService").textContent = "+ Salvar serviço";
+            }
+
             avisar("Serviço excluído!");
             await carregarServicos();
           } catch (erro) {
@@ -510,11 +539,10 @@ let servicoEditandoId = null;
         const profissional = documento.data();
 
         const card = document.createElement("div");
-
         card.style.cssText =
           "padding:13px;margin-bottom:10px;border:1px solid #e2e8f0;border-radius:12px;background:#fff";
 
-                card.innerHTML = `
+        card.innerHTML = `
           <strong>${escapar(profissional.nome || "Profissional")}</strong>
           <p style="font-size:13px;color:#64748b;margin-top:6px">
             ${escapar(profissional.email || "")}
@@ -547,17 +575,13 @@ let servicoEditandoId = null;
       });
 
     } catch (erro) {
-      console.error(
-        "[Perto Profissionais] Erro ao carregar equipe:",
-        erro
-      );
-
+      console.error("[Perto Profissionais] Erro ao carregar equipe:", erro);
       lista.textContent =
         "Não foi possível carregar a equipe: " +
         (erro.code || erro.message || "erro desconhecido");
     }
   }
-   
+
   $("ppServiceForm").addEventListener("submit", async evento => {
     evento.preventDefault();
 
@@ -569,11 +593,20 @@ let servicoEditandoId = null;
     const descricao = $("ppServiceDescription").value.trim();
     const preco = Number($("ppServicePrice").value);
     const duracao = Number($("ppServiceDuration").value);
-      if (!nome || !Number.isFinite(preco) || preco <= 0 ||
-          !Number.isInteger(duracao) ||
-          duracao < 5 || duracao > 480 || duracao % 5 !== 0) {
-        return avisar("Informe um nome, preço válido e duração entre 5 e 480 minutos, em intervalos de 5 minutos.");
-      }
+
+    if (
+      !nome ||
+      !Number.isFinite(preco) ||
+      preco <= 0 ||
+      !Number.isInteger(duracao) ||
+      duracao < 5 ||
+      duracao > 480 ||
+      duracao % 5 !== 0
+    ) {
+      return avisar(
+        "Informe um nome, preço válido e duração entre 5 e 480 minutos, em intervalos de 5 minutos."
+      );
+    }
 
     const salvar = $("ppSaveService");
     salvar.disabled = true;
@@ -735,15 +768,14 @@ let servicoEditandoId = null;
             ` : ""}
           </div>
           <button type="button" data-services
-  style="width:100%;padding:11px;margin-top:9px;border-radius:9px;background:#fef3c7;color:#92400e;font-weight:800">
-  ✂️ Gerenciar serviços e preços
-</button>
-<button type="button" data-team
-  style="width:100%;padding:11px;margin-top:9px;border-radius:9px;background:#dbeafe;color:#1e40af;font-weight:800">
-  👥 Gerenciar equipe
-</button>
+            style="width:100%;padding:11px;margin-top:9px;border-radius:9px;background:#fef3c7;color:#92400e;font-weight:800">
+            ✂️ Gerenciar serviços e preços
+          </button>
+          <button type="button" data-team
+            style="width:100%;padding:11px;margin-top:9px;border-radius:9px;background:#dbeafe;color:#1e40af;font-weight:800">
+            👥 Gerenciar equipe
+          </button>
         `;
-         
 
         card.querySelector("[data-services]").addEventListener("click", async () => {
           estabelecimentoServicosAtual = item;
@@ -751,9 +783,7 @@ let servicoEditandoId = null;
           $("ppServicesTitle").textContent =
             "Serviços e preços — " + (item.nome || "Estabelecimento");
 
-          $("ppNewEstablishment").style.display = "none";
-          $("ppEstablishmentForm").style.display = "none";
-          $("ppMyEstablishments").style.display = "none";
+          ocultarVisaoPrincipalParaSubtela();
           $("ppServicesPanel").style.display = "block";
 
           $("ppServicesPanel").scrollIntoView({
@@ -763,25 +793,24 @@ let servicoEditandoId = null;
 
           await carregarServicos();
         });
-               card.querySelector("[data-team]").addEventListener("click", () => {
+
+        card.querySelector("[data-team]").addEventListener("click", () => {
           estabelecimentoEquipeAtual = item;
 
           $("ppTeamTitle").textContent =
             "Minha equipe — " + (item.nome || "Estabelecimento");
 
-          $("ppNewEstablishment").style.display = "none";
-          $("ppEstablishmentForm").style.display = "none";
-          $("ppMyEstablishments").style.display = "none";
-          $("ppServicesPanel").style.display = "none";
+          ocultarVisaoPrincipalParaSubtela();
           $("ppTeamPanel").style.display = "block";
 
           $("ppTeamPanel").scrollIntoView({
-  behavior: "smooth",
-  block: "start"
-});
+            behavior: "smooth",
+            block: "start"
+          });
 
-carregarEquipe();
-});
+          carregarEquipe();
+        });
+
         card.querySelector("[data-edit]").addEventListener("click", () => {
           preencherFormulario(item);
         });
@@ -821,10 +850,7 @@ carregarEquipe();
         "Não foi possível carregar seus estabelecimentos. Verifique as permissões do Firebase.";
     }
   }
-
-   
-  
-  async function carregarConvitesRecebidos() {
+     async function carregarConvitesRecebidos() {
     const usuario = usuarioAtual();
     const lista = $("ppInvitesList");
 
@@ -892,7 +918,7 @@ carregarEquipe();
               throw new Error("Estabelecimento inválido.");
             }
 
-          if (convite.email !== usuario.email.toLowerCase()) {
+            if (convite.email !== usuario.email.toLowerCase()) {
               throw new Error("Este convite não pertence a esta conta.");
             }
 
@@ -923,8 +949,8 @@ carregarEquipe();
               const dadosConvite = conviteAtual.data();
 
               if (
-                dadosConvite.email !== usuario.email.toLowerCase()
-                || dadosConvite.estabelecimentoId !== estabelecimentoId
+                dadosConvite.email !== usuario.email.toLowerCase() ||
+                dadosConvite.estabelecimentoId !== estabelecimentoId
               ) {
                 throw new Error("Convite inválido para esta conta.");
               }
@@ -950,12 +976,10 @@ carregarEquipe();
 
             avisar("Convite aceito! Você agora faz parte da equipe.");
             await carregarConvitesRecebidos();
+            await carregarMeusEstabelecimentosEquipe();
 
           } catch (erro) {
-            console.error(
-              "[Perto Profissionais] Erro ao aceitar convite:",
-              erro
-            );
+            console.error("[Perto Profissionais] Erro ao aceitar convite:", erro);
 
             avisar(
               erro.message || "Não foi possível aceitar o convite."
@@ -977,17 +1001,14 @@ carregarEquipe();
       });
 
     } catch (erro) {
-      console.error(
-        "[Perto Profissionais] Erro ao buscar convites:",
-        erro
-      );
-
-            lista.textContent =
+      console.error("[Perto Profissionais] Erro ao buscar convites:", erro);
+      lista.textContent =
         "Erro ao carregar convites: " +
         (erro.code || erro.message || "erro desconhecido");
     }
   }
-     async function carregarMeusEstabelecimentosEquipe() {
+
+  async function carregarMeusEstabelecimentosEquipe() {
     const usuario = usuarioAtual();
     const lista = $("ppMyTeamEstablishmentsList");
 
@@ -1008,16 +1029,13 @@ carregarEquipe();
 
       const aceitos = resultado.docs.filter(documento => {
         const convite = documento.data();
-
-        return convite.status === "aceito"
-          && convite.profissionalId === usuario.uid;
+        return convite.status === "aceito" && convite.profissionalId === usuario.uid;
       });
 
       lista.replaceChildren();
 
       if (aceitos.length === 0) {
-        lista.textContent =
-          "Você ainda não faz parte de uma equipe.";
+        lista.textContent = "Você ainda não faz parte de uma equipe.";
         return;
       }
 
@@ -1025,14 +1043,11 @@ carregarEquipe();
         const convite = documento.data();
 
         const card = document.createElement("div");
-
         card.style.cssText =
           "padding:13px;margin-bottom:10px;border:1px solid #bfdbfe;border-radius:12px;background:#fff";
 
         card.innerHTML = `
-          <strong>${escapar(
-            convite.estabelecimentoNome || "Estabelecimento"
-          )}</strong>
+          <strong>${escapar(convite.estabelecimentoNome || "Estabelecimento")}</strong>
           <p style="font-size:13px;color:#64748b;margin-top:6px">
             💈 Profissional da equipe
           </p>
@@ -1040,11 +1055,10 @@ carregarEquipe();
             ✓ Vínculo confirmado
           </p>
         `;
-             const botaoDisponibilidade = document.createElement("button");
 
+        const botaoDisponibilidade = document.createElement("button");
         botaoDisponibilidade.type = "button";
         botaoDisponibilidade.textContent = "Configurar minha disponibilidade";
-
         botaoDisponibilidade.style.cssText =
           "width:100%;padding:12px;margin-top:12px;border:0;border-radius:9px;background:#f59e0b;font-weight:800";
 
@@ -1055,12 +1069,10 @@ carregarEquipe();
           });
         });
 
-                card.appendChild(botaoDisponibilidade);
+        card.appendChild(botaoDisponibilidade);
 
-         
         // Configuração individual de confirmação de agendamentos.
         const areaConfirmacao = document.createElement("div");
-
         areaConfirmacao.style.cssText =
           "margin-top:12px;padding:12px;border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc";
 
@@ -1090,17 +1102,9 @@ carregarEquipe();
           </small>
         `;
 
-        const campoModo = areaConfirmacao.querySelector(
-          "[data-modo-confirmacao]"
-        );
-
-        const botaoSalvarConfirmacao = areaConfirmacao.querySelector(
-          "[data-salvar-confirmacao]"
-        );
-
-        const statusConfirmacao = areaConfirmacao.querySelector(
-          "[data-status-confirmacao]"
-        );
+        const campoModo = areaConfirmacao.querySelector("[data-modo-confirmacao]");
+        const botaoSalvarConfirmacao = areaConfirmacao.querySelector("[data-salvar-confirmacao]");
+        const statusConfirmacao = areaConfirmacao.querySelector("[data-status-confirmacao]");
 
         const referenciaConfirmacao = doc(
           db,
@@ -1114,27 +1118,14 @@ carregarEquipe();
 
         getDoc(referenciaConfirmacao)
           .then(documento => {
-            const dados = documento.exists()
-              ? documento.data()
-              : {};
-
-            campoModo.value =
-              dados.modoConfirmacao === "manual"
-                ? "manual"
-                : "automatico";
-
+            const dados = documento.exists() ? documento.data() : {};
+            campoModo.value = dados.modoConfirmacao === "manual" ? "manual" : "automatico";
             statusConfirmacao.textContent =
               "Modo atual: " +
-              (campoModo.value === "manual"
-                ? "Manual"
-                : "Automático (padrão)");
+              (campoModo.value === "manual" ? "Manual" : "Automático (padrão)");
           })
           .catch(erro => {
-            console.error(
-              "[Perto Profissionais] Erro ao carregar confirmação:",
-              erro
-            );
-
+            console.error("[Perto Profissionais] Erro ao carregar confirmação:", erro);
             statusConfirmacao.textContent =
               "Não foi possível carregar. Verifique as permissões.";
           });
@@ -1150,38 +1141,28 @@ carregarEquipe();
               atualizadoEm: serverTimestamp()
             });
 
-            statusConfirmacao.textContent =
-              "Configuração salva com sucesso.";
-
+            statusConfirmacao.textContent = "Configuração salva com sucesso.";
             avisar("Preferência de confirmação salva!");
 
           } catch (erro) {
-            console.error(
-              "[Perto Profissionais] Erro ao salvar confirmação:",
-              erro
-            );
-
+            console.error("[Perto Profissionais] Erro ao salvar confirmação:", erro);
             statusConfirmacao.textContent =
               "Não foi possível salvar. Verifique as permissões.";
-
             avisar(
               "Erro ao salvar configuração: " +
               (erro.code || erro.message || "erro desconhecido")
             );
-
           } finally {
             botaoSalvarConfirmacao.disabled = false;
-            botaoSalvarConfirmacao.textContent =
-              "Salvar configuração";
+            botaoSalvarConfirmacao.textContent = "Salvar configuração";
           }
         });
 
         card.appendChild(areaConfirmacao);
-         
+
         const botaoMinhaAgenda = document.createElement("button");
         botaoMinhaAgenda.type = "button";
         botaoMinhaAgenda.textContent = "Minha agenda";
-
         botaoMinhaAgenda.style.cssText =
           "width:100%;padding:12px;margin-top:8px;border:0;border-radius:9px;background:#0f172a;color:white;font-weight:800";
 
@@ -1204,16 +1185,12 @@ carregarEquipe();
       });
 
     } catch (erro) {
-      console.error(
-        "[Perto Profissionais] Erro ao carregar estabelecimentos da equipe:",
-        erro
-      );
-
+      console.error("[Perto Profissionais] Erro ao carregar estabelecimentos da equipe:", erro);
       lista.textContent =
         "Erro ao carregar: " +
         (erro.code || erro.message || "erro desconhecido");
     }
-     }
+             }
      // ==========================================
   // DISPONIBILIDADE DO PROFISSIONAL
   // ==========================================
@@ -1228,7 +1205,7 @@ carregarEquipe();
     "Domingo"
   ];
 
-     // ==========================================
+  // ==========================================
   // CONSULTA DA AGENDA DIÁRIA
   // ==========================================
 
@@ -1251,14 +1228,7 @@ carregarEquipe();
 
     $("ppAgendaProfessionalLabel").style.display = "none";
 
-    $("ppNewEstablishment").style.display = "none";
-    $("ppMyTeamEstablishments").style.display = "none";
-    $("ppInvitesPanel").style.display = "none";
-    $("ppEstablishmentForm").style.display = "none";
-    $("ppMyEstablishments").style.display = "none";
-    $("ppServicesPanel").style.display = "none";
-    $("ppTeamPanel").style.display = "none";
-    $("ppAvailabilityPanel").style.display = "none";
+    ocultarVisaoPrincipalParaSubtela();
     $("ppAgendaPanel").style.display = "block";
 
     const hoje = new Date();
@@ -1273,12 +1243,10 @@ carregarEquipe();
       ].join("-");
 
     const campoData = $("ppAgendaDate");
-
     campoData.min = formatarData(hoje);
     campoData.max = formatarData(limite);
     campoData.value = campoData.min;
 
-    
     let solicitacaoAgenda = 0;
 
     async function carregarDia() {
@@ -1311,20 +1279,18 @@ carregarEquipe();
           "agendamentos"
         );
 
-        const [disponibilidadeSnap, agendamentosSnap] =
-          await Promise.all([
-            getDoc(disponibilidadeRef),
-            getDocs(query(
-              agendamentosRef,
-              where("data", "==", dataSelecionada),
-              where("profissionalId", "==", profissionalAgendaAtual.uid)
-            ))
-          ]);
+        const [disponibilidadeSnap, agendamentosSnap] = await Promise.all([
+          getDoc(disponibilidadeRef),
+          getDocs(query(
+            agendamentosRef,
+            where("data", "==", dataSelecionada),
+            where("profissionalId", "==", profissionalAgendaAtual.uid)
+          ))
+        ]);
 
         if (solicitacaoAtual !== solicitacaoAgenda) return;
 
         const agendamentos = [];
-
         agendamentosSnap.forEach(documento => {
           agendamentos.push({
             id: documento.id,
@@ -1336,10 +1302,7 @@ carregarEquipe();
           String(a.inicio || "").localeCompare(String(b.inicio || ""))
         );
 
-        const horario = disponibilidadeSnap.exists()
-          ? disponibilidadeSnap.data()
-          : null;
-
+        const horario = disponibilidadeSnap.exists() ? disponibilidadeSnap.data() : null;
         const expedienteAtivo = horario?.ativo === true;
 
         const statusTexto = {
@@ -1350,70 +1313,80 @@ carregarEquipe();
           cancelado: "Cancelado"
         };
 
-        
-const agendamentosHtml = agendamentos.length
-  ? agendamentos.map(item => {
-      const status = String(item.status || "pendente");
-      const preco = Number(item.preco || 0);
+        const agendamentosHtml = agendamentos.length
+          ? agendamentos.map(item => {
+              const status = String(item.status || "pendente");
+              const preco = Number(item.preco || 0);
 
-      let botoes = "";
+              let botoes = "";
 
-      if (status === "pendente") {
-        botoes = `
-          <button type="button" data-agendamento-status="confirmado" data-id="${escapar(item.id)}">Confirmar</button>
-          <button type="button" data-agendamento-status="recusado" data-id="${escapar(item.id)}">Recusar</button>
-          <button type="button" data-agendamento-status="cancelado" data-id="${escapar(item.id)}">Cancelar</button>
-        `;
-      } else if (status === "confirmado") {
-        botoes = `
-          <button type="button" data-agendamento-status="concluido" data-id="${escapar(item.id)}">Concluir</button>
-          <button type="button" data-agendamento-status="cancelado" data-id="${escapar(item.id)}">Cancelar</button>
-        `;
-      }
+              if (status === "pendente") {
+                botoes = `
+                  <button type="button" data-agendamento-status="confirmado" data-id="${escapar(item.id)}"
+                    style="padding:8px 12px;border:0;border-radius:8px;background:#16a34a;color:#fff;font-weight:700;cursor:pointer">
+                    Confirmar
+                  </button>
+                  <button type="button" data-agendamento-status="recusado" data-id="${escapar(item.id)}"
+                    style="padding:8px 12px;border:0;border-radius:8px;background:#dc2626;color:#fff;font-weight:700;cursor:pointer">
+                    Recusar
+                  </button>
+                  <button type="button" data-agendamento-status="cancelado" data-id="${escapar(item.id)}"
+                    style="padding:8px 12px;border:0;border-radius:8px;background:#e2e8f0;color:#0f172a;font-weight:700;cursor:pointer">
+                    Cancelar
+                  </button>
+                `;
+              } else if (status === "confirmado") {
+                botoes = `
+                  <button type="button" data-agendamento-status="concluido" data-id="${escapar(item.id)}"
+                    style="padding:8px 12px;border:0;border-radius:8px;background:#0f172a;color:#fff;font-weight:700;cursor:pointer">
+                    Concluir
+                  </button>
+                  <button type="button" data-agendamento-status="cancelado" data-id="${escapar(item.id)}"
+                    style="padding:8px 12px;border:0;border-radius:8px;background:#e2e8f0;color:#0f172a;font-weight:700;cursor:pointer">
+                    Cancelar
+                  </button>
+                `;
+              }
 
-      return `
-        <article style="
-          padding:13px;
-          margin-top:10px;
-          border:1px solid #e2e8f0;
-          border-radius:12px;
-          background:#fff;
-        ">
-          <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
-            <strong>${escapar(item.inicio || "--:--")} às ${escapar(item.fim || "--:--")}</strong>
-            <strong style="font-size:12px">${escapar(statusTexto[status] || status)}</strong>
-          </div>
+              return `
+                <article style="
+                  padding:13px;
+                  margin-top:10px;
+                  border:1px solid #e2e8f0;
+                  border-radius:12px;
+                  background:#fff;
+                ">
+                  <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+                    <strong>${escapar(item.inicio || "--:--")} às ${escapar(item.fim || "--:--")}</strong>
+                    <strong style="font-size:12px">${escapar(statusTexto[status] || status)}</strong>
+                  </div>
 
-          <p style="margin-top:10px">
-            <strong>Cliente:</strong>
-            ${escapar(item.clienteNome || "Cliente")}
-          </p>
+                  <p style="margin-top:10px">
+                    <strong>Cliente:</strong>
+                    ${escapar(item.clienteNome || "Cliente")}
+                  </p>
 
-          <p style="margin-top:5px">
-            <strong>Serviço:</strong>
-            ${escapar(item.servicoNome || "Serviço")}
-          </p>
+                  <p style="margin-top:5px">
+                    <strong>Serviço:</strong>
+                    ${escapar(item.servicoNome || "Serviço")}
+                  </p>
 
-          <p style="margin-top:5px">
-            <strong>Valor:</strong>
-            R$ ${preco.toFixed(2).replace(".", ",")}
-          </p>
+                  <p style="margin-top:5px">
+                    <strong>Valor:</strong>
+                    R$ ${preco.toFixed(2).replace(".", ",")}
+                  </p>
 
-          <p style="margin-top:5px;font-size:13px;color:#64748b">
-            ${escapar(item.modalidadeAtendimento || "local") === "domicilio"
-              ? "Atendimento a domicílio"
-              : "Atendimento no estabelecimento"}
-          </p>
+                  <p style="margin-top:5px;font-size:13px;color:#64748b">
+                    ${escapar(item.modalidadeAtendimento || "local") === "domicilio"
+                      ? "Atendimento a domicílio"
+                      : "Atendimento no estabelecimento"}
+                  </p>
 
-          ${botoes ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">${botoes}</div>` : ""}
-        </article>
-      `;
-    }).join("")
-  : `
-      <p style="margin-top:12px;padding:12px;background:#fff;border-radius:10px;color:#64748b">
-        Nenhum agendamento encontrado para esta data.
-      </p>
-    `;
+                  ${botoes ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">${botoes}</div>` : ""}
+                </article>
+              `;
+            }).join("")
+          : `
               <p style="margin-top:12px;padding:12px;background:#fff;border-radius:10px;color:#64748b">
                 Nenhum agendamento encontrado para esta data.
               </p>
@@ -1455,19 +1428,50 @@ const agendamentosHtml = agendamentos.length
           ${agendamentosHtml}
         `;
 
+        conteudo.querySelectorAll("[data-agendamento-status]").forEach(btnAcao => {
+          btnAcao.addEventListener("click", async () => {
+            const agendamentoId = btnAcao.dataset.id;
+            const novoStatus = btnAcao.dataset.agendamentoStatus;
+
+            if (!agendamentoId || !novoStatus || !estabelecimentoAgendaAtual?.id) return;
+
+            const todosBotoesCard = btnAcao.parentElement?.querySelectorAll("button") || [btnAcao];
+            todosBotoesCard.forEach(b => { b.disabled = true; });
+
+            try {
+              await updateDoc(
+                doc(
+                  db,
+                  "estabelecimentosProfissionais",
+                  estabelecimentoAgendaAtual.id,
+                  "agendamentos",
+                  agendamentoId
+                ),
+                {
+                  status: novoStatus,
+                  atualizadoEm: serverTimestamp()
+                }
+              );
+
+              avisar("Status do agendamento atualizado.");
+              await carregarDia();
+            } catch (erro) {
+              console.error("[Perto Profissionais] Erro ao atualizar agendamento:", erro);
+              avisar("Não foi possível atualizar o agendamento.");
+              todosBotoesCard.forEach(b => { b.disabled = false; });
+            }
+          });
+        });
+
       } catch (erro) {
         if (solicitacaoAtual !== solicitacaoAgenda) return;
 
-        console.error(
-          "[Perto Profissionais] Erro ao consultar agenda:",
-          erro
-        );
-
+        console.error("[Perto Profissionais] Erro ao consultar agenda:", erro);
         conteudo.textContent =
           "Não foi possível consultar a agenda: " +
           (erro.code || erro.message || "erro desconhecido");
       }
-        }
+    }
 
     campoData.onchange = () => {
       if (
@@ -1498,17 +1502,10 @@ const agendamentosHtml = agendamentos.length
       "Minha disponibilidade — " +
       (estabelecimento.nome || "Estabelecimento");
 
-    $("ppNewEstablishment").style.display = "none";
-    $("ppMyTeamEstablishments").style.display = "none";
-    $("ppInvitesPanel").style.display = "none";
-    $("ppEstablishmentForm").style.display = "none";
-    $("ppMyEstablishments").style.display = "none";
-    $("ppServicesPanel").style.display = "none";
-    $("ppTeamPanel").style.display = "none";
+    ocultarVisaoPrincipalParaSubtela();
     $("ppAvailabilityPanel").style.display = "block";
 
     const lista = $("ppAvailabilityDays");
-
     lista.textContent = "Carregando horários...";
 
     try {
@@ -1522,7 +1519,6 @@ const agendamentosHtml = agendamentos.length
       );
 
       const resultado = await getDocs(referencia);
-   if (solicitacaoAtual !== solicitacaoAgenda) return;
       const horariosSalvos = {};
 
       resultado.forEach(documento => {
@@ -1536,7 +1532,6 @@ const agendamentosHtml = agendamentos.length
         const dados = horariosSalvos[String(numero)] || {};
 
         const card = document.createElement("div");
-
         card.style.cssText =
           "padding:13px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc";
 
@@ -1605,11 +1600,7 @@ const agendamentosHtml = agendamentos.length
       });
 
     } catch (erro) {
-      console.error(
-        "[Perto Profissionais] Erro ao carregar disponibilidade:",
-        erro
-      );
-
+      console.error("[Perto Profissionais] Erro ao carregar disponibilidade:", erro);
       lista.textContent =
         "Erro ao carregar horários: " +
         (erro.code || erro.message || "erro desconhecido");
@@ -1641,9 +1632,7 @@ const agendamentosHtml = agendamentos.length
 
       if (ativo) {
         if (!inicio || !fim || inicio >= fim) {
-          return avisar(
-            "Confira os horários de início e término do expediente."
-          );
+          return avisar("Confira os horários de início e término do expediente.");
         }
 
         if (
@@ -1679,64 +1668,58 @@ const agendamentosHtml = agendamentos.length
     botaoSalvar.textContent = "Salvando...";
 
     try {
-      
-await runTransaction(db, async transaction => {
-  for (const horario of horarios) {
-    const referencia = doc(
-      db,
-      "estabelecimentosProfissionais",
-      estabelecimento.id,
-      "equipe",
-      usuario.uid,
-      "disponibilidade",
-      String(horario.diaSemana)
-    );
+      await runTransaction(db, async transaction => {
+        for (const horario of horarios) {
+          const referencia = doc(
+            db,
+            "estabelecimentosProfissionais",
+            estabelecimento.id,
+            "equipe",
+            usuario.uid,
+            "disponibilidade",
+            String(horario.diaSemana)
+          );
 
-    transaction.set(referencia, {
-      ...horario,
-      atualizadoEm: serverTimestamp()
-    });
-  }
-});
-       
+          transaction.set(referencia, {
+            ...horario,
+            atualizadoEm: serverTimestamp()
+          });
+        }
+      });
+
       avisar("Disponibilidade salva com sucesso!");
 
     } catch (erro) {
-      console.error(
-        "[Perto Profissionais] Erro ao salvar disponibilidade:",
-        erro
-      );
-
+      console.error("[Perto Profissionais] Erro ao salvar disponibilidade:", erro);
       avisar(
         "Não foi possível salvar: " +
         (erro.code || erro.message || "erro desconhecido")
       );
-
     } finally {
       botaoSalvar.disabled = false;
       botaoSalvar.textContent = "Salvar disponibilidade";
     }
   });
 
-    $("ppAvailabilityBack").addEventListener("click", () => {
-    $("ppAvailabilityPanel").style.display = "none";
-    $("ppMyTeamEstablishments").style.display = "block";
-
+  $("ppAvailabilityBack").addEventListener("click", () => {
     estabelecimentoDisponibilidadeAtual = null;
+    mostrarVisaoPrincipal();
   });
-     $("ppAgendaBack").addEventListener("click", () => {
+
+  $("ppAgendaBack").addEventListener("click", () => {
     $("ppAgendaPanel").style.display = "none";
 
     if (modoAgendaAtual === "proprietario") {
       $("ppTeamPanel").style.display = "block";
     } else {
-      $("ppMyTeamEstablishments").style.display = "block";
+      mostrarVisaoPrincipal();
     }
 
     estabelecimentoAgendaAtual = null;
     profissionalAgendaAtual = null;
   });
-     botao.addEventListener("click", async () => {
+
+  botao.addEventListener("click", async () => {
     const usuario = usuarioAtual();
 
     if (!usuario) {
@@ -1744,7 +1727,9 @@ await runTransaction(db, async transaction => {
       return;
     }
 
-        painel.style.display = "block";
+    mostrarVisaoPrincipal();
+    painel.style.display = "block";
+
     await carregarConvitesRecebidos();
     await carregarMeusEstabelecimentosEquipe();
     await carregarMeusEstabelecimentos();
@@ -1756,15 +1741,12 @@ await runTransaction(db, async transaction => {
     painel.style.display = "none";
     limparFormulario();
   });
-   
-    $("ppTeamBack").addEventListener("click", () => {
-    $("ppTeamPanel").style.display = "none";
-    $("ppNewEstablishment").style.display = "";
-    $("ppMyEstablishments").style.display = "block";
 
+  $("ppTeamBack").addEventListener("click", () => {
     estabelecimentoEquipeAtual = null;
+    mostrarVisaoPrincipal();
   });
-   
+
   $("ppTeamForm").addEventListener("submit", async evento => {
     evento.preventDefault();
 
@@ -1823,14 +1805,15 @@ await runTransaction(db, async transaction => {
       botaoSalvar.textContent = "+ Adicionar à equipe";
     }
   });
-   
-   $("ppServicesBack").addEventListener("click", () => {
-  $("ppServicesPanel").style.display = "none";
-  $("ppNewEstablishment").style.display = "";
-  $("ppMyEstablishments").style.display = "block";
 
-  estabelecimentoServicosAtual = null;
-});
+  $("ppServicesBack").addEventListener("click", () => {
+    estabelecimentoServicosAtual = null;
+    servicoEditandoId = null;
+    $("ppServiceForm").reset();
+    $("ppSaveService").textContent = "+ Salvar serviço";
+    mostrarVisaoPrincipal();
+  });
+
   $("ppNewEstablishment").addEventListener("click", () => {
     limparFormulario();
 
@@ -1899,7 +1882,7 @@ await runTransaction(db, async transaction => {
           {
             proprietarioId: usuario.uid,
             ...dados,
-             atendeDomicilio: modalidadeAtendimento !== "local",
+            atendeDomicilio: modalidadeAtendimento !== "local",
             ativo: false,
             statusAdmin: "aguardando_aprovacao",
             criadoEm: serverTimestamp()
@@ -1926,3 +1909,5 @@ await runTransaction(db, async transaction => {
   console.info("[Perto Profissionais] Gestão preparada.");
   return true;
 }
+   
+   
