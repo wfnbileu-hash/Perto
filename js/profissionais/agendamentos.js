@@ -120,7 +120,7 @@ export async function montarAgendamentoCliente(container, estabelecimento, bridg
   let servicos = [];
   let equipe = [];
   let horarios = [];
-  let carregandoHorarios = 0;
+  let requisicaoHorarios = 0;
 
   const feedback = (mensagem, erro = false) => {
     $("ppBookFeedback").textContent = mensagem;
@@ -159,10 +159,12 @@ export async function montarAgendamentoCliente(container, estabelecimento, bridg
     feedback(erroAmigavel(erro), true);
   }
 
-  async function carregarHorarios() {
+   async function carregarHorarios() {
     const requisicaoAtual = ++requisicaoHorarios;
+
     $("ppBookSubmit").disabled = true;
     horarios = [];
+
     const servicoId = $("ppBookService").value;
     const profissionalId = $("ppBookProfessional").value;
     const data = $("ppBookDate").value;
@@ -181,18 +183,23 @@ export async function montarAgendamentoCliente(container, estabelecimento, bridg
 
     try {
       const listar = chamar(bridge, "listarHorariosProfissionais");
+
       const resposta = await listar({
         estabelecimentoId: estabelecimento.id,
         servicoId,
         profissionalId,
         data
       });
-      
-     if (requisicaoAtual !== requisicaoHorarios) return;
-      horarios = Array.isArray(resposta.data?.horarios) ? resposta.data.horarios : [];
+
+      if (requisicaoAtual !== requisicaoHorarios) return;
+
+      horarios = Array.isArray(resposta.data?.horarios)
+        ? resposta.data.horarios
+        : [];
 
       if (!horarios.length) {
-        $("ppBookTimes").textContent = "Não há horários disponíveis para esta data. Tente outro dia ou profissional.";
+        $("ppBookTimes").textContent =
+          "Não há horários disponíveis para esta data. Tente outro dia ou profissional.";
         return;
       }
 
@@ -208,20 +215,27 @@ export async function montarAgendamentoCliente(container, estabelecimento, bridg
         </div>
       `;
 
-      $("ppBookTimes").querySelectorAll('input[name="ppBookTime"]').forEach(input => {
-        input.addEventListener("change", () => {
-          $("ppBookSubmit").disabled = false;
-          $("ppBookSubmit").textContent = "Confirmar agendamento";
+      $("ppBookTimes")
+        .querySelectorAll('input[name="ppBookTime"]')
+        .forEach(input => {
+          input.addEventListener("change", () => {
+            $("ppBookSubmit").disabled = false;
+            $("ppBookSubmit").textContent = "Confirmar agendamento";
+          });
         });
-      });
-      if (requisicaoAtual !== requisicaoHorarios) return;
+
     } catch (erro) {
-      console.error("[Perto Profissionais] Erro ao consultar horários:", erro);
+      if (requisicaoAtual !== requisicaoHorarios) return;
+
+      console.error(
+        "[Perto Profissionais] Erro ao consultar horários:",
+        erro
+      );
+
       $("ppBookTimes").textContent = erroAmigavel(erro);
       feedback(erroAmigavel(erro), true);
-  }
-
-  $("ppBookService").addEventListener("change", carregarHorarios);
+    }
+   }
   $("ppBookProfessional").addEventListener("change", carregarHorarios);
   $("ppBookDate").addEventListener("change", carregarHorarios);
 
