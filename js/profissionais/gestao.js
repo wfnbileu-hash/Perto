@@ -1350,48 +1350,70 @@ carregarEquipe();
           cancelado: "Cancelado"
         };
 
-        const agendamentosHtml = agendamentos.length
-          ? agendamentos.map(item => {
-              const status = String(item.status || "pendente");
-              const preco = Number(item.preco || 0);
+        
+const agendamentosHtml = agendamentos.length
+  ? agendamentos.map(item => {
+      const status = String(item.status || "pendente");
+      const preco = Number(item.preco || 0);
 
-              return `
-                <article style="
-                  padding:13px;
-                  margin-top:10px;
-                  border:1px solid #e2e8f0;
-                  border-radius:12px;
-                  background:#fff;
-                ">
-                  <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
-                    <strong>${escapar(item.inicio || "--:--")} às ${escapar(item.fim || "--:--")}</strong>
-                    <strong style="font-size:12px">${escapar(statusTexto[status] || status)}</strong>
-                  </div>
+      let botoes = "";
 
-                  <p style="margin-top:10px">
-                    <strong>Cliente:</strong>
-                    ${escapar(item.clienteNome || "Cliente")}
-                  </p>
+      if (status === "pendente") {
+        botoes = `
+          <button type="button" data-agendamento-status="confirmado" data-id="${escapar(item.id)}">Confirmar</button>
+          <button type="button" data-agendamento-status="recusado" data-id="${escapar(item.id)}">Recusar</button>
+          <button type="button" data-agendamento-status="cancelado" data-id="${escapar(item.id)}">Cancelar</button>
+        `;
+      } else if (status === "confirmado") {
+        botoes = `
+          <button type="button" data-agendamento-status="concluido" data-id="${escapar(item.id)}">Concluir</button>
+          <button type="button" data-agendamento-status="cancelado" data-id="${escapar(item.id)}">Cancelar</button>
+        `;
+      }
 
-                  <p style="margin-top:5px">
-                    <strong>Serviço:</strong>
-                    ${escapar(item.servicoNome || "Serviço")}
-                  </p>
+      return `
+        <article style="
+          padding:13px;
+          margin-top:10px;
+          border:1px solid #e2e8f0;
+          border-radius:12px;
+          background:#fff;
+        ">
+          <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+            <strong>${escapar(item.inicio || "--:--")} às ${escapar(item.fim || "--:--")}</strong>
+            <strong style="font-size:12px">${escapar(statusTexto[status] || status)}</strong>
+          </div>
 
-                  <p style="margin-top:5px">
-                    <strong>Valor:</strong>
-                    R$ ${preco.toFixed(2).replace(".", ",")}
-                  </p>
+          <p style="margin-top:10px">
+            <strong>Cliente:</strong>
+            ${escapar(item.clienteNome || "Cliente")}
+          </p>
 
-                  <p style="margin-top:5px;font-size:13px;color:#64748b">
-                    ${escapar(item.modalidadeAtendimento || "local") === "domicilio"
-                      ? "Atendimento a domicílio"
-                      : "Atendimento no estabelecimento"}
-                  </p>
-                </article>
-              `;
-            }).join("")
-          : `
+          <p style="margin-top:5px">
+            <strong>Serviço:</strong>
+            ${escapar(item.servicoNome || "Serviço")}
+          </p>
+
+          <p style="margin-top:5px">
+            <strong>Valor:</strong>
+            R$ ${preco.toFixed(2).replace(".", ",")}
+          </p>
+
+          <p style="margin-top:5px;font-size:13px;color:#64748b">
+            ${escapar(item.modalidadeAtendimento || "local") === "domicilio"
+              ? "Atendimento a domicílio"
+              : "Atendimento no estabelecimento"}
+          </p>
+
+          ${botoes ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">${botoes}</div>` : ""}
+        </article>
+      `;
+    }).join("")
+  : `
+      <p style="margin-top:12px;padding:12px;background:#fff;border-radius:10px;color:#64748b">
+        Nenhum agendamento encontrado para esta data.
+      </p>
+    `;
               <p style="margin-top:12px;padding:12px;background:#fff;border-radius:10px;color:#64748b">
                 Nenhum agendamento encontrado para esta data.
               </p>
