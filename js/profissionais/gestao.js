@@ -1500,7 +1500,7 @@ carregarEquipe();
       );
 
       const resultado = await getDocs(referencia);
-   
+   if (solicitacaoAtual !== solicitacaoAgenda) return;
       const horariosSalvos = {};
 
       resultado.forEach(documento => {
