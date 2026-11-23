@@ -7634,14 +7634,21 @@ function renderizarVitrineLojas() {
       loja.categoria === categoriaLojaSelecionada ||
       (
         categoriaLojaSelecionada === "Outros" &&
-        ![
-          "Alimentação",
-          "Moda",
-          "Casa",
-          "Beleza",
-          "Mercado",
-          "Eletrônicos"
-        ].includes(loja.categoria)
+        !
+        [
+  "Alimentação",
+  "Moda",
+  "Casa",
+  "Beleza",
+  "Barbearia",
+  "Cabelo",
+  "Unhas",
+  "Estetica",
+  "Maquiagem",
+  "Mercado",
+  "Eletrônicos"
+]
+        .includes(loja.categoria)
       );
 
     const texto = [
