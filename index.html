@@ -9567,7 +9567,7 @@ if (servicesPage && ! $("servicesMenu")) {
     btn.addEventListener("click", () => {
   painel.style.display = "none";
   menu.style.display = "grid";
-  categorias.style.display = "block";
+
 });
 
     painel.prepend(btn);
@@ -9575,7 +9575,6 @@ if (servicesPage && ! $("servicesMenu")) {
 
   const abrirPainel = (painel) => {
   menu.style.display = "none";
-  categorias.style.display = "none";
   painel.style.display = "block";
   painel.scrollIntoView({ behavior: "smooth", block: "start" });
 };
@@ -9593,37 +9592,6 @@ if (servicesPage && ! $("servicesMenu")) {
     subtitulo.className = "sectionSubtitle";
   subtitulo.textContent =
   "Encontre profissionais ou divulgue seu trabalho na sua região.";
-
-// CATEGORIAS POPULARES
-const categorias = document.createElement("section");
-categorias.id = "servicesPopularCategories";
-categorias.innerHTML = `
-  <h3 style="font-size:17px;font-weight:900;margin:22px 0 12px">
-    Categorias Populares
-  </h3>
-
-   <div class="servicesCategoryGrid">
-  <button type="button" class="servicesCategoryItem" data-category="Barbearia">
-    <span>💈</span>
-    <strong>Barbearia</strong>
-  </button>
-  <button type="button" class="servicesCategoryItem" data-category="Cabelo">
-    <span>💇</span>
-    <strong>Cabelo</strong>
-  </button>
-  <button type="button" class="servicesCategoryItem" data-category="Unhas">
-    <span>💅</span>
-    <strong>Unhas</strong>
-  </button>
-  <button type="button" class="servicesCategoryItem" data-category="Estetica">
-    <span>🧖</span>
-    <strong>Estética</strong>
-  </button>
-  <button type="button" class="servicesCategoryItem" data-category="Maquiagem">
-    <span>💄</span>
-    <strong>Maquiagem</strong>
-  </button>
-</div>
 `;
 
 servicesPage.append(titulo, subtitulo, categorias, menu);
