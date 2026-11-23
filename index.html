@@ -3248,6 +3248,50 @@ Você será direcionado ao Mercado Pago para concluir o pagamento. O destaque se
   </div>
 </div>
 
+  
+<!-- MODAL: CONCLUSÃO DO CADASTRO GOOGLE -->
+<div id="googleSignupModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="googleSignupTitle">
+  <div class="modalContent">
+    <div class="modalHeader">
+      <h2 id="googleSignupTitle">Concluir cadastro</h2>
+      <button type="button" class="closeModal" data-close="googleSignupModal" aria-label="Fechar">×</button>
+    </div>
+
+    <p style="color:#64748b;font-size:14px;margin-bottom:16px;">
+      Só falta completar algumas informações para começar a usar o Perto.
+    </p>
+
+    <div class="formGroup">
+      <label for="googleSignupCity">Sua cidade *</label>
+      <input id="googleSignupCity" type="text" maxlength="100" placeholder="Ex.: Cerquilho" required>
+    </div>
+
+    <button type="button" class="legalLink" id="googleSignupReadTerms">
+      Ler os termos completos, regras de segurança e privacidade
+    </button>
+
+    <label class="checkboxLine">
+      <input id="googleSignupTerms" type="checkbox">
+      <span>Li e aceito os Termos de Uso, Responsabilidade, Segurança e Privacidade do Perto.</span>
+    </label>
+
+    <label class="checkboxLine">
+      <input id="googleSignupAdult" type="checkbox">
+      <span>Confirmo que tenho 18 anos ou mais.</span>
+    </label>
+
+    <div class="modalActions" style="display:grid;gap:8px;">
+      <button type="button" class="btn btnPrimary" id="googleSignupCompleteBtn">
+        Concluir cadastro
+      </button>
+      <button type="button" class="btn" data-close="googleSignupModal" style="background:#f3f4f6;">
+        Cancelar
+      </button>
+    </div>
+  </div>
+</div>
+  
+
 <!-- FINALIZAÇÃO DO PEDIDO: ESCOLHA DE ENTREGA -->
 <div id="storeCheckoutChoiceModal" class="modal" style="display:none;z-index:10040;">
   <div class="modalContent" style="max-width:480px;width:calc(100% - 28px);max-height:90vh;overflow-y:auto;padding:22px;border-radius:20px;">
