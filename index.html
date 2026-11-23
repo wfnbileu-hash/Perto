@@ -4798,10 +4798,13 @@ if(error.code==="auth/invalid-email")m="Digite um e-mail válido.";
 if(error.code==="auth/weak-password")m="A senha escolhida é muito fraca.";
 authMessage(m)}}
   
+
 let googleLoginEmAndamento = false;
 const googleProvider = new GoogleAuthProvider();
 
 $("btnGoogleLogin").onclick = async () => {
+  if (googleLoginEmAndamento) return;
+
   clearAuth();
   googleLoginEmAndamento = true;
 
@@ -4812,47 +4815,69 @@ $("btnGoogleLogin").onclick = async () => {
     const perfil = await getDoc(perfilRef);
 
     if (!perfil.exists()) {
-      const cidade = prompt("Qual é a sua cidade?");
+      const dadosCadastro = await new Promise(resolve => {
+        const modal = $("googleSignupModal");
+        const cidadeInput = $("googleSignupCity");
+        const termosCheck = $("googleSignupTerms");
+        const adultoCheck = $("googleSignupAdult");
+        const concluirBtn = $("googleSignupCompleteBtn");
+        const lerTermosBtn = $("googleSignupReadTerms");
 
-      if (!cidade || !cidade.trim()) {
-        await signOut(auth);
-        return;
-      }
+        function finalizar(dados) {
+          modal.removeEventListener("click", tratarFechamento);
+          concluirBtn.removeEventListener("click", concluirCadastro);
+          lerTermosBtn.removeEventListener("click", lerTermos);
+          closeModal("googleSignupModal");
+          resolve(dados);
+        }
 
-      
-abrirTermos();
+        function tratarFechamento(evento) {
+          if (
+            evento.target === modal ||
+            evento.target.closest('[data-close="googleSignupModal"]')
+          ) {
+            finalizar(null);
+          }
+        }
 
-await new Promise(resolve => {
-  const modal = $("termsModal");
+        function lerTermos() {
+          abrirTermos();
+        }
 
-  function concluirLeitura(evento) {
-    if (
-      evento.target.closest('[data-close="termsModal"]') ||
-      evento.target === modal
-    ) {
-      modal.removeEventListener("click", concluirLeitura);
-      resolve();
-    }
-  }
+        function concluirCadastro() {
+          const cidade = cidadeInput.value.trim();
 
-  modal.addEventListener("click", concluirLeitura);
-});
+          if (!cidade) {
+            alert("Informe sua cidade para continuar.");
+            cidadeInput.focus();
+            return;
+          }
 
-const aceitouTermos = confirm(
-  "Após ler os termos completos do Perto, você confirma que leu e aceita as condições?"
-);
-  
+          if (!termosCheck.checked) {
+            alert("É necessário ler e aceitar os termos do Perto.");
+            return;
+          }
 
-      if (!aceitouTermos) {
-        await signOut(auth);
-        return;
-      }
+          if (!adultoCheck.checked) {
+            alert("É necessário confirmar que você tem 18 anos ou mais.");
+            return;
+          }
 
-      const maiorDeIdade = confirm(
-        "Você confirma que tem 18 anos ou mais?"
-      );
+          finalizar({
+            cidade,
+            termosAceitos: true,
+            maiorDeIdadeConfirmado: true
+          });
+        }
 
-      if (!maiorDeIdade) {
+        modal.addEventListener("click", tratarFechamento);
+        concluirBtn.addEventListener("click", concluirCadastro);
+        lerTermosBtn.addEventListener("click", lerTermos);
+
+        openModal("googleSignupModal");
+      });
+
+      if (!dadosCadastro) {
         await signOut(auth);
         return;
       }
@@ -4861,7 +4886,7 @@ const aceitouTermos = confirm(
         uid: usuario.uid,
         nome: usuario.displayName || "Usuário",
         telefone: "",
-        cidade: cidade.trim(),
+        cidade: dadosCadastro.cidade,
         email: usuario.email || "",
         termosAceitos: true,
         termosVersao: TERMOS_VERSAO,
@@ -4874,6 +4899,7 @@ const aceitouTermos = confirm(
 
     await enterApp(usuario);
     toast("Login com Google realizado!");
+
   } catch (error) {
     console.error("Erro no login com Google:", error);
     authMessage(
