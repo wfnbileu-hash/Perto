@@ -6844,7 +6844,7 @@ function abrirEscolhaFinalizacaoCarrinho(){
   }
   openModal("storeCheckoutChoiceModal");
 }
-$("closeStoreCheckoutChoice").onclick=()=>$("storeCheckoutChoiceModal").style.display="none";
+$("closeStoreCheckoutChoice").onclick=()=>closeModal("storeCheckoutChoiceModal");
 $("storeCheckoutChoiceModal").addEventListener("click",e=>{if(e.target===$("storeCheckoutChoiceModal")) $("closeStoreCheckoutChoice").click();});
 $("storeCheckoutContactBtn").onclick=()=>{
   $("storeCheckoutChoiceModal").style.display="none";
