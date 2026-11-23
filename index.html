@@ -6569,9 +6569,37 @@ async function carregarVitrineLojas() {
 
   try {
 
-       const busca = normalizarCidadeVitrine($("storeSearch").value);
-  const cidade = normalizarCidadeVitrine($("storeCity").value);
+           const cidadeFiltro = $("storeCity")?.value.trim() || "";
+    const cidadeNormalizada = normalizarCidadeVitrine(cidadeFiltro);
 
+    if (
+      lojasVitrineCarregada &&
+      lojasVitrineCacheCidade === cidadeNormalizada
+    ) {
+      renderizarVitrineLojas();
+      return;
+    }
+
+    // Consulta somente lojas públicas ativas.
+    const consulta = await getDocs(
+      query(
+        collection(db, "lojas"),
+        where("ativo", "==", true)
+      )
+    );
+
+    lojasVitrine = consulta.docs
+      .map(item => ({
+        id: item.id,
+        ...item.data()
+      }))
+      .filter(loja =>
+        !cidadeNormalizada ||
+        normalizarCidadeVitrine(loja.cidade) === cidadeNormalizada
+      );
+
+    lojasVitrineCacheCidade = cidadeNormalizada;
+    lojasVitrineCarregada = true;
     // Permite que a proprietária veja sua loja
     // mesmo enquanto ela aguarda ativação.
     const usuario = auth.currentUser || currentUser;
