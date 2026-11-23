@@ -402,24 +402,6 @@ export function initPertoProfissionais(bridge) {
       </div>
     </section>
 
-    <section class="pp-section">
-      <div class="pp-section-heading">
-        <div>
-          <h3>Profissionais autônomos</h3>
-          <p>Encontre especialistas independentes.</p>
-        </div>
-      </div>
-
-      <div class="pp-empty-state" id="ppIndependent">
-        <span>✂️</span>
-        <strong>Novos profissionais em breve</strong>
-        <p>
-          Estamos preparando o espaço para profissionais
-          que atendem por conta própria.
-        </p>
-      </div>
-    </section>
-
     <footer class="pp-footer">
       <strong>Perto Profissionais</strong>
       <p>Beleza, cuidado e praticidade perto de você.</p>
