@@ -5493,6 +5493,21 @@ function showInternalPage(id,scroll=true){
   if(id==="storesPage")carregarVitrineLojas();
   if(scroll)window.scrollTo({top:0,behavior:"smooth"});
 }
+  $("storesBackToServicesBtn")?.addEventListener("click", () => {
+  retornoServicosAtivo = false;
+  categoriaLojaSelecionada = "";
+
+  document.querySelectorAll(
+    "#storeCategories .storeCategory"
+  ).forEach(item => {
+    item.classList.toggle(
+      "active",
+      item.dataset.category === ""
+    );
+  });
+
+  showInternalPage("servicesPage");
+});
 
 
 // ==================================================
