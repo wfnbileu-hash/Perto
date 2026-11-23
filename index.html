@@ -2646,7 +2646,7 @@ display:none!important;
 <!-- FIM DOS SERVIÇOS -->
 
 <!-- CADASTRO DO PROFISSIONAL -->
-<div id="professionalModal" class="modal" style="display:none;">
+<div id="professionalModal" class="modal">
   <div class="modalContent" style="max-width:480px;width:calc(100% - 28px);max-height:90vh;overflow-y:auto;padding:20px;border-radius:20px;">
 
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;">
@@ -6322,7 +6322,7 @@ async function saveProfessional(e){
       {merge:true}
     );
 
-    $("professionalModal").style.display="none";
+    closeModal("professionalModal");
     $("professionalForm").reset();
     selectedProfessionalPhoto=null;
     $("professionalPhotoPreview").style.display="none";
@@ -9190,7 +9190,7 @@ botaoStatus.textContent=currentProfessionalActive
       botao.textContent="Salvar alterações";
     }
 
-    $("professionalModal").style.display="flex";
+    openModal("professionalModal");
 
   }catch(error){
     console.error("Erro ao carregar perfil profissional:",error);
@@ -9199,7 +9199,7 @@ botaoStatus.textContent=currentProfessionalActive
 };
 
 const fecharCadastroProfissional=()=>{
-  $("professionalModal").style.display="none";
+  closeModal("professionalModal");
   selectedProfessionalPhoto=null;
   $("professionalPhoto").value="";
   $("professionalPhotoPreview").style.display="none";
@@ -9258,7 +9258,7 @@ $("deleteProfessionalBtn").onclick=async()=>{
     await deleteDoc(doc(db,"profissionais",currentUser.uid));
 
     currentProfessionalActive=true;
-    $("professionalModal").style.display="none";
+    closeModal("professionalModal");
     $("professionalForm").reset();
     $("toggleProfessionalBtn").style.display="none";
     $("deleteProfessionalBtn").style.display="none";
