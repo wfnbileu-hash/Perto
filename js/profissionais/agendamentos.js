@@ -237,6 +237,7 @@ export async function montarAgendamentoCliente(container, estabelecimento, bridg
     }
    }
   $("ppBookProfessional").addEventListener("change", carregarHorarios);
+  $("ppBookService").addEventListener("change", carregarHorarios);
   $("ppBookDate").addEventListener("change", carregarHorarios);
 
   $("ppBookSubmit").addEventListener("click", async () => {
