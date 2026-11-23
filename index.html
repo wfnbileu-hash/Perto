@@ -9594,20 +9594,7 @@ if (servicesPage && ! $("servicesMenu")) {
   "Encontre profissionais ou divulgue seu trabalho na sua região.";
 `;
 
-servicesPage.append(titulo, subtitulo, categorias, menu);
-   categorias.querySelectorAll("[data-category]").forEach(botao => {
-  botao.addEventListener("click", () => {
-    retornoServicosAtivo = true;
-    categoriaLojaSelecionada = botao.dataset.category;
-
-    document.querySelectorAll(
-      "#storeCategories .storeCategory"
-    ).forEach(item => {
-      item.classList.toggle(
-        "active",
-        item.dataset.category === categoriaLojaSelecionada
-      );
-    });
+servicesPage.append(titulo, subtitulo, menu);
 
     lojasExibidas = 6;
 
