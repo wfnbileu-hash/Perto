@@ -5468,15 +5468,31 @@ restartSlides();
 // ==================================================
 // NAVEGAÇÃO ENTRE AS PÁGINAS INTERNAS
 // ==================================================
-function showInternalPage(id,scroll=true){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-$(id)?.classList.add("active");
-const painelTarifas=$("painelConfigTarifas"); if(painelTarifas) painelTarifas.style.display=(id==="adminPage" && currentUser?.uid===ADMIN_UID)?"block":"none";
-document.querySelectorAll(".navBtn[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
-if(id==="chatPage")loadConversations(); 
-if(id==="storesPage")carregarVitrineLojas();
-if(scroll)window.scrollTo({top:0,behavior:"smooth"})}
-document.querySelectorAll(".navBtn[data-page]").forEach(b=>b.onclick=()=>{if(b.dataset.page==="favoritesPage")renderFavorites();showInternalPage(b.dataset.page)});
+function showInternalPage(id,scroll=true){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  $(id)?.classList.add("active");
 
+  if(id !== "storesPage"){
+    retornoServicosAtivo = false;
+  }
+
+  const botaoVoltar = $("storesBackToServicesBtn");
+  if(botaoVoltar){
+    botaoVoltar.style.display =
+      id === "storesPage" && retornoServicosAtivo
+        ? "block"
+        : "none";
+  }
+
+  const painelTarifas=$("painelConfigTarifas");
+  if(painelTarifas) painelTarifas.style.display=(id==="adminPage" && currentUser?.uid===ADMIN_UID)?"block":"none";
+
+  document.querySelectorAll(".navBtn[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+
+  if(id==="chatPage")loadConversations();
+  if(id==="storesPage")carregarVitrineLojas();
+  if(scroll)window.scrollTo({top:0,behavior:"smooth"});
+}
 
 
 // ==================================================
