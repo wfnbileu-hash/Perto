@@ -9593,17 +9593,6 @@ if (servicesPage && ! $("servicesMenu")) {
   subtitulo.textContent =
   "Encontre profissionais ou divulgue seu trabalho na sua região.";
 `;
-
-servicesPage.append(titulo, subtitulo, menu);
-
-    lojasExibidas = 6;
-
-    const botaoVoltar = $("storesBackToServicesBtn");
-    if (botaoVoltar) botaoVoltar.style.display = "block";
-
-    showInternalPage("storesPage");
-  });
-});
     menu.append(
       criarOpcao(
         "🔎",
