@@ -167,6 +167,28 @@ export function initGestaoProfissionais(bridge) {
           </select>
         </label>
 
+
+
+        <div style="font-size:13px;font-weight:700">
+          <label for="ppLogoInput">Logo do estabelecimento (opcional)</label>
+          <input
+            id="ppLogoInput"
+            type="file"
+            accept="image/*"
+            style="display:block;width:100%;padding:10px;margin-top:6px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;font-weight:400"
+          >
+          <small style="display:block;margin-top:5px;color:#64748b;font-weight:400">
+            Escolha uma imagem da galeria (até 2 MB).
+          </small>
+          <div id="ppLogoPreviewBox" style="display:none;margin-top:10px">
+            <img
+              id="ppLogoPreview"
+              alt="Prévia da logo"
+              style="width:76px;height:76px;object-fit:cover;border-radius:12px;border:1px solid #cbd5e1"
+            >
+          </div>
+        </div>
+       </div>
       </div>
 
       <div style="display:flex;gap:9px;margin-top:18px">
@@ -180,6 +202,7 @@ export function initGestaoProfissionais(bridge) {
           Enviar cadastro
         </button>
       </div>
+
     </form>
 
     <section id="ppInvitesPanel"
@@ -371,7 +394,8 @@ export function initGestaoProfissionais(bridge) {
 
   let editandoId = null;
   let servicoEditandoId = null;
-
+  let arquivoLogoSelecionado = null;
+  let logoUrlAtual = "";
   let estabelecimentoServicosAtual = null;
   let estabelecimentoEquipeAtual = null;
   let estabelecimentoDisponibilidadeAtual = null;
@@ -669,34 +693,53 @@ export function initGestaoProfissionais(bridge) {
   });
 
   function limparFormulario() {
-    $("ppEstablishmentForm").reset();
-    editandoId = null;
-    $("ppFormTitle").textContent = "Novo estabelecimento";
-    $("ppSaveForm").textContent = "Enviar cadastro";
-    $("ppEstablishmentForm").style.display = "none";
+  $("ppEstablishmentForm").reset();
+  editandoId = null;
+  arquivoLogoSelecionado = null;
+  logoUrlAtual = "";
+
+  const previewBox = $("ppLogoPreviewBox");
+  const previewImg = $("ppLogoPreview");
+  if (previewImg) previewImg.removeAttribute("src");
+  if (previewBox) previewBox.style.display = "none";
+
+  $("ppFormTitle").textContent = "Novo estabelecimento";
+  $("ppSaveForm").textContent = "Enviar cadastro";
+  $("ppEstablishmentForm").style.display = "none";
+}
+
+function preencherFormulario(item) {
+  $("ppName").value = item.nome || "";
+  $("ppCategory").value = item.categoria || "";
+  $("ppDescription").value = item.descricao || "";
+  $("ppCity").value = item.cidade || "";
+  $("ppNeighborhood").value = item.bairro || "";
+  $("ppAddress").value = item.endereco || "";
+  $("ppPhone").value = item.telefone || "";
+  $("ppModality").value = item.modalidadeAtendimento || "local";
+
+  editandoId = item.id;
+  arquivoLogoSelecionado = null;
+  logoUrlAtual = item.logoURL || "";
+
+  const previewBox = $("ppLogoPreviewBox");
+  const previewImg = $("ppLogoPreview");
+  if (logoUrlAtual && previewImg && previewBox) {
+    previewImg.src = logoUrlAtual;
+    previewBox.style.display = "block";
+  } else if (previewBox) {
+    previewBox.style.display = "none";
   }
 
-  function preencherFormulario(item) {
-    $("ppName").value = item.nome || "";
-    $("ppCategory").value = item.categoria || "";
-    $("ppDescription").value = item.descricao || "";
-    $("ppCity").value = item.cidade || "";
-    $("ppNeighborhood").value = item.bairro || "";
-    $("ppAddress").value = item.endereco || "";
-    $("ppPhone").value = item.telefone || "";
-    $("ppLogo").value = item.logoURL || "";
-    $("ppModality").value = item.modalidadeAtendimento || "local";
+  $("ppFormTitle").textContent = "Editar estabelecimento";
+  $("ppSaveForm").textContent = "Salvar alterações";
+  $("ppEstablishmentForm").style.display = "block";
 
-    editandoId = item.id;
-    $("ppFormTitle").textContent = "Editar estabelecimento";
-    $("ppSaveForm").textContent = "Salvar alterações";
-    $("ppEstablishmentForm").style.display = "block";
-
-    $("ppEstablishmentForm").scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  }
+  $("ppEstablishmentForm").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
 
   async function carregarMeusEstabelecimentos() {
     const usuario = usuarioAtual();
@@ -1828,24 +1871,70 @@ export function initGestaoProfissionais(bridge) {
   });
 
   $("ppCancelForm").addEventListener("click", limparFormulario);
+  $("ppLogoInput")?.addEventListener("change", evento => {
+  const arquivo = evento.target.files?.[0];
+  if (!arquivo) return;
 
-  $("ppEstablishmentForm").addEventListener("submit", async evento => {
-    evento.preventDefault();
+  if (!arquivo.type.startsWith("image/")) {
+    $("ppLogoInput").value = "";
+    return avisar("Selecione um arquivo de imagem válido.");
+  }
 
-    const usuario = usuarioAtual();
-    if (!usuario) return avisar("Sua sessão expirou. Entre novamente.");
+  const limiteBytes = 2 * 1024 * 1024; // 2 MB
+  if (arquivo.size > limiteBytes) {
+    $("ppLogoInput").value = "";
+    return avisar("A logo deve ter no máximo 2 MB.");
+  }
 
-    const nome = $("ppName").value.trim();
-    const categoria = $("ppCategory").value;
-    const cidade = $("ppCity").value.trim();
-    const logoURL = $("ppLogo").value.trim();
+  arquivoLogoSelecionado = arquivo;
+  const previewImg = $("ppLogoPreview");
+  const previewBox = $("ppLogoPreviewBox");
 
-    if (!nome || !categoria || !cidade) {
-      return avisar("Preencha nome, categoria e cidade.");
-    }
+  if (previewImg && previewBox) {
+    previewImg.src = URL.createObjectURL(arquivo);
+    previewBox.style.display = "block";
+  }
+});
+   $("ppEstablishmentForm").addEventListener("submit", async evento => {
+  evento.preventDefault();
 
-    if (logoURL && !/^https?:\/\//i.test(logoURL)) {
-      return avisar("Informe um link válido para o logotipo.");
+  const usuario = usuarioAtual();
+  if (!usuario) return avisar("Sua sessão expirou. Entre novamente.");
+
+  const nome = $("ppName").value.trim();
+  const categoria = $("ppCategory").value;
+  const cidade = $("ppCity").value.trim();
+
+  if (!nome || !categoria || !cidade) {
+    return avisar("Preencha nome, categoria e cidade.");
+  }
+
+  const salvar = $("ppSaveForm");
+  salvar.disabled = true;
+  salvar.textContent = "Salvando...";
+
+  try {
+    let logoURL = logoUrlAtual || "";
+
+    if (arquivoLogoSelecionado) {
+      const storage = bridge.storage;
+      const { ref, uploadBytes, getDownloadURL } = bridge.storageUtils || {};
+
+      if (!storage || !ref || !uploadBytes || !getDownloadURL) {
+        throw new Error("Recursos do Firebase Storage não disponíveis no bridge.");
+      }
+
+      const extensao = (arquivoLogoSelecionado.name.split(".").pop() || "jpg")
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "");
+      const caminho = `logosEstabelecimentos/${usuario.uid}/${Date.now()}.${extensao || "jpg"}`;
+      const arquivoRef = ref(storage, caminho);
+
+      const snapshot = await uploadBytes(arquivoRef, arquivoLogoSelecionado, {
+        contentType: arquivoLogoSelecionado.type
+      });
+
+      logoURL = await getDownloadURL(snapshot.ref);
     }
 
     const modalidadeAtendimento = $("ppModality").value;
@@ -1863,49 +1952,42 @@ export function initGestaoProfissionais(bridge) {
       atualizadoEm: serverTimestamp()
     };
 
-    const salvar = $("ppSaveForm");
-    salvar.disabled = true;
-    salvar.textContent = "Salvando...";
+    if (editandoId) {
+      await updateDoc(
+        doc(db, "estabelecimentosProfissionais", editandoId),
+        dados
+      );
 
-    try {
-      if (editandoId) {
-        await updateDoc(
-          doc(db, "estabelecimentosProfissionais", editandoId),
-          dados
-        );
+      avisar("Estabelecimento atualizado!");
+    } else {
+      await addDoc(
+        collection(db, "estabelecimentosProfissionais"),
+        {
+          proprietarioId: usuario.uid,
+          ...dados,
+          atendeDomicilio: modalidadeAtendimento !== "local",
+          ativo: false,
+          statusAdmin: "aguardando_aprovacao",
+          criadoEm: serverTimestamp()
+        }
+      );
 
-        avisar("Estabelecimento atualizado!");
-
-      } else {
-        await addDoc(
-          collection(db, "estabelecimentosProfissionais"),
-          {
-            proprietarioId: usuario.uid,
-            ...dados,
-            atendeDomicilio: modalidadeAtendimento !== "local",
-            ativo: false,
-            statusAdmin: "aguardando_aprovacao",
-            criadoEm: serverTimestamp()
-          }
-        );
-
-        avisar("Cadastro enviado para aprovação!");
-      }
-
-      limparFormulario();
-      await carregarMeusEstabelecimentos();
-
-    } catch (erro) {
-      console.error("[Perto Profissionais] Erro ao salvar:", erro);
-      avisar("Não foi possível salvar. Verifique as regras do Firestore.");
-    } finally {
-      salvar.disabled = false;
-      salvar.textContent = editandoId
-        ? "Salvar alterações"
-        : "Enviar cadastro";
+      avisar("Cadastro enviado para aprovação!");
     }
-  });
 
+    limparFormulario();
+    await carregarMeusEstabelecimentos();
+
+  } catch (erro) {
+    console.error("[Perto Profissionais] Erro ao salvar:", erro);
+    avisar(erro.message || "Não foi possível salvar. Verifique as regras do Firebase.");
+  } finally {
+    salvar.disabled = false;
+    salvar.textContent = editandoId
+      ? "Salvar alterações"
+      : "Enviar cadastro";
+  }
+});
   console.info("[Perto Profissionais] Gestão preparada.");
   return true;
 }
