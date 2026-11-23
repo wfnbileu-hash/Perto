@@ -1158,6 +1158,9 @@ display:none!important;
 
 .servicesCategoryItem{
   min-width:0;
+  font:inherit;
+  cursor:pointer;
+  width:100%;
   padding:13px 4px;
   border:1px solid #e2e8f0;
   border-radius:15px;
@@ -9520,27 +9523,34 @@ categorias.innerHTML = `
     Categorias Populares
   </h3>
 
-  <div class="servicesCategoryGrid">
-    <div class="servicesCategoryItem">
+   <div class="servicesCategoryGrid">
+    <button type="button" class="servicesCategoryItem" data-category="Barbearia">
       <span>💈</span>
       <strong>Barbearias</strong>
-    </div>
-    <div class="servicesCategoryItem">
+    </button>
+    <button type="button" class="servicesCategoryItem" data-category="Salao">
       <span>💇</span>
       <strong>Salões</strong>
-    </div>
-    <div class="servicesCategoryItem">
+    </button>
+    <button type="button" class="servicesCategoryItem" data-category="Manicure">
       <span>💅</span>
       <strong>Manicures</strong>
-    </div>
-    <div class="servicesCategoryItem">
+    </button>
+    <button type="button" class="servicesCategoryItem" data-category="Spa">
       <span>🧖</span>
       <strong>Spas</strong>
-    </div>
+    </button>
   </div>
 `;
 
 servicesPage.append(titulo, subtitulo, categorias, menu);
+    categorias.querySelectorAll("[data-category]").forEach(botao => {
+  botao.addEventListener("click", () => {
+    $("searchProfessionalCategory").value = botao.dataset.category;
+    abrirPainel(painelProfissionais);
+    $("professionalSearchResults").replaceChildren();
+  });
+});
     menu.append(
       criarOpcao(
         "🔎",
