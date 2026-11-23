@@ -6569,45 +6569,8 @@ async function carregarVitrineLojas() {
 
   try {
 
-        const cidadeUsuario = currentUserData?.cidade?.trim();
-
-    if (!cidadeUsuario) {
-      openProfileEditor();
-      return;
-    }
-
-    if (
-      lojasVitrineCarregada &&
-      lojasVitrineCacheCidade === cidadeUsuario
-    ) {
-      renderizarVitrineLojas();
-      return;
-    }
-    // Consulta somente lojas públicas ativas.
-
-
-const consulta = await getDocs(
-  query(
-    collection(db, "lojas"),
-    where("ativo", "==", true)
-  )
-);
-
-
-const cidadeNormalizada = normalizarCidadeVitrine(cidadeUsuario);
-
-lojasVitrine = consulta.docs
-  .map(item => ({
-    id: item.id,
-    ...item.data()
-  }))
-  .filter(loja =>
-    normalizarCidadeVitrine(loja.cidade) === cidadeNormalizada
-  );
-
-lojasVitrineCacheCidade = cidadeUsuario;
-lojasVitrineCarregada = true;
-
+       const busca = normalizarCidadeVitrine($("storeSearch").value);
+  const cidade = normalizarCidadeVitrine($("storeCity").value);
 
     // Permite que a proprietária veja sua loja
     // mesmo enquanto ela aguarda ativação.
@@ -7520,9 +7483,9 @@ $("storeDetailBackBtn").onclick = () => {
 
 function renderizarVitrineLojas() {
 
-  const busca = $("storeSearch").value.trim().toLowerCase();
-  const cidade = $("storeCity").value.trim().toLowerCase();
-
+  const busca = normalizarCidadeVitrine($("storeSearch").value);
+  const cidade = normalizarCidadeVitrine($("storeCity").value);
+ 
   const usuarioAtual = auth.currentUser || currentUser;
   const temMinhaLoja = !!usuarioAtual && lojasVitrine.some(loja =>
     loja.id === usuarioAtual.uid || loja.usuarioId === usuarioAtual.uid
@@ -7553,10 +7516,10 @@ function renderizarVitrineLojas() {
       loja.cidade
     ].join(" ").toLowerCase();
 
-    const buscaOK = !busca || texto.includes(busca);
+        const buscaOK = !busca || normalizarCidadeVitrine(texto).includes(busca);
     const cidadeOK =
       !cidade ||
-      String(loja.cidade || "").toLowerCase().includes(cidade);
+      normalizarCidadeVitrine(loja.cidade).includes(cidade);
 
     // Lojas inativas só aparecem para seu proprietário.
     const publica = loja.ativo === true;
@@ -9149,8 +9112,8 @@ $("homeStores").onclick=()=>{
     return;
   }
 
-  $("storeCity").value=currentUserData.cidade.trim();
-  $("storeCity").readOnly=true;
+  $("storeCity").value=currentUserData?.cidade?.trim() || "";
+  $("storeCity").readOnly=false;
   showInternalPage("storesPage");
 };
 
