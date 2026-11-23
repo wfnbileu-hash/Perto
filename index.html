@@ -5454,9 +5454,8 @@ if(!list.length){c.innerHTML='<div class="emptyState" style="grid-column:1/-1"><
 return}list.forEach(p=>c.appendChild(createProductCard(p)))}
 $("globalSearch").oninput=e=>{showInternalPage("searchPage");
 renderSearchProducts(e.target.value)};
-$("cityFilter")?.addEventListener("change",()=>renderSearchProducts($("globalSearch").value));
 
-
+$("cityFilter")?.addEventListener("input",()=>renderSearchProducts($("globalSearch").value));
 
 // ==================================================
 // FAVORITOS — SALVAR E EXIBIR
