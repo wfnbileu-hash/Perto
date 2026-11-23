@@ -6917,10 +6917,10 @@ async function atualizarStatusEntregaMarketplace(){
 }
 
 $("storeCartFloatingDelivery").onclick=abrirEscolhaFinalizacaoCarrinho;
-$("storeCartFloatingView").onclick=()=>$("storeCartPanel").scrollIntoView({behavior:"smooth",block:"start"});
-$("closeStoreDeliveryModal").onclick=()=>{
-  $("storeDeliveryModal").style.display="none";
-  if(entregaMarketplaceTimer){clearInterval(entregaMarketplaceTimer);entregaMarketplaceTimer=null;}
+$("storeCartFloatingView").onclick=abrirEscolhaFinalizacaoCarrinho;
+$("closeStoreDeliveryModal").onclick=()=>{  
+$("storeDeliveryModal").style.display="none"; 
+if(entregaMarketplaceTimer){clearInterval(entregaMarketplaceTimer);entregaMarketplaceTimer=null;}
 };
 $("refreshStoreDeliveryStatus").onclick=atualizarStatusEntregaMarketplace;
 
