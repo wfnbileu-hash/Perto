@@ -6842,7 +6842,7 @@ function abrirEscolhaFinalizacaoCarrinho(){
     botaoEntrega.textContent = freteDisponivel ? "🚚 Quero receber em casa" : "🚚 FreteGo indisponível nesta loja";
     botaoEntrega.style.opacity = freteDisponivel ? "1" : ".55";
   }
-  $("storeCheckoutChoiceModal").style.display="flex";
+  openModal("storeCheckoutChoiceModal");
 }
 $("closeStoreCheckoutChoice").onclick=()=>$("storeCheckoutChoiceModal").style.display="none";
 $("storeCheckoutChoiceModal").addEventListener("click",e=>{if(e.target===$("storeCheckoutChoiceModal")) $("closeStoreCheckoutChoice").click();});
