@@ -1481,20 +1481,25 @@ function preencherFormulario(item) {
             const todosBotoesCard = btnAcao.parentElement?.querySelectorAll("button") || [btnAcao];
             todosBotoesCard.forEach(b => { b.disabled = true; });
 
-            try {
-              await updateDoc(
-                doc(
-                  db,
-                  "estabelecimentosProfissionais",
-                  estabelecimentoAgendaAtual.id,
-                  "agendamentos",
-                  agendamentoId
-                ),
-                {
-                  status: novoStatus,
-                  atualizadoEm: serverTimestamp()
-                }
+                        try {
+              const atualizarAgendamento = bridge.httpsCallable(
+                bridge.functions,
+                "atualizarAgendamentoProfissional"
               );
+
+              await atualizarAgendamento({
+                estabelecimentoId: estabelecimentoAgendaAtual.id,
+                agendamentoId,
+                novoStatus
+              });
+
+              avisar("Status do agendamento atualizado.");
+              await carregarDia();
+            } catch (erro) {
+              console.error("[Perto Profissionais] Erro ao atualizar agendamento:", erro);
+              avisar("Não foi possível atualizar o agendamento.");
+              todosBotoesCard.forEach(b => { b.disabled = false; });
+            }
 
               avisar("Status do agendamento atualizado.");
               await carregarDia();
