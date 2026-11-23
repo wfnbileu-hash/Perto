@@ -1481,7 +1481,7 @@ function preencherFormulario(item) {
             const todosBotoesCard = btnAcao.parentElement?.querySelectorAll("button") || [btnAcao];
             todosBotoesCard.forEach(b => { b.disabled = true; });
 
-                        try {
+              try {
               const atualizarAgendamento = bridge.httpsCallable(
                 bridge.functions,
                 "atualizarAgendamentoProfissional"
