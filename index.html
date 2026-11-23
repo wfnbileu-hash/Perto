@@ -6847,7 +6847,7 @@ function abrirEscolhaFinalizacaoCarrinho(){
 $("closeStoreCheckoutChoice").onclick=()=>closeModal("storeCheckoutChoiceModal");
 $("storeCheckoutChoiceModal").addEventListener("click",e=>{if(e.target===$("storeCheckoutChoiceModal")) $("closeStoreCheckoutChoice").click();});
 $("storeCheckoutContactBtn").onclick=()=>{
-  $("storeCheckoutChoiceModal").style.display="none";
+closeModal("storeCheckoutChoiceModal");
   continuarPedidoCarrinho();
 };
 $("storeCheckoutDeliveryBtn").onclick=()=>{
