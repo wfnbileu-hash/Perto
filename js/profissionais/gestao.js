@@ -1500,14 +1500,6 @@ function preencherFormulario(item) {
               avisar("Não foi possível atualizar o agendamento.");
               todosBotoesCard.forEach(b => { b.disabled = false; });
             }
-
-              avisar("Status do agendamento atualizado.");
-              await carregarDia();
-            } catch (erro) {
-              console.error("[Perto Profissionais] Erro ao atualizar agendamento:", erro);
-              avisar("Não foi possível atualizar o agendamento.");
-              todosBotoesCard.forEach(b => { b.disabled = false; });
-            }
           });
         });
 
