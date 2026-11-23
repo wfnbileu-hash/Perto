@@ -498,7 +498,8 @@ export function initPertoProfissionais(bridge) {
       }
 
       lista.innerHTML = servicos.map(servico => `
-                const descricaoLimpa = String(servico.descricao || "").trim();
+            lista.innerHTML = servicos.map((servico) => {
+        const descricaoLimpa = String(servico.descricao || "").trim();
         const precoFormatado = Number(servico.preco || 0)
           .toFixed(2)
           .replace(".", ",");
