@@ -3340,6 +3340,12 @@ Você será direcionado ao Mercado Pago para concluir o pagamento. O destaque se
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup , sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, addDoc, collection, collectionGroup, query, orderBy, getDocs, where, serverTimestamp, deleteDoc, updateDoc, onSnapshot, limit, runTransaction } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import {
+  getStorage,
+  ref as firebaseStorageRef,
+  uploadBytes as firebaseUploadBytes,
+  getDownloadURL as firebaseGetDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-functions.js";
 const $ = id => document.getElementById(id);
 
@@ -9683,7 +9689,15 @@ window.__pertoProfissionais = Object.freeze({
   db,
   functions,
   httpsCallable,
+  
+  storage: getStorage(app),
 
+  storageUtils: Object.freeze({
+    ref: firebaseStorageRef,
+    uploadBytes: firebaseUploadBytes,
+    getDownloadURL: firebaseGetDownloadURL
+  }),
+  
   getCurrentUser: () => currentUser,
   getCurrentUserData: () => currentUserData,
 
