@@ -6878,7 +6878,7 @@ function abrirModalEntregaMarketplace(){
   $("submitStoreDelivery").textContent="Enviar pedido para confirmação da loja";
   entregaMarketplaceAtual=null;
   if(entregaMarketplaceTimer){clearInterval(entregaMarketplaceTimer);entregaMarketplaceTimer=null;}
-  $("storeDeliveryModal").style.display="flex";
+  openModal("storeDeliveryModal");
 }
 
 async function atualizarStatusEntregaMarketplace(){
