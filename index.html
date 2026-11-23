@@ -9134,11 +9134,6 @@ $("homeStores").onclick=()=>{
     return;
   }
 
-   if(!currentUserData?.cidade?.trim()){
-    openProfileEditor();
-    toast("Cadastre sua cidade no perfil para ver as lojas próximas.");
-    return;
-  }
   $("storeCity").value=currentUserData?.cidade?.trim() || "";
   $("storeCity").readOnly=false;
   showInternalPage("storesPage");
