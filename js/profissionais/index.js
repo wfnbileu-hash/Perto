@@ -498,28 +498,47 @@ export function initPertoProfissionais(bridge) {
       }
 
       lista.innerHTML = servicos.map(servico => `
-        <div style="
-          padding:14px;
-          margin-top:10px;
-          border:1px solid #e2e8f0;
-          border-radius:12px;
-          background:#fff;
-        ">
-          <strong>${escapar(servico.nome)}</strong>
+                const descricaoLimpa = String(servico.descricao || "").trim();
+        const precoFormatado = Number(servico.preco || 0)
+          .toFixed(2)
+          .replace(".", ",");
 
-          <p style="font-size:13px;color:#64748b;margin:6px 0">
-            ${escapar(servico.descricao || "Sem descrição")}
-          </p>
+        return `
+          <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:10px;
+            padding:10px 12px;
+            margin-top:6px;
+            border:1px solid #e2e8f0;
+            border-radius:10px;
+            background:#fff;
+          ">
+            <div style="min-width:0;flex:1;">
+              <div style="font-weight:700;font-size:14px;color:#0f172a;">
+                ${escapar(servico.nome)}
+              </div>
+              ${
+                descricaoLimpa
+                  ? `<div style="font-size:12px;color:#64748b;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                      ${escapar(descricaoLimpa)}
+                    </div>`
+                  : ""
+              }
+            </div>
 
-          <strong style="color:#047857">
-            R$ ${Number(servico.preco || 0).toFixed(2).replace(".", ",")}
-          </strong>
-
-          <span style="font-size:12px;color:#64748b">
-            · ${escapar(servico.duracao)} minutos
-          </span>
-        </div>
-      `).join("");
+            <div style="text-align:right;flex-shrink:0;">
+              <div style="font-weight:700;font-size:13px;color:#047857;">
+                R$ ${precoFormatado}
+              </div>
+              <div style="font-size:11px;color:#64748b;">
+                ${escapar(servico.duracao)} min
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
 
     } catch (erro) {
       console.error("[Perto Profissionais] Erro ao carregar serviços:", erro);
