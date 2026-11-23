@@ -3297,7 +3297,6 @@ Você será direcionado ao Mercado Pago para concluir o pagamento. O destaque se
   </div>
 </div>
 
-<
 <!-- MODAL DE ESCOLHA DE VEÍCULO PARA O FRETEGO -->
 <div id="storeVehicleModal" class="modal" style="display:none;z-index:10060;">
   <div class="modalContent" style="max-width:460px;width:calc(100% - 28px);padding:20px;border-radius:20px;">
@@ -10017,12 +10016,45 @@ window.carregarLojasParceirasHome=async function(){
 
 
 <script>
-window.alternarDestaqueProduto=async function(id,campo,valor){try{
- if(!window.db||!window.doc||!window.updateDoc){alert("Não foi possível acessar o banco de dados. Atualize a página e tente novamente.");return;}
- await window.updateDoc(window.doc(window.db,"produtosLoja",id),{[campo]:valor,atualizadoEm:window.serverTimestamp?window.serverTimestamp():new Date()});
- if(typeof window.carregarDestaquesHome==="function")window.carregarDestaquesHome();
- if(typeof window.carregarProdutosMinhaLoja==="function")window.carregarProdutosMinhaLoja();
- }catch(e){console.error(e);alert("Não foi possível atualizar o destaque/promoção. Verifique as permissões e tente novamente.")}};
+
+window.alternarDestaqueProduto = async function(id, campo, valor) {
+  try {
+    const perto = window.__pertoProfissionais;
+    const firestore = perto?.firestore;
+
+    if (
+      !perto?.db ||
+      !firestore?.doc ||
+      !firestore?.updateDoc ||
+      !firestore?.serverTimestamp
+    ) {
+      alert("Não foi possível acessar o banco de dados. Atualize a página e tente novamente.");
+      return;
+    }
+
+    if (!["destaque", "promocao"].includes(campo)) {
+      alert("Tipo de atualização inválido.");
+      return;
+    }
+
+    await firestore.updateDoc(
+      firestore.doc(perto.db, "produtosLoja", id),
+      {
+        [campo]: valor,
+        atualizadoEm: firestore.serverTimestamp()
+      }
+    );
+
+    if (typeof window.carregarDestaquesHome === "function") {
+      window.carregarDestaquesHome();
+    }
+
+  } catch (e) {
+    console.error(e);
+    alert("Não foi possível atualizar o destaque/promoção. Verifique as permissões e tente novamente.");
+  }
+};
+
 </script>
 
 </body>
