@@ -496,9 +496,8 @@ export function initPertoProfissionais(bridge) {
         lista.innerHTML = `<p>Nenhum serviço cadastrado no momento.</p>`;
         return;
       }
-
-      lista.innerHTML = servicos.map(servico => `
-            lista.innerHTML = servicos.map((servico) => {
+       
+       lista.innerHTML = servicos.map((servico) => {
         const descricaoLimpa = String(servico.descricao || "").trim();
         const precoFormatado = Number(servico.preco || 0)
           .toFixed(2)
