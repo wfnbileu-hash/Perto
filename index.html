@@ -5493,6 +5493,18 @@ function showInternalPage(id,scroll=true){
   if(id==="storesPage")carregarVitrineLojas();
   if(scroll)window.scrollTo({top:0,behavior:"smooth"});
 }
+  // CLIQUES DA BARRA INFERIOR
+document.querySelectorAll(".navBtn[data-page]").forEach(botao => {
+  botao.addEventListener("click", () => {
+    const pagina = botao.dataset.page;
+
+    if (pagina === "favoritesPage") {
+      renderFavorites();
+    }
+
+    showInternalPage(pagina);
+  });
+});
   $("storesBackToServicesBtn")?.addEventListener("click", () => {
   retornoServicosAtivo = false;
   categoriaLojaSelecionada = "";
