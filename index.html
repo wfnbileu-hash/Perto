@@ -9496,18 +9496,20 @@ if (servicesPage && ! $("servicesMenu")) {
     btn.style.marginBottom = "14px";
 
     btn.addEventListener("click", () => {
-      painel.style.display = "none";
-      menu.style.display = "grid";
-    });
+  painel.style.display = "none";
+  menu.style.display = "grid";
+  categorias.style.display = "block";
+});
 
     painel.prepend(btn);
   };
 
   const abrirPainel = (painel) => {
-    menu.style.display = "none";
-    painel.style.display = "block";
-    painel.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  menu.style.display = "none";
+  categorias.style.display = "none";
+  painel.style.display = "block";
+  painel.scrollIntoView({ behavior: "smooth", block: "start" });
+};
 
   if (cardProfissional && cardBuscarProfissional &&
       painelProfissionais && cardPedidos && cardPublicarPedido) {
