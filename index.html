@@ -9205,6 +9205,11 @@ const fecharCadastroProfissional=()=>{
   $("professionalPhotoPreview").style.display="none";
   $("professionalPhotoPreviewImage").removeAttribute("src");
 };
+  $("professionalModal").onclick=e=>{
+  if(e.target===$("professionalModal")){
+    fecharCadastroProfissional();
+  }
+};
   
 $("toggleProfessionalBtn").onclick=async()=>{
   if(!currentUser)return showAuth("login");
