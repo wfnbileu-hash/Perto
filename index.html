@@ -9584,11 +9584,26 @@ categorias.innerHTML = `
 `;
 
 servicesPage.append(titulo, subtitulo, categorias, menu);
-    categorias.querySelectorAll("[data-category]").forEach(botao => {
+   categorias.querySelectorAll("[data-category]").forEach(botao => {
   botao.addEventListener("click", () => {
-    $("searchProfessionalCategory").value = botao.dataset.category;
-    abrirPainel(painelProfissionais);
-    $("professionalSearchResults").replaceChildren();
+    retornoServicosAtivo = true;
+    categoriaLojaSelecionada = botao.dataset.category;
+
+    document.querySelectorAll(
+      "#storeCategories .storeCategory"
+    ).forEach(item => {
+      item.classList.toggle(
+        "active",
+        item.dataset.category === categoriaLojaSelecionada
+      );
+    });
+
+    lojasExibidas = 6;
+
+    const botaoVoltar = $("storesBackToServicesBtn");
+    if (botaoVoltar) botaoVoltar.style.display = "block";
+
+    showInternalPage("storesPage");
   });
 });
     menu.append(
