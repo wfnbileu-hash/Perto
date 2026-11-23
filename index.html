@@ -1149,6 +1149,35 @@ display:none!important;
   color:#d97706;
   font-size:12px;
 }
+  /* CATEGORIAS POPULARES */
+.servicesCategoryGrid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:8px;
+}
+
+.servicesCategoryItem{
+  min-width:0;
+  padding:13px 4px;
+  border:1px solid #e2e8f0;
+  border-radius:15px;
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  text-align:center;
+}
+
+.servicesCategoryItem span{
+  font-size:25px;
+}
+
+.servicesCategoryItem strong{
+  font-size:10px;
+  color:#334155;
+}
 .serviceCard p{
   color:var(--muted);
   line-height:1.4;
@@ -9472,11 +9501,38 @@ if (servicesPage && ! $("servicesMenu")) {
 
     const subtitulo = document.createElement("div");
     subtitulo.className = "sectionSubtitle";
-    subtitulo.textContent =
-      "Encontre profissionais ou divulgue seu trabalho na sua região.";
+  subtitulo.textContent =
+  "Encontre profissionais ou divulgue seu trabalho na sua região.";
 
-    servicesPage.append(titulo, subtitulo, menu);
+// CATEGORIAS POPULARES
+const categorias = document.createElement("section");
+categorias.id = "servicesPopularCategories";
+categorias.innerHTML = `
+  <h3 style="font-size:17px;font-weight:900;margin:22px 0 12px">
+    Categorias Populares
+  </h3>
 
+  <div class="servicesCategoryGrid">
+    <div class="servicesCategoryItem">
+      <span>💈</span>
+      <strong>Barbearias</strong>
+    </div>
+    <div class="servicesCategoryItem">
+      <span>💇</span>
+      <strong>Salões</strong>
+    </div>
+    <div class="servicesCategoryItem">
+      <span>💅</span>
+      <strong>Manicures</strong>
+    </div>
+    <div class="servicesCategoryItem">
+      <span>🧖</span>
+      <strong>Spas</strong>
+    </div>
+  </div>
+`;
+
+servicesPage.append(titulo, subtitulo, categorias, menu);
     menu.append(
       criarOpcao(
         "🔎",
