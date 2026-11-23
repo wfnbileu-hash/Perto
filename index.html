@@ -3344,7 +3344,7 @@ Você será direcionado ao Mercado Pago para concluir o pagamento. O destaque se
 </div>
 
 <!-- MODAL DE ESCOLHA DE VEÍCULO PARA O FRETEGO -->
-<div id="storeVehicleModal" class="modal" style="display:none;z-index:10060;">
+<div id="storeVehicleModal" class="modal" style="z-index:10060;">
   <div class="modalContent" style="max-width:460px;width:calc(100% - 28px);padding:20px;border-radius:20px;">
     <div class="modalHeader">
       <h2>🚚 Escolher veículo</h2>
@@ -7674,11 +7674,11 @@ function escolherVeiculoEntregaMarketplace(veiculoAtual = "") {
   if (!modal || !select) return Promise.resolve(null);
   select.value = ["Moto", "Carro", "Utilitário/Fiorino"].includes(veiculoAtual) ? veiculoAtual : "";
   erro.style.display = "none";
-  modal.style.display = "flex";
+  openModal("storeVehicleModal");
   return new Promise(resolve => { resolverEscolhaVeiculoFreteGo = resolve; });
 }
 function fecharEscolhaVeiculoFreteGo(valor = null) {
-  $("storeVehicleModal").style.display = "none";
+  closeModal("storeVehicleModal");
   const resolver = resolverEscolhaVeiculoFreteGo;
   resolverEscolhaVeiculoFreteGo = null;
   if (resolver) resolver(valor);
