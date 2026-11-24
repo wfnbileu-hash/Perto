@@ -4802,7 +4802,10 @@ async function carregarProfissionaisAdmin() {
           : "✓ Aprovar";
 
       status.onclick = async () => {
-        status.disabled = true;
+  status.disabled = true;
+
+  const ativar = estabelecimento.ativo !== true || estabelecimento.statusAdmin === "suspensa";
+  try {
 
         
           await updateDoc(
