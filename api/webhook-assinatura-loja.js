@@ -304,11 +304,7 @@ module.exports = async (req, res) => {
             transacao.get(estabelecimentoRef)
           ]);
 
-          if (!pagamentoAtual.exists || !mensalidadeSnap.exists) {
-            throw new Error('Registro da mensalidade profissional não encontrado');
-          }
-
-
+          
           if (!pagamentoAtual.exists || !mensalidadeSnap.exists) {
             throw new Error('Registro da mensalidade profissional não encontrado');
           }
