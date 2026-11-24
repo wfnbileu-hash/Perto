@@ -20,17 +20,55 @@ function iniciarFirebase() {
   return admin.firestore();
 }
 
-function criadoEmMillis(item) {
-  const data = item.criadoEm;
-  if (data && typeof data.toMillis === 'function') return data.toMillis();
-  if (data instanceof Date) return data.getTime();
-  const convertido = data ? new Date(data).getTime() : 0;
-  return Number.isFinite(convertido) ? convertido : 0;
+function dataAprovacao(item) {
+  const valor = item.aprovadoEm;
+
+  if (valor && typeof valor.toDate === 'function') {
+    return valor.toDate();
+  }
+
+  if (valor instanceof Date) {
+    return valor;
+  }
+
+  if (typeof valor === 'string' || typeof valor === 'number') {
+    const data = new Date(valor);
+    return Number.isNaN(data.getTime()) ? null : data;
+  }
+
+  return null;
 }
 
-function planoPorNumero(numero) {
-  if (numero <= 1) return { nome: 'gratis', valor: TARIFAS.gratis };
-  if (numero <= 5) return { nome: 'intermediario', valor: TARIFAS.intermediario };
+function planoPorAprovacao(aprovacao, agora = new Date()) {
+  if (!aprovacao || aprovacao.getTime() > agora.getTime()) {
+    return null;
+  }
+
+  let meses =
+    (agora.getUTCFullYear() - aprovacao.getUTCFullYear()) * 12 +
+    (agora.getUTCMonth() - aprovacao.getUTCMonth());
+
+  const ultimoDiaDoMes = new Date(
+    Date.UTC(agora.getUTCFullYear(), agora.getUTCMonth() + 1, 0)
+  ).getUTCDate();
+
+  const diaAniversario = Math.min(
+    aprovacao.getUTCDate(),
+    ultimoDiaDoMes
+  );
+
+  if (agora.getUTCDate() < diaAniversario) {
+    meses--;
+  }
+
+  if (meses <= 0) {
+    return { nome: 'gratis', valor: TARIFAS.gratis };
+  }
+
+  if (meses <= 4) {
+    return { nome: 'intermediario', valor: TARIFAS.intermediario };
+  }
+
   return { nome: 'avancado', valor: TARIFAS.avancado };
 }
 
@@ -80,11 +118,19 @@ module.exports = async (req, res) => {
       return res.status(403).json({ erro: 'Você não pode pagar este estabelecimento' });
     }
 
-    const numeroEstabelecimento = indice + 1;
-    const plano = planoPorNumero(numeroEstabelecimento);
+        const numeroEstabelecimento = indice + 1;
+    const aprovacao = dataAprovacao(estabelecimento);
+    const plano = planoPorAprovacao(aprovacao);
+
+    if (!plano) {
+      return res.status(409).json({
+        erro: 'A data de aprovação deste estabelecimento não está registrada corretamente. É necessário regularizar essa data antes de gerar a cobrança.'
+      });
+    }
+
     if (plano.valor === 0) {
       return res.status(400).json({
-        erro: 'O primeiro estabelecimento do proprietário é gratuito e não precisa de pagamento',
+        erro: 'Este estabelecimento ainda está no primeiro mês gratuito após a aprovação',
         numeroEstabelecimento,
         valor: 0
       });
