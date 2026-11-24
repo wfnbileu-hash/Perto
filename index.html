@@ -9903,6 +9903,20 @@ if (botaoSolicitarServico) {
           "Não foi possível carregar seus pedidos. Tente novamente.";
       }
     }
+    } else {
+    const faltando = [];
+
+    if (!cardProfissional) faltando.push("serviceProfessionalBtn");
+    if (!cardBuscarProfissional) faltando.push("serviceRequestBtn");
+    if (!painelProfissionais) faltando.push("professionalSearchPanel");
+    if (!cardPedidos) faltando.push("searchOpenRequestsBtn");
+    if (!cardPublicarPedido) faltando.push("serviceRequestForm");
+
+    mostrarDiagnosticoProfissionais(
+      "Elementos não encontrados",
+      faltando.join(", ") || "Verificar montagem do menu."
+    );
+  }
   }
 }
 
