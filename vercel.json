@@ -1,8 +1,0 @@
-{
-  "crons": [
-    {
-      "path": "/api/verificar-mensalidades",
-      "schedule": "0 6 * * *"
-    }
-  ]
-}
