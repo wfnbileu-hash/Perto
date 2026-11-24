@@ -5893,8 +5893,35 @@ function montarYoutubeFrame(card){
 
 function renderReels(){const feed=$("reelsFeed");if(!feed)return;if(reelsObserver){reelsObserver.disconnect();reelsObserver=null}const lista=reelsCache.filter(reel=>typeof reel.videoUrl==="string"&&reel.videoUrl.startsWith("https://"));if(!lista.length){feed.innerHTML='<div class="reelsEmpty"><div style="font-size:38px;margin-bottom:8px">🎬</div><strong>Ainda não há vídeos de produtos.</strong><div style="margin-top:6px">Seja o primeiro vendedor a mostrar um produto em ação.</div></div>';return}feed.innerHTML=lista.map(reel=>{const produtoNome=reel.produtoNome||"Produto anunciado",preco=Number(reel.produtoPreco)||0,autor=reel.vendedorNome||"Vendedor do Perto",youtubeId=obterYoutubeId(reel.videoUrl),player=youtubeId?`<div class="reelYoutubeFrame" data-youtube-id="${esc(youtubeId)}"></div>`:`<video class="reelVideo" src="${esc(reel.videoUrl)}" playsinline muted loop preload="metadata" aria-label="Vídeo de ${esc(produtoNome)}"></video>`;return `<article class="reelCard" data-reel-muted="true">${player}<div class="reelShade"></div><div class="reelTop"><span>🎬 ${esc(autor)}</span><button type="button" class="reelMuteBtn" aria-label="Ativar ou desativar áudio">🔇</button></div><div class="reelBottom">${reel.legenda?`<p class="reelCaption">${esc(reel.legenda)}</p>`:""}<div class="reelProduct"><div class="reelProductInfo"><strong>${esc(produtoNome)}</strong><span>${money(preco)}</span></div><button type="button" class="reelBuyBtn" data-reel-product="${esc(reel.produtoId||"")}">Ver produto</button></div></div></article>`}).join("");feed.querySelectorAll("video.reelVideo").forEach(video=>video.addEventListener("click",()=>{if(video.paused)video.play().catch(()=>{});else video.pause()}));feed.querySelectorAll(".reelMuteBtn").forEach(botao=>botao.addEventListener("click",()=>{const card=botao.closest(".reelCard"),video=card?.querySelector("video.reelVideo"),iframe=card?.querySelector("iframe.reelVideo");if(!card)return;const muted=card.dataset.reelMuted!=="false";card.dataset.reelMuted=muted?"false":"true";if(video){video.muted=!video.muted;botao.textContent=video.muted?"🔇":"🔊"}else if(iframe){youtubeCommand(iframe,muted?"unMute":"mute");botao.textContent=muted?"🔊":"🔇"}}));feed.querySelectorAll("[data-reel-product]").forEach(botao=>botao.addEventListener("click",()=>abrirProdutoDoReel(botao.dataset.reelProduct)));if("IntersectionObserver" in window){reelsObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{const card=entry.target,video=card.querySelector("video.reelVideo"),iframe=card.querySelector("iframe.reelVideo");if(entry.isIntersecting&&entry.intersectionRatio>=.65){if(card.querySelector(".reelYoutubeFrame"))montarYoutubeFrame(card);if(video)video.play().catch(()=>{});if(iframe)youtubeCommand(iframe,"playVideo")}else{if(video)video.pause();if(iframe)youtubeCommand(iframe,"pauseVideo")}}),{root:feed,threshold:[.2,.65,.9]});feed.querySelectorAll(".reelCard").forEach(card=>reelsObserver.observe(card))}}
 
-async function carregarReels(){const feed=$("reelsFeed");if(!feed)return;feed.innerHTML='<div class="reelsEmpty">Carregando vídeos...</div>';try{const resultado=await getDocs(query(collection(db,"reels"),orderBy("criadoEm","desc"),limit(40)));reelsCache=resultado.docs.map(documento=>({id:documento.id,...documento.data()})).filter(reel=>reel.ativo===true).sort((a,b)=>millisReel(b.criadoEm)-millisReel(a.criadoEm));renderReels()}catch(erro){console.error("Erro ao carregar Reels:",erro);feed.innerHTML='<div class="reelsEmpty">Não foi possível carregar os vídeos. Confira as regras de leitura da coleção <strong>reels</strong> no Firestore e tente novamente.</div>'}}
+async function carregarReels(){
+  const feed=$("reelsFeed");
+  if(!feed)return;
 
+  feed.innerHTML='<div class="reelsEmpty">Carregando vídeos...</div>';
+
+  try{
+    const resultado=await getDocs(
+      query(
+        collection(db,"reels"),
+        where("status","==","aprovado"),
+        where("ativo","==",true),
+        orderBy("criadoEm","desc"),
+        limit(40)
+      )
+    );
+
+    reelsCache=resultado.docs.map(documento=>({
+      id:documento.id,
+      ...documento.data()
+    }));
+
+    renderReels();
+
+  }catch(erro){
+    console.error("Erro ao carregar Reels:",erro);
+    feed.innerHTML='<div class="reelsEmpty">Não foi possível carregar os vídeos. Confira as regras e o índice da coleção <strong>reels</strong> no Firestore e tente novamente.</div>';
+  }
+  }
 async function abrirProdutoDoReel(produtoId){
   if(!produtoId)return toast("Este Reel não tem um produto vinculado.");
   try{
