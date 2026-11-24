@@ -276,8 +276,13 @@ module.exports = async (req, res) => {
           return res.status(200).send('Pagamento profissional não validado');
         }
 
+        
         const mensalidadeRef = db
           .collection('mensalidadesEstabelecimentosProfissionais')
+          .doc(estabelecimentoId);
+
+        const estabelecimentoRef = db
+          .collection('estabelecimentosProfissionais')
           .doc(estabelecimentoId);
 
         if (statusMP !== 'approved') {
@@ -289,10 +294,20 @@ module.exports = async (req, res) => {
         }
 
         await db.runTransaction(async transacao => {
-          const [pagamentoAtual, mensalidadeSnap] = await Promise.all([
+          const [
+            pagamentoAtual,
+            mensalidadeSnap,
+            estabelecimentoSnap
+          ] = await Promise.all([
             transacao.get(pagamentoProfissionalRef),
-            transacao.get(mensalidadeRef)
+            transacao.get(mensalidadeRef),
+            transacao.get(estabelecimentoRef)
           ]);
+
+          if (!pagamentoAtual.exists || !mensalidadeSnap.exists) {
+            throw new Error('Registro da mensalidade profissional não encontrado');
+          }
+
 
           if (!pagamentoAtual.exists || !mensalidadeSnap.exists) {
             throw new Error('Registro da mensalidade profissional não encontrado');
@@ -318,6 +333,25 @@ module.exports = async (req, res) => {
             atualizadoEm: servidorAgora
           }, { merge: true });
 
+          
+          if (estabelecimentoSnap.exists) {
+            const estabelecimento = estabelecimentoSnap.data();
+            const suspensoPeloAdmin =
+              String(estabelecimento.statusAdmin || '').toLowerCase() === 'suspenso';
+
+            if (
+              !suspensoPeloAdmin &&
+              estabelecimento.motivoDesativacao === 'mensalidade_em_atraso'
+            ) {
+              transacao.set(estabelecimentoRef, {
+                ativo: true,
+                motivoDesativacao: admin.firestore.FieldValue.delete(),
+                mensalidadeDesativadaEm: admin.firestore.FieldValue.delete(),
+                mensalidadeAtualizadaEm: servidorAgora
+              }, { merge: true });
+            }
+          }
+          
           transacao.set(mensalidadeRef, {
             status: 'authorized',
             tipoCobranca: 'pix',
