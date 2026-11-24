@@ -50,6 +50,54 @@ export function initGestaoProfissionais(bridge) {
     "'": "&#39;"
   })[c]);
 
+     function dataAprovacao(item) {
+    const valor = item.aprovadoEm;
+
+    if (valor && typeof valor.toDate === "function") {
+      return valor.toDate();
+    }
+
+    if (valor instanceof Date) return valor;
+
+    if (typeof valor === "string" || typeof valor === "number") {
+      const data = new Date(valor);
+      return Number.isNaN(data.getTime()) ? null : data;
+    }
+
+    return null;
+  }
+
+  function planoPorAprovacao(aprovacao, agora = new Date()) {
+    if (!aprovacao || aprovacao.getTime() > agora.getTime()) {
+      return null;
+    }
+
+    let meses =
+      (agora.getUTCFullYear() - aprovacao.getUTCFullYear()) * 12 +
+      (agora.getUTCMonth() - aprovacao.getUTCMonth());
+
+    const ultimoDiaDoMes = new Date(
+      Date.UTC(agora.getUTCFullYear(), agora.getUTCMonth() + 1, 0)
+    ).getUTCDate();
+
+    const diaAniversario = Math.min(
+      aprovacao.getUTCDate(),
+      ultimoDiaDoMes
+    );
+
+    if (agora.getUTCDate() < diaAniversario) meses--;
+
+    if (meses <= 0) {
+      return { nome: "gratis", valor: 0, texto: "Gratuito" };
+    }
+
+    if (meses <= 4) {
+      return { nome: "intermediario", valor: 29.90, texto: "R$ 29,90/mês" };
+    }
+
+    return { nome: "avancado", valor: 49.90, texto: "R$ 49,90/mês" };
+  }
+   
   // Botão de acesso pelo perfil.
   const botao = document.createElement("button");
   botao.type = "button";
@@ -780,22 +828,27 @@ function preencherFormulario(item) {
         return criadoA - criadoB || a.id.localeCompare(b.id);
       });
 
-      for (const [indice, documento] of documentosOrdenados.entries()) {
+            for (const [indice, documento] of documentosOrdenados.entries()) {
         const item = { id: documento.id, ...documento.data() };
         const numeroEstabelecimento = indice + 1;
-        const valorMensalidade = numeroEstabelecimento === 1 ? 0 : numeroEstabelecimento <= 5 ? 29.90 : 49.90;
-        const planoMensalidade = numeroEstabelecimento === 1 ? "Gratuito" : numeroEstabelecimento <= 5 ? "R$ 29,90/mês" : "R$ 49,90/mês";
+        const plano = planoPorAprovacao(dataAprovacao(item));
+        const valorMensalidade = plano?.valor ?? null;
+        const planoMensalidade = plano?.texto || "Data de aprovação não registrada";
+
         const mensalidadeSnap = await getDoc(doc(db, "mensalidadesEstabelecimentosProfissionais", item.id)).catch(() => null);
         const mensalidade = mensalidadeSnap?.exists() ? mensalidadeSnap.data() : {};
         const vencimento = mensalidade.mensalidadeVenceEm?.toDate?.() || null;
         const emDia = mensalidade.status === "authorized" && vencimento && vencimento.getTime() > Date.now();
-        const textoMensalidade = valorMensalidade === 0
-          ? "🎉 Primeiro estabelecimento: gratuito"
-          : emDia
-            ? `✅ Mensalidade em dia até ${vencimento.toLocaleDateString("pt-BR")}`
-            : mensalidade.status === "pending"
-              ? "⏳ Aguardando confirmação do pagamento"
-              : "⚠️ Mensalidade pendente";
+
+        const textoMensalidade = !plano
+          ? "⚠️ É necessário regularizar a data de aprovação com o administrador."
+          : valorMensalidade === 0
+            ? "🎉 Primeiro mês gratuito após a aprovação"
+            : emDia
+              ? `✅ Mensalidade em dia até ${vencimento.toLocaleDateString("pt-BR")}`
+              : mensalidade.status === "pending"
+                ? "⏳ Aguardando confirmação do pagamento"
+                : "⚠️ Mensalidade pendente";
 
 
         const card = document.createElement("article");
@@ -844,7 +897,7 @@ function preencherFormulario(item) {
             style="width:100%;padding:11px;margin-top:9px;border-radius:9px;background:#dbeafe;color:#1e40af;font-weight:800">
             👥 Gerenciar equipe
           </button>
-          ${valorMensalidade > 0 && !emDia ? `
+                    ${valorMensalidade !== null && valorMensalidade > 0 && !emDia ? `
             <button type="button" data-pay-subscription
               style="width:100%;padding:11px;margin-top:9px;border-radius:9px;background:#dcfce7;color:#166534;font-weight:800">
               💳 Pagar mensalidade · ${planoMensalidade}
