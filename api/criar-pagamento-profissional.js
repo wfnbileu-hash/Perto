@@ -20,6 +20,25 @@ function iniciarFirebase() {
   return admin.firestore();
 }
 
+function criadoEmMillis(item) {
+  const valor = item.criadoEm;
+
+  if (valor && typeof valor.toMillis === 'function') {
+    return valor.toMillis();
+  }
+
+  if (valor instanceof Date) {
+    return valor.getTime();
+  }
+
+  if (typeof valor === 'string' || typeof valor === 'number') {
+    const data = new Date(valor).getTime();
+    return Number.isNaN(data) ? 0 : data;
+  }
+
+  return 0;
+}
+
 function dataAprovacao(item) {
   const valor = item.aprovadoEm;
 
