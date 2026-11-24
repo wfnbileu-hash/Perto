@@ -9903,39 +9903,6 @@ if (botaoSolicitarServico) {
           "Não foi possível carregar seus pedidos. Tente novamente.";
       }
     }
-  criarBotao("🗑️ Excluir", async () => {
-        if (!confirm(
-          "Tem certeza que deseja excluir este pedido permanentemente?"
-        )) {
-          return;
-        }
-
-        await deleteDoc(
-          doc(db, "solicitacoesServicos", docPedido.id)
-        );
-
-        toast("Pedido excluído.");
-        await carregarMeusPedidos();
-      });
-
-      card.append(
-        tituloPedido,
-        categoria,
-        descricao,
-        local,
-        status,
-        acoes
-      );
-
-      resultados.appendChild(card);
-    });
-
-        } catch (erro) {
-        console.error("Erro ao carregar meus pedidos:", erro);
-        resultados.textContent =
-          "Não foi possível carregar seus pedidos. Tente novamente.";
-      }
-    }
   }
 
 /* ==================================================
