@@ -9903,22 +9903,40 @@ if (botaoSolicitarServico) {
           "Não foi possível carregar seus pedidos. Tente novamente.";
       }
     }
-    } else {
-    const faltando = [];
+  criarBotao("🗑️ Excluir", async () => {
+        if (!confirm(
+          "Tem certeza que deseja excluir este pedido permanentemente?"
+        )) {
+          return;
+        }
 
-    if (!cardProfissional) faltando.push("serviceProfessionalBtn");
-    if (!cardBuscarProfissional) faltando.push("serviceRequestBtn");
-    if (!painelProfissionais) faltando.push("professionalSearchPanel");
-    if (!cardPedidos) faltando.push("searchOpenRequestsBtn");
-    if (!cardPublicarPedido) faltando.push("serviceRequestForm");
+        await deleteDoc(
+          doc(db, "solicitacoesServicos", docPedido.id)
+        );
 
-    mostrarDiagnosticoProfissionais(
-      "Elementos não encontrados",
-      faltando.join(", ") || "Verificar montagem do menu."
-    );
+        toast("Pedido excluído.");
+        await carregarMeusPedidos();
+      });
+
+      card.append(
+        tituloPedido,
+        categoria,
+        descricao,
+        local,
+        status,
+        acoes
+      );
+
+      resultados.appendChild(card);
+    });
+
+        } catch (erro) {
+        console.error("Erro ao carregar meus pedidos:", erro);
+        resultados.textContent =
+          "Não foi possível carregar seus pedidos. Tente novamente.";
+      }
+    }
   }
-  }
-}
 
 /* ==================================================
    INTEGRAÇÃO — PERTO PROFISSIONAIS
