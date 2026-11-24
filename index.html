@@ -4804,14 +4804,15 @@ async function carregarProfissionaisAdmin() {
       status.onclick = async () => {
         status.disabled = true;
 
-        try {
-          const ativar = estabelecimento.ativo !== true;
-
+        
           await updateDoc(
             doc(db, "estabelecimentosProfissionais", estabelecimento.id),
             {
               ativo: ativar,
               statusAdmin: ativar ? "aprovada" : "suspensa",
+              ...(ativar && !estabelecimento.aprovadoEm
+                ? { aprovadoEm: serverTimestamp() }
+                : {}),
               atualizadoEm: serverTimestamp()
             }
           );
