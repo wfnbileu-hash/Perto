@@ -5944,9 +5944,124 @@ function validarVideoReel(arquivo){
   });
 }
 
-async function publicarReel(evento){evento.preventDefault();if(!currentUser)return showAuth("login");const modo=document.querySelector('input[name="reelSource"]:checked')?.value||"upload",arquivo=$("reelVideoFile").files?.[0],youtubeId=modo==="youtube"?obterYoutubeId($("reelYoutubeUrl").value):"",produto=allProducts.find(item=>item.id===$("reelProductSelect").value&&item.vendedorId===currentUser.uid&&isPublicProduct(item));if(!produto)return toast("Selecione um dos seus anúncios ativos.");if(modo==="upload"&&!arquivo)return toast("Escolha um vídeo para publicar.");if(modo==="youtube"&&!youtubeId)return toast("Informe um link válido de vídeo do YouTube.");if(modo==="upload"&&!arquivo.type.startsWith("video/"))return toast("Escolha um arquivo de vídeo válido.");if(modo==="upload"&&arquivo.size>50*1024*1024)return toast("O vídeo deve ter no máximo 50 MB.");const botao=$("publishReelSubmit");botao.disabled=true;botao.textContent=modo==="upload"?"Verificando vídeo...":"Publicando link...";try{if(modo==="upload")await validarVideoReel(arquivo);const reelRef=doc(collection(db,"reels"));let videoUrl;if(modo==="youtube"){videoUrl=`https://www.youtube.com/watch?v=${youtubeId}`}else{if(!storage){storage=getStorage(app);storageRef=firebaseStorageRef;uploadBytes=firebaseUploadBytes;getDownloadURL=firebaseGetDownloadURL}const extensao=arquivo.type.includes("webm")?"webm":arquivo.type.includes("quicktime")?"mov":"mp4",arquivoRef=storageRef(storage,`reels/${currentUser.uid}/${reelRef.id}.${extensao}`);botao.textContent="Enviando vídeo...";await uploadBytes(arquivoRef,arquivo,{contentType:arquivo.type});videoUrl=await getDownloadURL(arquivoRef)}await setDoc(reelRef,{vendedorId:currentUser.uid,vendedorNome:currentUserData?.nome||currentUser.displayName||currentUser.email||"Vendedor",produtoId:produto.id,produtoNome:produto.nome,produtoPreco:Number(produto.preco)||0,legenda:$("reelCaption").value.trim().slice(0,300),videoUrl,ativo:true,criadoEm:serverTimestamp()});$("publishReelForm").reset();alternarOrigemReel();closeModal("publishReelModal");toast("Reel publicado! Seu produto já pode ser acessado pelo vídeo.");await carregarReels()}catch(erro){console.error("Erro ao publicar Reel:",erro);toast(erro?.message||"Não foi possível publicar o vídeo. Confira as regras do Firebase Storage e do Firestore.")}finally{botao.disabled=false;botao.textContent="Publicar vídeo"}}
-function alternarOrigemReel(){const modo=document.querySelector('input[name="reelSource"]:checked')?.value||"upload",upload=modo==="upload";$("reelUploadGroup").classList.toggle("hidden",!upload);$("reelYoutubeGroup").classList.toggle("hidden",upload);$("reelVideoFile").required=upload;$("reelYoutubeUrl").required=!upload}document.querySelectorAll('input[name="reelSource"]').forEach(input=>input.addEventListener("change",alternarOrigemReel));alternarOrigemReel();$("publishReelForm").onsubmit=publicarReel;$("publishReelBtn").onclick=abrirPublicacaoReel;$("homeOpenReels").onclick=()=>showInternalPage("reelsPage");
 
+async function publicarReel(evento) {
+  evento.preventDefault();
+
+  if (!currentUser) return showAuth("login");
+
+  const modo = document.querySelector('input[name="reelSource"]:checked')?.value || "upload";
+  const arquivo = $("reelVideoFile").files?.[0];
+  const youtubeId = modo === "youtube"
+    ? obterYoutubeId($("reelYoutubeUrl").value)
+    : "";
+
+  const produto = allProducts.find(item =>
+    item.id === $("reelProductSelect").value &&
+    item.vendedorId === currentUser.uid &&
+    isPublicProduct(item)
+  );
+
+  if (!produto) return toast("Selecione um dos seus anúncios ativos.");
+  if (modo === "upload" && !arquivo) return toast("Escolha um vídeo para publicar.");
+  if (modo === "youtube" && !youtubeId) return toast("Informe um link válido de vídeo do YouTube.");
+
+  if (modo === "upload") {
+    const tiposPermitidos = [
+      "video/mp4",
+      "video/webm",
+      "video/quicktime"
+    ];
+
+    if (!tiposPermitidos.includes(arquivo.type)) {
+      return toast("Escolha um vídeo MP4, WebM ou MOV.");
+    }
+
+    if (arquivo.size > 50 * 1024 * 1024) {
+      return toast("O vídeo deve ter no máximo 50 MB.");
+    }
+  }
+
+  const botao = $("publishReelSubmit");
+  botao.disabled = true;
+  botao.textContent = "Verificando vídeo...";
+
+  try {
+    if (modo === "upload") {
+      await validarVideoReel(arquivo);
+    }
+
+    const reelRef = doc(collection(db, "reels"));
+    let videoUrl;
+
+    if (modo === "youtube") {
+      videoUrl = `https://www.youtube.com/watch?v=${youtubeId}`;
+    } else {
+      if (!storage) {
+        storage = getStorage(app);
+        storageRef = firebaseStorageRef;
+        uploadBytes = firebaseUploadBytes;
+        getDownloadURL = firebaseGetDownloadURL;
+      }
+
+      const extensao = arquivo.type === "video/webm"
+        ? "webm"
+        : arquivo.type === "video/quicktime"
+          ? "mov"
+          : "mp4";
+
+      const arquivoRef = storageRef(
+        storage,
+        `reels/${currentUser.uid}/${reelRef.id}.${extensao}`
+      );
+
+      botao.textContent = "Enviando vídeo...";
+
+      await uploadBytes(arquivoRef, arquivo, {
+        contentType: arquivo.type
+      });
+
+      videoUrl = await getDownloadURL(arquivoRef);
+    }
+
+    botao.textContent = "Enviando para análise...";
+
+    await setDoc(reelRef, {
+      vendedorId: currentUser.uid,
+      vendedorNome: currentUserData?.nome ||
+        currentUser.displayName ||
+        currentUser.email ||
+        "Vendedor",
+      produtoId: produto.id,
+      produtoNome: produto.nome,
+      produtoPreco: Number(produto.preco) || 0,
+      legenda: $("reelCaption").value.trim().slice(0, 300),
+      videoUrl: videoUrl,
+      ativo: false,
+      status: "pendente",
+      criadoEm: serverTimestamp()
+    });
+
+    $("publishReelForm").reset();
+    alternarOrigemReel();
+    closeModal("publishReelModal");
+
+    toast("Reel enviado! Ele ficará disponível após aprovação do administrador.");
+
+    await carregarReels();
+
+  } catch (erro) {
+    console.error("Erro ao publicar Reel:", erro);
+    toast(
+      erro?.message ||
+      "Não foi possível enviar o Reel. Verifique as regras do Firebase."
+    );
+  } finally {
+    botao.disabled = false;
+    botao.textContent = "Publicar vídeo";
+  }
+  }
+function alternarOrigemReel(){const modo=document.querySelector('input[name="reelSource"]:checked')?.value||"upload",upload=modo==="upload";$("reelUploadGroup").classList.toggle("hidden",!upload);$("reelYoutubeGroup").classList.toggle("hidden",upload);$("reelVideoFile").required=upload;$("reelYoutubeUrl").required=!upload}document.querySelectorAll('input[name="reelSource"]').forEach(input=>input.addEventListener("change",alternarOrigemReel));alternarOrigemReel();$("publishReelForm").onsubmit=publicarReel;$("publishReelBtn").onclick=abrirPublicacaoReel;$("homeOpenReels").onclick=()=>showInternalPage("reelsPage");
 function createProductCard(p){let card=document.createElement("div");
 card.className="productCard";
 let imgs=p.imagens?.length?p.imagens:(p.imagem?[p.imagem]:[]),src=imgs[0];
