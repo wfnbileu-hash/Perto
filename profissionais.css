@@ -1,0 +1,446 @@
+/* =========================================================
+   PERTO PROFISSIONAIS — MARKETPLACE
+========================================================= */
+
+.pp-root {
+  width: 100%;
+  margin-top: 18px;
+  color: #0f172a;
+}
+
+.pp-root[hidden] {
+  display: none !important;
+}
+
+.pp-root button,
+.pp-root input {
+  font-family: inherit;
+}
+
+.pp-back-button {
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+  background: #fff;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+/* Cartão de entrada mantido para acesso pelas opções secundárias */
+.pp-entry-card {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+}
+
+.pp-entry-link {
+  display: block;
+  margin-top: 12px;
+  color: #b77905;
+  font-weight: 800;
+}
+
+/* Cabeçalho da vitrine */
+.pp-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 190px;
+  padding: 28px 24px;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 24px;
+  color: #fff;
+  background:
+    radial-gradient(circle at 92% 12%, rgba(245,158,11,.24), transparent 150px),
+    linear-gradient(125deg, #111827 0%, #163447 100%);
+  box-shadow: 0 16px 34px rgba(15,23,42,.13);
+}
+
+.pp-hero-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.pp-eyebrow {
+  display: block;
+  margin-bottom: 10px;
+  color: #fbbf24;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.7px;
+}
+
+.pp-hero h2 {
+  max-width: 520px;
+  font-size: clamp(25px, 6vw, 34px);
+  line-height: 1.12;
+  font-weight: 900;
+  letter-spacing: -1.1px;
+}
+
+.pp-hero p {
+  max-width: 520px;
+  margin-top: 11px;
+  color: #dbe5ed;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.pp-hero-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 66px;
+  height: 66px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 21px;
+  background: rgba(255,255,255,.09);
+  font-size: 32px;
+}
+
+/* Busca */
+.pp-search-box {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 54px;
+  margin-top: 18px;
+  padding: 0 16px;
+  border: 1px solid #dce3ea;
+  border-radius: 15px;
+  background: #fff;
+  color: #64748b;
+  font-size: 18px;
+  box-shadow: 0 4px 14px rgba(15,23,42,.035);
+}
+
+.pp-search-box input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.pp-search-box:focus-within {
+  border-color: #0f766e;
+  box-shadow: 0 0 0 3px rgba(15,118,110,.10);
+}
+
+/* Seções */
+.pp-section {
+  margin-top: 26px;
+}
+
+.pp-section-heading {
+  margin-bottom: 13px;
+}
+
+.pp-section-heading h3 {
+  color: #0f172a;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: -.35px;
+}
+
+.pp-section-heading p {
+  margin-top: 5px;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* Categorias compactas: filtros discretos, sem ocupar a tela toda */
+.pp-root .pp-categories {
+  display: flex;
+  gap: 9px;
+  overflow-x: auto;
+  padding: 2px 1px 7px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.pp-root .pp-categories::-webkit-scrollbar {
+  display: none;
+}
+
+.pp-root .pp-category {
+  display: inline-flex;
+  flex: 0 0 auto;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 43px;
+  padding: 0 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  background: #fff;
+  color: #475569;
+  cursor: pointer;
+  transition: border-color .18s ease, background .18s ease, color .18s ease;
+}
+
+.pp-root .pp-category span {
+  font-size: 16px;
+}
+
+.pp-root .pp-category small {
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.pp-root .pp-category.active {
+  border-color: #0f766e;
+  background: #eaf6f3;
+  color: #0f766e;
+}
+
+/* Estabelecimentos em primeiro plano */
+.pp-root .pp-establishment-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.pp-root .pp-establishment-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  min-height: 132px;
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 19px;
+  background: #fff;
+  text-align: left;
+  overflow: hidden;
+  box-shadow: 0 5px 17px rgba(15,23,42,.055);
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.pp-root .pp-establishment-card:hover {
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+  box-shadow: 0 11px 25px rgba(15,23,42,.09);
+}
+
+.pp-root .pp-establishment-card:focus-visible,
+.pp-root .pp-category:focus-visible,
+.pp-back-button:focus-visible {
+  outline: 3px solid rgba(15,118,110,.25);
+  outline-offset: 2px;
+}
+
+.pp-root .pp-establishment-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 94px;
+  height: 94px;
+  border: 1px solid #edf1f5;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #f8fafc, #eef4f6);
+  overflow: hidden;
+  font-size: 36px;
+}
+
+.pp-root .pp-establishment-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pp-root .pp-establishment-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pp-root .pp-establishment-info strong {
+  display: block;
+  color: #0f172a;
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+.pp-root .pp-establishment-category {
+  display: inline-flex;
+  margin-top: 6px;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: #fff7e5;
+  color: #9a6700;
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.pp-root .pp-establishment-location {
+  display: block;
+  margin-top: 7px;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.pp-root .pp-establishment-description {
+  display: block;
+  margin-top: 7px;
+  color: #475569;
+  font-size: 11px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.pp-root .pp-establishment-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  color: #0f766e;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.pp-root .pp-establishment-cta b {
+  font-size: 17px;
+}
+
+/* Estados vazios */
+.pp-empty-state,
+.pp-root .pp-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 18px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 17px;
+  background: #f8fafc;
+  color: #64748b;
+  text-align: center;
+}
+
+.pp-empty-state > span {
+  margin-bottom: 12px;
+  font-size: 32px;
+}
+
+.pp-empty-state strong {
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.pp-empty-state p {
+  max-width: 300px;
+  margin-top: 8px;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.pp-retry-button {
+  margin-top: 12px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: #0f172a;
+  color: #fff;
+  font-weight: 800;
+}
+
+/* Rodapé */
+.pp-footer {
+  margin-top: 28px;
+  padding: 20px 10px;
+  border-top: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.pp-footer strong {
+  font-size: 14px;
+}
+
+.pp-footer p {
+  margin-top: 5px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* Página de descoberta como entrada principal de Serviços */
+#servicesPage.pp-discovery-active > .sectionTitle,
+#servicesPage.pp-discovery-active > .sectionSubtitle {
+  display: none;
+}
+
+#servicesPage.pp-discovery-active .pp-root {
+  margin-top: 0;
+}
+
+@media (min-width: 700px) {
+  .pp-root .pp-establishment-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pp-root .pp-hero {
+    padding: 34px 32px;
+  }
+}
+
+@media (max-width: 420px) {
+  .pp-root .pp-establishment-card {
+    gap: 12px;
+    min-height: 120px;
+    padding: 11px;
+  }
+
+  .pp-root .pp-establishment-logo {
+    width: 78px;
+    height: 78px;
+    border-radius: 14px;
+  }
+
+  .pp-root .pp-establishment-info strong {
+    font-size: 14px;
+  }
+
+  .pp-root .pp-establishment-description {
+    -webkit-line-clamp: 1;
+  }
+}
+
+@media (max-width: 360px) {
+  .pp-hero {
+    min-height: 170px;
+    padding: 19px 15px;
+  }
+
+  .pp-hero h2 {
+    font-size: 22px;
+  }
+
+  .pp-hero-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 15px;
+    font-size: 24px;
+  }
+
+  .pp-root .pp-establishment-logo {
+    width: 68px;
+    height: 68px;
+  }
+}
