@@ -308,11 +308,6 @@ module.exports = async (req, res) => {
             throw new Error('Registro da mensalidade profissional não encontrado');
           }
 
-
-          if (!pagamentoAtual.exists || !mensalidadeSnap.exists) {
-            throw new Error('Registro da mensalidade profissional não encontrado');
-          }
-
           const dadosPagamento = pagamentoAtual.data();
           if (dadosPagamento.status === 'approved' && dadosPagamento.processado === true) return;
 
