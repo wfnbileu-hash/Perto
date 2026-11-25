@@ -1573,9 +1573,16 @@ function preencherFormulario(item) {
                       ? "Atendimento a domicílio"
                       : "Atendimento no estabelecimento"}
                   </p>
+<<<<<<< HEAD
                   ${atendimentoDomicilio
                     ? `<p style="margin-top:5px"><strong>Endereço do atendimento:</strong> ${escapar(enderecoAtendimento || "Endereço não informado")}</p>`
                     : ""}
+=======
+                      ${item.modalidadeAtendimento === "domicilio"
+                    ? `<p style="margin-top:5px"><strong>Endereço do atendimento:</strong> ${escapar(item.enderecoCliente || "Endereço não informado")}</p>`
+                    : ""}
+
+>>>>>>> 7a18e06d62ebed4b47ec2d79431483d7062da86e
                   ${botoes ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">${botoes}</div>` : ""}
                 </article>
               `;
