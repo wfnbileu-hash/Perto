@@ -1573,6 +1573,9 @@ function preencherFormulario(item) {
                       ? "Atendimento a domicílio"
                       : "Atendimento no estabelecimento"}
                   </p>
+                      ${item.modalidadeAtendimento === "domicilio"
+                    ? `<p style="margin-top:5px"><strong>Endereço do atendimento:</strong> ${escapar(item.enderecoCliente || "Endereço não informado")}</p>`
+                    : ""}
 
                   ${botoes ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">${botoes}</div>` : ""}
                 </article>
