@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 512 512" role="img" aria-label="Perto">
+  <rect width="512" height="512" rx="112" fill="#111827"/>
+  <g transform="translate(256 256) scale(.86) translate(-256 -256)">
+  <path d="M256 64c-91.1 0-165 73.9-165 165 0 119.4 145.8 245.5 152 250.8a20 20 0 0 0 26 0C275.2 474.5 421 348.4 421 229c0-91.1-73.9-165-165-165Z" fill="#f59e0b"/>
+  <circle cx="256" cy="224" r="105" fill="#111827"/>
+  <path d="M202 205h108l-9-40h-90l-9 40Zm-10 14v79c0 8 6 14 14 14h100c8 0 14-6 14-14v-79H192Zm45 77v-49h34v49h-34Z" fill="#fff"/>
+  <path d="M192 205h118v18H192z" fill="#fff"/>
+  <path d="M231 165h17v40h-17zm34 0h17v40h-17z" fill="#f59e0b"/>
+  </g>
+</svg>
