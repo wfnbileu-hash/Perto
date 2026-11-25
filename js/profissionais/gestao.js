@@ -1509,12 +1509,12 @@ function preencherFormulario(item) {
           ? agendamentos.map(item => {
               const status = String(item.status || "pendente");
               const preco = Number(item.preco || 0);
-
+              const enderecoAtendimento = item.enderecoCliente || item.enderecoAtendimento || item.endereco || "";
+              const modalidade = String(item.modalidadeAtendimento || item.modalidade || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+              const atendimentoDomicilio = modalidade.includes("domicilio") || Boolean(enderecoAtendimento);
               let botoes = "";
-
               if (status === "pendente") {
-                botoes = `
-                  <button type="button" data-agendamento-status="confirmado" data-id="${escapar(item.id)}"
+                botoes = `<button type="button" data-agendamento-status="confirmado" data-id="${escapar(item.id)}"
                     style="padding:8px 12px;border:0;border-radius:8px;background:#16a34a;color:#fff;font-weight:700;cursor:pointer">
                     Confirmar
                   </button>
@@ -1569,12 +1569,12 @@ function preencherFormulario(item) {
                   </p>
 
                   <p style="margin-top:5px;font-size:13px;color:#64748b">
-                    ${escapar(item.modalidadeAtendimento || "local") === "domicilio"
+                    ${atendimentoDomicilio
                       ? "Atendimento a domicílio"
                       : "Atendimento no estabelecimento"}
                   </p>
-                  ${item.modalidadeAtendimento === "domicilio"
-                    ? `<p style="margin-top:5px"><strong>Endereço do atendimento:</strong> ${escapar(item.enderecoCliente || "Endereço não informado")}</p>`
+                  ${atendimentoDomicilio
+                    ? `<p style="margin-top:5px"><strong>Endereço do atendimento:</strong> ${escapar(enderecoAtendimento || "Endereço não informado")}</p>`
                     : ""}
                   ${botoes ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">${botoes}</div>` : ""}
                 </article>

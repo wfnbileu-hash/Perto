@@ -284,13 +284,13 @@ export async function montarAgendamentoCliente(container, estabelecimento, bridg
         inicio,
         modalidadeAtendimento: modalidadeEscolhida,
         enderecoCliente,
+        enderecoAtendimento: enderecoCliente,
+        endereco: enderecoCliente,
         clienteNome: nomeUsuario(usuario, bridge.getCurrentUserData?.())
       });
-
       const status = resposta.data?.status === "pendente"
         ? "Seu pedido foi enviado e aguarda a confirmação do profissional."
         : "Seu horário foi confirmado!";
-
       feedback(status);
       botao.textContent = "Agendamento realizado";
       await carregarHorarios();
@@ -344,12 +344,12 @@ export async function montarAgendamentoCliente(container, estabelecimento, bridg
 
         card.append(titulo, resumo, status);
 
-        if (item.modalidadeAtendimento === "domicilio" && item.enderecoCliente) {
+        const enderecoAtendimento = item.enderecoCliente || item.enderecoAtendimento || item.endereco || "";
+        if ((item.modalidadeAtendimento === "domicilio" || item.modalidade === "domicilio" || enderecoAtendimento) && enderecoAtendimento) {
           const endereco = document.createElement("p");
-          endereco.textContent = `Endereço do atendimento: ${item.enderecoCliente}`;
+          endereco.textContent = `Endereço do atendimento: ${enderecoAtendimento}`;
           card.appendChild(endereco);
         }
-
         if (!STATUS_FINAIS.has(item.status) && ["pendente", "confirmado"].includes(item.status)) {
           const cancelar = document.createElement("button");
           cancelar.type = "button";
