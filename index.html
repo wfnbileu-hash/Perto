@@ -3176,7 +3176,7 @@ display:none!important;
 <!-- FIM DO CADASTRO DO PROFISSIONAL -->
 
     <!-- CHAT / CONVERSAS -->
- <section id="chatPage" class="page"><div class="sectionTitle">Conversas</div><div class="sectionSubtitle">Negocie diretamente com compradores e vendedores. Serão exibidas até 100 mensagens recentes por conversa; conversas sem atividade por 30 dias são removidas automaticamente.</div><button id="clearConversationsBtn" type="button" class="btn" style="width:100%;margin:12px 0;background:#fee2e2;color:#991b1b">🧹 Limpar todas as conversas</button><div id="chatList"></div></section>
+  <section id="chatPage" class="page"><div class="sectionTitle">Conversas</div><div class="sectionSubtitle">Negocie diretamente com compradores e vendedores. Serão exibidas até 100 mensagens recentes por conversa; conversas e mensagens sem atividade por 7 dias são removidas automaticamente.</div><button id="clearConversationsBtn" type="button" class="btn" style="width:100%;margin:12px 0;background:#fee2e2;color:#991b1b">🧹 Limpar todas as conversas</button><div id="chatList"></div></section>
     <!-- PERFIL DO USUÁRIO -->
 <section id="profilePage" class="page"><div class="sectionTitle">Meu perfil</div><div class="profileCard"><div id="profileAvatar" class="profileAvatar">?</div><div id="profileName" class="profileName">Usuário</div><div id="profileEmail" class="profileEmail"></div><div id="profileCity" class="profileEmail"></div>
 <div class="profileActions"><button class="profileAction" id="myOrdersBtn" type="button">🛍️ Minhas compras e entregas</button><button class="profileAction" id="editProfileBtn">⚙️ Configurar meus dados</button><button class="profileAction" id="myAdsBtn">📦 Meus anúncios</button>
@@ -3280,7 +3280,7 @@ display:none!important;
       <div class="serviceCard">
         <div class="serviceIcon">🎬</div>
         <h3>Moderação de Reels e denúncias</h3>
-        <p>Revise os vídeos publicados e as denúncias da comunidade. Vídeos novos aguardam liberação; os já publicados podem ser bloqueados a qualquer momento.</p>
+        <p>Os vídeos de lojas e estabelecimentos elegíveis são publicados automaticamente. A equipe ainda pode bloquear vídeos denunciados ou que violem as regras.</p>
         <button type="button" id="refreshAdminReelsBtn" class="btn btnPrimary" style="width:100%;margin-top:12px">🔄 Carregar vídeos e denúncias</button>
         <div id="adminReelsList" style="margin-top:12px">Carregue a fila para revisar Reels e denúncias.</div>
       </div>
@@ -3614,7 +3614,7 @@ Destaque seu anúncio no topo. Escolha um plano após publicar. A ativação aco
 <div id="publishReelModal" class="modal">
   <div class="modalContent" style="max-width:520px">
     <div class="modalHeader"><h2>🎬 Publicar um Reel</h2><button type="button" class="closeModal" data-close="publishReelModal" aria-label="Fechar">×</button></div>
-    <p style="font-size:13px;color:#64748b;margin-bottom:14px">Mostre seu produto em um vídeo vertical e vincule um anúncio ativo para os clientes poderem ver detalhes e conversar com você.</p>
+     <p style="font-size:13px;color:#64748b;margin-bottom:14px">Publique vídeos dos seus anúncios ativos. Recurso exclusivo para contas com loja ou estabelecimento ativo; os vídeos são publicados automaticamente e podem ser bloqueados se houver violação das regras.</p>
     <form id="publishReelForm">
       <fieldset class="formGroup" style="border:0;padding:0;margin:0 0 14px"><legend style="font-size:13px;font-weight:700;margin-bottom:8px">Como adicionar o vídeo?</legend><label class="checkboxLine" style="align-items:center"><input type="radio" name="reelSource" value="upload" checked><span>Enviar vídeo do celular (usa o Firebase Storage)</span></label><label class="checkboxLine" style="align-items:center"><input type="radio" name="reelSource" value="youtube"><span>Usar link do YouTube (não ocupa o Storage do Perto)</span></label></fieldset>
       <div class="formGroup" id="reelUploadGroup"><label for="reelVideoFile">Vídeo *</label><input id="reelVideoFile" type="file" accept="video/mp4,video/webm,video/quicktime" required><div class="reelUploadNote">MP4, WebM ou MOV, até 60 segundos e 50 MB. Use um vídeo que você tenha autorização para publicar.</div></div>
@@ -3875,7 +3875,7 @@ const consultarEntregaMarketplaceFn=httpsCallable(functions, "consultarEntregaMa
 let storage=null,storageRef=null,uploadBytes=null,getDownloadURL=null;
 let currentUser=null,currentUserData=null,allProducts=[],favorites=new Set(),currentSlide=0,slideTimer=null,selectedImages=[],selectedProfessionalPhoto=null,currentConversationId=null,currentChatUnsub=null,currentChatData=null,currentChatProduct=null,currentOfferProduct=null,editingProductId=null,editingProductImages=[],currentProfessionalActive=true;
 let homeProductsVisible=20,homeProductsObserver=null;
-let reelsCache=[],reelsObserver=null;
+let reelsCache=[],reelsObserver=null,reelsProductsCache=[];
 let notificationsUnsub = null;
 let notificationsCache = [];
 let chatUnreadUnsub = null;
@@ -5987,7 +5987,7 @@ function renderReels(){
               <strong>${esc(produtoNome)}</strong>
               <span>${money(preco)}</span>
             </div>
-            <button type="button" class="reelBuyBtn" data-reel-product="${esc(reel.produtoId||"")}">Ver produto</button>
+             <button type="button" class="reelBuyBtn" data-reel-product="${esc(reel.produtoId||"")}" data-reel-collection="${esc(reel.produtoColecao||"produtos")}">Ver produto</button>
           </div>
         </div>
       </article>
@@ -6030,7 +6030,7 @@ function renderReels(){
 
   feed.querySelectorAll("[data-reel-product]").forEach(botao=>{
     botao.addEventListener("click",()=>{
-      abrirProdutoDoReel(botao.dataset.reelProduct);
+       abrirProdutoDoReel(botao.dataset.reelProduct,botao.dataset.reelCollection);
     });
   });
 
@@ -6067,39 +6067,75 @@ async function moderarReelAdmin(reelId,acao){if(!currentUser||currentUser.uid!==
 
 async function carregarReels(){const feed=$("reelsFeed");if(!feed)return;feed.innerHTML='<div class="reelsEmpty">Carregando vídeos...</div>';try{const resultado=await getDocs(query(collection(db,"reels"),where("ativo","==",true),where("statusModeracao","==","liberado"),orderBy("criadoEm","desc"),limit(40)));reelsCache=resultado.docs.map(documento=>({id:documento.id,...documento.data()})).filter(reel=>reel.ativo===true&&reel.statusModeracao==="liberado").sort((a,b)=>millisReel(b.criadoEm)-millisReel(a.criadoEm));renderReels()}catch(erro){console.error("Erro ao carregar Reels:",erro);feed.innerHTML='<div class="reelsEmpty">Não foi possível carregar os vídeos. Confira as regras de leitura da coleção <strong>reels</strong> no Firestore e tente novamente.</div>'}}
 
-async function abrirProdutoDoReel(produtoId){
-  if(!produtoId)return toast("Este Reel não tem um produto vinculado.");
+async function abrirProdutoDoReel(produtoId, produtoColecao="produtos"){
+  if(!produtoId)return toast("Este Reel não tem um anúncio vinculado.");
   try{
-    let produto=allProducts.find(item=>item.id===produtoId);
+    const colecao=produtoColecao==="produtosLoja"?"produtosLoja":"produtos";
+    let produto=colecao==="produtos"?allProducts.find(item=>item.id===produtoId):null;
     if(!produto){
-      const resultado=await getDoc(doc(db,"produtos",produtoId));
+      const resultado=await getDoc(doc(db,colecao,produtoId));
       if(resultado.exists())produto={id:resultado.id,...resultado.data()};
     }
-    if(!produto||!isPublicProduct(produto))return toast("Este anúncio não está mais disponível.");
-    openProduct(produto);
+    if(!produto||produto.ativo===false||(colecao==="produtos"&&!isPublicProduct(produto)))return toast("Este anúncio não está mais disponível.");
+    openProduct({...produto,lojaId:produto.lojaId||(colecao==="produtosLoja"?produto.vendedorId:null)});
   }catch(erro){
-    console.error("Erro ao abrir produto do Reel:",erro);
+    console.error("Erro ao abrir anúncio do Reel:",erro);
     toast("Não foi possível abrir este anúncio agora.");
   }
+}
+async function verificarElegibilidadeReel(uid){
+  const [lojaSnap, estabelecimentosSnap] = await Promise.all([
+    getDoc(doc(db,"lojas",uid)).catch(()=>null),
+    getDocs(query(collection(db,"estabelecimentosProfissionais"),where("proprietarioId","==",uid))).catch(()=>null)
+  ]);
+  const lojaAtiva=lojaSnap?.exists()&&lojaSnap.data().ativo===true&&lojaSnap.data().statusAdmin!=="suspensa";
+  const estabelecimentoAtivo=!!estabelecimentosSnap?.docs.some(documento=>{
+    const dados=documento.data();
+    return dados.ativo===true&&dados.statusAdmin!=="suspenso";
+  });
+  return {lojaAtiva,estabelecimentoAtivo,elegivel:lojaAtiva||estabelecimentoAtivo};
 }
 
 async function preencherProdutosReel(){
   const select=$("reelProductSelect");
-  if(!select)return;
-  if(!allProducts.length)await loadProducts();
-  const meusProdutos=allProducts.filter(produto=>produto.vendedorId===currentUser?.uid&&isPublicProduct(produto));
-  select.innerHTML='<option value="">Selecione um dos seus anúncios ativos</option>'+meusProdutos.map(produto=>`<option value="${esc(produto.id)}">${esc(produto.nome)} — ${money(produto.preco)}</option>`).join("");
-  if(!meusProdutos.length){
-    select.innerHTML='<option value="">Você precisa publicar um anúncio ativo primeiro</option>';
+  if(!select||!currentUser)return;
+  select.innerHTML='<option value="">Verificando sua loja ou estabelecimento...</option>';
+  try{
+    const elegibilidade=await verificarElegibilidadeReel(currentUser.uid);
+    if(!elegibilidade.elegivel){
+      reelsProductsCache=[];
+      select.innerHTML='<option value="">É necessário ter uma loja ou estabelecimento ativo</option>';
+      toast("A publicação de vídeos é exclusiva para contas com loja ou estabelecimento ativo.");
+      return;
+    }
+    const consultas=[getDocs(query(collection(db,"produtos"),where("vendedorId","==",currentUser.uid)))];
+    if(elegibilidade.lojaAtiva)consultas.push(getDocs(query(collection(db,"produtosLoja"),where("lojaId","==",currentUser.uid))));
+    const resultados=await Promise.all(consultas);
+    reelsProductsCache=[];
+    resultados[0].docs.forEach(documento=>{
+      const produto={id:documento.id,...documento.data(),_reelColecao:"produtos"};
+      if(isPublicProduct(produto))reelsProductsCache.push(produto);
+    });
+    if(resultados[1])resultados[1].docs.forEach(documento=>{
+      const produto={id:documento.id,...documento.data(),_reelColecao:"produtosLoja"};
+      if(produto.ativo===true)reelsProductsCache.push(produto);
+    });
+    select.innerHTML='<option value="">Selecione um anúncio ativo seu</option>'+reelsProductsCache.map(produto=>`<option value="${esc(produto._reelColecao+":"+produto.id)}">${esc(produto.nome)} — ${money(produto.preco)}</option>`).join("");
+    if(!reelsProductsCache.length)select.innerHTML='<option value="">Publique um anúncio ativo antes de enviar um vídeo</option>';
+  }catch(erro){
+    console.error("Erro ao verificar elegibilidade para Reels:",erro);
+    reelsProductsCache=[];
+    select.innerHTML='<option value="">Não foi possível verificar sua loja/estabelecimento</option>';
+    toast("Não foi possível verificar sua elegibilidade. Tente novamente.");
   }
 }
 
 async function abrirPublicacaoReel(){
   if(!currentUser)return showAuth("login");
   await preencherProdutosReel();
+  if(!reelsProductsCache.length)return;
   openModal("publishReelModal");
 }
-
 function validarVideoReel(arquivo){
   return new Promise((resolve,reject)=>{
     const url=URL.createObjectURL(arquivo);
@@ -6116,7 +6152,63 @@ function validarVideoReel(arquivo){
   });
 }
 
-async function publicarReel(evento){evento.preventDefault();if(!currentUser)return showAuth("login");const modo=document.querySelector('input[name="reelSource"]:checked')?.value||"upload",arquivo=$("reelVideoFile").files?.[0],youtubeId=modo==="youtube"?obterYoutubeId($("reelYoutubeUrl").value):"",produto=allProducts.find(item=>item.id===$("reelProductSelect").value&&item.vendedorId===currentUser.uid&&isPublicProduct(item));if(!produto)return toast("Selecione um dos seus anúncios ativos.");if(modo==="upload"&&!arquivo)return toast("Escolha um vídeo para publicar.");if(modo==="youtube"&&!youtubeId)return toast("Informe um link válido de vídeo do YouTube.");if(modo==="upload"&&!["video/mp4","video/webm","video/quicktime"].includes(arquivo.type))return toast("Use um vídeo nos formatos MP4, WebM ou MOV.");if(modo==="upload"&&arquivo.size>50*1024*1024)return toast("O vídeo deve ter no máximo 50 MB.");const botao=$("publishReelSubmit");botao.disabled=true;botao.textContent=modo==="upload"?"Verificando vídeo...":"Publicando link...";try{if(modo==="upload")await validarVideoReel(arquivo);const reelRef=doc(collection(db,"reels"));let videoUrl;if(modo==="youtube"){videoUrl=`https://www.youtube.com/watch?v=${youtubeId}`}else{if(!storage){storage=getStorage(app);storageRef=firebaseStorageRef;uploadBytes=firebaseUploadBytes;getDownloadURL=firebaseGetDownloadURL}const extensao=arquivo.type.includes("webm")?"webm":arquivo.type.includes("quicktime")?"mov":"mp4",arquivoRef=storageRef(storage,`reels/${currentUser.uid}/${reelRef.id}.${extensao}`);botao.textContent="Enviando vídeo...";await uploadBytes(arquivoRef,arquivo,{contentType:arquivo.type});videoUrl=await getDownloadURL(arquivoRef)}await setDoc(reelRef,{vendedorId:currentUser.uid,vendedorNome:currentUserData?.nome||currentUser.displayName||currentUser.email||"Vendedor",produtoId:produto.id,produtoNome:produto.nome,produtoPreco:Number(produto.preco)||0,legenda:$("reelCaption").value.trim().slice(0,300),videoUrl,ativo:false,statusModeracao:"pendente",criadoEm:serverTimestamp()});$("publishReelForm").reset();alternarOrigemReel();closeModal("publishReelModal");toast("Reel enviado para análise. Ele aparecerá no feed após a liberação da equipe.");await carregarReels()}catch(erro){console.error("Erro ao publicar Reel:",erro);toast(erro?.message||"Não foi possível publicar o vídeo. Confira as regras do Firebase Storage e do Firestore.")}finally{botao.disabled=false;botao.textContent="Publicar vídeo"}}
+async function publicarReel(evento){
+  evento.preventDefault();
+  if(!currentUser)return showAuth("login");
+  const elegibilidade=await verificarElegibilidadeReel(currentUser.uid).catch(()=>({elegivel:false}));
+  if(!elegibilidade.elegivel)return toast("A publicação de vídeos é exclusiva para contas com loja ou estabelecimento ativo.");
+  const modo=document.querySelector('input[name="reelSource"]:checked')?.value||"upload";
+  const arquivo=$("reelVideoFile").files?.[0];
+  const youtubeId=modo==="youtube"?obterYoutubeId($("reelYoutubeUrl").value):"";
+  const [colecao,produtoId]=String($("reelProductSelect").value||"").split(":");
+  const produto=reelsProductsCache.find(item=>item.id===produtoId&&item._reelColecao===colecao);
+  if(!produto)return toast("Selecione um anúncio ativo seu.");
+  if(modo==="upload"&&!arquivo)return toast("Escolha um vídeo para publicar.");
+  if(modo==="youtube"&&!youtubeId)return toast("Informe um link válido de vídeo do YouTube.");
+  if(modo==="upload"&&!['video/mp4','video/webm','video/quicktime'].includes(arquivo.type))return toast("Use um vídeo nos formatos MP4, WebM ou MOV.");
+  if(modo==="upload"&&arquivo.size>50*1024*1024)return toast("O vídeo deve ter no máximo 50 MB.");
+  const botao=$("publishReelSubmit");
+  botao.disabled=true;
+  botao.textContent=modo==="upload"?"Verificando vídeo...":"Publicando link...";
+  try{
+    if(modo==="upload")await validarVideoReel(arquivo);
+    const reelRef=doc(collection(db,"reels"));
+    let videoUrl;
+    if(modo==="youtube")videoUrl=`https://www.youtube.com/watch?v=${youtubeId}`;
+    else{
+      if(!storage){storage=getStorage(app);storageRef=firebaseStorageRef;uploadBytes=firebaseUploadBytes;getDownloadURL=firebaseGetDownloadURL;}
+      const extensao=arquivo.type.includes("webm")?"webm":arquivo.type.includes("quicktime")?"mov":"mp4";
+      const arquivoRef=storageRef(storage,`reels/${currentUser.uid}/${reelRef.id}.${extensao}`);
+      botao.textContent="Enviando vídeo...";
+      await uploadBytes(arquivoRef,arquivo,{contentType:arquivo.type});
+      videoUrl=await getDownloadURL(arquivoRef);
+    }
+    const resposta=await fetch("/api/publicar-reel",{
+      method:"POST",
+      headers:{"Content-Type":"application/json",Authorization:`Bearer ${await currentUser.getIdToken()}`},
+      body:JSON.stringify({
+        reelId:reelRef.id,
+        produtoId:produto.id,
+        produtoColecao:produto._reelColecao,
+        videoUrl,
+        legenda:$("reelCaption").value.trim().slice(0,300)
+      })
+    });
+    const resultado=await resposta.json().catch(()=>({}));
+    if(!resposta.ok)throw new Error(resultado.erro||"Não foi possível publicar o vídeo.");
+    $("publishReelForm").reset();
+    alternarOrigemReel();
+    closeModal("publishReelModal");
+    toast("Vídeo publicado automaticamente!");
+    await carregarReels();
+  }catch(erro){
+    console.error("Erro ao publicar Reel:",erro);
+    toast(erro?.message||"Não foi possível publicar o vídeo. Confira as regras do Firebase Storage e do Firestore.");
+  }finally{
+    botao.disabled=false;
+    botao.textContent="Publicar vídeo";
+  }
+}
 function alternarOrigemReel(){const modo=document.querySelector('input[name="reelSource"]:checked')?.value||"upload",upload=modo==="upload";$("reelUploadGroup").classList.toggle("hidden",!upload);$("reelYoutubeGroup").classList.toggle("hidden",upload);$("reelVideoFile").required=upload;$("reelYoutubeUrl").required=!upload}document.querySelectorAll('input[name="reelSource"]').forEach(input=>input.addEventListener("change",alternarOrigemReel));alternarOrigemReel();$("publishReelForm").onsubmit=publicarReel;$("publishReelBtn").onclick=abrirPublicacaoReel;$("homeOpenReels").onclick=()=>showInternalPage("reelsPage");$("refreshAdminReelsBtn").onclick=carregarReelsAdmin;
 
 function createProductCard(p){let card=document.createElement("div");

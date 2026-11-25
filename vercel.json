@@ -3,6 +3,10 @@
     {
       "path": "/api/verificar-mensalidades",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/limpar-conversas",
+      "schedule": "15 6 * * *"
     }
   ]
 }
