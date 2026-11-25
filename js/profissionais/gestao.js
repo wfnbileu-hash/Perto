@@ -187,7 +187,7 @@ export function initGestaoProfissionais(bridge) {
 
         <label style="font-size:13px;font-weight:700">
           Endereço
-          <input id="ppAddress" maxlength="200"
+          <input id="ppAddress" required maxlength="200"
             style="display:block;width:100%;padding:12px;margin-top:6px;border:1px solid #cbd5e1;border-radius:10px">
         </label>
 
@@ -2053,10 +2053,10 @@ function preencherFormulario(item) {
   const categoria = $("ppCategory").value;
   const cidade = $("ppCity").value.trim();
 
-  if (!nome || !categoria || !cidade) {
-    return avisar("Preencha nome, categoria e cidade.");
+  const endereco = $("ppAddress").value.trim();
+  if (!nome || !categoria || !cidade || !endereco) {
+    return avisar("Preencha nome, categoria, cidade e endereço do estabelecimento.");
   }
-
   const salvar = $("ppSaveForm");
   salvar.disabled = true;
   salvar.textContent = "Salvando...";
@@ -2093,7 +2093,7 @@ function preencherFormulario(item) {
       descricao: $("ppDescription").value.trim(),
       cidade,
       bairro: $("ppNeighborhood").value.trim(),
-      endereco: $("ppAddress").value.trim(),
+      endereco,
       telefone: $("ppPhone").value.trim(),
       logoURL,
       modalidadeAtendimento,

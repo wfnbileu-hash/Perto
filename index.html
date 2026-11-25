@@ -4829,20 +4829,29 @@ async function carregarProfissionaisAdmin() {
     estabelecimentos.forEach(estabelecimento => {
       const card = document.createElement("div");
       card.className = "adminStoreRow";
-
+      const aprovadoEm = estabelecimento.aprovadoEm;
+      let dataAprovacao = null;
+      if (aprovadoEm && typeof aprovadoEm.toDate === "function") {
+        dataAprovacao = aprovadoEm.toDate();
+      } else if (aprovadoEm instanceof Date) {
+        dataAprovacao = aprovadoEm;
+      } else if (typeof aprovadoEm === "string" || typeof aprovadoEm === "number") {
+        const dataConvertida = new Date(aprovadoEm);
+        if (!Number.isNaN(dataConvertida.getTime())) dataAprovacao = dataConvertida;
+      }
+      const temDataAprovacaoValida = dataAprovacao &&
+        !Number.isNaN(dataAprovacao.getTime()) &&
+        dataAprovacao.getTime() <= Date.now();
       const nome = document.createElement("strong");
       nome.textContent = estabelecimento.nome || "Estabelecimento sem nome";
-
       const detalhe = document.createElement("p");
       detalhe.style.cssText =
         "font-size:12px;color:#64748b;margin-top:5px;line-height:1.5";
-
       detalhe.textContent =
         `${estabelecimento.categoria || "Categoria não informada"} · ` +
         `${estabelecimento.cidade || "Cidade não informada"} · ` +
         `${estabelecimento.ativo === true ? "Ativo" : "Inativo"} · ` +
         `${estabelecimento.statusAdmin || "Sem status"}`;
-
       const acoes = document.createElement("div");
       acoes.className = "adminStoreActions";
 
@@ -4867,9 +4876,7 @@ async function carregarProfissionaisAdmin() {
             {
               ativo: ativar,
               statusAdmin: ativar ? "aprovada" : "suspensa",
-              ...(ativar && !estabelecimento.aprovadoEm
-                ? { aprovadoEm: serverTimestamp() }
-                : {}),
+              ...(ativar && !temDataAprovacaoValida ? { aprovadoEm: serverTimestamp() } : {}),
               atualizadoEm: serverTimestamp()
             }
           );
@@ -4887,24 +4894,68 @@ async function carregarProfissionaisAdmin() {
           status.disabled = false;
         }
       };
-
+      if (estabelecimento.ativo === true && !temDataAprovacaoValida) {
+        const regularizar = document.createElement("button");
+        regularizar.type = "button";
+        regularizar.className = "btnSmallGreen";
+        regularizar.textContent = "🗓 Regularizar aprovação";
+        regularizar.onclick = async () => {
+          if (!currentUser || currentUser.uid !== ADMIN_UID) {
+            toast("Acesso restrito ao administrador.");
+            return;
+          }
+          const dataInformada = prompt(
+            `Informe a data real em que “${estabelecimento.nome || "este estabelecimento"}” foi aprovado (AAAA-MM-DD).`,
+            ""
+          );
+          if (dataInformada === null) return;
+          const correspondencia = dataInformada.trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+          if (!correspondencia) {
+            toast("Informe a data no formato AAAA-MM-DD.");
+            return;
+          }
+          const [, ano, mes, dia] = correspondencia;
+          const dataEscolhida = new Date(Date.UTC(Number(ano), Number(mes) - 1, Number(dia), 12));
+          if (dataEscolhida.getUTCFullYear() !== Number(ano) ||
+              dataEscolhida.getUTCMonth() !== Number(mes) - 1 ||
+              dataEscolhida.getUTCDate() !== Number(dia) ||
+              dataEscolhida.getTime() > Date.now()) {
+            toast("A data informada é inválida ou está no futuro.");
+            return;
+          }
+          if (!confirm(`Registrar ${dataEscolhida.toLocaleDateString("pt-BR", { timeZone: "UTC" })} como a data real de aprovação?`)) return;
+          regularizar.disabled = true;
+          try {
+            await updateDoc(
+              doc(db, "estabelecimentosProfissionais", estabelecimento.id),
+              {
+                aprovadoEm: dataEscolhida,
+                atualizadoEm: serverTimestamp()
+              }
+            );
+            toast("Data de aprovação regularizada.");
+            await carregarProfissionaisAdmin();
+          } catch (erro) {
+            console.error("Erro ao regularizar data de aprovação:", erro);
+            toast("Não foi possível regularizar. Confira as permissões administrativas do Firestore.");
+            regularizar.disabled = false;
+          }
+        };
+        acoes.append(regularizar);
+      }
       const excluir = document.createElement("button");
       excluir.type = "button";
       excluir.className = "btnSmallDanger";
       excluir.textContent = "🗑 Excluir";
-
       excluir.onclick = async () => {
         if (!confirm(
           `Excluir definitivamente "${estabelecimento.nome || "este estabelecimento"}"?`
         )) return;
-
         excluir.disabled = true;
-
         try {
           await deleteDoc(
             doc(db, "estabelecimentosProfissionais", estabelecimento.id)
           );
-
           toast("Estabelecimento excluído.");
           await carregarProfissionaisAdmin();
         } catch (erro) {
@@ -4913,25 +4964,21 @@ async function carregarProfissionaisAdmin() {
           excluir.disabled = false;
         }
       };
-
       acoes.append(status, excluir);
       card.append(nome, detalhe, acoes);
       lista.appendChild(card);
     });
-
   } catch (erro) {
     console.error("Erro ao carregar profissionais:", erro);
-
     lista.textContent =
       erro.code === "permission-denied"
         ? "O Firebase bloqueou a leitura. Confira as regras administrativas."
         : "Não foi possível carregar os estabelecimentos.";
-
   } finally {
     botao.disabled = false;
   }
-  }
-  
+}
+
 async function chamarEndpointPagamento(caminho, corpo, mensagemFalha) {
   if (!currentUser) {
     showAuth("login");
