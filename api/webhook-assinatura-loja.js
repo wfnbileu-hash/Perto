@@ -328,7 +328,7 @@ module.exports = async (req, res) => {
         );
       });
 
- if (!vencimentoValido) {
+if (!vencimentoValido) {
         console.error('Pagamento aprovado; vencimento pendente:', assinaturaId);
         return res.status(200).send(
           'Pagamento aprovado e registrado; vencimento pendente de confirmação'
