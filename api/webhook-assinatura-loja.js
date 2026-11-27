@@ -252,7 +252,7 @@ module.exports = async (req, res) => {
         token
       );
       
-            const proximoVencimento = assinaturaAtual.next_payment_date ?
+      const proximoVencimento = assinaturaAtual.next_payment_date ?
         new Date(assinaturaAtual.next_payment_date) :
         null;
       
