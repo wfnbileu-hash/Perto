@@ -323,7 +323,7 @@ if (Number.isNaN(dataCriacaoCobranca.getTime())) {
         if (
           dataUltimaCobranca &&
           !Number.isNaN(dataUltimaCobranca.getTime()) &&
-          dataCriacaoCobranca < dataUltimaCobranca
+          dataCriacaoCobranca <= dataUltimaCobranca
         ) {
           return 'antiga';
         }
