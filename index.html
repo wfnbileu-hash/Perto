@@ -4535,9 +4535,14 @@ async function chamarEndpointPagamento(caminho, corpo, mensagemFalha, contexto =
                 document.getElementById("pertoPixFechar").onclick = () => {
           modal.style.display = "none";
 
-          if (processandoFilaPixProfissionais) {
+                    if (processandoFilaPixProfissionais) {
             processandoFilaPixProfissionais = false;
-
+          }
+          
+          if (
+            usuarioFilaPixProfissionais &&
+            filaPixMensalidadesProfissionais.length > 0
+          ) {
             processarProximoPixMensalidadeProfissional()
               .catch(console.error);
           }
