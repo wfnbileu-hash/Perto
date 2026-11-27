@@ -5528,7 +5528,12 @@ function watchUnreadMessages(uid) {
 function limparListenersDaSessao(){
     filaPixMensalidadesProfissionais = [];
   processandoFilaPixProfissionais = false;
-  usuarioFilaPixProfissionais = null;
+  usuarioFilaPixProfissionais = nul
+  const modalPixAberto = $("pertoPixModal");
+if (modalPixAberto) {
+  modalPixAberto.style.display = "none";
+}
+  ;
   if(notificationsUnsub){notificationsUnsub();notificationsUnsub=null;}
   if(realtimeAlertUnsub){realtimeAlertUnsub();realtimeAlertUnsub=null;}
   if(chatUnreadUnsub){chatUnreadUnsub();chatUnreadUnsub=null;}
