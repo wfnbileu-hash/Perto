@@ -5366,6 +5366,7 @@ function watchUnreadMessages(uid) {
   atualizarBotaoAdmin();
   showPage($("appPage"));
   showInternalPage("homePage",false);
+    abrirPixMensalidadeLojaAoEntrar(u).catch(console.error);
   // A interface abre primeiro; os dados chegam em segundo plano.
   loadUserData(u).then(data=>{
     if(currentUser?.uid!==u.uid)return;
