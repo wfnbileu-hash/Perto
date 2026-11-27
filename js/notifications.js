@@ -1,5 +1,5 @@
 /* Alertas em tempo real de pedidos e agendamentos do Perto. */
-export function watchRealtimeAlerts({ db, firestore, uid, onAlert }) {
+export function watchRealtimeAlerts({ db, firestore, uid, email, onAlert }) {
   if (!db || !firestore || !uid || typeof onAlert !== "function") {
     return () => {};
   }
@@ -53,7 +53,7 @@ export function watchRealtimeAlerts({ db, firestore, uid, onAlert }) {
           const statusAtual = String(dados.status || "");
 
           if (mudanca.type === "added") {
-            // A leitura inicial não deve notificar registros antigos ao entrar/recarregar.
+            // A primeira leitura apenas registra o estado atual: não alerta itens antigos.
             if (!primeiraLeitura) {
               if (tipo === "pedido" && papel === "loja") {
                 const status = (statusAtual || "aguardando_confirmacao").toLowerCase();
@@ -62,9 +62,10 @@ export function watchRealtimeAlerts({ db, firestore, uid, onAlert }) {
                   tipo: "pedido",
                   titulo: aceito ? "✅ Novo pedido aceito automaticamente" : "🛍️ Novo pedido para confirmar",
                   mensagem: `Pedido #${documento.id.slice(-8)}${dados.clienteNome ? ` de ${dados.clienteNome}` : ""}.${aceito ? " Já está aceito." : " Aguarda sua confirmação."}`,
-                   id: documento.id,
-                   duracaoSomMs: 5000
-                }); } else if (tipo === "agendamento" && papel !== "cliente") {
+                  id: documento.id,
+                  duracaoSomMs: 5000
+                });
+              } else if (tipo === "agendamento" && papel !== "cliente") {
                 const status = (statusAtual || "pendente").toLowerCase();
                 const aceito = ["confirmado", "aceito", "aprovado"].includes(status);
                 alertarUmaVez(`novo:${tipo}:${caminho}`, {
@@ -121,7 +122,6 @@ export function watchRealtimeAlerts({ db, firestore, uid, onAlert }) {
     try {
       acompanhar(construir(), tipo, papel);
     } catch (erro) {
-      // Falhas de consulta/índice não devem impedir a entrada do usuário no app.
       console.warn(`[Perto alertas] Consulta indisponível (${tipo}/${papel}):`, erro);
     }
   }
@@ -138,21 +138,50 @@ export function watchRealtimeAlerts({ db, firestore, uid, onAlert }) {
     "cliente"
   );
 
-  // Agendamentos atribuídos ao profissional e agendamentos feitos pelo cliente.
   if (collectionGroup) {
-    acompanharConsulta(
-      () => query(collectionGroup(db, "agendamentos"), where("profissionalId", "==", uid), limit(50)),
-      "agendamento",
-      "profissional"
-    );
+    // Clientes recebem atualizações dos próprios agendamentos.
     acompanharConsulta(
       () => query(collectionGroup(db, "agendamentos"), where("clienteId", "==", uid), limit(50)),
       "agendamento",
       "cliente"
     );
+
+    // Profissionais são descobertos pelos convites aceitos e ouvem somente as agendas
+    // dos estabelecimentos aos quais pertencem. Isso evita a consulta collectionGroup
+    // de agendamentos que as regras atuais do Firestore estão negando.
+    if (email && getDocs) {
+      getDocs(query(
+        collectionGroup(db, "convites"),
+        where("email", "==", email.toLowerCase()),
+        limit(50)
+      )).then(resultado => {
+        if (encerrado) return;
+        const estabelecimentos = new Set();
+        resultado.forEach(convite => {
+          const dados = convite.data() || {};
+          if (dados.status === "aceito" && dados.profissionalId === uid && dados.estabelecimentoId) {
+            estabelecimentos.add(dados.estabelecimentoId);
+          }
+        });
+
+        estabelecimentos.forEach(estabelecimentoId => {
+          acompanharConsulta(
+            () => query(
+              collection(db, "estabelecimentosProfissionais", estabelecimentoId, "agendamentos"),
+              where("profissionalId", "==", uid),
+              limit(50)
+            ),
+            "agendamento",
+            `profissional:${estabelecimentoId}`
+          );
+        });
+      }).catch(erro => {
+        console.warn("[Perto alertas] Não foi possível localizar estabelecimentos da equipe:", erro);
+      });
+    }
   }
 
-  // O proprietário também recebe alertas das agendas da equipe de seus estabelecimentos.
+  // O proprietário recebe alertas das agendas da equipe de seus estabelecimentos.
   if (getDocs) {
     try {
       getDocs(query(

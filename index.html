@@ -5828,7 +5828,7 @@ function watchUnreadMessages(uid) {
   watchNotifications(u.uid);
   watchUnreadMessages(u.uid);
   if (realtimeAlertUnsub) realtimeAlertUnsub();
-  realtimeAlertUnsub = watchRealtimeAlerts({ db, firestore: { collection, collectionGroup, getDocs, onSnapshot, query, where, limit }, uid: u.uid, onAlert: notificarEventoRealtime });
+   realtimeAlertUnsub = watchRealtimeAlerts({ db, firestore: { collection, collectionGroup, getDocs, onSnapshot, query, where, limit }, uid: u.uid, email: u.email || "", onAlert: notificarEventoRealtime });
   atualizarBotaoAdmin();
   showPage($("appPage"));
   showInternalPage("homePage",false);
