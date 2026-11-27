@@ -4614,7 +4614,88 @@ async function abrirPixMensalidadeLojaAoEntrar(usuario) {
     verificandoPixMensalidadeLoja = false;
   }
 }
+let filaPixMensalidadesProfissionais = [];
+let processandoFilaPixProfissionais = false;
+let usuarioFilaPixProfissionais = null;
 
+async function prepararFilaPixMensalidadesProfissionais(usuario) {
+  if (!usuario || auth.currentUser?.uid !== usuario.uid) return;
+
+  try {
+    const consulta = query(
+      collection(db, "estabelecimentosProfissionais"),
+      where("proprietarioId", "==", usuario.uid)
+    );
+
+    const resultado = await getDocs(consulta);
+
+    const estabelecimentos = resultado.docs
+      .map(documento => ({
+        id: documento.id,
+        ...documento.data()
+      }))
+      .sort((a, b) => {
+        const criadoA = a.criadoEm?.toMillis?.() || 0;
+        const criadoB = b.criadoEm?.toMillis?.() || 0;
+        return criadoA - criadoB || a.id.localeCompare(b.id);
+      });
+
+    const fila = [];
+
+    for (const [indice, item] of estabelecimentos.entries()) {
+      if (auth.currentUser?.uid !== usuario.uid) return;
+
+      const mensalidadeSnap = await getDoc(
+        doc(db, "mensalidadesEstabelecimentosProfissionais", item.id)
+      );
+
+      if (!mensalidadeSnap.exists()) continue;
+
+      const mensalidade = mensalidadeSnap.data();
+
+      const valorVencimento = mensalidade.mensalidadeVenceEm;
+      const vencimento = valorVencimento?.toDate
+        ? valorVencimento.toDate()
+        : valorVencimento
+          ? new Date(valorVencimento)
+          : null;
+
+      const vencimentoValido =
+        vencimento &&
+        !Number.isNaN(vencimento.getTime());
+
+      const pixPendente = mensalidade.status === "pending";
+
+      const mensalidadeVencida =
+        vencimentoValido &&
+        vencimento.getTime() <= Date.now();
+
+      if (!pixPendente && !mensalidadeVencida) continue;
+
+      fila.push({
+        estabelecimentoId: item.id,
+        nome: item.nome || "Estabelecimento",
+        numero: indice + 1
+      });
+    }
+
+    if (auth.currentUser?.uid !== usuario.uid) return;
+
+    filaPixMensalidadesProfissionais = fila;
+    usuarioFilaPixProfissionais = usuario.uid;
+
+    console.log(
+      "Mensalidades profissionais na fila:",
+      fila.length
+    );
+
+  } catch (erro) {
+    console.error(
+      "Erro ao preparar fila de mensalidades profissionais:",
+      erro
+    );
+  }
+}
 $("refreshAdminStoresBtn").onclick = carregarLojasAdmin;
   $("refreshAdminProfessionalsBtn").onclick = carregarProfissionaisAdmin;
 $("saveAdminAdBtn").onclick = salvarPublicidadeAdmin;
