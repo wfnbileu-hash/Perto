@@ -228,30 +228,26 @@ module.exports = async (req, res) => {
           admin.firestore.Timestamp.fromDate(carenciaAte);
       }
 
-      const cobrancaJaProcessada = await db.runTransaction(async transacao => {
+     await db.runTransaction(async transacao => {
   const mensalidadeAtual = await transacao.get(docMensalidade.ref);
-
+  
   if (!mensalidadeAtual.exists) {
     throw new Error('Mensalidade da loja não encontrada');
   }
-
+  
   const dadosAtuais = mensalidadeAtual.data();
-
+  
   if (
     dadosAtuais.ultimaCobrancaId === idCobrancaAtual &&
     dadosAtuais.ultimoPagamentoStatus === 'approved'
   ) {
-    return true;
+    return;
   }
-
+  
   transacao.set(docMensalidade.ref, atualizacao, { merge: true });
-  return false;
 });
 
-if (cobrancaJaProcessada) {
-  return res.status(200).send('Cobrança já processada');
-}
-      if (!vencimentoValido) {
+ if (!vencimentoValido) {
         console.error('Pagamento aprovado; vencimento pendente:', assinaturaId);
         return res.status(200).send(
           'Pagamento aprovado e registrado; vencimento pendente de confirmação'
