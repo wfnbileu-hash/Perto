@@ -4481,7 +4481,12 @@ async function chamarEndpointPagamento(caminho, corpo, mensagemFalha, contexto =
     });
 
     const resultado = await resposta.json().catch(() => ({}));
-
+        if (
+      auth.currentUser?.uid !== usuarioPagamento.uid ||
+      currentUser?.uid !== usuarioPagamento.uid
+    ) {
+      return false;
+    }
     if (!resposta.ok) {
       throw new Error(resultado.erro || mensagemFalha);
     }
