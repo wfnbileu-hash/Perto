@@ -5494,57 +5494,51 @@ btn.textContent="Salvar dados";
 // ==================================================
 // ENTRADA NA APLICAÇÃO E ALERTAS EM TEMPO REAL
 // ==================================================
-function tocarSomNotificacao() {
+function tocarSomNotificacao(duracaoMs = 320) {
   if (!somNotificacaoAtivo) return;
   try {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     if (!AudioCtx) return;
     const audio = new AudioCtx();
+    const duracao = Math.min(6000, Math.max(320, Number(duracaoMs) || 320)) / 1000;
     const oscilador = audio.createOscillator();
     const volume = audio.createGain();
     oscilador.type = "sine";
-    oscilador.frequency.setValueAtTime(880, audio.currentTime);
-    oscilador.frequency.setValueAtTime(660, audio.currentTime + 0.12);
-    volume.gain.setValueAtTime(0.0001, audio.currentTime);
-    volume.gain.exponentialRampToValueAtTime(0.12, audio.currentTime + 0.02);
-    volume.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + 0.3);
     oscilador.connect(volume);
     volume.connect(audio.destination);
+    const inicio = audio.currentTime;
+    for (let tempo = 0, numero = 0; tempo < duracao; tempo += 0.42, numero++) {
+      const instante = inicio + tempo;
+      const fim = Math.min(inicio + duracao, instante + 0.24);
+      oscilador.frequency.setValueAtTime(numero % 2 === 0 ? 880 : 660, instante);
+      volume.gain.setValueAtTime(0.0001, instante);
+      volume.gain.exponentialRampToValueAtTime(0.12, instante + Math.min(0.02, (fim - instante) / 2));
+      volume.gain.exponentialRampToValueAtTime(0.0001, fim);
+    }
     oscilador.start();
-    oscilador.stop(audio.currentTime + 0.32);
+    oscilador.stop(inicio + duracao);
     oscilador.onended = () => audio.close();
   } catch (erro) {
     console.warn("Som de notificação indisponível:", erro);
   }
 }
-
 function atualizarEstadoAlertas() {
-  const botao = $("enableNotificationsBtn");
-  const status = $("notificationPreferencesStatus");
+  const botao = $("enableNotificationsBtn"), status = $("notificationPreferencesStatus");
   if (!botao || !status) return;
   const permissao = "Notification" in window ? Notification.permission : "unsupported";
-  if (permissao === "granted" && somNotificacaoAtivo) {
-    botao.textContent = "✅ Som e notificações ativados";
-    status.textContent = "Você receberá alertas enquanto o Perto estiver aberto ou em segundo plano neste dispositivo.";
-  } else if (permissao === "denied") {
-    botao.textContent = "🔕 Permissão bloqueada pelo navegador";
-    status.textContent = "Libere as notificações nas configurações do navegador e tente novamente.";
-  } else {
-    botao.textContent = "🔔 Ativar som e notificações";
-    status.textContent = "Ative som e notificações do dispositivo. O navegador precisa permitir notificações.";
-  }
+  if (permissao === "granted" && somNotificacaoAtivo) { botao.textContent = "✅ Som e notificações ativados"; status.textContent = "Você receberá alertas enquanto o Perto estiver aberto ou em segundo plano neste dispositivo."; } else if (permissao === "denied") { botao.textContent = "🔕 Permissão bloqueada pelo navegador"; status.textContent = "Libere as notificações nas configurações do navegador e tente novamente."; } else { botao.textContent = "🔔 Ativar som e notificações"; status.textContent = "Ative som e notificações do dispositivo. O navegador precisa permitir notificações."; }
 }
 
 function notificarEventoRealtime(alerta) {
   if (!alerta) return;
-  tocarSomNotificacao();
+  tocarSomNotificacao(alerta.duracaoSomMs);
   const texto = [alerta.titulo, alerta.mensagem].filter(Boolean).join(": ");
   if (texto) toast(texto);
   if (!document.hidden || !("Notification" in window) || Notification.permission !== "granted") return;
   const opcoes = {
     body: alerta.mensagem || "Você tem uma nova atualização no Perto.",
     icon: "/icon/perto-192.svg",
-    tag: `perto-${alerta.tipo || "aviso"}-${alerta.id || Date.now()}`,
+    tag: `perto-${alerta.tipo || "aviso"}-${alerta.id || Date.now()}`, 
     renotify: true
   };
   try {
@@ -5766,7 +5760,7 @@ function watchUnreadMessages(uid) {
               tipo: "mensagem",
               titulo: recebidas.length > 1 ? `💬 ${recebidas.length} novas mensagens` : "💬 Nova mensagem",
               mensagem: String(mensagem.texto || "Você recebeu uma mensagem.").slice(0, 140),
-              id: recebidas[recebidas.length - 1].id
+               duracaoSomMs: 2000, id: recebidas[recebidas.length - 1].id
             });
           }
         }, erro => console.warn("Erro ao observar novas mensagens:", id, erro));

@@ -62,9 +62,9 @@ export function watchRealtimeAlerts({ db, firestore, uid, onAlert }) {
                   tipo: "pedido",
                   titulo: aceito ? "✅ Novo pedido aceito automaticamente" : "🛍️ Novo pedido para confirmar",
                   mensagem: `Pedido #${documento.id.slice(-8)}${dados.clienteNome ? ` de ${dados.clienteNome}` : ""}.${aceito ? " Já está aceito." : " Aguarda sua confirmação."}`,
-                  id: documento.id
-                });
-              } else if (tipo === "agendamento" && papel !== "cliente") {
+                   id: documento.id,
+                   duracaoSomMs: 5000
+                }); } else if (tipo === "agendamento" && papel !== "cliente") {
                 const status = (statusAtual || "pendente").toLowerCase();
                 const aceito = ["confirmado", "aceito", "aprovado"].includes(status);
                 alertarUmaVez(`novo:${tipo}:${caminho}`, {
