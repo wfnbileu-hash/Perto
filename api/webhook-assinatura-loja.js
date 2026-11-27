@@ -258,11 +258,11 @@ module.exports = async (req, res) => {
       
       const vencimentoValido = proximoVencimento &&
         !Number.isNaN(proximoVencimento.getTime());
-        
-        const versaoAssinaturaMP = Number(assinaturaAtual.version);
+      
+      const versaoAssinaturaMP = Number(assinaturaAtual.version);
       const versaoValida = Number.isSafeInteger(versaoAssinaturaMP) &&
         versaoAssinaturaMP >= 0;
-
+        
       const atualizacao = {
         ultimaCobrancaId: String(cobranca.id || recursoId),
         ultimoPagamentoStatus: 'approved',
