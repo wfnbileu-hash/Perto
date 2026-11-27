@@ -3838,7 +3838,7 @@ Você será direcionado ao Mercado Pago para concluir o pagamento. O destaque se
 <!-- ================================================== -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { initializeAuth, browserLocalPersistence, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup , sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, addDoc, collection, collectionGroup, query, orderBy, getDocs, where, serverTimestamp, deleteDoc, updateDoc, onSnapshot, limit, runTransaction } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 import {
   getStorage,
@@ -3855,7 +3855,7 @@ const $ = id => document.getElementById(id);
 // ==================================================
 const firebaseConfig={apiKey:"AIzaSyCchIeHvUILX9fiv99C6q_OQ2AiMIzVkwI",authDomain:"perto-65099.firebaseapp.com",projectId:"perto-65099",storageBucket:"perto-65099.firebasestorage.app",messagingSenderId:"659764302578",appId:"1:659764302578:web:3ea6f8fd718bf1842bf66b"};
 const app=initializeApp(firebaseConfig);
-const auth=initializeAuth(app,{persistence:browserLocalPersistence});
+const auth=getAuth(app);
 const db=getFirestore(app);
   // Acesso da vitrine pública ao Firebase
 window.__pertoHomeFirebase = {
@@ -5414,7 +5414,7 @@ $("btnGoogleLogin").onclick = async () => {
     console.error("Erro no login com Google:", error);
     authMessage(
       "Não foi possível entrar com Google. Código: " +
-      (error.code || "desconhecido")
+       (error.code || "desconhecido") + (error.message ? " — " + error.message : "")
     );
   } finally {
     googleLoginEmAndamento = false;
