@@ -5519,6 +5519,9 @@ function watchUnreadMessages(uid) {
   carregarConfiguracaoPublicidade();
 }
 function limparListenersDaSessao(){
+    filaPixMensalidadesProfissionais = [];
+  processandoFilaPixProfissionais = false;
+  usuarioFilaPixProfissionais = null;
   if(notificationsUnsub){notificationsUnsub();notificationsUnsub=null;}
   if(realtimeAlertUnsub){realtimeAlertUnsub();realtimeAlertUnsub=null;}
   if(chatUnreadUnsub){chatUnreadUnsub();chatUnreadUnsub=null;}
