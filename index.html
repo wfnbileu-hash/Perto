@@ -5756,14 +5756,14 @@ function watchUnreadMessages(uid) {
           const recebidas = adicionadas.map(m => m.doc).filter(d => d.data().remetenteId !== uid);
           if (recebidas.length) {
             const mensagem = recebidas[recebidas.length - 1].data();
+            const nomeRemetente = String(mensagem.remetenteNome || "Alguém").trim();
             notificarEventoRealtime({
               tipo: "mensagem",
-              titulo: recebidas.length > 1 ? `💬 ${recebidas.length} novas mensagens` : "💬 Nova mensagem",
+              titulo: recebidas.length > 1 ? `💬 ${nomeRemetente} enviou ${recebidas.length} mensagens` : `💬 Mensagem de ${nomeRemetente}`,
               mensagem: String(mensagem.texto || "Você recebeu uma mensagem.").slice(0, 140),
-               duracaoSomMs: 2000, id: recebidas[recebidas.length - 1].id
-            });
-          }
-        }, erro => console.warn("Erro ao observar novas mensagens:", id, erro));
+              duracaoSomMs: 2000,
+              id: recebidas[recebidas.length - 1].id
+            }); } }, erro => console.warn("Erro ao observar novas mensagens:", id, erro));
       }
     });
  
@@ -6509,7 +6509,7 @@ function listenMessages(){
 if(!text||!currentConversationId)return;
 if(!currentUser){toast("Entre na sua conta para enviar mensagens.");return;}
 if(text.length>2000){toast("A mensagem deve ter no máximo 2.000 caracteres.");return;}
-try{await addDoc(collection(db,"conversas",currentConversationId,"mensagens"),{remetenteId:currentUser.uid,texto:text,criadoEm:serverTimestamp(),lida:false});
+ try{await addDoc(collection(db,"conversas",currentConversationId,"mensagens"),{remetenteId:currentUser.uid,remetenteNome:String(currentUserData?.nome || currentUserData?.nomeCompleto || currentUser?.displayName || currentUser?.email || "Usuário").trim(),texto:text,criadoEm:serverTimestamp(),lida:false});
 await updateDoc(doc(db,"conversas",currentConversationId),{ultimaMensagem:text,atualizadoEm:serverTimestamp()});
  input.value=""}catch(e){toast("Não foi possível enviar a mensagem.")}}
 $("sendMessageBtn").onclick=sendMessage;
@@ -6641,10 +6641,10 @@ c.innerHTML='<div style="font-size:12px;color:#b91c1c">Não foi possível carreg
 async function respondToOffer(offerId,status,o){if(!currentConversationId||o.vendedorId!==currentUser?.uid)return toast("Ação não permitida.");
 try{await updateDoc(doc(db,"conversas",currentConversationId,"ofertas",offerId),{status,respondidaEm:serverTimestamp(),respondidaPor:currentUser.uid});
 let msg=status==="aceita"?`✅ O vendedor aceitou a oferta de ${money(o.valor)}.`:`A oferta de ${money(o.valor)} foi recusada pelo vendedor.`;
-await addDoc(collection(db,"conversas",currentConversationId,"mensagens"),{remetenteId:currentUser.uid,texto:msg,criadoEm:serverTimestamp(),lida:false});
+ await addDoc(collection(db,"conversas",currentConversationId,"mensagens"),{remetenteId:currentUser.uid,remetenteNome:String(currentUserData?.nome || currentUserData?.nomeCompleto || currentUser?.displayName || currentUser?.email || "Usuário").trim(),texto:msg,criadoEm:serverTimestamp(),lida:false});
 await updateDoc(doc(db,"conversas",currentConversationId),{ultimaMensagem:msg,atualizadoEm:serverTimestamp()});
 toast(status==="aceita"?"Oferta aceita.":"Oferta recusada.");
-await loadConversationOffers()}catch(e){console.error(e);
+ await loadConversationOffers()}catch(e){console.error(e);
 toast("Não foi possível responder à oferta. Confira as regras do Firestore.")}}
 $("offerBtn").onclick=()=>openOffer(currentChatProduct);
 $("submitOfferBtn").onclick=async()=>{let value=Number($("offerValue").value);
@@ -6654,12 +6654,12 @@ if(!currentConversationId||!currentOfferProduct||!currentUser)return toast("Abra
 if(currentOfferProduct.vendedorId===currentUser.uid)return toast("Você não pode fazer oferta no seu próprio anúncio.");
 try{let offerRef=await addDoc(collection(db,"conversas",currentConversationId,"ofertas"),{produtoId:currentOfferProduct.id,compradorId:currentUser.uid,vendedorId:currentOfferProduct.vendedorId,valor:Number(value.toFixed(2)),status:"pendente",criadoEm:serverTimestamp()});
 let msg=`💰 Fiz uma oferta de ${money(value)} pelo anúncio.`;
-await addDoc(collection(db,"conversas",currentConversationId,"mensagens"),{remetenteId:currentUser.uid,texto:msg,criadoEm:serverTimestamp(),lida:false});
+ await addDoc(collection(db,"conversas",currentConversationId,"mensagens"),{remetenteId:currentUser.uid,remetenteNome:String(currentUserData?.nome || currentUserData?.nomeCompleto || currentUser?.displayName || currentUser?.email || "Usuário").trim(),texto:msg,criadoEm:serverTimestamp(),lida:false});
 await updateDoc(doc(db,"conversas",currentConversationId),{ultimaMensagem:msg,atualizadoEm:serverTimestamp()});
 closeModal("offerModal");
-toast("Oferta enviada!");
+ toast("Oferta enviada!");
 await loadConversationOffers()}catch(e){console.error(e);
-toast("Não foi possível enviar a oferta. Confira as regras do Firestore.")}};
+ toast("Não foi possível enviar a oferta. Confira as regras do Firestore.")}};
 
 
 
