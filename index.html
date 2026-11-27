@@ -5814,6 +5814,46 @@ function renderReels(){
 
 async function carregarReelsAdmin(){if(!currentUser||currentUser.uid!==ADMIN_UID){toast("Acesso restrito ao administrador.");return}const area=$("adminReelsList");if(!area)return;area.textContent="Carregando Reels e denúncias...";try{const [snapshotReels,snapshotDenuncias]=await Promise.all([getDocs(query(collection(db,"reels"),orderBy("criadoEm","desc"),limit(100))),getDocs(query(collection(db,"denunciasReels"),orderBy("criadoEm","desc"),limit(300)))]);const reels=snapshotReels.docs.map(d=>({id:d.id,...d.data()})),denuncias=snapshotDenuncias.docs.map(d=>({id:d.id,...d.data()})),porReel=new Map();denuncias.forEach(denuncia=>{if(!porReel.has(denuncia.reelId))porReel.set(denuncia.reelId,[]);porReel.get(denuncia.reelId).push(denuncia)});reels.sort((a,b)=>{const aReportado=porReel.has(a.id),bReportado=porReel.has(b.id);if(aReportado!==bReportado)return bReportado-aReportado;return millisReel(b.criadoEm)-millisReel(a.criadoEm)});if(!reels.length){area.textContent="Não há Reels para revisar.";return}area.innerHTML=reels.map(reel=>{const reports=porReel.get(reel.id)||[],estado=reel.statusModeracao||((reel.ativo===true)?"liberado":"pendente"),youtubeId=obterYoutubeId(reel.videoUrl||""),preview=youtubeId?`<a href="https://www.youtube.com/watch?v=${esc(youtubeId)}" target="_blank" rel="noopener noreferrer">Abrir vídeo no YouTube ↗</a>`:`<video src="${esc(reel.videoUrl||"")}" controls playsinline preload="metadata" style="width:100%;max-height:320px;background:#111;border-radius:10px"></video>`;return `<article class="adminStoreRow"><div style="display:flex;justify-content:space-between;gap:8px;align-items:start"><strong>${esc(reel.produtoNome||"Reel sem produto")}</strong><span style="font-size:11px;font-weight:800;color:${estado==="liberado"?"#166534":"#991b1b"}">${esc(estado.toUpperCase())}</span></div><p style="font-size:12px;color:#64748b;margin:6px 0">Vendedor: ${esc(reel.vendedorNome||reel.vendedorId||"não informado")} · ${reports.length} denúncia(s)</p>${reel.legenda?`<p style="font-size:13px;margin:7px 0">${esc(reel.legenda)}</p>`:""}<div style="margin:9px 0">${preview}</div>${reports.length?`<div style="padding:10px;border-radius:10px;background:#fff7ed;margin:8px 0"><strong>Denúncias recebidas</strong>${reports.map((denuncia,index)=>`<p style="font-size:12px;margin-top:6px"><b>${index+1}.</b> ${esc(denuncia.motivo||"Sem motivo informado")} <span style="color:#64748b">(usuário ${esc(denuncia.denuncianteId||"não identificado")})</span></p>`).join("")}</div>`:"<p style=\"font-size:12px;color:#64748b\">Sem denúncias registradas.</p>"}<div class="adminStoreActions"><button type="button" class="btnSmallGreen" data-admin-reel-action="liberar" data-admin-reel="${esc(reel.id)}">✅ Liberar vídeo</button><button type="button" class="btnSmallDanger" data-admin-reel-action="bloquear" data-admin-reel="${esc(reel.id)}">⛔ Bloquear vídeo</button></div></article>`}).join("");area.querySelectorAll("[data-admin-reel]").forEach(botao=>botao.addEventListener("click",()=>moderarReelAdmin(botao.dataset.adminReel,botao.dataset.adminReelAction)))}catch(erro){console.error("Erro ao carregar moderação de Reels:",erro);area.textContent=erro?.code==="permission-denied"?"O Firebase bloqueou a leitura. Confira as regras das coleções reels e denunciasReels.":"Não foi possível carregar a fila de moderação. Tente novamente."}}
 
+async function excluirReelAdmin(reelId) {
+  if (!currentUser || currentUser.uid !== ADMIN_UID) {
+    return toast("Acesso restrito ao administrador.");
+  }
+
+  if (!confirm(
+    "Tem certeza que deseja excluir definitivamente este vídeo e suas denúncias? Esta ação não poderá ser desfeita."
+  )) return;
+
+  try {
+    const resposta = await fetch("/api/excluir-reel", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await currentUser.getIdToken()}`
+      },
+      body: JSON.stringify({ reelId })
+    });
+
+    const resultado = await resposta.json().catch(() => ({}));
+
+    if (!resposta.ok || !resultado.sucesso) {
+      throw new Error(
+        resultado.erro || "Não foi possível excluir o vídeo."
+      );
+    }
+
+    reelsCache = reelsCache.filter(reel => reel.id !== reelId);
+    renderReels();
+
+    toast("Vídeo e denúncias excluídos com sucesso.");
+    await carregarReelsAdmin();
+
+  } catch (erro) {
+    console.error("Erro ao excluir Reel:", erro);
+    toast(erro.message || "Não foi possível excluir o vídeo.");
+  }
+}
+
+
 async function moderarReelAdmin(reelId,acao){if(!currentUser||currentUser.uid!==ADMIN_UID)return toast("Acesso restrito ao administrador.");const liberar=acao==="liberar";if(!confirm(liberar?"Liberar este vídeo para aparecer publicamente?":"Bloquear este vídeo e removê-lo do feed público?"))return;try{await updateDoc(doc(db,"reels",reelId),{ativo:liberar,statusModeracao:liberar?"liberado":"bloqueado",moderadoPor:currentUser.uid,moderadoEm:serverTimestamp()});reelsCache=reelsCache.map(reel=>reel.id===reelId?{...reel,ativo:liberar,statusModeracao:liberar?"liberado":"bloqueado"}:reel);renderReels();toast(liberar?"Vídeo liberado no feed.":"Vídeo bloqueado e removido do feed.");await carregarReelsAdmin()}catch(erro){console.error("Erro ao moderar Reel:",erro);toast("Não foi possível atualizar o Reel. Confira as regras de gravação do Firestore.")}}
 
 async function carregarReels(){const feed=$("reelsFeed");if(!feed)return;feed.innerHTML='<div class="reelsEmpty">Carregando vídeos...</div>';try{const resultado=await getDocs(query(collection(db,"reels"),where("ativo","==",true),where("statusModeracao","==","liberado"),orderBy("criadoEm","desc"),limit(40)));reelsCache=resultado.docs.map(documento=>({id:documento.id,...documento.data()})).filter(reel=>reel.ativo===true&&reel.statusModeracao==="liberado").sort((a,b)=>millisReel(b.criadoEm)-millisReel(a.criadoEm));renderReels()}catch(erro){console.error("Erro ao carregar Reels:",erro);feed.innerHTML='<div class="reelsEmpty">Não foi possível carregar os vídeos. Confira as regras de leitura da coleção <strong>reels</strong> no Firestore e tente novamente.</div>'}}
