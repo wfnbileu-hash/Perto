@@ -184,7 +184,12 @@ module.exports = async (req, res) => {
       const docMensalidade = consulta.docs[0];
       const registro = docMensalidade.data();
       const idCobrancaAtual = String(cobranca.id || recursoId);
+      const dataCriacaoCobranca = new Date(cobranca.date_created);
 
+if (Number.isNaN(dataCriacaoCobranca.getTime())) {
+  console.error('Data de criação da cobrança inválida:', idCobrancaAtual);
+  return res.status(500).send('Data da cobrança não confirmada');
+}
       if (
         registro.ultimaCobrancaId === idCobrancaAtual &&
         registro.ultimoPagamentoStatus === 'approved'
