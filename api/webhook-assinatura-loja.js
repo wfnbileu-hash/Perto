@@ -160,16 +160,29 @@ module.exports = async (req, res) => {
       );
       const valorEsperado = Number(registro.valorAtual);
 
-      if (statusCobranca !== 'approved') {
-        await docMensalidade.ref.set({
-          ultimoPagamentoStatus: statusCobranca || 'unknown',
-          ultimaCobrancaId: String(cobranca.id || recursoId),
-          ultimoPagamentoAtualizadoEm:
-            admin.firestore.FieldValue.serverTimestamp(),
-          atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
-        }, { merge: true });
-        return res.status(200).send('Cobrança ainda não aprovada');
-      }
+     if (statusCobranca !== 'approved') {
+  await db.runTransaction(async transacao => {
+    const mensalidadeAtual = await transacao.get(docMensalidade.ref);
+    if (!mensalidadeAtual.exists) return;
+
+    const dadosAtuais = mensalidadeAtual.data();
+
+    if (
+      dadosAtuais.ultimaCobrancaId === idCobrancaAtual &&
+      dadosAtuais.ultimoPagamentoStatus === 'approved'
+    ) return;
+
+    transacao.set(docMensalidade.ref, {
+      ultimoPagamentoStatus: statusCobranca || 'unknown',
+      ultimaCobrancaId: idCobrancaAtual,
+      ultimoPagamentoAtualizadoEm:
+        admin.firestore.FieldValue.serverTimestamp(),
+      atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  });
+
+  return res.status(200).send('Cobrança ainda não aprovada');
+}
 
       if (!Number.isFinite(valorPago) ||
           !Number.isFinite(valorEsperado) ||
