@@ -5526,13 +5526,14 @@ function watchUnreadMessages(uid) {
   carregarConfiguracaoPublicidade();
 }
 function limparListenersDaSessao(){
-    filaPixMensalidadesProfissionais = [];
+      filaPixMensalidadesProfissionais = [];
   processandoFilaPixProfissionais = false;
-  usuarioFilaPixProfissionais = nul
+  usuarioFilaPixProfissionais = null;
+  
   const modalPixAberto = $("pertoPixModal");
-if (modalPixAberto) {
-  modalPixAberto.style.display = "none";
-}
+  if (modalPixAberto) {
+    modalPixAberto.style.display = "none";
+  }
   ;
   if(notificationsUnsub){notificationsUnsub();notificationsUnsub=null;}
   if(realtimeAlertUnsub){realtimeAlertUnsub();realtimeAlertUnsub=null;}
