@@ -5315,8 +5315,7 @@ function watchNotifications(uid) { if (notificationsUnsub) { notificationsUnsub(
       }
 
       lista.innerHTML = notificationsCache.map((item) => `
-        <div style="padding:14px;border-bottom:1px solid #e5e7eb;
-          background:${item.lida === true ? "#fff" : "#eff6ff"}">
+        <div ${item.tipo === "pedido" || item.pedidoId || /pedido/i.test((item.tipo || "") + " " + (item.titulo || "")) ? `data-notification-card="${esc(item.id)}"` : ""} style="padding:14px;border-bottom:1px solid #e5e7eb;background:${item.lida === true ? "#fff" : "#eff6ff"};cursor:${item.tipo === "pedido" || item.pedidoId || /pedido/i.test((item.tipo || "") + " " + (item.titulo || "")) ? "pointer" : "default"}">
           <div style="font-weight:800;margin-bottom:5px">
             ${esc(item.titulo || "Notificação")}
           </div>
