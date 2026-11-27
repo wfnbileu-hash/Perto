@@ -251,15 +251,15 @@ module.exports = async (req, res) => {
         `https://api.mercadopago.com/preapproval/${encodeURIComponent(assinaturaId)}`,
         token
       );
-
-      const proximoVencimento = assinaturaAtual.next_payment_date
-        ? new Date(assinaturaAtual.next_payment_date)
-        : null;
-
-                  const vencimentoValido = proximoVencimento &&
-        !Number.isNaN(proximoVencimento.getTime());
       
-      const versaoAssinaturaMP = Number(assinaturaAtual.version);
+            const proximoVencimento = assinaturaAtual.next_payment_date ?
+        new Date(assinaturaAtual.next_payment_date) :
+        null;
+      
+      const vencimentoValido = proximoVencimento &&
+        !Number.isNaN(proximoVencimento.getTime());
+        
+        const versaoAssinaturaMP = Number(assinaturaAtual.version);
       const versaoValida = Number.isSafeInteger(versaoAssinaturaMP) &&
         versaoAssinaturaMP >= 0;
 
