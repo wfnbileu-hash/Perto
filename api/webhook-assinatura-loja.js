@@ -210,7 +210,10 @@ module.exports = async (req, res) => {
 
           const dadosAtuais = mensalidadeAtual.data();
 
-          if (dadosAtuais.ultimoPagamentoStatus === 'approved') {
+          if (
+            dadosAtuais.ultimaCobrancaId === idCobrancaAtual &&
+            dadosAtuais.ultimoPagamentoStatus === 'approved'
+          ) {
             return true;
           }
 
