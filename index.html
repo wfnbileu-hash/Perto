@@ -6485,22 +6485,19 @@ function listenMessages(){
     [...s.docs].reverse().forEach(d=>{
       let m=d.data();
       let mine=m.remetenteId===currentUser.uid;
+      const nomeRemetente = String(
+        m.remetenteNome ||
+        (mine ? currentUserData?.nome : (m.remetenteId === currentChatProduct?.vendedorId ? currentChatProduct?.vendedorNome : "Comprador")) ||
+        (mine ? currentUser?.displayName || currentUser?.email : "Usuário") ||
+        (mine ? "Você" : "Remetente")
+      ).trim();
 
       let row=document.createElement("div");
       row.style.cssText=`display:flex;justify-content:${mine?'flex-end':'flex-start'};margin:6px 0`;
 
-      row.innerHTML=`<div style="max-width:82%;padding:9px 12px;border-radius:14px;background:${mine?'#111827':'#fff'};color:${mine?'#fff':'#111827'};font-size:13px">${esc(m.texto)}</div>`;
+      row.innerHTML=`<div style="max-width:82%;padding:9px 12px;border-radius:14px;background:${mine?'#111827':'#fff'};color:${mine?'#fff':'#111827'};font-size:13px"><div style="font-size:10px;font-weight:700;opacity:.75;margin-bottom:4px">${esc(nomeRemetente)}</div><div>${esc(m.texto)}</div></div>`;
 
-      c.appendChild(row);
-
-      if(!mine && m.lida!==true){
-        updateDoc(
-          doc(db,"conversas",currentConversationId,"mensagens",d.id),
-          {lida:true}
-        ).catch(e=>{
-          console.error("Erro ao marcar mensagem como lida:",e);
-        });
-      }
+      c.appendChild(row); if(!mine && m.lida!==true) updateDoc(doc(db,"conversas",currentConversationId,"mensagens",d.id),{lida:true}).catch(e=>console.error("Erro ao marcar mensagem como lida:",e));
     });
     if(s.size===100){const aviso=document.createElement("div");aviso.textContent="Exibindo as 100 mensagens mais recentes desta conversa.";aviso.style.cssText="text-align:center;color:#6b7280;font-size:11px;padding:8px";c.prepend(aviso)}
     c.scrollTop=c.scrollHeight;
