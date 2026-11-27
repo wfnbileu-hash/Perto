@@ -5348,6 +5348,31 @@ function watchNotifications(uid) { if (notificationsUnsub) { notificationsUnsub(
           }
         };
       });
+            lista.querySelectorAll("[data-notification-card]").forEach(card => {
+        card.addEventListener("click", async (evento) => {
+          if (evento.target.closest("[data-notification-read]")) return;
+
+          const id = card.dataset.notificationCard;
+          const item = notificationsCache.find(n => n.id === id);
+          if (!item || !currentUser) return;
+
+          try {
+            if (item.lida !== true) {
+              await updateDoc(doc(db, "notificacoes", id), {
+                lida: true
+              });
+            }
+
+            showInternalPage("myStorePage");
+            await carregarPainelMinhaLoja();
+            abrirAbaPainelLoja("pedidos");
+
+          } catch (erro) {
+            console.error("Erro ao abrir pedido pela notificação:", erro);
+            toast("Não foi possível abrir o painel de pedidos.");
+          }
+        });
+      });
     },
     (erro) => {
       console.error("Erro ao carregar notificações:", erro);
