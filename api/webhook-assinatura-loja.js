@@ -256,7 +256,7 @@ module.exports = async (req, res) => {
         ? new Date(assinaturaAtual.next_payment_date)
         : null;
 
-            const vencimentoValido = proximoVencimento &&
+                  const vencimentoValido = proximoVencimento &&
         !Number.isNaN(proximoVencimento.getTime());
       
       const versaoAssinaturaMP = Number(assinaturaAtual.version);
