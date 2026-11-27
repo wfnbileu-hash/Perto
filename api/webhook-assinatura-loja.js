@@ -200,7 +200,7 @@ module.exports = async (req, res) => {
       );
       const valorEsperado = Number(registro.valorAtual);
 
-                 if (statusCobranca !== 'approved') {
+          if (statusCobranca !== 'approved') {
         const pagamentoJaAprovado = await db.runTransaction(async transacao => {
           const mensalidadeAtual = await transacao.get(docMensalidade.ref);
 
