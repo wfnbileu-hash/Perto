@@ -256,10 +256,10 @@ module.exports = async (req, res) => {
         ? new Date(assinaturaAtual.next_payment_date)
         : null;
 
-      const vencimentoValido = proximoVencimento &&
+            const vencimentoValido = proximoVencimento &&
         !Number.isNaN(proximoVencimento.getTime());
-
-       const versaoAssinaturaMP = Number(assinaturaAtual.version);
+      
+      const versaoAssinaturaMP = Number(assinaturaAtual.version);
       const versaoValida = Number.isSafeInteger(versaoAssinaturaMP) &&
         versaoAssinaturaMP >= 0;
 
@@ -328,7 +328,7 @@ module.exports = async (req, res) => {
         );
       });
 
-if (!vencimentoValido) {
+      if (!vencimentoValido) {
         console.error('Pagamento aprovado; vencimento pendente:', assinaturaId);
         return res.status(200).send(
           'Pagamento aprovado e registrado; vencimento pendente de confirmação'
