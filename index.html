@@ -4349,13 +4349,15 @@ async function carregarProfissionaisAdmin() {
 
       status.onclick = async () => {
         status.disabled = true;
-        const ativar = estabelecimento.ativo !== true || estabelecimento.statusAdmin === "suspensa";
+        const ativar = estabelecimento.ativo !== true || ["suspenso", "suspensa"].includes(
+  String(estabelecimento.statusAdmin || "").toLowerCase()
+);
         try {
           await updateDoc(
             doc(db, "estabelecimentosProfissionais", estabelecimento.id),
             {
               ativo: ativar,
-              statusAdmin: ativar ? "aprovada" : "suspensa",
+              statusAdmin: ativar ? "aprovada" : "suspenso",
               ...(ativar && !temDataAprovacaoValida ? { aprovadoEm: serverTimestamp() } : {}),
               atualizadoEm: serverTimestamp()
             }
