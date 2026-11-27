@@ -4532,8 +4532,15 @@ async function chamarEndpointPagamento(caminho, corpo, mensagemFalha, contexto =
           }
         };
 
-        document.getElementById("pertoPixFechar").onclick = () => {
+                document.getElementById("pertoPixFechar").onclick = () => {
           modal.style.display = "none";
+
+          if (processandoFilaPixProfissionais) {
+            processandoFilaPixProfissionais = false;
+
+            processarProximoPixMensalidadeProfissional()
+              .catch(console.error);
+          }
         };
       }
 
