@@ -1611,137 +1611,6 @@ display:none!important;
 }
 
 
-/* =========================================================
-   PERTO — ENTRADA COM DOIS PERFIS: CLIENTE E LOJA
-   Apenas apresentação e navegação de entrada.
-========================================================= */
-.profileChoice{
-  min-height:calc(100vh - 190px);
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  padding:30px 20px 38px;
-  text-align:center;
-  background:
-    radial-gradient(circle at 12% 12%,rgba(16,185,129,.10),transparent 34%),
-    radial-gradient(circle at 88% 78%,rgba(245,158,11,.13),transparent 34%),
-    #f8fafc;
-  border-radius:0 0 28px 28px;
-}
-.profileChoiceBrand{
-  font-size:43px;
-  line-height:1;
-  font-weight:900;
-  letter-spacing:-2.5px;
-  color:#0f172a;
-  margin-bottom:24px;
-}
-.profileChoiceBrand span{color:#f59e0b}
-.profileChoiceEyebrow{
-  color:#0f766e;
-  font-size:11px;
-  font-weight:900;
-  letter-spacing:2px;
-  margin-bottom:12px;
-}
-.profileChoice h1{
-  color:#0f172a;
-  font-size:clamp(27px,7vw,36px);
-  line-height:1.12;
-  letter-spacing:-1.2px;
-  margin:0 0 10px;
-}
-.profileChoice>p{
-  color:#64748b;
-  font-size:14px;
-  line-height:1.55;
-  margin:0 0 28px;
-}
-.profileChoiceCards{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:15px;
-  width:100%;
-  max-width:460px;
-}
-.profileChoiceCard{
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  text-align:left;
-  width:100%;
-  min-height:190px;
-  padding:22px;
-  border-radius:24px;
-  border:1px solid #e2e8f0;
-  background:#fff;
-  box-shadow:0 12px 30px rgba(15,23,42,.07);
-  cursor:pointer;
-  transition:transform .18s ease,box-shadow .18s ease;
-}
-.profileChoiceCard:active{transform:scale(.985)}
-.profileChoiceClient{border-color:rgba(16,185,129,.28);background:linear-gradient(145deg,#fff 0%,#effcf8 100%)}
-.profileChoiceStore{border-color:rgba(245,158,11,.30);background:linear-gradient(145deg,#fff 0%,#fff8e8 100%)}
-.profileChoiceIcon{
-  display:grid;
-  place-items:center;
-  width:58px;height:58px;
-  border-radius:18px;
-  background:rgba(255,255,255,.88);
-  font-size:29px;
-  margin-bottom:15px;
-}
-.profileChoiceTitle{
-  color:#0f172a;
-  font-size:20px;
-  font-weight:900;
-  letter-spacing:.5px;
-  margin-bottom:7px;
-}
-.profileChoiceDescription{
-  color:#64748b;
-  font-size:13px;
-  line-height:1.5;
-  max-width:340px;
-}
-.profileChoiceAction{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  width:100%;
-  color:#0f766e;
-  font-size:13px;
-  font-weight:850;
-  margin-top:17px;
-}
-.profileChoiceStore .profileChoiceAction{color:#a16207}
-.profileChoiceAction b{font-size:20px}
-.profileChoiceFooter{
-  color:#94a3b8;
-  font-size:11px;
-  font-weight:700;
-  margin-top:26px;
-  letter-spacing:.3px;
-}
-.backToProfiles{
-  display:inline-flex;
-  align-items:center;
-  border:0;
-  border-radius:999px;
-  padding:9px 14px;
-  margin:4px 0 16px;
-  background:#e2e8f0;
-  color:#334155;
-  font-size:12px;
-  font-weight:800;
-  cursor:pointer;
-}
-@media(min-width:560px){
-  .profileChoice{min-height:calc(100vh - 210px);padding:38px 24px}
-  .profileChoiceCards{grid-template-columns:1fr 1fr;max-width:680px;gap:18px}
-  .profileChoiceCard{min-height:245px;padding:24px}
-}
 
 
 
@@ -2398,7 +2267,6 @@ display:none!important;
 .homePartnerLogo span{display:block;font-size:11px;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.homeShowcaseEmpty{font-size:12px;color:#64748b;padding:10px 2px;margin:0}
 .ownerFeatureActions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.ownerFeatureActions button{font-size:11px;padding:7px 9px;border-radius:9px;border:1px solid #cbd5e1;background:#fff;color:#334155}
 .ownerFeatureActions button.active{background:#fef3c7;border-color:#f59e0b;color:#92400e}
-@media(max-width:559px){.profileChoiceCards{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}.profileChoiceCards>*{min-width:0;padding:14px 8px!important}}
 @media(min-width:700px){.homeFeaturedCard{flex-basis:250px}}
     
 /* VITRINE DE LOJAS NA ÁREA DO CLIENTE */
@@ -7466,8 +7334,6 @@ await carregarVitrineLojas();
 let lojasVitrine = [];
 let categoriaLojaSelecionada = "";
 let retornoServicosAtivo = false;
-let lojasVitrineCacheCidade = "";
-let lojasVitrineCarregada = false;
 let lojasExibidas = 6;
 
 function normalizarCidadeVitrine(valor) {
@@ -7482,75 +7348,10 @@ function normalizarCidadeVitrine(valor) {
 }
   
 
-async function carregarVitrineLojas() {
-  const resultados = $("storesResults");
-
-  resultados.innerHTML =
-    '<div class="storeEmpty">Carregando lojas...</div>';
-
-  try {
-
-           const cidadeFiltro = $("storeCity")?.value.trim() || "";
-    const cidadeNormalizada = normalizarCidadeVitrine(cidadeFiltro);
-
-    if (
-      lojasVitrineCarregada &&
-      lojasVitrineCacheCidade === cidadeNormalizada
-    ) {
-      renderizarVitrineLojas();
-      return;
-    }
-
-    // Consulta somente lojas públicas ativas.
-    const consulta = await getDocs(
-      query(
-        collection(db, "lojas"),
-        where("ativo", "==", true)
-      )
-    );
-
-    lojasVitrine = consulta.docs
-      .map(item => ({
-        id: item.id,
-        ...item.data()
-      }))
-      .filter(loja =>
-        !cidadeNormalizada ||
-        normalizarCidadeVitrine(loja.cidade) === cidadeNormalizada
-      );
-
-    lojasVitrineCacheCidade = cidadeNormalizada;
-    lojasVitrineCarregada = true;
-    // Permite que a proprietária veja sua loja
-    // mesmo enquanto ela aguarda ativação.
-    const usuario = auth.currentUser || currentUser;
-
-    if (usuario) {
-      const minhaLoja = await getDoc(
-        doc(db, "lojas", usuario.uid)
-      );
-
-      if (
-        minhaLoja.exists() &&
-        !lojasVitrine.some(loja => loja.id === minhaLoja.id)
-      ) {
-        lojasVitrine.push({
-          id: minhaLoja.id,
-          ...minhaLoja.data(),
-          aguardandoAtivacao:
-            minhaLoja.data().ativo !== true
-        });
-      }
-    }
-
-    renderizarVitrineLojas();
-
-  } catch (erro) {
-    console.error("Erro ao carregar vitrine:", erro);
-
-    resultados.innerHTML =
-      '<div class="storeEmpty">Não foi possível carregar as lojas. Tente novamente.</div>';
-  }
+function carregarVitrineLojas(forcarAtualizacao = false) {
+  const modulo = window.__pertoLojas;
+  if (modulo?.carregarVitrineLojas) return modulo.carregarVitrineLojas(forcarAtualizacao);
+  window.__pertoLojasSolicitado = true;
 }
 
 let lojaSelecionadaId = null;
@@ -10838,41 +10639,21 @@ import("./js/profissionais/index.js")
       detalhesErro
     );
   });
+import("./js/lojas/index.js")
+  .then(({ initPertoLojas }) => {
+    const bridge = window.__pertoProfissionais;
+    const inicializado = initPertoLojas({
+      ...bridge,
+      onStoresLoaded: lojas => {
+        lojasVitrine = lojas;
+        renderizarVitrineLojas();
+      }
+    });
+    if (!inicializado) console.error("[Perto Lojas] Inicialização não concluída.");
+  })
+  .catch(erro => console.error("[Perto Lojas] Falha ao importar módulo:", erro));
 renderFavorites();
     
-</script>
-<script>
-/* Entrada Cliente/Loja — reutiliza o fluxo original do painel da loja. */
-(function(){
-  const escolha = document.getElementById("profileChoice");
-  const cliente = document.getElementById("clientExperience");
-  const entrarCliente = document.getElementById("enterClient");
-  const entrarLoja = document.getElementById("enterStore");
-  const voltar = document.getElementById("backToProfiles");
-
-  if(!escolha || !cliente || !entrarCliente || !entrarLoja || !voltar) return;
-
-  entrarCliente.addEventListener("click", function(){
-    escolha.classList.add("hidden");
-    cliente.classList.remove("hidden");
-    window.scrollTo({top:0,behavior:"smooth"});
-  });
-
-  voltar.addEventListener("click", function(){
-    cliente.classList.add("hidden");
-    escolha.classList.remove("hidden");
-    window.scrollTo({top:0,behavior:"smooth"});
-  });
-
-  entrarLoja.addEventListener("click", function(){
-    const atalhoOriginal = document.getElementById("homeDelivery");
-    if(atalhoOriginal){
-      atalhoOriginal.click();
-    }else{
-      alert("Não foi possível abrir o painel da loja. Atualize a página e tente novamente.");
-    }
-  });
-})();
 </script>
 
 
@@ -10905,7 +10686,6 @@ window.carregarLojasParceirasHome=async function(){
  const t=document.getElementById("homePartnerTrack");
  const clienteTrack=document.getElementById("clientPartnerTrack");
  if(!t&&!clienteTrack)return;
-
  const mensagem=(texto)=>`<p class="homeShowcaseEmpty">${texto}</p>`;
 
  try{
