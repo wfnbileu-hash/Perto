@@ -4485,7 +4485,6 @@ async function chamarEndpointPagamento(caminho, corpo, mensagemFalha) {
     // Pix dentro do Perto
     if (resultado.qr_code && resultado.qr_code_base64) {
       let modal = document.getElementById("pertoPixModal");
-
       if (!modal) {
         modal = document.createElement("div");
         modal.id = "pertoPixModal";
@@ -4540,20 +4539,20 @@ async function chamarEndpointPagamento(caminho, corpo, mensagemFalha) {
         "data:image/png;base64," + resultado.qr_code_base64;
       document.getElementById("pertoPixCodigo").value = resultado.qr_code;
       modal.style.display = "flex";
-      return;
+      return true;
     }
 
     // Mantém compatibilidade com o checkout atual
     if (resultado.checkout_url) {
       window.location.href = resultado.checkout_url;
-      return;
+      return true;
     }
 
     throw new Error(resultado.erro || mensagemFalha);
   } catch (erro) {
     console.error("Erro ao iniciar pagamento:", erro);
     toast(erro.message || mensagemFalha);
-  }
+    return false;
 }
 
 $("refreshAdminStoresBtn").onclick = carregarLojasAdmin;
@@ -8415,13 +8414,46 @@ async function carregarPainelMinhaLoja() {
       carregarConfiguracaoVitrineLoja(loja);
       atualizarVisualBotaoFreteGo(loja.freteGoAtivo !== false);
       $("myStoreManagerTitle").textContent = "Gerenciar " + (loja.nome || "minha loja");
-      if (loja.statusAdmin === "suspensa") {
+       if (loja.statusAdmin === "suspensa") {
         $("myStoreManagerStatus").textContent = "Sua loja está suspensa pela administração. Você ainda pode gerenciar os dados, mas ela não aparece publicamente.";
       } else if (loja.ativo === true) {
         $("myStoreManagerStatus").textContent = "Sua loja está ativa e pode aparecer na vitrine do Perto.";
       } else {
         $("myStoreManagerStatus").textContent = "Sua loja está aguardando aprovação/ativação pela administração.";
-      }
+       }
+       let avisoMensalidade = $("myStoreSubscriptionNotice");
+       if (!avisoMensalidade) {
+         avisoMensalidade = document.createElement("div");
+         avisoMensalidade.id = "myStoreSubscriptionNotice";
+       }
+       avisoMensalidade.style.cssText = "margin:10px 0 14px;padding:12px;border-radius:12px;font-size:13px;line-height:1.5";
+       const mensalidadeSnap = await getDoc(doc(db, "mensalidadesLojas", usuario.uid)).catch(() => null);
+       const mensalidade = mensalidadeSnap?.exists() ? mensalidadeSnap.data() : {};
+       const valorVencimento = mensalidade.mensalidadeVenceEm;
+       const dataVencimento = valorVencimento?.toDate ? valorVencimento.toDate() : valorVencimento ? new Date(valorVencimento) : null;
+       const vencimentoValido = dataVencimento && !Number.isNaN(dataVencimento.getTime());
+       const diasAteVencimento = vencimentoValido ? Math.ceil((dataVencimento.getTime() - Date.now()) / 86400000) : null;
+       const mensalidadeEmDia = mensalidade.status === "authorized" && vencimentoValido && diasAteVencimento > 5;
+       btnPagar.disabled = mensalidadeEmDia;
+       btnPagar.textContent = mensalidadeEmDia ? "✅ Mensalidade em dia" : "💳 Regularizar mensalidade";
+       if (mensalidade.status === "pending") {
+         avisoMensalidade.textContent = "⏳ Pix da mensalidade gerado. Aguardando confirmação do pagamento.";
+         avisoMensalidade.style.background = "#fff7ed";
+         avisoMensalidade.style.color = "#9a3412";
+       } else if (mensalidade.status === "authorized" && vencimentoValido && diasAteVencimento <= 5 && diasAteVencimento > 0) {
+         avisoMensalidade.textContent = `🔔 Atenção: a mensalidade vence em ${diasAteVencimento} ${diasAteVencimento === 1 ? "dia" : "dias"} (${dataVencimento.toLocaleDateString("pt-BR")}). Você já pode regularizar para evitar a interrupção da loja.`;
+         avisoMensalidade.style.background = "#fff7ed";
+         avisoMensalidade.style.color = "#9a3412";
+       } else if (mensalidade.status === "authorized" && vencimentoValido && diasAteVencimento > 5) {
+         avisoMensalidade.textContent = `✅ Mensalidade em dia até ${dataVencimento.toLocaleDateString("pt-BR")}.`;
+         avisoMensalidade.style.background = "#f0fdf4";
+         avisoMensalidade.style.color = "#166534";
+       } else {
+         avisoMensalidade.textContent = "⚠️ Mensalidade vencida ou pendente. Regularize para manter sua loja ativa na vitrine.";
+         avisoMensalidade.style.background = "#fef2f2";
+         avisoMensalidade.style.color = "#991b1b";
+       }
+       $("myStoreManagerStatus").insertAdjacentElement("afterend", avisoMensalidade);
       await carregarPedidosRecebidosLoja();
     } catch (erro) {
       console.error("Erro ao carregar gerenciamento da loja:", erro);
@@ -8714,16 +8746,16 @@ $("payStoreSubscriptionBtn").onclick = async () => {
     toast("Cadastre sua loja antes de pagar a mensalidade.");
     return;
   }
-  const config = await getDoc(doc(db, "configuracoes", ADMIN_CONFIG_DOC)).catch(() => null);
-  const valor = config?.exists() ? Number(config.data().mensalidadeLoja || MENSALIDADE_LOJA_PADRAO) : MENSALIDADE_LOJA_PADRAO;
-  if (!confirm(`Iniciar o pagamento da mensalidade da loja no valor de ${money(valor)}?`)) return;
-  chamarEndpointPagamento("/api/criar-assinatura-loja", {
-    tipo: "mensalidade_loja",
-    lojaId: usuario.uid,
-    valor
-  }, "A cobrança da mensalidade ainda precisa do endpoint seguro de assinatura no backend.");
+  const botao = $("payStoreSubscriptionBtn");
+  botao.disabled = true;
+  botao.textContent = "Gerando Pix...";
+  currentUser = usuario;
+  try {
+    await chamarEndpointPagamento("/api/criar-assinatura-loja", {}, "Não foi possível gerar o Pix da mensalidade.");
+  } finally {
+    await carregarPainelMinhaLoja();
+  }
 };
-
 $("myStoreBtn").onclick = async () => {
   if (!currentUser) {
     showAuth("login");
@@ -9816,8 +9848,8 @@ window.__pertoProfissionais = Object.freeze({
 
   ui: Object.freeze({
     toast,
+    payEndpoint: chamarEndpointPagamento,
     navigate: (pageId, scroll = true) =>
-      showInternalPage(pageId, scroll)
   })
 });
 

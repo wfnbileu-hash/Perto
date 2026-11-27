@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const admin = require('firebase-admin');
 
 function iniciarFirebase() {
@@ -11,6 +12,108 @@ function iniciarFirebase() {
   });
 
   return admin.firestore();
+}
+
+async function criarLembreteMensalidade(db, {
+  tipo,
+  entidadeId,
+  destinatarioId,
+  vencimento,
+  valor,
+  nome
+}) {
+  if (!destinatarioId || !vencimento || typeof vencimento.toMillis !== 'function') {
+    return false;
+  }
+
+  const vencimentoMillis = vencimento.toMillis();
+  const diasRestantes = Math.ceil((vencimentoMillis - Date.now()) / 86400000);
+  if (diasRestantes > 5) return false;
+
+  const fase = diasRestantes <= 0 ? 'vencimento' : 'proximo_vencimento';
+  const chave = crypto.createHash('sha256')
+    .update(`${tipo}:${entidadeId}:${vencimentoMillis}:${fase}`)
+    .digest('hex');
+  const notificacaoRef = db.collection('notificacoes').doc(`mensalidade_${chave}`);
+  const dataFormatada = new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  }).format(vencimento.toDate());
+  const valorNumerico = Number(valor);
+  const valorFormatado = Number.isFinite(valorNumerico)
+    ? ` Valor: R$ ${valorNumerico.toFixed(2).replace('.', ',')}.`
+    : '';
+  const titulo = fase === 'vencimento'
+    ? `⚠️ Mensalidade ${diasRestantes < 0 ? 'vencida' : 'vence hoje'}`
+    : '🔔 Mensalidade próxima do vencimento';
+  const prazo = fase === 'vencimento'
+    ? `O vencimento foi ${dataFormatada}.`
+    : `Vence em ${diasRestantes} ${diasRestantes === 1 ? 'dia' : 'dias'} (${dataFormatada}).`;
+  const destino = tipo === 'mensalidade_loja' ? 'Minha loja' : 'Perto Profissionais';
+  const mensagem = `${nome ? `${nome}: ` : ''}${prazo}${valorFormatado} Acesse ${destino} e toque em “Pagar mensalidade” para gerar o Pix.`;
+
+  try {
+    await notificacaoRef.create({
+      destinatarioId,
+      titulo,
+      mensagem,
+      tipo,
+      entidadeId,
+      vencimentoEm: vencimento,
+      lida: false,
+      criadoEm: admin.firestore.FieldValue.serverTimestamp()
+    });
+    return true;
+  } catch (erro) {
+    if (erro.code === 6 || erro.code === 'already-exists') return false;
+    throw erro;
+  }
+}
+
+async function emitirLembretes(db) {
+  const limite = admin.firestore.Timestamp.fromMillis(Date.now() + 5 * 86400000);
+  const [lojas, profissionais] = await Promise.all([
+    db.collection('mensalidadesLojas')
+      .where('mensalidadeVenceEm', '<=', limite)
+      .get(),
+    db.collection('mensalidadesEstabelecimentosProfissionais')
+      .where('mensalidadeVenceEm', '<=', limite)
+      .get()
+  ]);
+
+  let criados = 0;
+
+  for (const documento of lojas.docs) {
+    const mensalidade = documento.data();
+    if (mensalidade.status !== 'authorized') continue;
+
+    if (await criarLembreteMensalidade(db, {
+      tipo: 'mensalidade_loja',
+      entidadeId: documento.id,
+      destinatarioId: documento.id,
+      vencimento: mensalidade.mensalidadeVenceEm,
+      valor: mensalidade.valorAtual,
+      nome: 'Sua loja'
+    })) criados++;
+  }
+
+  for (const documento of profissionais.docs) {
+    const mensalidade = documento.data();
+    if (mensalidade.status !== 'authorized') continue;
+
+    if (await criarLembreteMensalidade(db, {
+      tipo: 'mensalidade_profissional',
+      entidadeId: documento.id,
+      destinatarioId: mensalidade.proprietarioId,
+      vencimento: mensalidade.mensalidadeVenceEm,
+      valor: mensalidade.valorAtual,
+      nome: `Estabelecimento ${mensalidade.numeroEstabelecimento || ''}`.trim()
+    })) criados++;
+  }
+
+  return criados;
 }
 
 module.exports = async (req, res) => {
@@ -28,6 +131,7 @@ module.exports = async (req, res) => {
   try {
     const db = iniciarFirebase();
     const agora = admin.firestore.Timestamp.now();
+    const lembretesCriados = await emitirLembretes(db);
 
     const vencidas = await db.collection('mensalidadesLojas')
       .where('mensalidadeCarenciaAte', '<=', agora)
@@ -89,6 +193,7 @@ module.exports = async (req, res) => {
         ignoradas++;
       }
     }
+
     const vencidasProfissionais = await db.collection('mensalidadesEstabelecimentosProfissionais')
       .where('mensalidadeCarenciaAte', '<=', agora)
       .get();
@@ -136,6 +241,7 @@ module.exports = async (req, res) => {
 
     return res.status(200).json({
       sucesso: true,
+      lembretesCriados,
       verificadas: vencidas.size + vencidasProfissionais.size,
       desativadas,
       ignoradas,
@@ -143,7 +249,6 @@ module.exports = async (req, res) => {
       estabelecimentosProfissionaisDesativados: estabelecimentosDesativados,
       estabelecimentosProfissionaisIgnorados: estabelecimentosIgnorados
     });
-
   } catch (erro) {
     console.error('Erro ao verificar mensalidades:', erro);
     return res.status(500).send('Erro ao verificar mensalidades');
