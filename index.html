@@ -4462,13 +4462,15 @@ async function carregarProfissionaisAdmin() {
 }
 
 async function chamarEndpointPagamento(caminho, corpo, mensagemFalha, contexto = "") {
-  if (!currentUser) {
+    const usuarioPagamento = currentUser;
+
+  if (!usuarioPagamento) {
     showAuth("login");
     return;
   }
 
   try {
-    const token = await currentUser.getIdToken();
+    const token = await usuarioPagamento.getIdToken();
     const resposta = await fetch(caminho, {
       method: "POST",
       headers: {
