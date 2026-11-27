@@ -297,7 +297,7 @@ if (Number.isNaN(dataCriacaoCobranca.getTime())) {
         atualizacao.vencimentoPendente = true;
       }
 
-      await db.runTransaction(async transacao => {
+            const resultadoCobranca = await db.runTransaction(async transacao => {
         const mensalidadeAtual = await transacao.get(docMensalidade.ref);
 
         if (!mensalidadeAtual.exists) {
@@ -310,7 +310,22 @@ if (Number.isNaN(dataCriacaoCobranca.getTime())) {
           dadosAtuais.ultimaCobrancaId === idCobrancaAtual &&
           dadosAtuais.ultimoPagamentoStatus === 'approved'
         ) {
-          return;
+          return 'ja_processada';
+        }
+
+        const ultimaCobrancaCriadaEm = dadosAtuais.ultimaCobrancaCriadaEm;
+        const dataUltimaCobranca = ultimaCobrancaCriadaEm?.toDate
+          ? ultimaCobrancaCriadaEm.toDate()
+          : ultimaCobrancaCriadaEm
+            ? new Date(ultimaCobrancaCriadaEm)
+            : null;
+
+        if (
+          dataUltimaCobranca &&
+          !Number.isNaN(dataUltimaCobranca.getTime()) &&
+          dataCriacaoCobranca < dataUltimaCobranca
+        ) {
+          return 'antiga';
         }
 
         const versaoSalva = Number(dadosAtuais.versaoAssinaturaMP);
@@ -328,12 +343,25 @@ if (Number.isNaN(dataCriacaoCobranca.getTime())) {
           delete atualizacaoSegura.vencimentoPendente;
         }
 
+        atualizacaoSegura.ultimaCobrancaCriadaEm =
+          admin.firestore.Timestamp.fromDate(dataCriacaoCobranca);
+
         transacao.set(
           docMensalidade.ref,
           atualizacaoSegura,
           { merge: true }
         );
+
+        return 'atualizada';
       });
+
+      if (resultadoCobranca === 'antiga') {
+        return res.status(200).send('Cobrança antiga ignorada');
+      }
+
+      if (resultadoCobranca === 'ja_processada') {
+        return res.status(200).send('Cobrança já processada');
+      }
 
       if (!vencimentoValido) {
         console.error('Pagamento aprovado; vencimento pendente:', assinaturaId);
