@@ -94,29 +94,69 @@ module.exports = async (req, res) => {
         return res.status(200).send('Assinatura não vinculada ao Perto');
       }
 
+           const versaoMP = Number(assinatura.version);
+      
+      if (!Number.isSafeInteger(versaoMP) || versaoMP < 0) {
+        return res.status(200).send('Versão da assinatura inválida');
+      }
+      
       const atualizacao = {
         status: String(assinatura.status || 'unknown'),
+        versaoAssinaturaMP: versaoMP,
         atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
       };
-
-      const proximoVencimento = assinatura.next_payment_date
-        ? new Date(assinatura.next_payment_date)
-        : null;
-
+      
+      const proximoVencimento = assinatura.next_payment_date ?
+        new Date(assinatura.next_payment_date) :
+        null;
+      
       if (proximoVencimento &&
-          !Number.isNaN(proximoVencimento.getTime())) {
+        !Number.isNaN(proximoVencimento.getTime())) {
         const carenciaAte = new Date(proximoVencimento);
         carenciaAte.setDate(carenciaAte.getDate() + 5);
-
+        
         atualizacao.mensalidadeVenceEm =
           admin.firestore.Timestamp.fromDate(proximoVencimento);
         atualizacao.mensalidadeCarenciaAte =
           admin.firestore.Timestamp.fromDate(carenciaAte);
         atualizacao.vencimentoPendente = false;
       }
-
-      await ref.set(atualizacao, { merge: true });
-
+      
+      const resultado = await db.runTransaction(async transacao => {
+        const mensalidadeAtual = await transacao.get(ref);
+        
+        if (!mensalidadeAtual.exists) {
+          return 'nao_encontrada';
+        }
+        
+        const dadosAtuais = mensalidadeAtual.data();
+        
+        if (
+          String(dadosAtuais.assinaturaId) !== String(assinatura.id)
+        ) {
+          return 'nao_vinculada';
+        }
+        
+        const versaoSalva = Number(dadosAtuais.versaoAssinaturaMP);
+        
+        if (
+          Number.isSafeInteger(versaoSalva) &&
+          versaoSalva > versaoMP
+        ) {
+          return 'antiga';
+        }
+        
+        transacao.set(ref, atualizacao, { merge: true });
+        return 'atualizada';
+      });
+      
+      if (resultado === 'antiga') {
+        return res.status(200).send('Notificação antiga ignorada');
+      }
+      
+      if (resultado !== 'atualizada') {
+        return res.status(200).send('Assinatura não vinculada ao Perto');
+      }
       return res.status(200).send('Assinatura atualizada');
     }
 
