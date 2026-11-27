@@ -4461,7 +4461,7 @@ async function carregarProfissionaisAdmin() {
   }
 }
 
-async function chamarEndpointPagamento(caminho, corpo, mensagemFalha) {
+async function chamarEndpointPagamento(caminho, corpo, mensagemFalha, contexto = "") {
   if (!currentUser) {
     showAuth("login");
     return;
@@ -4497,7 +4497,7 @@ async function chamarEndpointPagamento(caminho, corpo, mensagemFalha) {
         modal.innerHTML = `
           <div style="background:white;color:#222;padding:22px;border-radius:16px;
             width:100%;max-width:380px;text-align:center;max-height:90vh;overflow:auto">
-            <h2 style="margin-top:0">Pague com Pix</h2>
+            <h2 id="pertoPixTitulo" style="margin-top:0">Pague com Pix</h2>
             <p>Escaneie o QR Code ou copie o código Pix.</p>
             <img id="pertoPixQR" alt="QR Code Pix"
               style="width:220px;max-width:100%;height:auto">
@@ -4540,6 +4540,8 @@ async function chamarEndpointPagamento(caminho, corpo, mensagemFalha) {
       document.getElementById("pertoPixQR").src =
         "data:image/png;base64," + resultado.qr_code_base64;
       document.getElementById("pertoPixCodigo").value = resultado.qr_code;
+            document.getElementById("pertoPixTitulo").textContent =
+        contexto || "Pague com Pix";
       modal.style.display = "flex";
       return true;
     }
