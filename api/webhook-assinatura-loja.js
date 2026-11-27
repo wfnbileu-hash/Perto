@@ -217,10 +217,10 @@ module.exports = async (req, res) => {
             return true;
           }
 
-          transacao.set(docMensalidade.ref, {
-            ultimoPagamentoStatus: statusCobranca || 'unknown',
-            ultimaCobrancaId: idCobrancaAtual,
-            ultimoPagamentoAtualizadoEm:
+                    transacao.set(docMensalidade.ref, {
+            ultimaTentativaCobrancaId: idCobrancaAtual,
+            ultimaTentativaPagamentoStatus: statusCobranca || 'unknown',
+            ultimaTentativaAtualizadaEm:
               admin.firestore.FieldValue.serverTimestamp(),
             atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
           }, { merge: true });
