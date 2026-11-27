@@ -259,16 +259,23 @@ module.exports = async (req, res) => {
       const vencimentoValido = proximoVencimento &&
         !Number.isNaN(proximoVencimento.getTime());
 
+            const versaoAssinaturaMP = Number(assinaturaAtual.version);
+      const versaoValida = Number.isSafeInteger(versaoAssinaturaMP) &&
+        versaoAssinaturaMP >= 0;
+
       const atualizacao = {
-        status: String(assinaturaAtual.status || 'authorized'),
         ultimaCobrancaId: String(cobranca.id || recursoId),
         ultimoPagamentoStatus: 'approved',
         ultimoPagamentoValor: valorPago,
         ultimoPagamentoAprovadoEm:
           admin.firestore.FieldValue.serverTimestamp(),
-        vencimentoPendente: !vencimentoValido,
         atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
       };
+
+      if (versaoValida) {
+        atualizacao.status = String(assinaturaAtual.status || 'authorized');
+        atualizacao.versaoAssinaturaMP = versaoAssinaturaMP;
+      }
 
       if (vencimentoValido) {
         const carenciaAte = new Date(proximoVencimento);
@@ -278,26 +285,48 @@ module.exports = async (req, res) => {
           admin.firestore.Timestamp.fromDate(proximoVencimento);
         atualizacao.mensalidadeCarenciaAte =
           admin.firestore.Timestamp.fromDate(carenciaAte);
+        atualizacao.vencimentoPendente = false;
+      } else {
+        atualizacao.vencimentoPendente = true;
       }
 
-     await db.runTransaction(async transacao => {
-  const mensalidadeAtual = await transacao.get(docMensalidade.ref);
-  
-  if (!mensalidadeAtual.exists) {
-    throw new Error('Mensalidade da loja não encontrada');
-  }
-  
-  const dadosAtuais = mensalidadeAtual.data();
-  
-  if (
-    dadosAtuais.ultimaCobrancaId === idCobrancaAtual &&
-    dadosAtuais.ultimoPagamentoStatus === 'approved'
-  ) {
-    return;
-  }
-  
-  transacao.set(docMensalidade.ref, atualizacao, { merge: true });
-});
+      await db.runTransaction(async transacao => {
+        const mensalidadeAtual = await transacao.get(docMensalidade.ref);
+
+        if (!mensalidadeAtual.exists) {
+          throw new Error('Mensalidade da loja não encontrada');
+        }
+
+        const dadosAtuais = mensalidadeAtual.data();
+
+        if (
+          dadosAtuais.ultimaCobrancaId === idCobrancaAtual &&
+          dadosAtuais.ultimoPagamentoStatus === 'approved'
+        ) {
+          return;
+        }
+
+        const versaoSalva = Number(dadosAtuais.versaoAssinaturaMP);
+        const atualizacaoSegura = { ...atualizacao };
+
+        if (
+          versaoValida &&
+          Number.isSafeInteger(versaoSalva) &&
+          versaoSalva > versaoAssinaturaMP
+        ) {
+          delete atualizacaoSegura.status;
+          delete atualizacaoSegura.versaoAssinaturaMP;
+          delete atualizacaoSegura.mensalidadeVenceEm;
+          delete atualizacaoSegura.mensalidadeCarenciaAte;
+          delete atualizacaoSegura.vencimentoPendente;
+        }
+
+        transacao.set(
+          docMensalidade.ref,
+          atualizacaoSegura,
+          { merge: true }
+        );
+      });
 
  if (!vencimentoValido) {
         console.error('Pagamento aprovado; vencimento pendente:', assinaturaId);
