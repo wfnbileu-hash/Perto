@@ -285,11 +285,20 @@ module.exports = async (req, res) => {
           .collection('estabelecimentosProfissionais')
           .doc(estabelecimentoId);
 
-        if (statusMP !== 'approved') {
-          await pagamentoProfissionalRef.set({
-            status: statusMP || 'unknown',
-            atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
-          }, { merge: true });
+               if (statusMP !== 'approved') {
+          await db.runTransaction(async transacao => {
+            const pagamentoAtual = await transacao.get(pagamentoProfissionalRef);
+            if (!pagamentoAtual.exists) return;
+            
+            const dadosAtuais = pagamentoAtual.data();
+            if (dadosAtuais.processado === true) return;
+            
+            transacao.set(pagamentoProfissionalRef, {
+              status: statusMP || 'unknown',
+              atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+          });
+          
           return res.status(200).send('Pagamento profissional ainda não aprovado');
         }
 
@@ -310,7 +319,7 @@ module.exports = async (req, res) => {
           }
 
           const dadosPagamento = pagamentoAtual.data();
-          if (dadosPagamento.status === 'approved' && dadosPagamento.processado === true) return;
+if (dadosPagamento.processado === true) return;
 
           const mensalidade = mensalidadeSnap.data();
           const vencimentoAtual = mensalidade.mensalidadeVenceEm;
@@ -397,13 +406,21 @@ module.exports = async (req, res) => {
         const lojaRef = db.collection('lojas').doc(lojaId);
 
         if (statusMP !== 'approved') {
-          await pagamentoRef.set({
-            status: statusMP || 'unknown',
-            atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
-          }, { merge: true });
-          return res.status(200).send('Pagamento ainda não aprovado');
-        }
-
+  await db.runTransaction(async transacao => {
+    const pagamentoAtual = await transacao.get(pagamentoRef);
+    if (!pagamentoAtual.exists) return;
+    
+    const dadosAtuais = pagamentoAtual.data();
+    if (dadosAtuais.processado === true) return;
+    
+    transacao.set(pagamentoRef, {
+      status: statusMP || 'unknown',
+      atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  });
+  
+  return res.status(200).send('Pagamento ainda não aprovado');
+}
         await db.runTransaction(async (transacao) => {
           const pagamentoAtual = await transacao.get(pagamentoRef);
           const mensalidadeSnap = await transacao.get(mensalidadeRef);
@@ -413,7 +430,7 @@ module.exports = async (req, res) => {
           }
 
           const dadosPagamento = pagamentoAtual.data();
-          if (dadosPagamento.status === 'approved' && dadosPagamento.processado === true) return;
+if (dadosPagamento.processado === true) return;
 
           const agora = new Date();
           const dadosMensalidade = mensalidadeSnap.data();
