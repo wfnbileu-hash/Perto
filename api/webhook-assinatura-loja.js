@@ -200,30 +200,39 @@ module.exports = async (req, res) => {
       );
       const valorEsperado = Number(registro.valorAtual);
 
-     if (statusCobranca !== 'approved') {
-  await db.runTransaction(async transacao => {
-    const mensalidadeAtual = await transacao.get(docMensalidade.ref);
-    if (!mensalidadeAtual.exists) return;
+           if (statusCobranca !== 'approved') {
+        const pagamentoJaAprovado = await db.runTransaction(async transacao => {
+          const mensalidadeAtual = await transacao.get(docMensalidade.ref);
 
-    const dadosAtuais = mensalidadeAtual.data();
+          if (!mensalidadeAtual.exists) {
+            throw new Error('Mensalidade da loja não encontrada');
+          }
 
-    if (
-      dadosAtuais.ultimaCobrancaId === idCobrancaAtual &&
-      dadosAtuais.ultimoPagamentoStatus === 'approved'
-    ) return;
+          const dadosAtuais = mensalidadeAtual.data();
 
-    transacao.set(docMensalidade.ref, {
-      ultimoPagamentoStatus: statusCobranca || 'unknown',
-      ultimaCobrancaId: idCobrancaAtual,
-      ultimoPagamentoAtualizadoEm:
-        admin.firestore.FieldValue.serverTimestamp(),
-      atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
-  });
+          if (dadosAtuais.ultimoPagamentoStatus === 'approved') {
+            return true;
+          }
 
-  return res.status(200).send('Cobrança ainda não aprovada');
-}
+          transacao.set(docMensalidade.ref, {
+            ultimoPagamentoStatus: statusCobranca || 'unknown',
+            ultimaCobrancaId: idCobrancaAtual,
+            ultimoPagamentoAtualizadoEm:
+              admin.firestore.FieldValue.serverTimestamp(),
+            atualizadoEm: admin.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
 
+          return false;
+        });
+
+        if (pagamentoJaAprovado) {
+          return res.status(200).send(
+            'Notificação antiga ignorada; pagamento já aprovado'
+          );
+        }
+
+        return res.status(200).send('Cobrança ainda não aprovada');
+      }
       if (!Number.isFinite(valorPago) ||
           !Number.isFinite(valorEsperado) ||
           Math.abs(valorPago - valorEsperado) >= 0.01) {
