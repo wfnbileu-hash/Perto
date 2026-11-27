@@ -4558,6 +4558,61 @@ async function chamarEndpointPagamento(caminho, corpo, mensagemFalha) {
 }
 }
 
+let verificandoPixMensalidadeLoja = false;
+
+async function abrirPixMensalidadeLojaAoEntrar(usuario) {
+  if (!usuario || verificandoPixMensalidadeLoja) return;
+
+  verificandoPixMensalidadeLoja = true;
+
+  try {
+    const mensalidadeSnap = await getDoc(
+      doc(db, "mensalidadesLojas", usuario.uid)
+    );
+
+    if (!mensalidadeSnap.exists()) return;
+
+    const mensalidade = mensalidadeSnap.data();
+
+    const valorVencimento = mensalidade.mensalidadeVenceEm;
+    const dataVencimento = valorVencimento?.toDate
+      ? valorVencimento.toDate()
+      : valorVencimento
+        ? new Date(valorVencimento)
+        : null;
+
+    const vencimentoValido =
+      dataVencimento &&
+      !Number.isNaN(dataVencimento.getTime());
+
+    const mensalidadeVencida =
+      vencimentoValido &&
+      dataVencimento.getTime() <= Date.now();
+
+    const pixPendente = mensalidade.status === "pending";
+
+    if (!pixPendente && !mensalidadeVencida) return;
+
+    if (auth.currentUser?.uid !== usuario.uid) return;
+
+    currentUser = usuario;
+
+    await chamarEndpointPagamento(
+      "/api/criar-assinatura-loja",
+      {},
+      "Não foi possível abrir o Pix da mensalidade."
+    );
+
+  } catch (erro) {
+    console.error(
+      "Erro ao verificar mensalidade da loja na entrada:",
+      erro
+    );
+  } finally {
+    verificandoPixMensalidadeLoja = false;
+  }
+}
+
 $("refreshAdminStoresBtn").onclick = carregarLojasAdmin;
   $("refreshAdminProfessionalsBtn").onclick = carregarProfissionaisAdmin;
 $("saveAdminAdBtn").onclick = salvarPublicidadeAdmin;
