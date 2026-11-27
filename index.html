@@ -4696,6 +4696,44 @@ async function prepararFilaPixMensalidadesProfissionais(usuario) {
     );
   }
 }
+async function processarProximoPixMensalidadeProfissional() {
+  if (processandoFilaPixProfissionais) return;
+
+  if (
+    !usuarioFilaPixProfissionais ||
+    auth.currentUser?.uid !== usuarioFilaPixProfissionais
+  ) {
+    filaPixMensalidadesProfissionais = [];
+    usuarioFilaPixProfissionais = null;
+    return;
+  }
+
+  const modal = document.getElementById("pertoPixModal");
+
+  if (modal && modal.style.display !== "none") return;
+
+  const proxima = filaPixMensalidadesProfissionais.shift();
+
+  if (!proxima) {
+    usuarioFilaPixProfissionais = null;
+    return;
+  }
+
+  processandoFilaPixProfissionais = true;
+  currentUser = auth.currentUser;
+
+  const abriu = await chamarEndpointPagamento(
+    "/api/criar-pagamento-profissional",
+    { estabelecimentoId: proxima.estabelecimentoId },
+    "Não foi possível abrir o Pix da mensalidade.",
+    `Mensalidade ${proxima.numero} — ${proxima.nome}`
+  );
+
+  if (!abriu) {
+    processandoFilaPixProfissionais = false;
+    await processarProximoPixMensalidadeProfissional();
+  }
+}
 $("refreshAdminStoresBtn").onclick = carregarLojasAdmin;
   $("refreshAdminProfessionalsBtn").onclick = carregarProfissionaisAdmin;
 $("saveAdminAdBtn").onclick = salvarPublicidadeAdmin;
