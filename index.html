@@ -4606,7 +4606,7 @@ async function abrirPixMensalidadeLojaAoEntrar(usuario) {
 
     currentUser = usuario;
 
-    await chamarEndpointPagamento(
+        return await chamarEndpointPagamento(
       "/api/criar-assinatura-loja",
       {},
       "Não foi possível abrir o Pix da mensalidade."
