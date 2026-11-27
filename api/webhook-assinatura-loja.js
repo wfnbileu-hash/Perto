@@ -237,13 +237,15 @@ module.exports = async (req, res) => {
         return res.status(200).send('Cobrança ainda não aprovada');
       }
       if (!Number.isFinite(valorPago) ||
-          !Number.isFinite(valorEsperado) ||
-          Math.abs(valorPago - valorEsperado) >= 0.01) {
+  !Number.isFinite(valorEsperado) ||
+  String(cobranca.currency_id || '') !== 'BRL' ||
+  Math.abs(valorPago - valorEsperado) >= 0.01) {
         console.error('Valor de mensalidade divergente:', {
-          assinaturaId,
-          valorPago,
-          valorEsperado
-        });
+  assinaturaId,
+  valorPago,
+  valorEsperado,
+  moeda: cobranca.currency_id
+});
         return res.status(200).send('Valor da cobrança não confere');
       }
 
