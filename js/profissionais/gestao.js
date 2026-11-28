@@ -434,7 +434,7 @@ export function initGestaoProfissionais(bridge) {
     </section>
   `;
 
-  document.body.appendChild(painel);
+  document.querySelector("main").appendChild(painel);
 
   const $ = id => painel.querySelector("#" + id);
 
