@@ -968,7 +968,6 @@ function preencherFormulario(item) {
                   <img src="data:image/png;base64,${escapar(dados.qr_code_base64)}" alt="QR Code Pix da mensalidade" style="display:block;width:190px;height:190px;object-fit:contain;margin:8px auto;background:#fff;border-radius:8px">
                   <textarea readonly data-pix-code style="width:100%;min-height:75px;padding:9px;border:1px solid #cbd5e1;border-radius:8px;font-size:11px;word-break:break-all">${escapar(dados.qr_code)}</textarea>
                   <button type="button" data-copy-pix style="width:100%;padding:10px;margin-top:8px;border:0;border-radius:8px;background:#166534;color:#fff;font-weight:800">📋 Copiar código Pix</button>
-                  <button type="button" data-refresh-billing style="width:100%;padding:10px;margin-top:7px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;font-weight:700">Já paguei — atualizar status</button>
                 </div>
               `;
 
@@ -983,12 +982,7 @@ function preencherFormulario(item) {
                   avisar("Código Pix copiado!");
                 }
               });
-
-              areaPagamento.querySelector("[data-refresh-billing]").addEventListener("click", async () => {
-                areaPagamento.textContent = "Verificando confirmação do Mercado Pago...";
-                await new Promise(resolve => setTimeout(resolve, 1800));
-                await carregarMeusEstabelecimentos();
-              });
+              
             } catch (erroPagamento) {
               console.error("[Perto Profissionais] Erro ao gerar Pix:", erroPagamento);
               areaPagamento.textContent = erroPagamento.message || "Não foi possível gerar o Pix.";
