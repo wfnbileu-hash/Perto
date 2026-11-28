@@ -155,7 +155,7 @@ module.exports = async (req, res) => {
     if (mensalidade.status === 'pending') {
       const existente = await obterPagamentoExistente(mensalidade, tokenMP);
       if (existente) {
-        if (existente.status) return res.status(existente.status).json({ erro: existente.erro });
+        if (existente.erro) return res.status(existente.status || 409).json({ erro: existente.erro });
         return res.status(200).json({ ...existente, valor: plano.valor, numeroEstabelecimento, plano: plano.nome });
       }
       await mensalidadeRef.set({ status: 'rejected', pagamentoId: admin.firestore.FieldValue.delete(), referenciaPagamento: admin.firestore.FieldValue.delete(), pixQrCode: admin.firestore.FieldValue.delete(), pixQrCodeBase64: admin.firestore.FieldValue.delete(), pixExpiraEm: admin.firestore.FieldValue.delete() }, { merge: true });
