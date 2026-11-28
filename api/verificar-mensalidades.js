@@ -244,16 +244,26 @@ module.exports = async (req, res) => {
             return 'ignorada';
           }
           
-          const ano = aprovacao.getUTCFullYear();
-          const mes = aprovacao.getUTCMonth() + 1;
-          const ultimoDia = new Date(Date.UTC(ano, mes + 1, 0)).getUTCDate();
+                    const proximoMes = aprovacao.getUTCMonth() + 1;
+          const anoVencimento =
+            aprovacao.getUTCFullYear() + Math.floor(proximoMes / 12);
+          const mesVencimento = proximoMes % 12;
+          
+          const ultimoDia = new Date(
+            Date.UTC(anoVencimento, mesVencimento + 1, 0)
+          ).getUTCDate();
+          
           const dia = Math.min(aprovacao.getUTCDate(), ultimoDia);
           
-          const primeiroVencimento = new Date(aprovacao);
-          primeiroVencimento.setUTCDate(1);
-          primeiroVencimento.setUTCMonth(mes);
-          primeiroVencimento.setUTCDate(dia);
-          
+          const primeiroVencimento = new Date(Date.UTC(
+            anoVencimento,
+            mesVencimento,
+            dia,
+            aprovacao.getUTCHours(),
+            aprovacao.getUTCMinutes(),
+            aprovacao.getUTCSeconds(),
+            aprovacao.getUTCMilliseconds()
+          ));
           carenciaMillis = primeiroVencimento.getTime() + 5 * 86400000;
         }
         
