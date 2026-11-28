@@ -194,58 +194,92 @@ module.exports = async (req, res) => {
       }
     }
 
-    const vencidasProfissionais = await db.collection('mensalidadesEstabelecimentosProfissionais')
-      .where('mensalidadeCarenciaAte', '<=', agora)
+        const profissionaisAtivos = await db.collection('estabelecimentosProfissionais')
+      .where('ativo', '==', true)
       .get();
-
+    
     let estabelecimentosDesativados = 0;
     let estabelecimentosIgnorados = 0;
-
-    for (const mensalidadeDoc of vencidasProfissionais.docs) {
-      const mensalidadeRef = db.collection('mensalidadesEstabelecimentosProfissionais').doc(mensalidadeDoc.id);
-      const estabelecimentoRef = db.collection('estabelecimentosProfissionais').doc(mensalidadeDoc.id);
-
+    
+    for (const estabelecimentoDoc of profissionaisAtivos.docs) {
+      const mensalidadeRef = db.collection('mensalidadesEstabelecimentosProfissionais').doc(estabelecimentoDoc.id);
+      const estabelecimentoRef = db.collection('estabelecimentosProfissionais').doc(estabelecimentoDoc.id);
+      
       const resultado = await db.runTransaction(async transacao => {
         const [mensalidadeSnap, estabelecimentoSnap] = await Promise.all([
           transacao.get(mensalidadeRef),
           transacao.get(estabelecimentoRef)
         ]);
-
-        if (!mensalidadeSnap.exists || !estabelecimentoSnap.exists) return 'ignorada';
-
-        const mensalidadeAtual = mensalidadeSnap.data();
+        
+        if (!estabelecimentoSnap.exists) return 'ignorada';
+        
         const estabelecimento = estabelecimentoSnap.data();
-        const carenciaAtual = mensalidadeAtual.mensalidadeCarenciaAte;
-
+        const mensalidade = mensalidadeSnap.exists ? mensalidadeSnap.data() : {};
+        
         if (
-          mensalidadeAtual.vencimentoPendente === true ||
-          !carenciaAtual ||
-          typeof carenciaAtual.toMillis !== 'function' ||
-          carenciaAtual.toMillis() > Date.now() ||
           estabelecimento.ativo !== true ||
-          String(estabelecimento.statusAdmin || '').toLowerCase() === 'suspenso'
+          String(estabelecimento.statusAdmin || '').toLowerCase() === 'suspenso' ||
+          mensalidade.vencimentoPendente === true
         ) return 'ignorada';
-
+        
+        let carenciaMillis = 0;
+        
+        if (
+          mensalidade.mensalidadeCarenciaAte &&
+          typeof mensalidade.mensalidadeCarenciaAte.toMillis === 'function'
+        ) {
+          carenciaMillis = mensalidade.mensalidadeCarenciaAte.toMillis();
+          
+        } else if (
+          mensalidade.mensalidadeVenceEm &&
+          typeof mensalidade.mensalidadeVenceEm.toMillis === 'function'
+        ) {
+          carenciaMillis =
+            mensalidade.mensalidadeVenceEm.toMillis() + 5 * 86400000;
+          
+        } else {
+          const aprovacao = estabelecimento.aprovadoEm?.toDate?.();
+          
+          if (!aprovacao || Number.isNaN(aprovacao.getTime())) {
+            return 'ignorada';
+          }
+          
+          const ano = aprovacao.getUTCFullYear();
+          const mes = aprovacao.getUTCMonth() + 1;
+          const ultimoDia = new Date(Date.UTC(ano, mes + 1, 0)).getUTCDate();
+          const dia = Math.min(aprovacao.getUTCDate(), ultimoDia);
+          
+          const primeiroVencimento = new Date(aprovacao);
+          primeiroVencimento.setUTCDate(1);
+          primeiroVencimento.setUTCMonth(mes);
+          primeiroVencimento.setUTCDate(dia);
+          
+          carenciaMillis = primeiroVencimento.getTime() + 5 * 86400000;
+        }
+        
+        if (!carenciaMillis || carenciaMillis > Date.now()) {
+          return 'aguardando';
+        }
+        
         transacao.set(estabelecimentoRef, {
           ativo: false,
           mensalidadeDesativadaEm: admin.firestore.FieldValue.serverTimestamp(),
           motivoDesativacao: 'mensalidade_em_atraso'
         }, { merge: true });
-
+        
         return 'desativada';
       });
-
+      
       if (resultado === 'desativada') estabelecimentosDesativados++;
       else estabelecimentosIgnorados++;
     }
-
     return res.status(200).json({
       sucesso: true,
       lembretesCriados,
       verificadas: vencidas.size + vencidasProfissionais.size,
       desativadas,
       ignoradas,
-      estabelecimentosProfissionaisVerificados: vencidasProfissionais.size,
+      estabelecimentosProfissionaisVerificados: profissionaisAtivos.size,
       estabelecimentosProfissionaisDesativados: estabelecimentosDesativados,
       estabelecimentosProfissionaisIgnorados: estabelecimentosIgnorados
     });
