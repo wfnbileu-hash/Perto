@@ -286,7 +286,7 @@ module.exports = async (req, res) => {
     return res.status(200).json({
       sucesso: true,
       lembretesCriados,
-      verificadas: vencidas.size + vencidasProfissionais.size,
+      verificadas: vencidas.size + profissionaisAtivos.size,
       desativadas,
       ignoradas,
       estabelecimentosProfissionaisVerificados: profissionaisAtivos.size,
