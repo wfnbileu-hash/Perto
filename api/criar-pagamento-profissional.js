@@ -181,7 +181,7 @@ module.exports = async (req, res) => {
       mensalidadeSnap = await mensalidadeRef.get();
       mensalidade = mensalidadeSnap.exists ? mensalidadeSnap.data() : {};
       const existente = await obterPagamentoExistente(mensalidade, tokenMP);
-      if (existente?.status) return res.status(existente.status).json({ erro: existente.erro });
+      if (existente?.erro) return res.status(existente.status || 409).json({ erro: existente.erro });
       if (existente) return res.status(200).json({ ...existente, valor: plano.valor, numeroEstabelecimento, plano: plano.nome });
       return res.status(409).json({ erro: 'O pagamento anterior está sendo atualizado. Aguarde e tente novamente.' });
     }
