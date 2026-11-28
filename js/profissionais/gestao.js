@@ -2111,14 +2111,15 @@ function preencherFormulario(item) {
         {
           proprietarioId: usuario.uid,
           ...dados,
-          atendeDomicilio: modalidadeAtendimento !== "local",
-          ativo: false,
-          statusAdmin: "aguardando_aprovacao",
-          criadoEm: serverTimestamp()
-        }
-      );
-
-      avisar("Cadastro enviado para aprovação!");
+                    atendeDomicilio: modalidadeAtendimento !== "local",
+            ativo: true,
+            statusAdmin: "aprovada",
+            criadoEm: serverTimestamp(),
+            aprovadoEm: serverTimestamp()
+          }
+          );
+          
+          avisar("Estabelecimento cadastrado e aprovado!");
     }
 
     limparFormulario();
