@@ -107,18 +107,16 @@ export function initGestaoProfissionais(bridge) {
 
   acoes.insertBefore(botao, acoes.querySelector("#logoutBtn"));
 
-  // Painel de gestão.
+    // Painel de gestão em página independente.
   const painel = document.createElement("section");
   painel.id = "ppManagementPanel";
+  painel.className = "page";
   painel.style.cssText = `
-    display:none;
-    margin-top:16px;
     padding:16px;
     border:1px solid #e2e8f0;
     border-radius:18px;
     background:#fff;
   `;
-
   painel.innerHTML = `
     <button type="button" id="ppManagementBack"
       style="padding:10px 14px;border-radius:10px;background:#f1f5f9;margin-bottom:15px">
@@ -436,7 +434,7 @@ export function initGestaoProfissionais(bridge) {
     </section>
   `;
 
-  perfil.appendChild(painel);
+  document.body.appendChild(painel);
 
   const $ = id => painel.querySelector("#" + id);
 
@@ -1919,19 +1917,16 @@ function preencherFormulario(item) {
       return;
     }
 
-    mostrarVisaoPrincipal();
-    painel.style.display = "block";
+        mostrarVisaoPrincipal();
+    bridge.ui.navigate("ppManagementPanel");
 
     await carregarConvitesRecebidos();
     await carregarMeusEstabelecimentosEquipe();
     await carregarMeusEstabelecimentos();
 
-    painel.scrollIntoView({ behavior: "smooth", block: "start" });
-  });
-
   $("ppManagementBack").addEventListener("click", () => {
-    painel.style.display = "none";
     limparFormulario();
+    bridge.ui.navigate("profilePage");
   });
 
   $("ppTeamBack").addEventListener("click", () => {
