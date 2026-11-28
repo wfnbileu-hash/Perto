@@ -1923,6 +1923,7 @@ function preencherFormulario(item) {
     await carregarConvitesRecebidos();
     await carregarMeusEstabelecimentosEquipe();
     await carregarMeusEstabelecimentos();
+  });
 
   $("ppManagementBack").addEventListener("click", () => {
     limparFormulario();
@@ -2121,7 +2122,6 @@ function preencherFormulario(item) {
 
     limparFormulario();
     await carregarMeusEstabelecimentos();
-
   } catch (erro) {
     console.error("[Perto Profissionais] Erro ao salvar:", erro);
     avisar(erro.message || "Não foi possível salvar. Verifique as regras do Firebase.");
